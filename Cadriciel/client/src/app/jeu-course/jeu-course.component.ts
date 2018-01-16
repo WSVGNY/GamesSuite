@@ -1,15 +1,15 @@
 import { AfterViewInit, Component, ElementRef, ViewChild, HostListener } from "@angular/core";
-import { RenderService } from "../render-service/render.service";
-import { Car } from "../car/car";
+import { RenderService } from "./render-service/render.service";
+import { Car } from "./car/car";
 
 @Component({
     moduleId: module.id,
-    selector: "app-game-component",
-    templateUrl: "./game.component.html",
-    styleUrls: ["./game.component.css"]
+    selector: "app-jeu-course-component",
+    templateUrl: "./jeu-course.component.html",
+    styleUrls: ["./jeu-course.component.css"]
 })
 
-export class GameComponent implements AfterViewInit {
+export class JeuCourseComponent implements AfterViewInit {
 
     @ViewChild("container")
     private containerRef: ElementRef;
