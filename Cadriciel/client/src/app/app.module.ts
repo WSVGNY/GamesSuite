@@ -3,20 +3,20 @@ import { NgModule } from "@angular/core";
 import { HttpClientModule } from "@angular/common/http";
 
 import { AppComponent } from "./app.component";
-import { GameComponent } from "./game-component/game.component";
 
-import { RenderService } from "./render-service/render.service";
+import { RenderService } from "./jeu-course/render-service/render.service";
 import { BasicService } from "./basic.service";
 import { AppRoutingModule } from './app-routing/app-routing.module';
 import { MotCroiseComponent } from './mot-croise/mot-croise.component';
 import { AdminComponent } from './admin/admin.component';
+import { JeuCourseComponent } from "./jeu-course/jeu-course.component";
 
 @NgModule({
     declarations: [
         AppComponent,
-        GameComponent,
-        MotCroiseComponent,
-        AdminComponent
+        AdminComponent,
+        JeuCourseComponent,
+        MotCroiseComponent
     ],
     imports: [
         BrowserModule,
