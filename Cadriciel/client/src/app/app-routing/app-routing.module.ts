@@ -8,7 +8,6 @@ const routes: Routes = [
   { path: '', redirectTo: '/course', pathMatch: 'full' },
   { path: 'course', component: GameComponent },
   { path: 'mot-croise', component: MotCroiseComponent }
-
 ];
 
 @NgModule({
