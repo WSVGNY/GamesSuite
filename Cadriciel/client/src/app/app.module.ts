@@ -7,15 +7,19 @@ import { GameComponent } from "./game-component/game.component";
 
 import { RenderService } from "./render-service/render.service";
 import { BasicService } from "./basic.service";
+import { AppRoutingModule } from './app-routing/app-routing.module';
+import { MotCroiseComponent } from './mot-croise/mot-croise.component';
 
 @NgModule({
     declarations: [
         AppComponent,
-        GameComponent
+        GameComponent,
+        MotCroiseComponent
     ],
     imports: [
         BrowserModule,
-        HttpClientModule
+        HttpClientModule,
+        AppRoutingModule
     ],
     providers: [
         RenderService,
