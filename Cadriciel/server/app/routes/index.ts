@@ -14,6 +14,12 @@ module Route {
             message.body = "World";
             res.send(JSON.stringify(message));
         }
+        public emptyGrid(req: Request, res: Response, next: NextFunction): void {
+            const message: Message = new Message();
+            message.title = "Hi";
+            message.body = "World";
+            res.send(JSON.stringify(message));
+        }
     }
 }
 
