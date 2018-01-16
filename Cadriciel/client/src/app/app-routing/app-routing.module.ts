@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { JeuCourseComponent } from '../jeu-course/jeu-course.component';
 import { MotCroiseComponent } from '../mot-croise/mot-croise.component';
-import { AdminComponent } from '../admin/admin.component';
+import { AdminComponent } from '../jeu-course/admin/admin.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/course', pathMatch: 'full' },

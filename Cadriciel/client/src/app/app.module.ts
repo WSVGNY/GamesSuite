@@ -8,9 +8,9 @@ import { RenderService } from "./jeu-course/render-service/render.service";
 import { BasicService } from "./basic.service";
 import { AppRoutingModule } from './app-routing/app-routing.module';
 import { MotCroiseComponent } from './mot-croise/mot-croise.component';
-import { AdminComponent } from './admin/admin.component';
+import { AdminComponent } from './jeu-course/admin/admin.component';
 import { JeuCourseComponent } from "./jeu-course/jeu-course.component";
-
+import { PistesService } from './jeu-course/pistes-service/pistes.service';
 @NgModule({
     declarations: [
         AppComponent,
@@ -25,7 +25,8 @@ import { JeuCourseComponent } from "./jeu-course/jeu-course.component";
     ],
     providers: [
         RenderService,
-        BasicService
+        BasicService,
+        PistesService
     ],
     bootstrap: [AppComponent]
 })
