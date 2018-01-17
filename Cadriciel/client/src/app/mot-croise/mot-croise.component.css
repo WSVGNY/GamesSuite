@@ -1,0 +1,39 @@
+#wrapper {
+    border: 1px solid black;
+    width: 450px;
+    height: 450px;
+    margin: 0 auto;
+  }
+  
+  div {
+    contentEditable: true;  
+  }
+  
+  .filled {
+    width: 28px;
+    height: 28px;
+    background: black;
+    border: 1px solid black;
+    padding: 0;
+    margin: 0;
+    float: left;
+  }
+  
+  .empty {
+    width: 28px;
+    height: 28px;
+    border: 1px solid black;
+    padding: 0;
+    margin: 0;
+    float: left;
+  }
+  
+  .numbered {
+    counter-increment: value;
+  }
+  
+  .numbered:nth-of-type(n)::before {
+    content: counter(value);
+    font-size: 10px;
+    position: absolute;
+  }
