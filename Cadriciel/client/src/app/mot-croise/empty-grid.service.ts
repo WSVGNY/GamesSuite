@@ -20,6 +20,14 @@ export class EmptyGridService {
     );
   }
 
+  public async emptyGridCreate(): Promise<void>{
+
+  }
+
+  public testString(): string{
+    return "allo";
+  }
+
   private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
 
     return (error: Error): Observable<T> => {
