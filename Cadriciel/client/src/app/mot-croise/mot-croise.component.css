@@ -1,28 +1,24 @@
 #wrapper {
     border: 1px solid black;
-    width: 450px;
-    height: 450px;
+    width: 600px;
+    height: 600px;
     margin: 0 auto;
   }
   
-  div {
-    contentEditable: true;  
-  }
-  
   .filled {
-    width: 28px;
-    height: 28px;
+    width: 56px;
+    height: 56px;
     background: black;
-    border: 1px solid black;
+    border: 2px solid black;
     padding: 0;
     margin: 0;
     float: left;
   }
   
   .empty {
-    width: 28px;
-    height: 28px;
-    border: 1px solid black;
+    width: 56px;
+    height: 56px;
+    border: 2px solid black;
     padding: 0;
     margin: 0;
     float: left;
@@ -34,6 +30,6 @@
   
   .numbered:nth-of-type(n)::before {
     content: counter(value);
-    font-size: 10px;
+    font-size: 15px;
     position: absolute;
   }

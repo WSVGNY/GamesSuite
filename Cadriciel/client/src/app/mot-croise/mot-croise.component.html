@@ -1,19 +1,17 @@
 <p>Message from the localhost:3000 : {{message}} </p>
 <div id="wrapper">
-    <!-- 15 x 15 block -->
+    <!-- 10 x 10 block -->
     <!-- first row -->
-    <div class="empty numbered"></div>
+    <div class="empty numbered" [class.selected]="gridBox === selectedGridBox" (click)="onSelect(gridBox)"></div>
+    <div *ngIf="selectedGridBox">
+        <input [(ngModel)]="selectedGridBox.value">
+    </div>
     <div class="empty numbered"></div>
     <div class="empty numbered"></div>
     <div class="empty numbered"></div>
     <div class="empty numbered"></div>
     <div class="filled"></div>
     <div class="empty numbered"></div>
-    <div class="empty numbered"></div>
-    <div class="empty numbered"></div>
-    <div class="empty numbered"></div>
-    <div class="empty numbered"></div>
-    <div class="filled"></div>
     <div class="empty numbered"></div>
     <div class="empty numbered"></div>
     <div class="empty numbered"></div>
@@ -28,11 +26,6 @@
     <div class="empty"></div>
     <div class="empty"></div>
     <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="filled"></div>
-    <div class="empty numbered"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
     <!-- third row -->
     <div class="empty numbered"></div>
     <div class="empty"></div>
@@ -42,11 +35,6 @@
     <div class="empty numbered"></div>
     <div class="empty"></div>
     <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="filled"></div>
-    <div class="empty numbered"></div>
     <div class="empty"></div>
     <div class="empty"></div>
     <!-- fourth row -->
@@ -59,11 +47,6 @@
     <div class="empty"></div>
     <div class="empty"></div>
     <div class="filled"></div>
-    <div class="empty numbered"></div>
-    <div class="empty"></div>
-    <div class="empty numbered"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
     <div class="empty"></div>
     <!-- fifth row -->
     <div class="filled"></div>
@@ -76,11 +59,6 @@
     <div class="filled"></div>
     <div class="empty numbered"></div>
     <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
     <!-- sixth row -->
     <div class="empty numbered"></div>
     <div class="empty numbered"></div>
@@ -92,11 +70,6 @@
     <div class="empty numbered"></div>
     <div class="empty"></div>
     <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="filled"></div>
-    <div class="filled"></div>
-    <div class="filled"></div>
     <!-- seventh row -->
     <div class="empty numbered"></div>
     <div class="empty"></div>
@@ -108,11 +81,6 @@
     <div class="empty"></div>
     <div class="empty"></div>
     <div class="empty"></div>
-    <div class="filled"></div>
-    <div class="filled"></div>
-    <div class="empty numbered"></div>
-    <div class="empty numbered"></div>
-    <div class="empty numbered"></div>
     <!-- eighth row -->
     <div class="empty numbered"></div>
     <div class="empty"></div>
@@ -121,11 +89,6 @@
     <div class="empty"></div>
     <div class="empty numbered"></div>
     <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty numbered"></div>
-    <div class="empty numbered"></div>
     <div class="empty"></div>
     <div class="empty"></div>
     <div class="empty"></div>
@@ -140,106 +103,15 @@
     <div class="empty"></div>
     <div class="empty"></div>
     <div class="filled"></div>
-    <div class="empty numbered"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
     <!-- tenth row -->
     <div class="filled"></div>
     <div class="filled"></div>
     <div class="filled"></div>
     <div class="empty numbered"></div>
-    <div class="empty numbered"></div>
     <div class="empty"></div>
     <div class="empty"></div>
     <div class="empty"></div>
     <div class="filled"></div>
     <div class="empty numbered"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <!-- eleventh row -->
-    <div class="empty numbered"></div>
-    <div class="empty numbered"></div>
-    <div class="empty numbered"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="filled"></div>
-    <div class="empty numbered"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="filled"></div>
-    <div class="filled"></div>
-    <div class="filled"></div>
-    <div class="filled"></div>
-    <!-- twelfth row -->
-    <div class="empty numbered"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="filled"></div>
-    <div class="empty numbered"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty numbered"></div>
-    <div class="empty numbered"></div>
-    <div class="empty numbered"></div>
-    <div class="empty numbered"></div>
-    <!-- thirteenth row -->
-    <div class="empty numbered"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="filled"></div>
-    <div class="empty numbered"></div>
-    <div class="empty"></div>
-    <div class="empty numbered"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <!-- fourteenth row -->
-    <div class="empty numbered"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="filled"></div>
-    <div class="empty numbered"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="filled"></div>
-    <div class="empty numbered"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <!-- fifteenth row -->
-    <div class="empty numbered"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="filled"></div>
-    <div class="empty numbered"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="filled"></div>
-    <div class="empty numbered"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
-    <div class="empty"></div>
     <div class="empty"></div>
 </div>
-<p>{{message2}}</p>

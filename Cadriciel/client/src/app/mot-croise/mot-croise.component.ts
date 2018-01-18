@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {} from '@angular/';
-import {MdGridTile} from '@angular/material';
+import {GridBox} from "./gridBox";
 
 import { EmptyGridService } from "./empty-grid.service";
 import { Message } from "../../../../common/communication/message";
@@ -16,6 +16,7 @@ export class MotCroiseComponent implements OnInit {
   constructor(private emptyGridService  : EmptyGridService) { }
   public message: string;
   public message2: string;
+  public selectedGridBox: GridBox;
   //private grid: 
 
   ngOnInit() {
@@ -28,6 +29,8 @@ export class MotCroiseComponent implements OnInit {
     this.emptyGridService.emptyGridCreate();
   }
 
-
+  onSelect(gridBox: GridBox): void {
+    this.selectedGridBox = gridBox;
+  }
 
 }
