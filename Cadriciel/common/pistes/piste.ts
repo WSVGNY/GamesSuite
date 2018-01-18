@@ -1,4 +1,4 @@
-export class ListePiste {
+export class Piste {
     id: number;
     name: string;
 }

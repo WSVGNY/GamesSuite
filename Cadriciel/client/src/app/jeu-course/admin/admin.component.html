@@ -1,7 +1,6 @@
-<div #container>
-  <ul>
-      <li>Speed: {{this.renderService.car.speed.length() * 3.6 | number :'2.2-2'}} km/h</li>
-      <li>Gear: {{this.renderService.car.currentGear + 1}}</li>
-      <li>RPM: {{this.renderService.car.rpm | number:'2.0-0'}}</li>
-  </ul>
-</div>
+<h2>Les pistes</h2>
+<ul class="pistes">
+  <li *ngFor="let piste of pistes">
+      <span class="badge">{{piste.id}}</span> {{piste.name}}
+  </li>
+</ul>
