@@ -11,7 +11,7 @@ import { RoutePiste } from "./routes/route-piste";
 export class Routes {
 
     public constructor( @inject(Types.Index) private index: Index,
-                        @inject(Types.EmptyGrid) private emptyGrid: EmptyGrid 
+                        @inject(Types.EmptyGrid) private emptyGrid: EmptyGrid, 
                         @inject(Types.RoutePiste) private piste: RoutePiste) {}
 
     public get routes(): Router {
