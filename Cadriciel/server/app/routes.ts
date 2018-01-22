@@ -5,14 +5,16 @@ import Types from "./types";
 import { Index } from "./routes/index";
 import { EmptyGrid } from "./mot-croise/emptyGrid";
 import { RoutePiste } from "./routes/route-piste";
+import { Lexique } from "./mot-croise/lexique";
 
 
 @injectable()
 export class Routes {
 
     public constructor( @inject(Types.Index) private index: Index,
-                        @inject(Types.EmptyGrid) private emptyGrid: EmptyGrid 
-                        @inject(Types.RoutePiste) private piste: RoutePiste) {}
+                        @inject(Types.EmptyGrid) private emptyGrid: EmptyGrid,
+                        @inject(Types.RoutePiste) private piste: RoutePiste,
+                        @inject(Types.Lexique) private lexique: Lexique) {}
 
     public get routes(): Router {
         const router: Router = Router();
@@ -22,6 +24,7 @@ export class Routes {
         router.get("/emptyGridGet",
             (req: Request, res: Response, next: NextFunction) => this.emptyGrid.emptyGrid(req, res, next));
         router.get("/admin", (req: Request, res: Response, next: NextFunction) => this.piste.getListePistes(req, res, next));
+        router.get("/mock-lexique", (req: Request, res: Response, next: NextFunction) => this.lexique.getUnMot(req, res, next));
 
         return router;
     }
