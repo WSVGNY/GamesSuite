@@ -13,37 +13,64 @@ import { Message } from "../../../../common/communication/message";
 })
 export class MotCroiseComponent implements OnInit {
 
-  constructor(private emptyGridService: EmptyGridService) { }
+  constructor(private emptyGridService: EmptyGridService) {
+    this.newGrid();
+   }
+
   public message: string;
   public message2: string;
   public selectedGridBox: GridBox;
-  public grid: GridBox[][] = [
-    [new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, true), new GridBox(1, false)],
-    [new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, true), new GridBox(1, false)],
-    [new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, true), new GridBox(1, false)],
-    [new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, true), new GridBox(1, false)],
-    [new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, true), new GridBox(1, false)],
-    [new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, true), new GridBox(1, false)],
-    [new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, true), new GridBox(1, false)],
-    [new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, true), new GridBox(1, false)],
-    [new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, true), new GridBox(1, false)],
-    [new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, true), new GridBox(1, false)],
-  ];
-  //private grid: 
+
+  private readonly sizeGridX = 10;
+  private readonly sizeGridY = 10;
+  private readonly numberOfTiles = this.sizeGridX * this.sizeGridY;
+  private readonly BlackTilesRatio = 0.1 * this.numberOfTiles;
+
+  public grid: GridBox[][];
 
   ngOnInit() {
     this.emptyGridService.emptyGridGet().subscribe((message: Message) => this.message = message.title + message.body);
-    this.newGrid();
     this.message2 = this.emptyGridService.testString();
   }
 
-  public newGrid(): void {
-    this.emptyGridService.emptyGridCreate();
-    // for(var i=0; i<10; i++){
-    //   for(var j=0; j<10; j++){
-    //     this.grid[i][j]=new GridBox((10*i)+j);
-    //   }
-    // }
+  private newGrid(): void {
+    //this.emptyGridService.emptyGridCreate();
+    this.grid = new Array<Array<GridBox>>();
+
+    for(let i=0; i<this.sizeGridY; i++){
+      let row:GridBox[] = new Array<GridBox>();
+
+      for(let j=0; j<this.sizeGridX; j++){
+        row.push(new GridBox(this.provideUniqueTileID(), true));
+      }
+      this.grid.push(row);
+    }
+    this.placeBlackGridTiles();
+  }
+
+  private placeBlackGridTiles(): void {
+    for(let t=0; t<this.BlackTilesRatio; t++){
+      let randomTileId = Math.floor(Math.random() * (this.numberOfTiles)); //0 -> numberOfTiles - 1
+      console.log(randomTileId);
+      this.findMatchingTileById(randomTileId).black = true;
+
+    }
+  }
+  
+  private findMatchingTileById(id: number): GridBox{
+
+    for(let i = 0; i < this.sizeGridY; i++)
+      for(let j = 0; j < this.sizeGridX;j++ ){
+        if(this.grid[i][j].id == id)
+          return this.grid[i][j];
+      }
+    throw new Error("GridTile not found");
+  }
+
+  private tileIdCounter: number = 0;
+  public provideUniqueTileID(): number{
+    //console.log(this.tileIdCounter);
+    return this.tileIdCounter++;
   }
 
   onSelect(gridBox: GridBox): void {
