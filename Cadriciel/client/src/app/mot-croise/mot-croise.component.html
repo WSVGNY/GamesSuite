@@ -2,9 +2,9 @@
 <div id="grid">
     <div *ngFor="let gridBoxLine of grid">
         <div *ngFor="let gridBox of gridBoxLine">
-            <div class="emptyGridBox">
-                <!-- <span>{{gridBox.id}}</span> -->
-            </div>
+            <!--div ng-class="{emptyGridBox: false, filledGridBox: 0 == true}"></div-->
+            <div class="emptyGridBox"></div>
+            <!-- <span>{{gridBox.id}}</span> -->
         </div>
     </div>
 </div>
