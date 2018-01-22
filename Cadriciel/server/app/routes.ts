@@ -17,6 +17,7 @@ export class Routes {
 
         router.get("/", (req: Request, res: Response, next: NextFunction) => this.index.helloWorld(req, res, next));
         router.get("/admin", (req: Request, res: Response, next: NextFunction) => this.piste.getListePistes(req, res, next));
+        router.get("/admin/:Number", (req: Request, res: Response, next: NextFunction) => this.piste.getPisteParID(req, res, next));
 
         return router;
     }
