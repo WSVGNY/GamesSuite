@@ -19,12 +19,10 @@ export class Routes {
     public get routes(): Router {
         const router: Router = Router();
 
-        router.get("/",
-            (req: Request, res: Response, next: NextFunction) => this.index.helloWorld(req, res, next));
-        router.get("/emptyGridGet",
-            (req: Request, res: Response, next: NextFunction) => this.emptyGrid.emptyGrid(req, res, next));
+        router.get("/", (req: Request, res: Response, next: NextFunction) => this.index.helloWorld(req, res, next));
+        router.get("/emptyGridGet", (req: Request, res: Response, next: NextFunction) => this.emptyGrid.emptyGrid(req, res, next));
         router.get("/admin", (req: Request, res: Response, next: NextFunction) => this.piste.getListePistes(req, res, next));
-        router.get("/mock-lexique", (req: Request, res: Response, next: NextFunction) => this.lexique.getUnMot(req, res, next));
+        router.get("/mock-lexique", (req: Request, res: Response, next: NextFunction) => this.lexique.getUnMotSelonNbLettres(req, res, next, 4));
 
         return router;
     }
