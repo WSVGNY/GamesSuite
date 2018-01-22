@@ -10,11 +10,13 @@ import { BasicService } from "./basic.service";
 import { AppRoutingModule } from './app-routing/app-routing.module';
 import { MotCroiseComponent } from './mot-croise/mot-croise.component';
 import { EmptyGridService } from "./mot-croise/empty-grid.service";
+import { AdminComponent } from './jeu-course/admin/admin.component';
 import { JeuCourseComponent } from "./jeu-course/jeu-course.component";
-
+import { PistesService } from './jeu-course/pistes-service/pistes.service';
 @NgModule({
     declarations: [
         AppComponent,
+        AdminComponent,
         JeuCourseComponent,
         MotCroiseComponent
     ],
@@ -27,7 +29,8 @@ import { JeuCourseComponent } from "./jeu-course/jeu-course.component";
     providers: [
         RenderService,
         BasicService,
-        EmptyGridService
+        EmptyGridService,
+        PistesService
     ],
     bootstrap: [AppComponent]
 })
