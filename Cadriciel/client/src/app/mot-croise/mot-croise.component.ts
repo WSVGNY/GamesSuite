@@ -13,37 +13,41 @@ import { Message } from "../../../../common/communication/message";
 })
 export class MotCroiseComponent implements OnInit {
 
-  constructor(private emptyGridService: EmptyGridService) { }
+  constructor(private emptyGridService: EmptyGridService) {
+    this.newGrid();
+   }
+   
   public message: string;
   public message2: string;
   public selectedGridBox: GridBox;
-  public grid: GridBox[][] = [
-    [new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, true), new GridBox(1, false)],
-    [new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, true), new GridBox(1, false)],
-    [new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, true), new GridBox(1, false)],
-    [new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, true), new GridBox(1, false)],
-    [new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, true), new GridBox(1, false)],
-    [new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, true), new GridBox(1, false)],
-    [new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, true), new GridBox(1, false)],
-    [new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, true), new GridBox(1, false)],
-    [new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, true), new GridBox(1, false)],
-    [new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, false), new GridBox(1, true), new GridBox(1, false)],
-  ];
-  //private grid: 
+
+  private readonly TailleGridX = 10;
+  private readonly TailleGridY = 10;
+
+  public grid: GridBox[][];
 
   ngOnInit() {
     this.emptyGridService.emptyGridGet().subscribe((message: Message) => this.message = message.title + message.body);
-    this.newGrid();
     this.message2 = this.emptyGridService.testString();
   }
 
   public newGrid(): void {
-    this.emptyGridService.emptyGridCreate();
-    // for(var i=0; i<10; i++){
-    //   for(var j=0; j<10; j++){
-    //     this.grid[i][j]=new GridBox((10*i)+j);
-    //   }
-    // }
+    //this.emptyGridService.emptyGridCreate();
+    this.grid = new Array<Array<GridBox>>();
+
+    for(let i=0; i<this.TailleGridY; i++){
+      let row:GridBox[] = new Array<GridBox>();
+
+      for(let j=0; j<this.TailleGridX; j++){
+        row.push(new GridBox(this.provideUniqueID(), j%2 ? true:false));
+      }
+      this.grid.push(row);
+    }
+  }
+
+  private idCounter: 0;
+  public provideUniqueID(): number{
+    return this.idCounter++;
   }
 
   onSelect(gridBox: GridBox): void {
