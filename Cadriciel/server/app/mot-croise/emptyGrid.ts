@@ -6,16 +6,14 @@ import { injectable, } from "inversify";
 module Route {
 
     @injectable()
-    export class Index {
-
-        public helloWorld(req: Request, res: Response, next: NextFunction): void {
+    export class EmptyGrid {
+        public emptyGrid(req: Request, res: Response, next: NextFunction): void {
             const message: Message = new Message();
-            message.title = "Hello";
+            message.title = "Hi";
             message.body = "World";
             res.send(JSON.stringify(message));
         }
     }
-    
 }
 
 export = Route;

@@ -1,3 +1,10 @@
-<p>
-  mot-croise works!
-</p>
+<p>Message from the localhost:3000 : {{message}} </p>
+<div id="grid">
+    <div *ngFor="let gridBoxLine of grid">
+        <div *ngFor="let gridBox of gridBoxLine">
+            <div class="emptyGridBox">
+                <!-- <span>{{gridBox.id}}</span> -->
+            </div>
+        </div>
+    </div>
+</div>
