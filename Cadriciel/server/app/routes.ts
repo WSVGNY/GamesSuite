@@ -20,7 +20,10 @@ export class Routes {
         const router: Router = Router();
 
         router.get("/", (req: Request, res: Response, next: NextFunction) => this.index.helloWorld(req, res, next));
-        router.get("/emptyGridGet", (req: Request, res: Response, next: NextFunction) => this.emptyGrid.emptyGridCreate(req, res, next));
+        router.get("/emptyGridGet", (req: Request, res: Response, next: NextFunction) => {
+            this.emptyGrid = new EmptyGrid;
+            this.emptyGrid.emptyGridCreate(req, res, next);
+        } );
         router.get("/admin", (req: Request, res: Response, next: NextFunction) => this.piste.getListePistes(req, res, next));
         router.get("/mock-lexique", (req: Request, res: Response, next: NextFunction) => this.lexique.getUnMotSelonNbLettres(req, res, next, 4));
 
