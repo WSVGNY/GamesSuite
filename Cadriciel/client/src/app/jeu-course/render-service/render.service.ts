@@ -137,4 +137,20 @@ export class RenderService {
                 break;
         }
     }
+
+     // TODO: Create an event handler service.
+     public handleMouseDown(event: MouseEvent): void {
+        this._car.isAcceleratorPressed = true;
+        // event.clientX
+        
+        // event.clientY
+    }
+
+    // TODO: Create an event handler service.
+    public handleMouseUp(event: MouseEvent): void {
+        this._car.isAcceleratorPressed = false;
+        // event.clientX
+        
+        // event.clientY
+    }
 }
