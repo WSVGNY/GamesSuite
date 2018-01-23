@@ -12,11 +12,10 @@ module Route {
         mots: Mot[] = [];
 
         public getDefinition(req: Request, res: Response, next: NextFunction, mot:String): void {
- 
             https.get(this.BASE_URL + "sp="+mot+"&md=d", (ress) => {
                 ress.on('data', (d) => {
                     this.mots = JSON.parse(d.toString());
-                    res.send(this.mots[0]["defs"]);
+                    res.send(this.mots[0]["defs"]+"\n");
                 });
             }).on('error', (e) => {
                 console.error(e);
