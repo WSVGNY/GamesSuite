@@ -34,4 +34,5 @@ testem.log
 
 
 # End of https://www.gitignore.io/api/angular
-Cadriciel/client/.vscode/launch.json
+Cadriciel/client/.vscode/
+Cadriciel/server/.vscode/
