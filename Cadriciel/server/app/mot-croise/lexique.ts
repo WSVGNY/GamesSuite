@@ -11,9 +11,9 @@ module Route {
         private readonly BASE_URL: string = "https://api.datamuse.com/words?";
         mots: string;
 
-        public getUnMot(req: Request, res: Response, next: NextFunction): void {
+        public getDefinition(req: Request, res: Response, next: NextFunction, mot:String): void {
  
-            https.get(this.BASE_URL + "sp=blue&md=d", (ress) => {
+            https.get(this.BASE_URL + "sp="+mot+"&md=d", (ress) => {
                 ress.on('data', (d) => {
                     this.mots = JSON.parse(d.toString());
                     res.send(this.mots[0]["defs"]);
