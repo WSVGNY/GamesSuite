@@ -23,6 +23,7 @@ export class Routes {
         router.get("/emptyGridGet", (req: Request, res: Response, next: NextFunction) => this.emptyGrid.emptyGrid(req, res, next));
         router.get("/admin", (req: Request, res: Response, next: NextFunction) => this.piste.getListePistes(req, res, next));
         router.get("/mock-lexique", (req: Request, res: Response, next: NextFunction) => this.lexique.getUnMotSelonNbLettres(req, res, next, 4));
+        router.get("/mock-lexique-def", (req: Request, res: Response, next: NextFunction) => this.lexique.getUnMot(req, res, next));
 
         return router;
     }

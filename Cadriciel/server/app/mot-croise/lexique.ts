@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import "reflect-metadata";
 import { injectable, } from "inversify";
-import { Mot } from "../../../common/mot/mot";
+//import { Mot } from "../../../common/mot/mot";
 import * as https from "https";
 
 module Route {
@@ -12,10 +12,15 @@ module Route {
         mots: string;
 
         public getUnMot(req: Request, res: Response, next: NextFunction): void {
-            const mot: Mot = new Mot();
-            mot.mot = "Lexique dit : ";
-            mot.def = "Allo";
-            res.send(mot);
+ 
+            https.get(this.BASE_URL + "sp=blue&md=d", (ress) => {
+                ress.on('data', (d) => {
+                    this.mots = JSON.parse(d.toString());
+                    res.send(this.mots[0]["defs"]);
+                });
+            }).on('error', (e) => {
+                console.error(e);
+            });
         }
 
         public getUnMotSelonNbLettres(req: Request, res: Response, next: NextFunction, nbLettres: Number): void {
