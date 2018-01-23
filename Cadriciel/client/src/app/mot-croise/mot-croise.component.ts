@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { } from '@angular/';
-import { GridBox } from "../../../../common/grille/gridBox";
+import { GridBox } from "../../../../common/crossword/gridBox";
 
 import { EmptyGridService } from "./empty-grid.service";
 

@@ -5,7 +5,7 @@ import { Observable } from "rxjs/Observable";
 import { catchError } from "rxjs/operators";
 import { of } from "rxjs/observable/of";
 
-import {GridBox} from "../../../../common/grille/gridBox";
+import {GridBox} from "../../../../common/crossword/gridBox";
 
 @Injectable()
 export class EmptyGridService {

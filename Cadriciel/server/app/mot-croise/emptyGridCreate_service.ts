@@ -2,8 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import "reflect-metadata";
 import { injectable, } from "inversify";
 import { GridBox } from "../../../common/crossword/gridBox"
-import { Word } from "../../../common/crossword/word"
-import { Vec2 } from "../../../common/crossword/vec2"
+// import { Word } from "../../../common/crossword/word"
+// import { Vec2 } from "../../../common/crossword/vec2"
 
 module Route {
 
