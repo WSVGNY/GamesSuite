@@ -50,21 +50,25 @@ export class MotCroiseComponent implements OnInit {
 
   //https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
   private placeBlackGridTiles(): void {
+    //fill array 0->numberOfTile
     let array: number[] = [];
     for(let i = 0; i<this.numberOfTiles; i++)
       array[i] = i;
-      
+    
+    //shuffle array
     for(let i=array.length -1; i>0; i--){
       let j = Math.floor(Math.random() * (i+1));
       [array[i], array[j]] = [array[j], array[i]];
-
     }
 
+    //pick tiles in shuffled array 0->BlackTilesRatio
     for(let i=0; i<this.BlackTilesRatio; i++){
       let randomTileId = array[i];
-      console.log(randomTileId);
       this.findMatchingTileById(randomTileId).black = true;
     }
+    //TODO: Verify that there's no tile left alone horizontally and vertically
+    //TODO: Create the words 
+
   }
   
   private findMatchingTileById(id: number): GridBox{
