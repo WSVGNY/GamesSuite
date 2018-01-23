@@ -1,8 +1,7 @@
-<p>Message from the localhost:3000 : {{message}} </p>
 <div id="grid">
     <div *ngFor="let gridBoxLine of grid">
         <div *ngFor="let gridBox of gridBoxLine">
-            <div class="emptyGridBox">
+            <div [ngClass]="{filledGridBox : gridBox.black, emptyGridBox : !gridBox.black}">
                 <!-- <span>{{gridBox.id}}</span> -->
             </div>
         </div>

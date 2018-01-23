@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import "reflect-metadata";
 import { injectable, } from "inversify";
-import { Mot } from "../../../common/mot/mot";
 import * as https from "https";
 
 module Route {
@@ -9,7 +8,7 @@ module Route {
     export class Lexique {
 
         private readonly BASE_URL: string = "https://api.datamuse.com/words?";
-        mots: Mot[] = [];
+        mots: string;
 
         public getDefinition(req: Request, res: Response, next: NextFunction, mot:String): void {
             https.get(this.BASE_URL + "sp="+mot+"&md=d", (ress) => {
@@ -31,7 +30,6 @@ module Route {
         }
         
         private getDeApi(req: Request, res: Response, next: NextFunction, URLOptions: string): Object[]{
-            this.mots = [];
             https.get(this.BASE_URL + URLOptions, (ress) => {
                 ress.on('data', (d) => {
                     res.send(JSON.parse(d.toString()));

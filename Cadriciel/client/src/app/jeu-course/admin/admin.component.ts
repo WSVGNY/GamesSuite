@@ -18,7 +18,7 @@ export class AdminComponent implements OnInit {
   }
 
   getPistes(): void {
-    this.pisteService.listePisteGet()
+    this.pisteService.getListePiste()
     .subscribe(pistes => this.pistes = pistes);
   }
 }

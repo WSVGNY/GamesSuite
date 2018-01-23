@@ -11,6 +11,10 @@ module Route {
         public getListePistes(req: Request, res: Response, next: NextFunction): void {
             res.send(PISTES);
         }
+
+        public getPisteParID(req: Request, res: Response, next: NextFunction): void {
+            res.send(PISTES.find(piste => piste.id == req.params.id));
+        }
     }
 }
 
