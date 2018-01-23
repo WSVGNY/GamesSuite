@@ -48,12 +48,22 @@ export class MotCroiseComponent implements OnInit {
     this.placeBlackGridTiles();
   }
 
+  //https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
   private placeBlackGridTiles(): void {
-    for(let t=0; t<this.BlackTilesRatio; t++){
-      let randomTileId = Math.floor(Math.random() * (this.numberOfTiles)); //0 -> numberOfTiles - 1
+    let array: number[] = [];
+    for(let i = 0; i<this.numberOfTiles; i++)
+      array[i] = i;
+      
+    for(let i=array.length -1; i>0; i--){
+      let j = Math.floor(Math.random() * (i+1));
+      [array[i], array[j]] = [array[j], array[i]];
+
+    }
+
+    for(let i=0; i<this.BlackTilesRatio; i++){
+      let randomTileId = array[i];
       console.log(randomTileId);
       this.findMatchingTileById(randomTileId).black = true;
-
     }
   }
   
