@@ -24,7 +24,7 @@ export class MotCroiseComponent implements OnInit {
   private readonly sizeGridX = 10;
   private readonly sizeGridY = 10;
   private readonly numberOfTiles = this.sizeGridX * this.sizeGridY;
-  private readonly BlackTilesRatio = 0.1 * this.numberOfTiles;
+  private readonly BlackTilesRatio = 0.25 * this.numberOfTiles;
 
   public grid: GridBox[][];
 
@@ -48,13 +48,27 @@ export class MotCroiseComponent implements OnInit {
     this.placeBlackGridTiles();
   }
 
+  //https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
   private placeBlackGridTiles(): void {
-    for(let t=0; t<this.BlackTilesRatio; t++){
-      let randomTileId = Math.floor(Math.random() * (this.numberOfTiles)); //0 -> numberOfTiles - 1
-      console.log(randomTileId);
-      this.findMatchingTileById(randomTileId).black = true;
-
+    //fill array 0->numberOfTile
+    let array: number[] = [];
+    for(let i = 0; i<this.numberOfTiles; i++)
+      array[i] = i;
+    
+    //shuffle array
+    for(let i=array.length -1; i>0; i--){
+      let j = Math.floor(Math.random() * (i+1));
+      [array[i], array[j]] = [array[j], array[i]];
     }
+
+    //pick tiles in shuffled array 0->BlackTilesRatio
+    for(let i=0; i<this.BlackTilesRatio; i++){
+      let randomTileId = array[i];
+      this.findMatchingTileById(randomTileId).black = true;
+    }
+    //TODO: Verify that there's no tile left alone horizontally and vertically
+    //TODO: Create the words 
+
   }
   
   private findMatchingTileById(id: number): GridBox{
