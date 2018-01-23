@@ -1,4 +1,3 @@
 export class Mot {
-    mot: string;
-    def: string;
+    constructor(public mot: string, public def: string) {}
 }
