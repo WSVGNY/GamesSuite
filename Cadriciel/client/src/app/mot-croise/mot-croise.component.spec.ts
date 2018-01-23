@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { MotCroiseComponent } from './mot-croise.component';
+import { AppModule } from '../app.module';
 
 describe('MotCroiseComponent', () => {
   let component: MotCroiseComponent;
@@ -8,7 +9,8 @@ describe('MotCroiseComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MotCroiseComponent ]
+      declarations: [ MotCroiseComponent ],
+      imports: [AppModule]
     })
     .compileComponents();
   }));

@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AdminComponent } from './admin.component';
+import { AppModule } from '../../app.module';
+import {APP_BASE_HREF} from '@angular/common';
 
 describe('AdminComponent', () => {
   let component: AdminComponent;
@@ -8,7 +10,8 @@ describe('AdminComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AdminComponent ]
+      imports : [AppModule],
+      providers: [{provide: APP_BASE_HREF, useValue : '/' }]
     })
     .compileComponents();
   }));
