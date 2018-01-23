@@ -20,16 +20,13 @@ module Route {
 
         public getUnMotSelonNbLettres(req: Request, res: Response, next: NextFunction, nbLettres: Number): void {
             https.get(this.BASE_URL + "sp=talk&md=d", (ress) => {
-                console.log('statusCode:', ress.statusCode);
-                console.log('headers:', ress.headers);
-              
                 ress.on('data', (d) => {
                     this.mots = JSON.parse(d.toString());
+                    res.send(this.mots[0]["word"]);
                 });
             }).on('error', (e) => {
                 console.error(e);
             });
-            res.send(this.mots[0]["word"]);
         }
     }
 }
