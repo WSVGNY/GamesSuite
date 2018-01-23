@@ -1,6 +1,8 @@
 <h2>Les pistes</h2>
-<ul class="pistes">
+<ul class="piste">
   <li *ngFor="let piste of pistes">
+    <a routerLink="/admin/{{piste.id}}">
       <span class="badge">{{piste.id}}</span> {{piste.name}}
+    </a>
   </li>
 </ul>

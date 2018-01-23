@@ -22,6 +22,7 @@ export class Routes {
         router.get("/emptyGridGet",
             (req: Request, res: Response, next: NextFunction) => this.emptyGrid.emptyGrid(req, res, next));
         router.get("/admin", (req: Request, res: Response, next: NextFunction) => this.piste.getListePistes(req, res, next));
+        router.get("/admin/:id", (req: Request, res: Response, next: NextFunction) => this.piste.getPisteParID(req, res, next));
 
         return router;
     }
