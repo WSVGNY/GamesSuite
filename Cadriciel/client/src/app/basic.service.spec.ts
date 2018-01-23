@@ -4,12 +4,13 @@ import { AppModule } from "./app.module";
 
 import { BasicService } from "./basic.service";
 
+import {APP_BASE_HREF} from '@angular/common';
+
 describe("BasicService", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            imports: [
-                AppModule
-            ]
+            imports: [AppModule],
+            providers: [{provide: APP_BASE_HREF, useValue : '/' }]
         });
     });
 
