@@ -41,7 +41,7 @@ export class MotCroiseComponent implements OnInit {
       let row:GridBox[] = new Array<GridBox>();
 
       for(let j=0; j<this.sizeGridX; j++){
-        row.push(new GridBox(this.provideUniqueTileID(), true));
+        row.push(new GridBox(this.provideUniqueTileID(), false));
       }
       this.grid.push(row);
     }
