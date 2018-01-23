@@ -11,7 +11,7 @@ import { RoutePiste } from "./routes/route-piste";
 export class Routes {
 
     public constructor( @inject(Types.Index) private index: Index,
-                        @inject(Types.EmptyGrid) private emptyGrid: EmptyGrid 
+                        @inject(Types.EmptyGrid) private emptyGrid: EmptyGrid,
                         @inject(Types.RoutePiste) private piste: RoutePiste) {}
 
     public get routes(): Router {
@@ -22,7 +22,7 @@ export class Routes {
         router.get("/emptyGridGet",
             (req: Request, res: Response, next: NextFunction) => this.emptyGrid.emptyGrid(req, res, next));
         router.get("/admin", (req: Request, res: Response, next: NextFunction) => this.piste.getListePistes(req, res, next));
-        router.get("/admin/:Number", (req: Request, res: Response, next: NextFunction) => this.piste.getPisteParID(req, res, next));
+        router.get("/admin/:id", (req: Request, res: Response, next: NextFunction) => this.piste.getPisteParID(req, res, next));
 
         return router;
     }
