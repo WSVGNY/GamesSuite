@@ -3,7 +3,7 @@ import { Router, Request, Response, NextFunction } from "express";
 
 import Types from "./types";
 import { Index } from "./routes/index";
-import { EmptyGrid } from "./mot-croise/emptyGrid";
+import { EmptyGrid } from "./mot-croise/emptyGridCreate_service";
 import { RoutePiste } from "./routes/route-piste";
 import { Lexique } from "./mot-croise/lexique";
 
@@ -20,7 +20,7 @@ export class Routes {
         const router: Router = Router();
 
         router.get("/", (req: Request, res: Response, next: NextFunction) => this.index.helloWorld(req, res, next));
-        router.get("/emptyGridGet", (req: Request, res: Response, next: NextFunction) => this.emptyGrid.emptyGrid(req, res, next));
+        router.get("/emptyGridGet", (req: Request, res: Response, next: NextFunction) => this.emptyGrid.emptyGridCreate(req, res, next));
         router.get("/admin", (req: Request, res: Response, next: NextFunction) => this.piste.getListePistes(req, res, next));
         router.get("/mock-lexique", (req: Request, res: Response, next: NextFunction) => this.lexique.getUnMotSelonNbLettres(req, res, next, 4));
 
