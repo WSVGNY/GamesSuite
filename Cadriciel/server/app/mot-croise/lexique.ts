@@ -11,15 +11,20 @@ module Route {
         private readonly BASE_URL: string = "https://api.datamuse.com/words?";
         mots: Mot[] = [];
 
-        public getUnMot(req: Request, res: Response, next: NextFunction): void {
-            const mot: Mot = new Mot("", "");
-            mot.mot = "Lexique dit : ";
-            mot.def = "Allo";
-            res.send(mot);
+        public getDefinition(req: Request, res: Response, next: NextFunction, mot:String): void {
+ 
+            https.get(this.BASE_URL + "sp="+mot+"&md=d", (ress) => {
+                ress.on('data', (d) => {
+                    this.mots = JSON.parse(d.toString());
+                    res.send(this.mots[0]["defs"]);
+                });
+            }).on('error', (e) => {
+                console.error(e);
+            });
         }
 
         public getListeMotSelonNbLettres(req: Request, res: Response, next: NextFunction, nbLettres: Number): void {
-            let URLOptions: string = "max=70&sp=";
+            let URLOptions: string = "sp=";
             for(let i = 0; i < nbLettres; i++){
                 URLOptions += "?";
             }
@@ -30,15 +35,7 @@ module Route {
             this.mots = [];
             https.get(this.BASE_URL + URLOptions, (ress) => {
                 ress.on('data', (d) => {
-                    let i: number = 0;
-                    //let tempMot: Mot = null;
-                    JSON.parse(d.toString(), (key: any, value: any) => {
-                        console.log(key + " : " + value);
-                        if(key == "word"){
-                            this.mots.push(new Mot(value, ""));
-                        }
-                    });
-                    res.send(this.mots);
+                    res.send(JSON.parse(d.toString()));
                 });
             }).on('error', (e) => {
                 console.error(e);
