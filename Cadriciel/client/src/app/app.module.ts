@@ -13,12 +13,14 @@ import { EmptyGridService } from "./mot-croise/empty-grid.service";
 import { AdminComponent } from './jeu-course/admin/admin.component';
 import { JeuCourseComponent } from "./jeu-course/jeu-course.component";
 import { PistesService } from './jeu-course/pistes-service/pistes.service';
+import { EditorComponent } from './jeu-course/editor/editor.component';
 @NgModule({
     declarations: [
         AppComponent,
         AdminComponent,
         JeuCourseComponent,
-        MotCroiseComponent
+        MotCroiseComponent,
+        EditorComponent
     ],
     imports: [
         BrowserModule,

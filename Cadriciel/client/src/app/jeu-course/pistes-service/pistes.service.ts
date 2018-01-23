@@ -13,9 +13,15 @@ export class PistesService {
   private readonly BASE_URL: string = "http://localhost:3000/admin";
   public constructor(private http: HttpClient) { }
   
-  public listePisteGet(): Observable<Piste[]> {
+  public getListePiste(): Observable<Piste[]> {
     return this.http.get<Piste[]>(this.BASE_URL).pipe(
-        catchError(this.handleError<Piste[]>("listePisteGet"))
+        catchError(this.handleError<Piste[]>("getListePiste"))
+    );
+  }
+
+  public getPisteParID(id: Number): Observable<Piste> {
+    return this.http.get<Piste>(this.BASE_URL + "/" + id).pipe(
+        catchError(this.handleError<Piste>("getPisteParID"))
     );
   }
 

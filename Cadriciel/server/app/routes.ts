@@ -25,6 +25,7 @@ export class Routes {
             this.emptyGrid.emptyGridCreate(req, res, next);
         } );
         router.get("/admin", (req: Request, res: Response, next: NextFunction) => this.piste.getListePistes(req, res, next));
+        router.get("/admin/:id", (req: Request, res: Response, next: NextFunction) => this.piste.getPisteParID(req, res, next));
         router.get("/mock-lexique", (req: Request, res: Response, next: NextFunction) => this.lexique.getUnMotSelonNbLettres(req, res, next, 4));
 
         return router;
