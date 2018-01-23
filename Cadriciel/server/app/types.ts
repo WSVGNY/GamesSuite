@@ -4,5 +4,6 @@ export default  {
         Routes: Symbol("Routes"),
         Index: Symbol("Index"),
         EmptyGrid : Symbol("EmptyGrid"),
-        RoutePiste: Symbol("RoutePiste")
+        RoutePiste: Symbol("RoutePiste"),
+        Lexique: Symbol("Lexique")
 };
