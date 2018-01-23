@@ -5,7 +5,7 @@ import { Observable } from "rxjs/Observable";
 import { catchError } from "rxjs/operators";
 import { of } from "rxjs/observable/of";
 
-import { Message } from "../../../../common/communication/message";
+import {GridBox} from "../../../../common/crossword/gridBox";
 
 @Injectable()
 export class EmptyGridService {
@@ -13,19 +13,15 @@ export class EmptyGridService {
   private readonly BASE_URL: string = "http://localhost:3000/emptyGridGet";
   public constructor(private http: HttpClient) { }
 
-  public emptyGridGet(): Observable<Message> {
+  public emptyGridGet(): Observable<GridBox[][]> {
 
-    return this.http.get<Message>(this.BASE_URL).pipe(
-      catchError(this.handleError<Message>("emptyGridGet"))
+    return this.http.get<GridBox[][]>(this.BASE_URL).pipe(
+      catchError(this.handleError<GridBox[][]>("emptyGridGet"))
     );
   }
 
   public async emptyGridCreate(): Promise<void>{
     
-  }
-
-  public testString(): string{
-    return "allo";
   }
 
   private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
