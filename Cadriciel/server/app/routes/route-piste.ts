@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import "reflect-metadata";
 import { injectable, } from "inversify";
 import { PISTES } from "../mock-pistes";
+/*import { Piste } from "../../../common/pistes/piste";*/
 
 module Route {
 
