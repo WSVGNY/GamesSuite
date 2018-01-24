@@ -1,9 +1,11 @@
+import { AfterViewInit, ElementRef, ViewChild, HostListener } from "@angular/core";
 import { Component, OnInit, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
 import { Piste }         from '../../../../../common/pistes/piste';
 import { PistesService }  from '../pistes-service/pistes.service';
+import { EditorRenderService } from "../editor-render-service/editor-render.service";
 
 @Component({
   selector: 'app-editor',
@@ -13,11 +15,12 @@ import { PistesService }  from '../pistes-service/pistes.service';
 export class EditorComponent implements OnInit {
   @Input() piste: Piste;
 
-  constructor(
+  public constructor(
     private route: ActivatedRoute,
     private pistesService: PistesService,
-    private location: Location
-  ) {}
+    private location: Location,
+    //private editorRenderService: EditorRenderService
+  ) { }
 
   ngOnInit(): void {
     this.getPiste();
@@ -33,8 +36,10 @@ export class EditorComponent implements OnInit {
     this.location.back();
   }
 
-  saveEvent() : void {
-  this.getPiste();
-  }
+/*
+  @HostListener("window:mousedown", ["$event"])
+    public onMouseDown(event: MouseEvent): void {
+        this.editorRenderService.handleMouseDown(event);
+    }
+*/
 }
-
