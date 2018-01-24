@@ -32,4 +32,9 @@ export class EditorComponent implements OnInit {
   goBack(): void {
     this.location.back();
   }
+
+  saveEvent() : void {
+  this.getPiste();
+  }
 }
+
