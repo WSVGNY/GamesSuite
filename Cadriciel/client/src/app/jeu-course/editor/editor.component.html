@@ -16,8 +16,6 @@
 <button (click)="goBack()">go back</button>
 <button (click)= "saveEvent ($event)" > Save </button>
 
-<!--
-<h2>{{ this.EditorRenderService.mouse }} </h2>
--->
-
-<div id='container'></div>
+<div class= 'container'>
+  <h2>Coordonnées: X: {{this.editorRenderService.mouse.x}} Y: {{this.editorRenderService.mouse.y}}  </h2>
+</div>

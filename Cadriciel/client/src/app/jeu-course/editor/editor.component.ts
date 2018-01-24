@@ -19,7 +19,7 @@ export class EditorComponent implements OnInit {
     private route: ActivatedRoute,
     private pistesService: PistesService,
     private location: Location,
-    //private editorRenderService: EditorRenderService
+    private editorRenderService: EditorRenderService
   ) { }
 
   ngOnInit(): void {
@@ -36,10 +36,10 @@ export class EditorComponent implements OnInit {
     this.location.back();
   }
 
-/*
+
   @HostListener("window:mousedown", ["$event"])
     public onMouseDown(event: MouseEvent): void {
         this.editorRenderService.handleMouseDown(event);
     }
-*/
+
 }

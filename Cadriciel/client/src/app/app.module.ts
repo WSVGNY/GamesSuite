@@ -14,6 +14,7 @@ import { AdminComponent } from './jeu-course/admin/admin.component';
 import { JeuCourseComponent } from "./jeu-course/jeu-course.component";
 import { PistesService } from './jeu-course/pistes-service/pistes.service';
 import { EditorComponent } from './jeu-course/editor/editor.component';
+import { EditorRenderService }from "./jeu-course/editor-render-service/editor-render.service";
 @NgModule({
     declarations: [
         AppComponent,
@@ -32,7 +33,8 @@ import { EditorComponent } from './jeu-course/editor/editor.component';
         RenderService,
         BasicService,
         EmptyGridService,
-        PistesService
+        PistesService,
+        EditorRenderService
     ],
     bootstrap: [AppComponent]
 })
