@@ -1,24 +1,24 @@
-import { Component, OnInit } from '@angular/core';
-import { Piste } from '../../../../../common/pistes/piste';
-import { PistesService } from '../pistes-service/pistes.service';
+import { Component, OnInit } from "@angular/core";
+import { Piste } from "../../../../../common/pistes/piste";
+import { PistesService } from "../pistes-service/pistes.service";
 
 @Component({
-  selector: 'app-admin',
-  templateUrl: './admin.component.html',
-  styleUrls: ['./admin.component.css']
+  selector: "app-admin",
+  templateUrl: "./admin.component.html",
+  styleUrls: ["./admin.component.css"]
 })
 export class AdminComponent implements OnInit {
 
-  pistes: Piste[];
+  public pistes: Piste[];
 
-  constructor(private pisteService: PistesService) { }
+  public constructor(private pisteService: PistesService) { }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.getPistes();
   }
 
-  getPistes(): void {
+  public getPistes(): void {
     this.pisteService.getListePiste()
-    .subscribe(pistes => this.pistes = pistes);
+    .subscribe((pistes) => this.pistes = pistes);
   }
 }
