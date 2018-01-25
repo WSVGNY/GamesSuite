@@ -10,24 +10,26 @@ module Route {
     @injectable()
     export class EmptyGrid {
 
-        private readonly sizeGridX = 10;
-        private readonly sizeGridY = 10;
-        private readonly numberOfTiles = this.sizeGridX * this.sizeGridY;
-        private readonly BlackTilesRatio = 0.10 * this.numberOfTiles;
+        private readonly SIZE_GRID_X: number = 10;
+        private readonly SIZE_GRID_Y: number = 10;
+        private readonly NUMBER_OF_TILES: number = this.SIZE_GRID_X * this.SIZE_GRID_Y;
+        // tslint:disable-next-line:no-magic-numbers
+        private readonly BLACK_TILES_RATIO: number = this.NUMBER_OF_TILES * 0.1 ;
         private grid: GridBox[][];
+        private tileIdCounter: number = 0;
 
         public emptyGridCreate(req: Request, res: Response, next: NextFunction): void {
             this.newGrid();
             res.send(this.grid);
         }
 
-        private newGrid() {
+        private newGrid(): void {
             this.grid = new Array<Array<GridBox>>();
 
-            for (let i = 0; i < this.sizeGridY; i++) {
+            for (let i = 0; i < this.SIZE_GRID_Y; i++) {
                 let row: GridBox[] = new Array<GridBox>();
 
-                for (let j = 0; j < this.sizeGridX; j++) {
+                for (let j = 0; j < this.SIZE_GRID_X; j++) {
                     row.push(new GridBox(this.provideUniqueTileID(), false));
                 }
                 this.grid.push(row);
@@ -35,49 +37,54 @@ module Route {
             this.placeBlackGridTiles();
         }
 
-        //https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+        // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
         private placeBlackGridTiles(): void {
-            //fill array 0->numberOfTile
-            let array = this.fillShuffledArray();
+            // fill array 0->numberOfTile
+            let array: number[] = this.fillShuffledArray();
 
-            //pick tiles in shuffled array 0->BlackTilesRatio
-            for (let i = 0; i < this.BlackTilesRatio; i++) {
-                let randomTileId = array[i];
+            // pick tiles in shuffled array 0->BLACK_TILES_RATIO
+            for (let i = 0; i < this.BLACK_TILES_RATIO; i++) {
+                let randomTileId: number = array[i];
                 this.findMatchingTileById(randomTileId).black = true;
             }
 
-
-            //TODO: Verify that there's no tile left alone horizontally and vertically
-            //TODO: Create the words 
+            // TODO: Verify that there's no tile left alone horizontally and vertically
+            // TODO: Create the words
 
         }
         private fillShuffledArray(): Array<number> {
             let array: Array<number> = [];
-            for (let i = 0; i < this.numberOfTiles; i++)
+            for (let i = 0; i < this.NUMBER_OF_TILES; i++){
                 array[i] = i;
+            }
 
-            //shuffle array
+            // shuffle array
             for (let i = array.length - 1; i > 0; i--) {
                 let j = Math.floor(Math.random() * (i + 1));
                 [array[i], array[j]] = [array[j], array[i]];
             }
+
             return array;
         }
 
         private findMatchingTileById(id: number): GridBox {
 
-            for (let i = 0; i < this.sizeGridY; i++)
-                for (let j = 0; j < this.sizeGridX; j++) {
-                    if (this.grid[i][j].id == id)
+            for (let i = 0; i < this.SIZE_GRID_Y; i++) {
+                for (let j = 0; j < this.SIZE_GRID_X; j++) {
+                    if (this.grid[i][j].id === id){
                         return this.grid[i][j];
+                    }
+
                 }
+            }
             throw new Error("GridTile not found");
         }
 
-        private tileIdCounter: number = 0;
         private provideUniqueTileID(): number {
-            if (this.tileIdCounter >= this.numberOfTiles)
+            if (this.tileIdCounter >= this.NUMBER_OF_TILES) {
                 throw new Error("Bad Tile ID alloc");
+            }
+
             return this.tileIdCounter++;
         }
     }

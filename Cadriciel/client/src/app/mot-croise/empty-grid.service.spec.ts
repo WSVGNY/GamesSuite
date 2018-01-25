@@ -1,6 +1,6 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { TestBed, inject } from "@angular/core/testing";
 
-import { EmptyGridService } from './empty-grid.service';
+import { EmptyGridService } from "./empty-grid.service";
 
 import { AppModule } from '../app.module';
 
@@ -15,7 +15,7 @@ describe('EmptyGridService', () => {
     });
   });
 
-  it('should be created', inject([EmptyGridService], (service: EmptyGridService) => {
+  it("should be created", inject([EmptyGridService], (service: EmptyGridService) => {
     expect(service).toBeTruthy();
   }));
 });

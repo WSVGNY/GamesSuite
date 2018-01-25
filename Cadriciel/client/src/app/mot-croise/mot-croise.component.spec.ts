@@ -1,9 +1,9 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { MotCroiseComponent } from './mot-croise.component';
-import { AppModule } from '../app.module';
+import { MotCroiseComponent } from "./mot-croise.component";
+import { AppModule } from "../app.module";
 
-describe('MotCroiseComponent', () => {
+describe("MotCroiseComponent", () => {
   let component: MotCroiseComponent;
   let fixture: ComponentFixture<MotCroiseComponent>;
 
@@ -21,7 +21,7 @@ describe('MotCroiseComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

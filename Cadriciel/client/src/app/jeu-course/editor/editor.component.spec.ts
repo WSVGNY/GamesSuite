@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { EditorComponent } from './editor.component';
+import { EditorComponent } from "./editor.component";
 
 import { AppModule } from '../../app.module';
 
@@ -25,7 +25,7 @@ describe('EditorComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 
 import { Observable } from "rxjs/Observable";
@@ -20,8 +20,8 @@ export class EmptyGridService {
     );
   }
 
-  public async emptyGridCreate(): Promise<void>{
-    
+  public async emptyGridCreate(): Promise<void> {
+
   }
 
   private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
