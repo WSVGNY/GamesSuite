@@ -1,10 +1,8 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { EditorComponent } from "./editor.component";
-
-import { AppModule } from '../../app.module';
-
-import { AppRoutingModule } from './../../app-routing/app-routing.module';
+//import { ActivatedRoute } from "@angular/router";
+//import {AppModule} from "../../app.module"
 
 describe('EditorComponent', () => {
   let component: EditorComponent;
@@ -13,8 +11,8 @@ describe('EditorComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ EditorComponent ],
-      imports: [AppRoutingModule,
-                AppModule]
+      //imports: [AppModule],
+      providers:[]
     })
     .compileComponents();
   }));
