@@ -26,7 +26,8 @@ import { EditorComponent } from './jeu-course/editor/editor.component';
         BrowserModule,
         HttpClientModule,
         AppRoutingModule,
-        FormsModule
+        FormsModule,
+        
     ],
     providers: [
         RenderService,
