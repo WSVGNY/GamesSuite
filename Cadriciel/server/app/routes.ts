@@ -3,9 +3,9 @@ import { Router, Request, Response, NextFunction } from "express";
 
 import Types from "./types";
 import { Index } from "./routes/index";
-import { EmptyGrid } from "./mot-croise/emptyGridCreate_service";
+import { EmptyGrid } from "./crossword/emptyGridCreate_service";
 import { RoutePiste } from "./routes/route-piste";
-import { Lexique } from "./mot-croise/lexique";
+import { Lexique } from "./crossword/lexique";
 
 @injectable()
 export class Routes {

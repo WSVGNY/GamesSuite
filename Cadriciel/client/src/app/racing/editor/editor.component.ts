@@ -2,8 +2,8 @@ import { Component, OnInit, Input } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
 
-import { Piste } from "../../../../../common/pistes/piste";
-import { PistesService } from "../pistes-service/pistes.service";
+import { Track } from "../../../../../common/racing/track";
+import { PistesService } from "../track-service/track.service";
 
 @Component({
   selector: "app-editor",
@@ -11,7 +11,7 @@ import { PistesService } from "../pistes-service/pistes.service";
   styleUrls: ["./editor.component.css"]
 })
 export class EditorComponent implements OnInit {
-  @Input() public piste: Piste;
+  @Input() public piste: Track;
 
   public constructor(
     private route: ActivatedRoute,

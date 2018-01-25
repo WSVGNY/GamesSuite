@@ -4,9 +4,9 @@ import { Server } from "./server";
 import { Application } from "./app";
 import { Index } from "./routes/index";
 import { Routes } from "./routes";
-import { EmptyGrid } from "./mot-croise/emptyGridCreate_service";
+import { EmptyGrid } from "./crossword/emptyGridCreate_service";
 import { RoutePiste } from "./routes/route-piste";
-import { Lexique } from "./mot-croise/lexique";
+import { Lexique } from "./crossword/lexique";
 
 const container: Container = new Container();
 

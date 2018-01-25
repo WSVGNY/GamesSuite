@@ -4,12 +4,12 @@ import { Car } from "./car/car";
 
 @Component({
     moduleId: module.id,
-    selector: "app-jeu-course-component",
-    templateUrl: "./jeu-course.component.html",
-    styleUrls: ["./jeu-course.component.css"]
+    selector: "app-racing-component",
+    templateUrl: "./racing.component.html",
+    styleUrls: ["./racing.component.css"]
 })
 
-export class JeuCourseComponent implements AfterViewInit {
+export class RacingComponent implements AfterViewInit {
 
     @ViewChild("container")
     private containerRef: ElementRef;

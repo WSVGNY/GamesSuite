@@ -6,11 +6,11 @@ import { EmptyGridService } from "./empty-grid.service";
 
 
 @Component({
-  selector: "app-mot-croise",
-  templateUrl: "./mot-croise.component.html",
-  styleUrls: ["./mot-croise.component.css"]
+  selector: "app-crossword",
+  templateUrl: "./crossword.component.html",
+  styleUrls: ["./crossword.component.css"]
 })
-export class MotCroiseComponent implements OnInit {
+export class CrosswordComponent implements OnInit {
 
   public constructor(private emptyGridService: EmptyGridService) {
     this.emptyGridService.emptyGridGet().subscribe((grid: GridBox[][]) => this.grid = grid);

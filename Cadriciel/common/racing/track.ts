@@ -1,4 +1,4 @@
-export class Piste {
+export class Track {
     id: number;
     name: string;
 }

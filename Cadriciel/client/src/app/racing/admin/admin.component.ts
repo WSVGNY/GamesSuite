@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { Piste } from "../../../../../common/pistes/piste";
-import { PistesService } from "../pistes-service/pistes.service";
+import { Track } from "../../../../../common/racing/track";
+import { PistesService } from "../track-service/track.service";
 
 @Component({
   selector: "app-admin",
@@ -9,7 +9,7 @@ import { PistesService } from "../pistes-service/pistes.service";
 })
 export class AdminComponent implements OnInit {
 
-  public pistes: Piste[];
+  public pistes: Track[];
 
   public constructor(private pisteService: PistesService) { }
 

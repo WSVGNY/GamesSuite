@@ -1,6 +1,6 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { PistesService } from './pistes.service';
+import { PistesService } from './track.service';
 
 describe('PistesService', () => {
   beforeEach(() => {

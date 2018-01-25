@@ -1,6 +1,6 @@
-import { Piste } from "../../common/pistes/piste";
+import { Track } from "../../common/racing/track";
 
-export const PISTES: Piste[] = [
+export const TRACKS: Track[] = [
   { id: 1, name: "Forêt" },
   { id: 2, name: "Désert" },
   { id: 3, name: "Montagne" },
