@@ -37,29 +37,28 @@ module Route {
                 this.grid.push(row);
             }
             this.placeBlackGridTiles();
-            //this.createCharGrid();
+            this.createCharGrid();
         }
 
-        private createCharGrid(): void{
+        private createCharGrid(): void {
             for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
                 for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                    if(this.grid[i][j].black === false){
-                        this.charGrid[i][j] = "?";
+                    if (this.grid[i][j].black === false) {
+                        this.charGrid[i][j] = new Char("?");
                     } else {
-                        this.charGrid[i][j] = "#";
+                        this.charGrid[i][j] = new Char("#");
                     }
-
                 }
             }
         }
-        
+
         private placeBlackGridTiles(): void {
             // fill array 0->numberOfTile
             let array: number[] = this.fillShuffledArray();
 
             // pick tiles in shuffled array 0->BLACK_TILES_RATIO
             for (let i = 0; i < this.BLACK_TILES_RATIO; i++) {
-                let randomTileId: number = array[i];
+                const randomTileId: number = array[i];
                 this.findMatchingTileById(randomTileId).black = true;
             }
 
@@ -74,7 +73,7 @@ module Route {
 
         private verifyBlackGridValidity(): boolean {
 
-            let isValid: boolean = true;
+            const isValid: boolean = true;
 
             for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
                 for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
@@ -87,7 +86,7 @@ module Route {
 
         // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
         private fillShuffledArray(): Array<number> {
-            let array: Array<number> = [];
+            const array: Array<number> = [];
             for (let i = 0; i < this.NUMBER_OF_TILES; i++) {
                 array[i] = i;
             }
