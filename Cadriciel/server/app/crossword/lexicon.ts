@@ -7,14 +7,23 @@ module Route {
     @injectable()
     export class Lexicon {
 
+        /**
+         * These functions work asynchronously to get words and definitions from the Datamuse api
+         * To get them synchronously, we need to use promises to return the result from the server
+         * Example use :    this.getDefinition("myWord").then((result) => {
+         *                      myWord.definition = result
+         *                  });
+         */
+
         private readonly BASE_URL: string = "https://api.datamuse.com/words?";
 
-        public testLexicon(req: Request, res: Response, next: NextFunction): void {
-            //this.getDefinition("test").then((s) => res.send(s));
-            //this.getWordListFromConstraint("t??t").then((s) => res.send(s));
-            this.getWordListFromNbLetters(5).then((s) => res.send(s));
-        }
+        public constructor(){}
 
+        public testLexicon(req: Request, res: Response, next: NextFunction): void {
+            this.getDefinition("test").then((s) => res.send(s));
+            //this.getWordListFromConstraint("t??t").then((s) => res.send(s));
+            //this.getWordListFromNbLetters(5).then((s) => res.send(s));
+        }
 
         public getDefinition(word: String): Promise<string> {
             return new Promise<string>((resolve) => {
@@ -22,7 +31,9 @@ module Route {
                 https.get(this.BASE_URL + "sp=" + word + "&md=d", (ress) => {
                     ress.on('data', (d) => {
                         wordFromApi = JSON.parse(d.toString());
-                        resolve(wordFromApi[0]["defs"]);
+                        let array = [{"word":  wordFromApi[0]["word"]},
+                                    {"def": wordFromApi[0]["defs"][0].substring(2)}];
+                        resolve(JSON.stringify(array));
                     });
                 }).on('error', (e) => {
                     console.error(e);
