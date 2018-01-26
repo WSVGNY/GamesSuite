@@ -9,7 +9,7 @@ import { Char } from "../../../common/crossword/char";
 module Route {
 
     @injectable()
-    export class EmptyGrid {
+    export class Grid {
 
         private readonly SIZE_GRID_X: number = 10;
         private readonly SIZE_GRID_Y: number = 10;
