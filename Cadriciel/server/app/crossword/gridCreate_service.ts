@@ -1,14 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import "reflect-metadata";
 import { injectable, } from "inversify";
-import { GridBox } from "../../../common/crossword/gridBox"
+import { GridBox } from "../../../common/crossword/gridBox";
 // import { Word } from "../../../common/crossword/word"
 // import { Vec2 } from "../../../common/crossword/vec2"
 
 module Route {
 
     @injectable()
-    export class EmptyGrid {
+    export class Grid {
 
         private readonly SIZE_GRID_X: number = 10;
         private readonly SIZE_GRID_Y: number = 10;
