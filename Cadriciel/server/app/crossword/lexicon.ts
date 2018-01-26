@@ -8,41 +8,51 @@ module Route {
     export class Lexicon {
 
         private readonly BASE_URL: string = "https://api.datamuse.com/words?";
-        private words: string;
 
-        public getDefinition(req: Request, res: Response, next: NextFunction, word: String): void {
-            https.get(this.BASE_URL + "sp=" + word + "&md=d", (ress) => {
-                ress.on('data', (d) => {
-                    this.words = JSON.parse(d.toString());
-                    res.send(this.words[0]["defs"] + "\n");
+        public testLexicon(req: Request, res: Response, next: NextFunction): void {
+            //this.getDefinition("test").then((s) => res.send(s));
+            //this.getWordListFromConstraint("t??t").then((s) => res.send(s));
+            this.getWordListFromNbLetters(5).then((s) => res.send(s));
+        }
+
+
+        public getDefinition(word: String): Promise<string> {
+            return new Promise<string>((resolve) => {
+                let wordFromApi: string;
+                https.get(this.BASE_URL + "sp=" + word + "&md=d", (ress) => {
+                    ress.on('data', (d) => {
+                        wordFromApi = JSON.parse(d.toString());
+                        resolve(wordFromApi[0]["defs"]);
+                    });
+                }).on('error', (e) => {
+                    console.error(e);
                 });
-            }).on('error', (e) => {
-                console.error(e);
             });
         }
 
-        public getWordListFromNbLetters(req: Request, res: Response, next: NextFunction, nbLetters: Number): void {
+        public getWordListFromNbLetters(nbLetters: Number): Promise<string> {
             let URLOptions = "sp=";
-            for(let i = 0; i < nbLetters; i++) {
+            for (let i = 0; i < nbLetters; i++) {
                 URLOptions += "?";
             }
-            this.getFromApi(req, res, next, URLOptions);
+            return this.getFromApi(URLOptions);
         }
-        public getWordListFromConstraint(req: Request, res: Response, next: NextFunction, constraint: string): void {
+
+        public getWordListFromConstraint(constraint: string): Promise<string> {
             let URLOptions = "sp=" + constraint;
-            this.getFromApi(req, res, next, URLOptions);
+            return this.getFromApi(URLOptions);
         }
 
-        private getFromApi(req: Request, res: Response, next: NextFunction, URLOptions: string): Object[] {
-            https.get(this.BASE_URL + URLOptions, (response) => {
-                response.on("data", (d) => {
-                    res.send(JSON.parse(d.toString()));
+        private getFromApi(URLOptions: string): Promise<string> {
+            return new Promise<string>((resolve) => {
+                https.get(this.BASE_URL + URLOptions, (response) => {
+                    response.on("data", (d) => {
+                        resolve (JSON.parse(d.toString()));
+                    });
+                }).on("error", (e) => {
+                    console.error(e);
                 });
-            }).on("error", (e) => {
-                console.error(e);
             });
-
-            return null;
         }
     }
 }

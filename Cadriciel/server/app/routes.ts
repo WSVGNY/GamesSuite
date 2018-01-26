@@ -25,9 +25,7 @@ export class Routes {
         } );
         router.get("/admin", (req: Request, res: Response, next: NextFunction) => this.piste.getTrackList(req, res, next));
         router.get("/mock-lexique", (req: Request, res: Response, next: NextFunction) =>
-                                    this.lexique.getWordListFromConstraint(req, res, next, "ta??"));
-        router.get("/mock-lexique-def", (req: Request, res: Response, next: NextFunction) =>
-                                    this.lexique.getDefinition(req, res, next, "talk"));
+                                    this.lexique.testLexicon(req, res, next));
         router.get("/admin/:id", (req: Request, res: Response, next: NextFunction) => this.piste.getTrackFromID(req, res, next));
 
         return router;
