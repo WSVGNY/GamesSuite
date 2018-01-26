@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import "reflect-metadata";
 import { injectable, } from "inversify";
-import { PISTES } from "../mock-pistes";
-/*import { Piste } from "../../../common/pistes/piste";*/
+import { TRACKS } from "../mock-track";
+import { Track } from "../../../common/racing/track";
 
 module Route {
 
@@ -10,11 +10,11 @@ module Route {
     export class RoutePiste {
 
         public getListePistes(req: Request, res: Response, next: NextFunction): void {
-            res.send(PISTES);
+            res.send(TRACKS);
         }
 
         public getPisteParID(req: Request, res: Response, next: NextFunction): void {
-            res.send(PISTES.find(piste => piste.id == req.params.id));
+            res.send(TRACKS.find((piste: Track) => piste.id === req.params.id));
         }
     }
 }

@@ -1,19 +1,19 @@
 import { HostListener } from "@angular/core";
-import { Component, OnInit, Input } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { Location } from '@angular/common';
+import { Component, OnInit, Input } from "@angular/core";
+import { ActivatedRoute } from "@angular/router";
+import { Location } from "@angular/common";
 
-import { Piste }         from '../../../../../common/pistes/piste';
-import { PistesService }  from '../pistes-service/pistes.service';
+import { Track } from "../../../../../common/racing/track";
+import { PistesService } from "../track-service/track.service";
 import { EditorRenderService } from "../editor-render-service/editor-render.service";
 
 @Component({
-  selector: 'app-editor',
-  templateUrl: './editor.component.html',
-  styleUrls: ['./editor.component.css']
+  selector: "app-editor",
+  templateUrl: "./editor.component.html",
+  styleUrls: ["./editor.component.css"]
 })
 export class EditorComponent implements OnInit {
-  @Input() piste: Piste;
+  @Input() public piste: Track;
 
   public constructor(
     private route: ActivatedRoute,
@@ -22,24 +22,22 @@ export class EditorComponent implements OnInit {
     private editorRenderService: EditorRenderService
   ) { }
 
-  ngOnInit(): void {
+  public ngOnInit(): void {
     this.getPiste();
   }
 
-  getPiste(): void {
-    const id = +this.route.snapshot.paramMap.get('id');
+  public getPiste(): void {
+    const id: number = +this.route.snapshot.paramMap.get("id");
     this.pistesService.getPisteParID(id)
-      .subscribe(piste => this.piste = piste);
+      .subscribe((piste) => this.piste = piste);
   }
 
-  goBack(): void {
+  public goBack(): void {
     this.location.back();
   }
-
 
   @HostListener("window:mousedown", ["$event"])
     public onMouseDown(event: MouseEvent): void {
         this.editorRenderService.handleMouseDown(event);
     }
-
 }

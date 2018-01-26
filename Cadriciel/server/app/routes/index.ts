@@ -15,7 +15,7 @@ module Route {
             res.send(JSON.stringify(message));
         }
     }
-    
+
 }
 
 export = Route;

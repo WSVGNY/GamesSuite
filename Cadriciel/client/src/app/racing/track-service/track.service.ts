@@ -5,7 +5,7 @@ import { Observable } from "rxjs/Observable";
 import { catchError } from "rxjs/operators";
 import { of } from "rxjs/observable/of";
 
-import { Piste } from "../../../../../common/pistes/piste";
+import { Track } from "../../../../../common/racing/track";
 
 @Injectable()
 export class PistesService {
@@ -13,15 +13,15 @@ export class PistesService {
   private readonly BASE_URL: string = "http://localhost:3000/admin";
   public constructor(private http: HttpClient) { }
   
-  public getListePiste(): Observable<Piste[]> {
-    return this.http.get<Piste[]>(this.BASE_URL).pipe(
-        catchError(this.handleError<Piste[]>("getListePiste"))
+  public getListePiste(): Observable<Track[]> {
+    return this.http.get<Track[]>(this.BASE_URL).pipe(
+        catchError(this.handleError<Track[]>("getListePiste"))
     );
   }
 
-  public getPisteParID(id: Number): Observable<Piste> {
-    return this.http.get<Piste>(this.BASE_URL + "/" + id).pipe(
-        catchError(this.handleError<Piste>("getPisteParID"))
+  public getPisteParID(id: Number): Observable<Track> {
+    return this.http.get<Track>(this.BASE_URL + "/" + id).pipe(
+        catchError(this.handleError<Track>("getPisteParID"))
     );
   }
 

@@ -3,10 +3,9 @@ import { Router, Request, Response, NextFunction } from "express";
 
 import Types from "./types";
 import { Index } from "./routes/index";
-import { EmptyGrid } from "./mot-croise/emptyGridCreate_service";
+import { EmptyGrid } from "./crossword/emptyGridCreate_service";
 import { RoutePiste } from "./routes/route-piste";
-import { Lexique } from "./mot-croise/lexique";
-
+import { Lexique } from "./crossword/lexique";
 
 @injectable()
 export class Routes {
@@ -25,8 +24,11 @@ export class Routes {
             this.emptyGrid.emptyGridCreate(req, res, next);
         } );
         router.get("/admin", (req: Request, res: Response, next: NextFunction) => this.piste.getListePistes(req, res, next));
+        router.get("/mock-lexique", (req: Request, res: Response, next: NextFunction) =>
+                                    this.lexique.getListeMotSelonNbLettres(req, res, next, 1));
+        router.get("/mock-lexique-def", (req: Request, res: Response, next: NextFunction) =>
+                                    this.lexique.getDefinition(req, res, next, "talk"));
         router.get("/admin/:id", (req: Request, res: Response, next: NextFunction) => this.piste.getPisteParID(req, res, next));
-        router.get("/mock-lexique", (req: Request, res: Response, next: NextFunction) => this.lexique.getUnMotSelonNbLettres(req, res, next, 4));
 
         return router;
     }
