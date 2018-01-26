@@ -7,14 +7,14 @@ import { Track } from "../../../common/racing/track";
 module Route {
 
     @injectable()
-    export class RoutePiste {
+    export class TrackRoute {
 
-        public getListePistes(req: Request, res: Response, next: NextFunction): void {
+        public getTrackList(req: Request, res: Response, next: NextFunction): void {
             res.send(TRACKS);
         }
 
-        public getPisteParID(req: Request, res: Response, next: NextFunction): void {
-            res.send(TRACKS.find((piste: Track) => piste.id === req.params.id));
+        public getTrackFromID(req: Request, res: Response, next: NextFunction): void {
+            res.send(TRACKS.find((track: Track) => track.id == req.params.id));
         }
     }
 }
