@@ -1,9 +1,11 @@
+import { HostListener } from "@angular/core";
 import { Component, OnInit, Input } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
 
 import { Track } from "../../../../../common/racing/track";
 import { PistesService } from "../track-service/track.service";
+import { EditorRenderService } from "../editor-render-service/editor-render.service";
 
 @Component({
   selector: "app-editor",
@@ -16,7 +18,8 @@ export class EditorComponent implements OnInit {
   public constructor(
     private route: ActivatedRoute,
     private pistesService: PistesService,
-    private location: Location
+    private location: Location,
+    private editorRenderService: EditorRenderService
   ) { }
 
   public ngOnInit(): void {
@@ -32,4 +35,9 @@ export class EditorComponent implements OnInit {
   public goBack(): void {
     this.location.back();
   }
+
+  @HostListener("window:mousedown", ["$event"])
+    public onMouseDown(event: MouseEvent): void {
+        this.editorRenderService.handleMouseDown(event);
+    }
 }

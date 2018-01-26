@@ -7,6 +7,7 @@ import { AppComponent } from "./app.component";
 
 import { RenderService } from "./racing/render-service/render.service";
 import { BasicService } from "./basic.service";
+import { EditorRenderService }from "./racing/editor-render-service/editor-render.service";
 import { AppRoutingModule } from "./app-routing/app-routing.module";
 import { CrosswordComponent } from "./crossword/crossword.component";
 import { EmptyGridService } from "./crossword/empty-grid.service";
@@ -33,7 +34,7 @@ import { EditorComponent } from "./racing/editor/editor.component";
         BasicService,
         EmptyGridService,
         PistesService,
-        
+        EditorRenderService
     ],
     bootstrap: [AppComponent]
 })
