@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import "reflect-metadata";
 import { injectable, } from "inversify";
-import { GridBox } from "../../../common/crossword/gridBox"
-// import { Word } from "../../../common/crossword/word"
-// import { Vec2 } from "../../../common/crossword/vec2"
+import { GridBox } from "../../../common/crossword/gridBox";
+// import { Word } from "../../../common/crossword/word";
+// import { Vec2 } from "../../../common/crossword/vec2";
+import { Char } from "../../../common/crossword/char";
 
 module Route {
 
@@ -14,9 +15,10 @@ module Route {
         private readonly SIZE_GRID_Y: number = 10;
         private readonly NUMBER_OF_TILES: number = this.SIZE_GRID_X * this.SIZE_GRID_Y;
         // tslint:disable-next-line:no-magic-numbers
-        private readonly BLACK_TILES_RATIO: number = this.NUMBER_OF_TILES * 0.1 ;
+        private readonly BLACK_TILES_RATIO: number = this.NUMBER_OF_TILES * 0.1;
         private grid: GridBox[][];
         private tileIdCounter: number = 0;
+        private charGrid: Char[][];
 
         public emptyGridCreate(req: Request, res: Response, next: NextFunction): void {
             this.newGrid();
@@ -27,7 +29,7 @@ module Route {
             this.grid = new Array<Array<GridBox>>();
 
             for (let i = 0; i < this.SIZE_GRID_Y; i++) {
-                let row: GridBox[] = new Array<GridBox>();
+                const row: GridBox[] = new Array<GridBox>();
 
                 for (let j = 0; j < this.SIZE_GRID_X; j++) {
                     row.push(new GridBox(this.provideUniqueTileID(), false));
@@ -35,9 +37,22 @@ module Route {
                 this.grid.push(row);
             }
             this.placeBlackGridTiles();
+            //this.createCharGrid();
         }
 
-        // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+        private createCharGrid(): void{
+            for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
+                for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
+                    if(this.grid[i][j].black === false){
+                        this.charGrid[i][j] = "?";
+                    } else {
+                        this.charGrid[i][j] = "#";
+                    }
+
+                }
+            }
+        }
+        
         private placeBlackGridTiles(): void {
             // fill array 0->numberOfTile
             let array: number[] = this.fillShuffledArray();
@@ -48,19 +63,38 @@ module Route {
                 this.findMatchingTileById(randomTileId).black = true;
             }
 
+            if (!this.verifyBlackGridValidity()) {
+                this.placeBlackGridTiles();
+            }
+
             // TODO: Verify that there's no tile left alone horizontally and vertically
             // TODO: Create the words
 
         }
+
+        private verifyBlackGridValidity(): boolean {
+
+            let isValid: boolean = true;
+
+            for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
+                for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
+
+                }
+            }
+
+            return isValid;
+        }
+
+        // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
         private fillShuffledArray(): Array<number> {
             let array: Array<number> = [];
-            for (let i = 0; i < this.NUMBER_OF_TILES; i++){
+            for (let i = 0; i < this.NUMBER_OF_TILES; i++) {
                 array[i] = i;
             }
 
             // shuffle array
             for (let i = array.length - 1; i > 0; i--) {
-                let j = Math.floor(Math.random() * (i + 1));
+                const j = Math.floor(Math.random() * (i + 1));
                 [array[i], array[j]] = [array[j], array[i]];
             }
 
@@ -71,7 +105,7 @@ module Route {
 
             for (let i = 0; i < this.SIZE_GRID_Y; i++) {
                 for (let j = 0; j < this.SIZE_GRID_X; j++) {
-                    if (this.grid[i][j].id === id){
+                    if (this.grid[i][j].id === id) {
                         return this.grid[i][j];
                     }
 
