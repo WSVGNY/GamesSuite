@@ -13,7 +13,7 @@ import { CrosswordComponent } from "./crossword/crossword.component";
 import { EmptyGridService } from "./crossword/empty-grid.service";
 import { AdminComponent } from "./racing/admin/admin.component";
 import { RacingComponent } from "./racing/racing.component";
-import { PistesService } from "./racing/track-service/track.service";
+import { TrackService } from "./racing/track-service/track.service";
 import { EditorComponent } from "./racing/editor/editor.component";
 @NgModule({
     declarations: [
@@ -33,7 +33,7 @@ import { EditorComponent } from "./racing/editor/editor.component";
         RenderService,
         BasicService,
         EmptyGridService,
-        PistesService,
+        TrackService,
         EditorRenderService
     ],
     bootstrap: [AppComponent]
