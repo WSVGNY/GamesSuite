@@ -28,6 +28,10 @@ module Route {
             }
             this.getFromApi(req, res, next, URLOptions);
         }
+        public getWordListFromConstraint(req: Request, res: Response, next: NextFunction, constraint: string): void {
+            let URLOptions = "sp=" + constraint;
+            this.getFromApi(req, res, next, URLOptions);
+        }
 
         private getFromApi(req: Request, res: Response, next: NextFunction, URLOptions: string): Object[] {
             https.get(this.BASE_URL + URLOptions, (response) => {
