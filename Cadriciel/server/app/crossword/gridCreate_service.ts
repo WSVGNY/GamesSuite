@@ -28,10 +28,10 @@ module Route {
         private newGrid(): void {
             this.grid = new Array<Array<GridBox>>();
 
-            for (let i = 0; i < this.SIZE_GRID_Y; i++) {
+            for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
                 const row: GridBox[] = new Array<GridBox>();
 
-                for (let j = 0; j < this.SIZE_GRID_X; j++) {
+                for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
                     row.push(new GridBox(this.provideUniqueTileID(), false));
                 }
                 this.grid.push(row);
@@ -54,10 +54,10 @@ module Route {
 
         private placeBlackGridTiles(): void {
             // fill array 0->numberOfTile
-            let array: number[] = this.fillShuffledArray();
+            const array: number[] = this.fillShuffledArray();
 
             // pick tiles in shuffled array 0->BLACK_TILES_RATIO
-            for (let i = 0; i < this.BLACK_TILES_RATIO; i++) {
+            for (let i: number = 0; i < this.BLACK_TILES_RATIO; i++) {
                 const randomTileId: number = array[i];
                 this.findMatchingTileById(randomTileId).black = true;
             }
@@ -87,13 +87,13 @@ module Route {
         // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
         private fillShuffledArray(): Array<number> {
             const array: Array<number> = [];
-            for (let i = 0; i < this.NUMBER_OF_TILES; i++) {
+            for (let i: number = 0; i < this.NUMBER_OF_TILES; i++) {
                 array[i] = i;
             }
 
             // shuffle array
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
+            for (let i: number = array.length - 1; i > 0; i--) {
+                const j: number = Math.floor(Math.random() * (i + 1));
                 [array[i], array[j]] = [array[j], array[i]];
             }
 
@@ -102,8 +102,8 @@ module Route {
 
         private findMatchingTileById(id: number): GridBox {
 
-            for (let i = 0; i < this.SIZE_GRID_Y; i++) {
-                for (let j = 0; j < this.SIZE_GRID_X; j++) {
+            for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
+                for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
                     if (this.grid[i][j].id === id) {
                         return this.grid[i][j];
                     }
