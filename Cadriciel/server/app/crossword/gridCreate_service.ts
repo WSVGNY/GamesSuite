@@ -20,7 +20,7 @@ module Route {
         private tileIdCounter: number = 0;
         private charGrid: Char[][];
 
-        public emptyGridCreate(req: Request, res: Response, next: NextFunction): void {
+        public gridCreate(req: Request, res: Response, next: NextFunction): void {
             this.newGrid();
             res.send(this.grid);
         }
@@ -44,9 +44,9 @@ module Route {
             for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
                 for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
                     if (this.grid[i][j].black === false) {
-                        this.charGrid[i][j] = new Char("?");
+                       // this.charGrid[i][j] = new Char("?");
                     } else {
-                        this.charGrid[i][j] = new Char("#");
+                       // this.charGrid[i][j] = new Char("#");
                     }
                 }
             }

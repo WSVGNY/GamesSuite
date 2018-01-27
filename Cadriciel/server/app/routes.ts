@@ -11,7 +11,7 @@ import { Lexique } from "./crossword/lexique";
 export class Routes {
 
     public constructor( @inject(Types.Index) private index: Index,
-                        @inject(Types.Grid) private emptyGrid: Grid,
+                        @inject(Types.Grid) private grid: Grid,
                         @inject(Types.RoutePiste) private piste: RoutePiste,
                         @inject(Types.Lexique) private lexique: Lexique) {}
 
@@ -19,9 +19,9 @@ export class Routes {
         const router: Router = Router();
 
         router.get("/", (req: Request, res: Response, next: NextFunction) => this.index.helloWorld(req, res, next));
-        router.get("/emptyGridGet", (req: Request, res: Response, next: NextFunction) => {
-            this.emptyGrid = new Grid;
-            this.emptyGrid.emptyGridCreate(req, res, next);
+        router.get("/gridGet", (req: Request, res: Response, next: NextFunction) => {
+            this.grid = new Grid;
+            this.grid.gridCreate(req, res, next);
         } );
         router.get("/admin", (req: Request, res: Response, next: NextFunction) => this.piste.getListePistes(req, res, next));
         router.get("/mock-lexique", (req: Request, res: Response, next: NextFunction) =>
