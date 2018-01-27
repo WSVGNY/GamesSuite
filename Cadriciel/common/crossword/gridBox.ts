@@ -1,8 +1,10 @@
+import { Vec2 } from "./vec2";
+
 export class GridBox {
 
   private value: string;
 
-  public constructor(private id: number, private black: boolean) {
+  public constructor(private id: Vec2, private black: boolean) {
   };
 
 	public get $value(): string {
@@ -13,7 +15,7 @@ export class GridBox {
 		this.value = value;
 	}
 
-  public get $id(): number {
+  public get $id(): Vec2 {
 		return this.id;
 	}
 

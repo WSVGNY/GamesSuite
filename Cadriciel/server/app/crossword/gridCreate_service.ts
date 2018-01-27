@@ -3,7 +3,7 @@ import "reflect-metadata";
 import { injectable, } from "inversify";
 import { GridBox } from "../../../common/crossword/gridBox";
 // import { Word } from "../../../common/crossword/word";
-// import { Vec2 } from "../../../common/crossword/vec2";
+import { Vec2 } from "../../../common/crossword/vec2";
 import { Char } from "../../../common/crossword/char";
 
 module Route {
@@ -17,7 +17,7 @@ module Route {
         // tslint:disable-next-line:no-magic-numbers
         private readonly BLACK_TILES_RATIO: number = this.NUMBER_OF_TILES * 0.1;
         private grid: GridBox[][];
-        private tileIdCounter: number = 0;
+        private tileIdCounter: Vec2 = new Vec2(0, 0);
         private charGrid: Char[][];
 
         public gridCreate(req: Request, res: Response, next: NextFunction): void {
@@ -32,13 +32,16 @@ module Route {
                 const row: GridBox[] = new Array<GridBox>();
 
                 for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                    row.push(new GridBox(this.provideUniqueTileID(), false));
+                    row.push(new GridBox(new Vec2(this.tileIdCounter.$x, this.tileIdCounter.$y), false));
+                    this.tileIdCounter.$x++;
                 }
                 this.grid.push(row);
+                this.tileIdCounter.$y++;
+                this.tileIdCounter.$x = 0;
             }
             this.placeBlackGridTiles();
-            this.createCharGrid();
-            this.bindCharToGrid();
+            //this.createCharGrid();
+            //this.bindCharToGrid();
         }
 
         private createCharGrid(): void {
@@ -68,11 +71,11 @@ module Route {
 
         private placeBlackGridTiles(): void {
             // fill array 0->numberOfTile
-            const array: number[] = this.fillShuffledArray();
+            let array: Vec2[] = this.fillShuffledArray();
 
             // pick tiles in shuffled array 0->BLACK_TILES_RATIO
             for (let i: number = 0; i < this.BLACK_TILES_RATIO; i++) {
-                const randomTileId: number = array[i];
+                const randomTileId: Vec2 = array[i];
                 this.findMatchingTileById(randomTileId).$black = true;
             }
 
@@ -85,7 +88,7 @@ module Route {
 
         }
 
-        //returns false if there's a word of 1 letter
+        // returns false if there's a word of 1 letter
         private verifyBlackGridValidity(): boolean {
             return this.createWordsInGrid();
         }
@@ -99,7 +102,9 @@ module Route {
 
             for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
                 for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                    //this.grid[i][j].
+                    //let unvisited: GridBox[]  = this.grid[i];
+                    //let visited: GridBox[]  = new Array<GridBox>();
+
                 }
             }
 
@@ -119,10 +124,14 @@ module Route {
         }
 
         // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
-        private fillShuffledArray(): Array<number> {
-            const array: Array<number> = [];
-            for (let i: number = 0; i < this.NUMBER_OF_TILES; i++) {
-                array[i] = i;
+        private fillShuffledArray(): Array<Vec2> {
+            const array: Array<Vec2> = [];
+            let arrayIndex: number = 0;
+            for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
+                for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
+                    // array[arrayIndex++] = this.grid[i][j].$id;
+                    array[arrayIndex++] = new Vec2(j, i);
+                }
             }
 
             // shuffle array
@@ -134,25 +143,17 @@ module Route {
             return array;
         }
 
-        private findMatchingTileById(id: number): GridBox {
+        private findMatchingTileById(id: Vec2): GridBox {
 
             for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
                 for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                    if (this.grid[i][j].$id === id) {
+                    if (this.grid[i][j].$id.$x === id.$x &&
+                        this.grid[i][j].$id.$y === id.$y) {
                         return this.grid[i][j];
                     }
-
                 }
             }
             throw new Error("GridTile not found");
-        }
-
-        private provideUniqueTileID(): number {
-            if (this.tileIdCounter >= this.NUMBER_OF_TILES) {
-                throw new Error("Bad Tile ID alloc");
-            }
-
-            return this.tileIdCounter++;
         }
     }
 }
