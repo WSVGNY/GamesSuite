@@ -48,7 +48,7 @@ module Route {
                 const row: Char[] = new Array<Char>();
 
                 for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                    if (this.grid[i][j].black === false) {
+                    if (this.grid[i][j].$black === false) {
                         row.push(new Char("?"));
                     } else {
                         row.push(new Char("#"));
@@ -65,7 +65,7 @@ module Route {
             // pick tiles in shuffled array 0->BLACK_TILES_RATIO
             for (let i: number = 0; i < this.BLACK_TILES_RATIO; i++) {
                 const randomTileId: number = array[i];
-                this.findMatchingTileById(randomTileId).black = true;
+                this.findMatchingTileById(randomTileId).$black = true;
             }
 
             if (!this.verifyBlackGridValidity()) {
@@ -110,7 +110,7 @@ module Route {
 
             for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
                 for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                    if (this.grid[i][j].id === id) {
+                    if (this.grid[i][j].$id === id) {
                         return this.grid[i][j];
                     }
 
