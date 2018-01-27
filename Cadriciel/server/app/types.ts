@@ -3,7 +3,7 @@ export default  {
         Application: Symbol("Application"),
         Routes: Symbol("Routes"),
         Index: Symbol("Index"),
-        EmptyGrid : Symbol("EmptyGrid"),
+        Grid : Symbol("Grid"),
         RoutePiste: Symbol("RoutePiste"),
         Lexique: Symbol("Lexique")
 };

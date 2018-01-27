@@ -3,7 +3,7 @@ import { Router, Request, Response, NextFunction } from "express";
 
 import Types from "./types";
 import { Index } from "./routes/index";
-import { EmptyGrid } from "./crossword/emptyGridCreate_service";
+import { Grid } from "./crossword/gridCreate_service";
 import { RoutePiste } from "./routes/route-piste";
 import { Lexique } from "./crossword/lexique";
 
@@ -11,7 +11,7 @@ import { Lexique } from "./crossword/lexique";
 export class Routes {
 
     public constructor( @inject(Types.Index) private index: Index,
-                        @inject(Types.EmptyGrid) private emptyGrid: EmptyGrid,
+                        @inject(Types.Grid) private emptyGrid: Grid,
                         @inject(Types.RoutePiste) private piste: RoutePiste,
                         @inject(Types.Lexique) private lexique: Lexique) {}
 
@@ -20,7 +20,7 @@ export class Routes {
 
         router.get("/", (req: Request, res: Response, next: NextFunction) => this.index.helloWorld(req, res, next));
         router.get("/emptyGridGet", (req: Request, res: Response, next: NextFunction) => {
-            this.emptyGrid = new EmptyGrid;
+            this.emptyGrid = new Grid;
             this.emptyGrid.emptyGridCreate(req, res, next);
         } );
         router.get("/admin", (req: Request, res: Response, next: NextFunction) => this.piste.getListePistes(req, res, next));
