@@ -63,6 +63,7 @@ module Route {
                 for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
                     this.grid[i][j].$value = this.charGrid[i][j].getValue();
                 }
+            }
         }
 
         private placeBlackGridTiles(): void {
@@ -84,13 +85,33 @@ module Route {
 
         }
 
+        //returns false if there's a word of 1 letter
         private verifyBlackGridValidity(): boolean {
+            return this.createWordsInGrid();
+        }
 
-            const isValid: boolean = true;
+        private createWordsInGrid(): boolean {
+            return this.createWordsInGridHorizontally() && this.createWordsInGridVertically();
+        }
+
+        private createWordsInGridHorizontally(): boolean {
+            let isValid: boolean = true;
 
             for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
                 for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
+                    //this.grid[i][j].
+                }
+            }
 
+            return isValid;
+        }
+
+        private createWordsInGridVertically(): boolean {
+            let isValid: boolean = true;
+
+            for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
+                for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
+                    //this.grid[i][j].
                 }
             }
 
