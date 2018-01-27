@@ -1,5 +1,4 @@
-import { HostListener } from "@angular/core";
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, AfterViewInit, Input, HostListener, ElementRef, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
 
@@ -12,7 +11,11 @@ import { EditorRenderService } from "../editor-render-service/editor-render.serv
   templateUrl: "./editor.component.html",
   styleUrls: ["./editor.component.css"]
 })
-export class EditorComponent implements OnInit {
+export class EditorComponent implements AfterViewInit {
+
+  @ViewChild("containerEditor")
+    private containerRef: ElementRef;
+
   @Input() public piste: Track;
 
   public constructor(
@@ -22,8 +25,13 @@ export class EditorComponent implements OnInit {
     private editorRenderService: EditorRenderService
   ) { }
 
-  public ngOnInit(): void {
+  public ngAfterViewInit(): void {
     this.getPiste();
+
+    this.editorRenderService
+        .initialize(this.containerRef.nativeElement)
+        .then(/* do nothing */)
+        .catch((err) => console.error(err));
   }
 
   public getPiste(): void {
