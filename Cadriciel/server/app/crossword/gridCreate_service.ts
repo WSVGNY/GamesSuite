@@ -38,17 +38,23 @@ module Route {
             }
             this.placeBlackGridTiles();
             this.createCharGrid();
+            console.log(this.charGrid);
         }
 
         private createCharGrid(): void {
+            this.charGrid = new Array<Array<Char>>();
+
             for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
+                const row: Char[] = new Array<Char>();
+
                 for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
                     if (this.grid[i][j].black === false) {
-                       // this.charGrid[i][j] = new Char("?");
+                        row.push(new Char("?"));
                     } else {
-                       // this.charGrid[i][j] = new Char("#");
+                        row.push(new Char("#"));
                     }
                 }
+                this.charGrid.push(row);
             }
         }
 
