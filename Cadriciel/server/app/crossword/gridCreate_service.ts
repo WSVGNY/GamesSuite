@@ -38,7 +38,7 @@ module Route {
             }
             this.placeBlackGridTiles();
             this.createCharGrid();
-            console.log(this.charGrid);
+            this.bindCharToGrid();
         }
 
         private createCharGrid(): void {
@@ -56,6 +56,13 @@ module Route {
                 }
                 this.charGrid.push(row);
             }
+        }
+
+        private bindCharToGrid(): void {
+            for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
+                for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
+                    this.grid[i][j].$value = this.charGrid[i][j].getValue();
+                }
         }
 
         private placeBlackGridTiles(): void {

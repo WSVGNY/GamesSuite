@@ -8,7 +8,7 @@ export class Char {
         this.setValue(char);
     }
 
-    public getValue():String {
+    public getValue():string {
         return this._char;
     }
 
