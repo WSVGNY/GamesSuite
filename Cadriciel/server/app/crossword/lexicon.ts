@@ -20,7 +20,8 @@ module Route {
         public constructor(){}
 
         public testLexicon(req: Request, res: Response, next: NextFunction): void {
-            this.getDefinition("test").then((s) => res.send(s));
+            //this.getDefinition("test").then((s) => res.send(s));
+            this.getFrequency("talk").then((s) => res.send(s));
             //this.getWordListFromConstraint("t??t").then((s) => res.send(s));
             //this.getWordListFromNbLetters(5).then((s) => res.send(s));
         }
@@ -34,6 +35,21 @@ module Route {
                         let array = [{"word":  wordFromApi[0]["word"]},
                                     {"def": wordFromApi[0]["defs"][0].substring(2)}];
                         resolve(JSON.stringify(array));
+                    });
+                }).on('error', (e) => {
+                    console.error(e);
+                });
+            });
+        }
+
+        public getFrequency(word:string): Promise<string>{
+            return new Promise<string>((resolve) => {
+                let wordFromApi: string;
+                https.get(this.BASE_URL+"sp="+word+"&md=f",(ress)=> {
+                    ress.on('data',(d)=>{
+                        wordFromApi = JSON.parse(d.toString());
+                        let num = wordFromApi[0]["tags"][0].substring(2);
+                        resolve(JSON.stringify(num));
                     });
                 }).on('error', (e) => {
                     console.error(e);
@@ -65,6 +81,8 @@ module Route {
                 });
             });
         }
+
+        
     }
 }
 
