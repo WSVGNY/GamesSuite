@@ -48,4 +48,9 @@ export class EditorComponent implements AfterViewInit {
     public onMouseDown(event: MouseEvent): void {
         this.editorRenderService.handleMouseDown(event);
     }
+
+  @HostListener("window:resize", ["$event"])
+    public onResize(): void {
+        this.editorRenderService.onResize();
+    }
 }
