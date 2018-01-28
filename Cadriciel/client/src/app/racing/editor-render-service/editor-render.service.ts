@@ -1,9 +1,5 @@
 import { Injectable } from "@angular/core";
-<<<<<<< HEAD
-import { Vector2, Vector3, PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, Points, Geometry, PointsMaterial, SphereGeometry,MeshBasicMaterial, Mesh } from "three";
-=======
-import { Vector2, Vector3, PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, BoxGeometry, MeshBasicMaterial, Mesh } from "three";
->>>>>>> 9f6b602a4c5717f5e568509ec9f48bdc3b2ac7f7
+import { Vector2, Vector3, PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, Points, Geometry, PointsMaterial, SphereGeometry,BoxGeometry, MeshBasicMaterial, Mesh } from "three";
 
 const FAR_CLIPPING_PLANE: number = 1000;
 const NEAR_CLIPPING_PLANE: number = 1;
@@ -21,16 +17,11 @@ export class EditorRenderService {
   private containerEditor: HTMLDivElement;
   private scene: THREE.Scene;
   private renderer: WebGLRenderer;
-<<<<<<< HEAD
-  private xScrollPos: number;
-  private yScrollPos: number;
   private point: Points;
-  private geomerty : SphereGeometry;
-  private material : MeshBasicMaterial;
-  private ballon : Mesh;
-=======
+  private geomerty: SphereGeometry;
+  private material: MeshBasicMaterial;
+  private ballon: Mesh;
   private cube: Mesh;
->>>>>>> 9f6b602a4c5717f5e568509ec9f48bdc3b2ac7f7
 
   public constructor() {
         this.mouse = new Vector2(0, 0);
@@ -91,27 +82,23 @@ export class EditorRenderService {
     if (event.clientX > offsetX && event.clientY > offsetY) {
       this.mouse.x = event.clientX - offsetX;
       this.mouse.y = event.clientY - offsetY;
-<<<<<<< HEAD
-      this.createPoint();
-    } 
-    else {
+      //this.createPoint();
+    } else {
       this.mouse.x = 0;
       this.mouse.y = 0;
-=======
-      // Call point creation logic here
-      const geometry: BoxGeometry = new BoxGeometry( 1, 1, 0 );
-      const material: MeshBasicMaterial = new MeshBasicMaterial( { color: 0X00FF00 } );
-      this.cube = new Mesh( geometry, material );
-      this.cube.position.set(0, 0, 0);
-      this.scene.add( this.cube );
->>>>>>> 9f6b602a4c5717f5e568509ec9f48bdc3b2ac7f7
     }
     this.createPoint();
-    //this.ballon = new Sphere(new Vector3(this.mouse.x, this.mouse.y, 0), 10);
-    
-
+    // this.ballon = new Sphere(new Vector3(this.mouse.x, this.mouse.y, 0), 10);
   }
-
+  // Call point creation logic here
+  /*
+  const geometry: BoxGeometry = new BoxGeometry( 1, 1, 0 );
+  const material: MeshBasicMaterial = new MeshBasicMaterial( { color: 0X00FF00 } );
+  this.cube = new Mesh( geometry, material );
+  this.cube.position.set(0, 0, 0);
+  this.scene.add( this.cube );
+  
+  */
   public createPoint (/*x:number, y: number*/) : void {
 
     //this.geomerty.vertices.push(new Vector3( 2, 3, 3));
