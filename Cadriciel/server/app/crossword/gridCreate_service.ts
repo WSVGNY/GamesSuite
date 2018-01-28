@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import "reflect-metadata";
 import { injectable, } from "inversify";
 import { GridBox } from "../../../common/crossword/gridBox";
-// import { Word } from "../../../common/crossword/word";
+import { Word } from "../../../common/crossword/word";
 import { Vec2 } from "../../../common/crossword/vec2";
 import { Char } from "../../../common/crossword/char";
 
@@ -15,7 +15,8 @@ module Route {
         private readonly SIZE_GRID_Y: number = 10;
         private readonly NUMBER_OF_TILES: number = this.SIZE_GRID_X * this.SIZE_GRID_Y;
         // tslint:disable-next-line:no-magic-numbers
-        private readonly BLACK_TILES_RATIO: number = this.NUMBER_OF_TILES * 0.1;
+        private readonly BLACK_TILES_RATIO: number = this.NUMBER_OF_TILES * 0.25;
+        private readonly MIN_WORD_LENGTH: number = 2;
         private grid: GridBox[][];
         private tileIdCounter: Vec2 = new Vec2(0, 0);
         private charGrid: Char[][];
@@ -40,8 +41,8 @@ module Route {
                 this.tileIdCounter.$x = 0;
             }
             this.placeBlackGridTiles();
-            //this.createCharGrid();
-            //this.bindCharToGrid();
+            this.createCharGrid();
+            this.bindCharToGrid();
         }
 
         private createCharGrid(): void {
@@ -94,21 +95,49 @@ module Route {
         }
 
         private createWordsInGrid(): boolean {
-            return this.createWordsInGridHorizontally() && this.createWordsInGridVertically();
+            //return this.createWordsInGridHorizontally() && this.createWordsInGridVertically();
+            return true;
         }
 
+        // tslint:disable-next-line:max-func-body-length
         private createWordsInGridHorizontally(): boolean {
-            let isValid: boolean = true;
-
+            let unvisitedIndex: number = 0;
+            let unvisited: GridBox[] = [];
+            let visited: GridBox[] = [];
             for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
                 for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                    //let unvisited: GridBox[]  = this.grid[i];
-                    //let visited: GridBox[]  = new Array<GridBox>();
-
+                    unvisited[unvisitedIndex++] =  this.grid[i][j];
                 }
             }
+            unvisitedIndex = 0;
+            let word: Word;
+            while (unvisited.length !== 0) {
+                for (let i: number = unvisitedIndex; i < this.SIZE_GRID_X; i++) {
+                    if (!unvisited[i].$black) {
+                        let wordLength: number = 1;
+                        while (i + wordLength < this.SIZE_GRID_X && !unvisited[i + wordLength].$black) {
+                            wordLength++;
+                        }
+                        if (wordLength < this.MIN_WORD_LENGTH) {
+                            return false;
+                        } else {
+                            word = new Word(null, null, true, wordLength, unvisited[i].$id, null);
+                            console.log(word);
+                            for (let j: number = i; j < i + wordLength; j++) {
+                                visited.push(unvisited[i]);
+                                delete unvisited[i];
+                            }
+                            i += wordLength;
+                        }
+                    } else {
+                        visited.push(unvisited[i]);
+                        delete unvisited[i];
+                    }
+                }
+                unvisitedIndex += this.SIZE_GRID_X;
+            }
 
-            return isValid;
+            return true;
         }
 
         private createWordsInGridVertically(): boolean {
@@ -135,9 +164,13 @@ module Route {
             }
 
             // shuffle array
-            for (let i: number = array.length - 1; i > 0; i--) {
-                const j: number = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
+
+            // tslint:disable-next-line:no-magic-numbers
+            for (let t: number = 0; t < 2; t++) {
+                for (let i: number = array.length - 1; i > 0; i--) {
+                    const j: number = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
             }
 
             return array;
