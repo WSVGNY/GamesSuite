@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Vector2, PerspectiveCamera, WebGLRenderer, Scene, AmbientLight } from "three";
+import { Vector2, Vector3, PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, Points, Geometry, PointsMaterial, SphereGeometry,MeshBasicMaterial, Mesh } from "three";
 
 const FAR_CLIPPING_PLANE: number = 1000;
 const NEAR_CLIPPING_PLANE: number = 1;
@@ -19,6 +19,10 @@ export class EditorRenderService {
   private renderer: WebGLRenderer;
   private xScrollPos: number;
   private yScrollPos: number;
+  private point: Points;
+  private geomerty : SphereGeometry;
+  private material : MeshBasicMaterial;
+  private ballon : Mesh;
 
   public constructor() {
         this.mouse = new Vector2(0, 0);
@@ -76,6 +80,33 @@ export class EditorRenderService {
     if (event.clientX - offsetX >= 0 && event.clientY - offsetY >= 0) {
       this.mouse.x = event.clientX - offsetX;
       this.mouse.y = event.clientY - offsetY;
+      this.createPoint();
+    } 
+    else {
+      this.mouse.x = 0;
+      this.mouse.y = 0;
     }
+    this.createPoint();
+    //this.ballon = new Sphere(new Vector3(this.mouse.x, this.mouse.y, 0), 10);
+    
+
+  }
+
+  public createPoint (/*x:number, y: number*/) : void {
+
+    //this.geomerty.vertices.push(new Vector3( 2, 3, 3));
+    /*this.geometry.addAttribute( 'position', new BufferAttribute( 0xff10000,3 ) );
+    this.geometry.addAttribute( 'customColor', new BufferAttribute( colors, 3 ) );
+    this.geometry.addAttribute( 'size', new BufferAttribute( sizes, 1 ) );*/
+    /*this.material = new PointsMaterial( { size: 30, sizeAttenuation: false, color: 0x881080 } );
+    this.point = new Points(this.geomerty, this.material);
+    this.point.position.set( x, y, 0 );
+    this.scene.add( this.point );*/
+    this.geomerty = new SphereGeometry(5,  32, 32);
+    this.material = new MeshBasicMaterial ( {color : 0xffff00});
+    this.ballon = new Mesh(this.geomerty, this.material);
+    this.scene.add (this.ballon);
   }
 }
+
+

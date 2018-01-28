@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
-import { PerspectiveCamera, WebGLRenderer, Scene, AmbientLight } from "three";
+import { PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, SphereGeometry, MeshBasicMaterial, Mesh } from "three";
 import { Car } from "../car/car";
 
 const FAR_CLIPPING_PLANE: number = 1000;
@@ -25,6 +25,11 @@ export class RenderService {
     private scene: THREE.Scene;
     private stats: Stats;
     private lastDate: number;
+    //Ajouté par moi
+    private geomerty : SphereGeometry;
+    private material : MeshBasicMaterial;
+    private ballon : Mesh;
+  
 
     public get car(): Car {
         return this._car;
@@ -71,6 +76,11 @@ export class RenderService {
         this.camera.lookAt(this._car.position);
         this.scene.add(this._car);
         this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
+        //Ajouté par Moi
+        this.geomerty = new SphereGeometry(5,  32, 32);
+        this.material = new MeshBasicMaterial ( {color : 0xffff00});
+        this.ballon = new Mesh(this.geomerty, this.material);
+        this.scene.add (this.ballon);
     }
 
     private getAspectRatio(): number {
