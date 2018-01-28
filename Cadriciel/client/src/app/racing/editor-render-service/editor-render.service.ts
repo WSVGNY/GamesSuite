@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
-import { Vector2, Vector3, PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, Points, Geometry, PointsMaterial, SphereGeometry,BoxGeometry, MeshBasicMaterial, Mesh } from "three";
+import { Vector2, Vector3, PerspectiveCamera, WebGLRenderer, Scene, AmbientLight,BoxGeometry, MeshBasicMaterial, Mesh, SphereGeometry, Geometry, PointsMaterial, Points } from "three";
 
 const FAR_CLIPPING_PLANE: number = 1000;
 const NEAR_CLIPPING_PLANE: number = 1;
 const FIELD_OF_VIEW: number = 70;
 
-const INITIAL_CAMERA_POSITION_Y: number = 25;
+//const INITIAL_CAMERA_POSITION_Y: number = 25;
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
 
@@ -17,11 +17,13 @@ export class EditorRenderService {
   private containerEditor: HTMLDivElement;
   private scene: THREE.Scene;
   private renderer: WebGLRenderer;
-  // private point: Points;
-  // private geomerty: SphereGeometry;
-  // private material: MeshBasicMaterial;
-  // private ballon: Mesh;
+  private point: Points;
+  private geomerty: SphereGeometry;
+  private material: MeshBasicMaterial;
+  private ballon: Mesh;
   private cube: Mesh;
+  private geometry2 : Geometry;
+  private material2 : PointsMaterial;
 
   public constructor() {
         this.mouse = new Vector2(0, 0);
@@ -88,6 +90,29 @@ export class EditorRenderService {
       this.cube = new Mesh( geometry, material );
       this.cube.position.set(0, 0, 0);
       this.scene.add( this.cube );
+      this.createPoint (this.mouse.x, this.mouse.y);
+      this.createPoint(255, 366);
     }
   }
+
+  public createPoint (x:number, y: number) : void {
+
+    this.geometry2.vertices.push(new Vector3( 2, 3, 3));
+    /*this.geometry2.addAttribute( 'position', new BufferAttribute( 0xff10000,3 ) );
+    this.geometry2.addAttribute( 'customColor', new BufferAttribute( colors, 3 ) );
+    this.geometry2.addAttribute( 'size', new BufferAttribute( sizes, 1 ) );*/
+    this.material2 = new PointsMaterial( { size: 30, sizeAttenuation: false, color: 0x881080 } );
+    this.point = new Points(this.geometry2, this.material);
+    this.point.position.set( x, y, 0 );
+    this.scene.add( this.point );
+
+  }
+
+  public createBall () : void {
+    this.geomerty = new SphereGeometry(5,  32, 32);
+    this.material = new MeshBasicMaterial ( {color : 0xffff00});
+    this.ballon = new Mesh(this.geomerty, this.material);
+    this.scene.add (this.ballon);
+  }
 }
+
