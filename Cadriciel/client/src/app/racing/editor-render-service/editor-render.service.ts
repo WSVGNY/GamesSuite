@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Vector2, PerspectiveCamera, WebGLRenderer, Scene, AmbientLight } from "three";
+import { Vector2, Vector3, PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, BoxGeometry, MeshBasicMaterial, Mesh } from "three";
 
 const FAR_CLIPPING_PLANE: number = 1000;
 const NEAR_CLIPPING_PLANE: number = 1;
@@ -17,8 +17,7 @@ export class EditorRenderService {
   private containerEditor: HTMLDivElement;
   private scene: THREE.Scene;
   private renderer: WebGLRenderer;
-  private xScrollPos: number;
-  private yScrollPos: number;
+  private cube: Mesh;
 
   public constructor() {
         this.mouse = new Vector2(0, 0);
@@ -43,7 +42,7 @@ export class EditorRenderService {
       FAR_CLIPPING_PLANE
   );
 
-  this.camera.position.set(0, INITIAL_CAMERA_POSITION_Y, 0);
+  this.camera.position.set(0, 0, 10);
   this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
 }
 
@@ -61,21 +60,30 @@ export class EditorRenderService {
 
   private render(): void {
   requestAnimationFrame(() => this.render());
+  // this.update();
+  //this.cube.rotation.x += 0.1;
+  //this.cube.rotation.y += 0.1;
   this.renderer.render(this.scene, this.camera);
 }
 
-  public handleMouseDown(event: MouseEvent): void {
+  public onResize(): void {
+  this.camera.aspect = this.getAspectRatio();
+  this.camera.updateProjectionMatrix();
+  this.renderer.setSize(this.containerEditor.clientWidth, this.containerEditor.clientHeight);
+}
 
-    // We'll keep the mouse position offset algorithm like
-    // follow for the time being in order to keep developing.
-    // TO BE REVISED
-    this.xScrollPos = this.containerEditor.scrollLeft;
-    this.yScrollPos = this.containerEditor.scrollTop;
-    const offsetX: number = this.containerEditor.offsetLeft - this.xScrollPos + this.containerEditor.clientLeft;
-    const offsetY: number = this.containerEditor.offsetTop - this.yScrollPos + this.containerEditor.clientTop;
-    if (event.clientX - offsetX >= 0 && event.clientY - offsetY >= 0) {
+  public handleMouseDown(event: MouseEvent): void {
+    const offsetX: number = this.containerEditor.offsetLeft + this.containerEditor.clientLeft;
+    const offsetY: number = this.containerEditor.offsetTop - document.documentElement.scrollTop + this.containerEditor.clientTop;
+    if (event.clientX > offsetX && event.clientY > offsetY) {
       this.mouse.x = event.clientX - offsetX;
       this.mouse.y = event.clientY - offsetY;
+      // Call point creation logic here
+      const geometry: BoxGeometry = new BoxGeometry( 1, 1, 0 );
+      const material: MeshBasicMaterial = new MeshBasicMaterial( { color: 0X00FF00 } );
+      this.cube = new Mesh( geometry, material );
+      this.cube.position.set(0, 0, 0);
+      this.scene.add( this.cube );
     }
   }
 }
