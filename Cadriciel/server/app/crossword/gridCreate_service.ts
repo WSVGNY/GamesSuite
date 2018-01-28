@@ -15,7 +15,7 @@ module Route {
         private readonly SIZE_GRID_Y: number = 10;
         private readonly NUMBER_OF_TILES: number = this.SIZE_GRID_X * this.SIZE_GRID_Y;
         // tslint:disable-next-line:no-magic-numbers
-        private readonly BLACK_TILES_RATIO: number = this.NUMBER_OF_TILES * 0.25;
+        private readonly BLACK_TILES_RATIO: number = this.NUMBER_OF_TILES * 0.1; //0.25
         private readonly MIN_WORD_LENGTH: number = 2;
         private grid: GridBox[][];
         private tileIdCounter: Vec2 = new Vec2(0, 0);
@@ -80,7 +80,12 @@ module Route {
                 this.findMatchingTileById(randomTileId).$black = true;
             }
 
-            if (!this.verifyBlackGridValidity()) {
+            if (!this.verifyBlackGridValidity()){
+                for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
+                    for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
+                        this.grid[i][j].$black = false;
+                    }
+                }
                 this.placeBlackGridTiles();
             }
 
@@ -95,46 +100,30 @@ module Route {
         }
 
         private createWordsInGrid(): boolean {
-            //return this.createWordsInGridHorizontally() && this.createWordsInGridVertically();
-            return true;
+            return this.createWordsInGridHorizontally() && this.createWordsInGridVertically();
+            //return true;
         }
 
+        //private visited: Vec2[] = [];
         // tslint:disable-next-line:max-func-body-length
         private createWordsInGridHorizontally(): boolean {
-            let unvisitedIndex: number = 0;
-            let unvisited: GridBox[] = [];
-            let visited: GridBox[] = [];
+            let word: Word;
             for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
                 for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                    unvisited[unvisitedIndex++] =  this.grid[i][j];
-                }
-            }
-            unvisitedIndex = 0;
-            let word: Word;
-            while (unvisited.length !== 0) {
-                for (let i: number = unvisitedIndex; i < this.SIZE_GRID_X; i++) {
-                    if (!unvisited[i].$black) {
+                    if (!this.grid[i][j].$black) {
                         let wordLength: number = 1;
-                        while (i + wordLength < this.SIZE_GRID_X && !unvisited[i + wordLength].$black) {
+                        while (j + wordLength < this.SIZE_GRID_X && !this.grid[i][j + wordLength].$black) {
                             wordLength++;
                         }
                         if (wordLength < this.MIN_WORD_LENGTH) {
                             return false;
                         } else {
-                            word = new Word(null, null, true, wordLength, unvisited[i].$id, null);
+                            word = new Word(null, null, true, wordLength, this.grid[i][j].$id, null);
                             console.log(word);
-                            for (let j: number = i; j < i + wordLength; j++) {
-                                visited.push(unvisited[i]);
-                                delete unvisited[i];
-                            }
-                            i += wordLength;
+                            j += wordLength;
                         }
-                    } else {
-                        visited.push(unvisited[i]);
-                        delete unvisited[i];
                     }
                 }
-                unvisitedIndex += this.SIZE_GRID_X;
             }
 
             return true;
@@ -164,13 +153,9 @@ module Route {
             }
 
             // shuffle array
-
-            // tslint:disable-next-line:no-magic-numbers
-            for (let t: number = 0; t < 2; t++) {
-                for (let i: number = array.length - 1; i > 0; i--) {
-                    const j: number = Math.floor(Math.random() * (i + 1));
-                    [array[i], array[j]] = [array[j], array[i]];
-                }
+            for (let i: number = array.length - 1; i > 0; i--) {
+                const j: number = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
             }
 
             return array;
