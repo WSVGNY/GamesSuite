@@ -8,7 +8,7 @@ import { of } from "rxjs/observable/of";
 import { Track } from "../../../../../common/racing/track";
 
 @Injectable()
-export class PistesService {
+export class TrackService {
 
   private readonly BASE_URL: string = "http://localhost:3000/admin";
   public constructor(private http: HttpClient) { }

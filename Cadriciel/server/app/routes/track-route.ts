@@ -14,7 +14,7 @@ module Route {
         }
 
         public getTrackFromID(req: Request, res: Response, next: NextFunction): void {
-            res.send(TRACKS.find((track: Track) => track.id == req.params.id));
+            res.send(TRACKS.find((track: Track) => track.id === req.params.id));
         }
     }
 }

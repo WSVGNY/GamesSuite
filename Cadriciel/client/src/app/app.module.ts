@@ -7,12 +7,13 @@ import { AppComponent } from "./app.component";
 
 import { RenderService } from "./racing/render-service/render.service";
 import { BasicService } from "./basic.service";
+import { EditorRenderService } from "./racing/editor-render-service/editor-render.service";
 import { AppRoutingModule } from "./app-routing/app-routing.module";
 import { CrosswordComponent } from "./crossword/crossword.component";
-import { EmptyGridService } from "./crossword/empty-grid.service";
+import { GridService } from "./crossword/grid.service";
 import { AdminComponent } from "./racing/admin/admin.component";
 import { RacingComponent } from "./racing/racing.component";
-import { PistesService } from "./racing/track-service/track.service";
+import { TrackService } from "./racing/track-service/track.service";
 import { EditorComponent } from "./racing/editor/editor.component";
 @NgModule({
     declarations: [
@@ -26,14 +27,14 @@ import { EditorComponent } from "./racing/editor/editor.component";
         BrowserModule,
         HttpClientModule,
         AppRoutingModule,
-        FormsModule, 
+        FormsModule,
     ],
     providers: [
         RenderService,
         BasicService,
-        EmptyGridService,
-        PistesService,
-        
+        GridService,
+        TrackService,
+        EditorRenderService
     ],
     bootstrap: [AppComponent]
 })
