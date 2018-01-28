@@ -107,7 +107,6 @@ module Route {
         //private visited: Vec2[] = [];
         // tslint:disable-next-line:max-func-body-length
         private createWordsInGridHorizontally(): boolean {
-            let word: Word;
             for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
                 for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
                     if (!this.grid[i][j].$black) {
@@ -118,8 +117,8 @@ module Route {
                         if (wordLength < this.MIN_WORD_LENGTH) {
                             return false;
                         } else {
-                            word = new Word(null, null, true, wordLength, this.grid[i][j].$id, null);
-                            console.log(word);
+                            // TODO: Change word id
+                            this.grid[i][j].$word = new Word(null, null, true, wordLength, this.grid[i][j].$id, null);
                             j += wordLength;
                         }
                     }

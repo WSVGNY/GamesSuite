@@ -1,11 +1,21 @@
 import { Vec2 } from "./vec2";
+import { Word } from "./word";
 
 export class GridBox {
 
-  private value: string;
+	private value: string;
+	private word: Word;
 
   public constructor(private id: Vec2, private black: boolean) {
-  };
+	};
+	
+	public get $word(): Word {
+		return this.word;
+	}
+
+	public set $word(value: Word) {
+		this.word = value;
+	}
 
 	public get $value(): string {
 		return this.value;
