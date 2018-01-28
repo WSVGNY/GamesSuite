@@ -99,8 +99,9 @@ module Route {
             return this.createWordsInGrid();
         }
 
+        // TODO: accept length of 1 if its vertically a word
         private createWordsInGrid(): boolean {
-            return this.createWordsInGridHorizontally() && this.createWordsInGridVertically();
+            return /*this.createWordsInGridHorizontally() && */this.createWordsInGridVertically();
             //return true;
         }
 
@@ -129,15 +130,25 @@ module Route {
         }
 
         private createWordsInGridVertically(): boolean {
-            let isValid: boolean = true;
-
-            for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
-                for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                    //this.grid[i][j].
+            for (let i: number = 0; i < this.SIZE_GRID_X; i++) {
+                for (let j: number = 0; j < this.SIZE_GRID_Y; j++) {
+                    if (!this.grid[j][i].$black) {
+                        let wordLength: number = 1;
+                        while (j + wordLength < this.SIZE_GRID_Y && !this.grid[j + wordLength][i].$black) {
+                            wordLength++;
+                        }
+                        if (wordLength < this.MIN_WORD_LENGTH) {
+                            return false;
+                        } else {
+                            // TODO: Change word id
+                            this.grid[j][i].$word = new Word(null, null, true, wordLength, this.grid[j][i].$id, null);
+                            j += wordLength;
+                        }
+                    }
                 }
             }
 
-            return isValid;
+            return true;
         }
 
         // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
