@@ -25,11 +25,11 @@ export class RenderService {
     private scene: THREE.Scene;
     private stats: Stats;
     private lastDate: number;
-    //Ajouté par moi
+    // Ajouté par moi
     private geomerty : SphereGeometry;
     private material : MeshBasicMaterial;
     private ballon : Mesh;
-  
+
 
     public get car(): Car {
         return this._car;
@@ -76,7 +76,7 @@ export class RenderService {
         this.camera.lookAt(this._car.position);
         this.scene.add(this._car);
         this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
-        //Ajouté par Moi
+        // Ajouté par Moi
         this.geomerty = new SphereGeometry(5,  32, 32);
         this.material = new MeshBasicMaterial ( {color : 0xffff00});
         this.ballon = new Mesh(this.geomerty, this.material);
@@ -149,10 +149,10 @@ export class RenderService {
     }
 
      // TODO: Create an event handler service.
-     public handleMouseDown(event: MouseEvent): void {
+    public handleMouseDown(event: MouseEvent): void {
         this._car.isAcceleratorPressed = true;
         // event.clientX
-        
+
         // event.clientY
     }
 
@@ -160,7 +160,7 @@ export class RenderService {
     public handleMouseUp(event: MouseEvent): void {
         this._car.isAcceleratorPressed = false;
         // event.clientX
-        
+
         // event.clientY
     }
 }
