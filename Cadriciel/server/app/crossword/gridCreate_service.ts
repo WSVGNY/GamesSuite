@@ -15,7 +15,7 @@ module Route {
         private readonly SIZE_GRID_Y: number = 10;
         private readonly NUMBER_OF_TILES: number = this.SIZE_GRID_X * this.SIZE_GRID_Y;
         // tslint:disable-next-line:no-magic-numbers
-        private readonly BLACK_TILES_RATIO: number = this.NUMBER_OF_TILES * 0.25; //0.25
+        private readonly BLACK_TILES_RATIO: number = this.NUMBER_OF_TILES * 0.20; // 0.25
         private readonly MIN_WORD_LENGTH: number = 2;
         private grid: GridBox[][];
         private tileIdCounter: Vec2 = new Vec2(0, 0);
@@ -109,6 +109,14 @@ module Route {
             if (!isValid) {
                 if (this.createWordsInGridVertically()) {
                     isValid = true;
+                    for (let i: number = 0; i < this.tooShortWords.length; i++) {
+                        let g: Vec2 = this.tooShortWords[i];
+                        let h: Vec2 = this.visitedAndValidVertical.find((v: Vec2) => v.$x === g.$x && v.$y === g.$y);
+
+                        if (h === undefined) {
+                           isValid = false;
+                        }
+                    }
                 }
             } else {
                 isValid = this.createWordsInGridVertically();
@@ -117,8 +125,9 @@ module Route {
             return isValid;
         }
 
-        // private tooShortWords: Vec2[] = [];
+        private tooShortWords: Vec2[] = [];
         private visitedAndValidHorizontal: Vec2[] = [];
+        private visitedAndValidVertical: Vec2[] = [];
         // tslint:disable-next-line:max-func-body-length
         private createWordsInGridHorizontally(): boolean {
             let isValid: boolean = true;
@@ -131,9 +140,9 @@ module Route {
                         }
                         if (wordLength < this.MIN_WORD_LENGTH) {
                             isValid = false;
-                            // for (let k: number = j; k < j + wordLength && k < this.SIZE_GRID_X; k++) {
-                            //     this.tooShortWords.push(this.grid[i][k].$id);
-                            // }
+                            for (let k: number = j; k < j + wordLength && k < this.SIZE_GRID_X; k++) {
+                                this.tooShortWords.push(this.grid[i][k].$id);
+                            }
                         } else {
                             // TODO: Change word id
                             this.grid[i][j].$word = new Word(null, null, true, wordLength, this.grid[i][j].$id, null);
@@ -161,7 +170,7 @@ module Route {
                         if (wordLength < this.MIN_WORD_LENGTH) {
                             let g: Vec2 = this.visitedAndValidHorizontal.find((v: Vec2) => v.$x === this.grid[j][i].$id.$x && 
                             v.$y === this.grid[j][i].$id.$y);
-
+                            // console.log(g);
                             if (g === undefined) {
                                 isValid = false;
                             }
@@ -170,6 +179,9 @@ module Route {
                             // TODO: Change word id
                             this.grid[j][i].$word = new Word(null, null, true, wordLength, this.grid[j][i].$id, null);
                             j += wordLength;
+                            for (let k: number = j; k < j + wordLength && k < this.SIZE_GRID_X; k++) {
+                                this.visitedAndValidVertical.push(this.grid[i][k].$id);
+                            }
                         }
                     }
                 }
