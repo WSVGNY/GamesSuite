@@ -88,10 +88,9 @@ export class EditorRenderService {
       this.cube = new Mesh( geometry, material );
       //this.cube.position.set(this.mouse.x, this.mouse.y, 0);
       this.scene.add( this.cube );
-      this.createPoint (this.mouse.x, this.mouse.y);
-      this.createPoint(255, 366);
-      this.createBall(this.mouse.x, this.mouse.y); 
-      this.DrawLine();
+      this.createPoint (this.mouse.x/100, this.mouse.y/100);
+      //this.createBall(this.mouse.x, this.mouse.y); 
+      this.DrawLine(this.mouse.x, this.mouse.y);
     }
   }
 
@@ -117,12 +116,12 @@ export class EditorRenderService {
     this.scene.add (this.ballon);
   }
 
-  public DrawLine () {
+  public DrawLine (x : number, y : number) {
     const LineMaterial = new LineBasicMaterial ({ color: 0x0110ff });
     const geometry = new Geometry();
-    geometry.vertices.push(new Vector3(-10, 0, 0));
-    geometry.vertices.push(new Vector3(0, 10, 0));
-    geometry.vertices.push(new Vector3(10, 0, 0));
+    geometry.vertices.push(new Vector3(this.point.position.x,this.point.position.y , 0));
+    geometry.vertices.push(new Vector3(x, y, 0));
+    //geometry.vertices.push(new Vector3(10, 0, 0));
     //lines are drawn between each consecutive pair of vertices, but not between the first and last (the line is not closed)
     this.line = new Line(geometry, LineMaterial);
     this.scene.add(this.line);
