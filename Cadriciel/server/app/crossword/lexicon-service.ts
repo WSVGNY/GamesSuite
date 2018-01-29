@@ -21,10 +21,10 @@ module Route {
 
             this.getFromApi(urlOptions).then(
                 (result: string) => {
-                    const wordAndDef: ({ "word": string; } | { "def": string; })[] = [
-                        { "word": result[0]["word"] },
-                        { "def": result[0]["defs"][0].substring(this.INDENTATION_LENGTH) }
-                    ];
+                    const wordAndDef: ({ "word": string; } | { "def": string; }) = {
+                        "word": result[0]["word"],
+                        "def": result[0]["defs"][0].substring(this.INDENTATION_LENGTH)
+                    };
                     res.json(wordAndDef);
                 }
             ).catch((e: Error) => console.error(e));
@@ -55,7 +55,7 @@ module Route {
             return new Promise<string>(
                 (resolve: (value?: string | PromiseLike<string>) => void, reject: (reason?: Error) => void) => {
                     https.get(this.BASE_URL + urlOptions, (response: IncomingMessage) => {
-                        response.on("data", (d: string) => {
+                        response.on("data", (d: string | Buffer) => {
                             resolve(JSON.parse(d.toString()));
                         });
                     }).on("error", (e: Error) => {
