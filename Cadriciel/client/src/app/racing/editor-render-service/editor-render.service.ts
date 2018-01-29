@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Vector2, Vector3, PerspectiveCamera, WebGLRenderer, Scene, AmbientLight,BoxGeometry, MeshBasicMaterial, Mesh, SphereGeometry, Geometry, PointsMaterial, Points } from "three";
+import { Vector2, Vector3, PerspectiveCamera, WebGLRenderer, Scene, AmbientLight,BoxGeometry,Line, MeshBasicMaterial, Mesh, SphereGeometry, Geometry, PointsMaterial, Points, LineBasicMaterial } from "three";
 
 const FAR_CLIPPING_PLANE: number = 1000;
 const NEAR_CLIPPING_PLANE: number = 1;
@@ -20,6 +20,7 @@ export class EditorRenderService {
   private point: Points;
   private ballon: Mesh;
   private cube: Mesh;
+  private line : Line;
 
 
   public constructor() {
@@ -90,6 +91,7 @@ export class EditorRenderService {
       this.createPoint (this.mouse.x, this.mouse.y);
       this.createPoint(255, 366);
       this.createBall(this.mouse.x, this.mouse.y); 
+      this.DrawLine();
     }
   }
 
@@ -113,6 +115,17 @@ export class EditorRenderService {
     this.ballon = new Mesh(geomerty, material);
     this.ballon.position.set(x ,y ,0);
     this.scene.add (this.ballon);
+  }
+
+  public DrawLine () {
+    const LineMaterial = new LineBasicMaterial ({ color: 0x0110ff });
+    const geometry = new Geometry();
+    geometry.vertices.push(new Vector3(-10, 0, 0));
+    geometry.vertices.push(new Vector3(0, 10, 0));
+    geometry.vertices.push(new Vector3(10, 0, 0));
+    //lines are drawn between each consecutive pair of vertices, but not between the first and last (the line is not closed)
+    this.line = new Line(geometry, LineMaterial);
+    this.scene.add(this.line);
   }
 }
 
