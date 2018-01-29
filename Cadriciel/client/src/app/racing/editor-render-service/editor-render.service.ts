@@ -18,12 +18,9 @@ export class EditorRenderService {
   private scene: THREE.Scene;
   private renderer: WebGLRenderer;
   private point: Points;
-  private geomerty: SphereGeometry;
-  private material: MeshBasicMaterial;
   private ballon: Mesh;
   private cube: Mesh;
-  private geometry2 : Geometry;
-  private material2 : PointsMaterial;
+
 
   public constructor() {
         this.mouse = new Vector2(0, 0);
@@ -82,36 +79,39 @@ export class EditorRenderService {
     const offsetX: number = this.containerEditor.offsetLeft + this.containerEditor.clientLeft;
     const offsetY: number = this.containerEditor.offsetTop - document.documentElement.scrollTop + this.containerEditor.clientTop;
     if (event.clientX > offsetX && event.clientY > offsetY) {
-      this.mouse.x = event.clientX - offsetX;
-      this.mouse.y = event.clientY - offsetY;
+      this.mouse.x = (event.clientX - offsetX);
+      this.mouse.y = (event.clientY - offsetY);
       // Créér un cube de test lors du click de souris
       const geometry: BoxGeometry = new BoxGeometry( 1, 1, 0 );
       const material: MeshBasicMaterial = new MeshBasicMaterial( { color: 0X00FF00 } );
       this.cube = new Mesh( geometry, material );
-      this.cube.position.set(0, 0, 0);
+      //this.cube.position.set(this.mouse.x, this.mouse.y, 0);
       this.scene.add( this.cube );
       this.createPoint (this.mouse.x, this.mouse.y);
       this.createPoint(255, 366);
+      this.createBall(this.mouse.x, this.mouse.y); 
     }
   }
 
   public createPoint (x:number, y: number) : void {
 
-    this.geometry2.vertices.push(new Vector3( 2, 3, 3));
+    const geometry2 = new Geometry();
+    geometry2.vertices.push(new Vector3( 2, 3, 3));
     /*this.geometry2.addAttribute( 'position', new BufferAttribute( 0xff10000,3 ) );
     this.geometry2.addAttribute( 'customColor', new BufferAttribute( colors, 3 ) );
     this.geometry2.addAttribute( 'size', new BufferAttribute( sizes, 1 ) );*/
-    this.material2 = new PointsMaterial( { size: 30, sizeAttenuation: false, color: 0x881080 } );
-    this.point = new Points(this.geometry2, this.material);
+    const material2 = new PointsMaterial( { size: 30, sizeAttenuation: false, color: 0x881080 } );
+    this.point = new Points(geometry2, material2);
     this.point.position.set( x, y, 0 );
     this.scene.add( this.point );
 
   }
 
-  public createBall () : void {
-    this.geomerty = new SphereGeometry(5,  32, 32);
-    this.material = new MeshBasicMaterial ( {color : 0xffff00});
-    this.ballon = new Mesh(this.geomerty, this.material);
+  public createBall (x : number, y : number) : void {
+    const geomerty = new SphereGeometry(1,  1, 1);
+    const material = new MeshBasicMaterial ( {color : 0xffff00});
+    this.ballon = new Mesh(geomerty, material);
+    this.ballon.position.set(x ,y ,0);
     this.scene.add (this.ballon);
   }
 }
