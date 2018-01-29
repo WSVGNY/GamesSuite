@@ -4,7 +4,7 @@ import { injectable, } from "inversify";
 import { GridBox } from "../../../common/crossword/gridBox";
 // import { Word } from "../../../common/crossword/word";
 // import { Vec2 } from "../../../common/crossword/vec2";
-import { Char } from "../../../common/crossword/char";
+// import { Char } from "../../../common/crossword/char";
 
 module Route {
 
@@ -18,7 +18,7 @@ module Route {
         private readonly BLACK_TILES_RATIO: number = this.NUMBER_OF_TILES * 0.1;
         private grid: GridBox[][];
         private tileIdCounter: number = 0;
-        private charGrid: Char[][];
+        // private charGrid: Char[][];
 
         public gridCreate(req: Request, res: Response, next: NextFunction): void {
             this.newGrid();
