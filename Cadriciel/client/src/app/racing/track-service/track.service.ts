@@ -10,25 +10,25 @@ import { Track } from "../../../../../common/racing/track";
 @Injectable()
 export class TrackService {
 
-  private readonly BASE_URL: string = "http://localhost:3000/admin";
-  public constructor(private http: HttpClient) { }
-  
-  public getListePiste(): Observable<Track[]> {
-    return this.http.get<Track[]>(this.BASE_URL).pipe(
-        catchError(this.handleError<Track[]>("getListePiste"))
-    );
-  }
+    private readonly BASE_URL: string = "http://localhost:3000/admin";
+    public constructor(private http: HttpClient) { }
 
-  public getPisteParID(id: Number): Observable<Track> {
-    return this.http.get<Track>(this.BASE_URL + "/" + id).pipe(
-        catchError(this.handleError<Track>("getPisteParID"))
-    );
-  }
+    public getListePiste(): Observable<Track[]> {
+        return this.http.get<Track[]>(this.BASE_URL).pipe(
+            catchError(this.handleError<Track[]>("getListePiste"))
+        );
+    }
 
-  private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
+    public getPisteParID(id: Number): Observable<Track> {
+        return this.http.get<Track>(this.BASE_URL + "/" + id).pipe(
+            catchError(this.handleError<Track>("getPisteParID"))
+        );
+    }
 
-      return (error: Error): Observable<T> => {
-          return of(result as T);
-      };
-  }
+    private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
+
+        return (error: Error): Observable<T> => {
+            return of(result as T);
+        };
+    }
 }
