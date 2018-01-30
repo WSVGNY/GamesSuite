@@ -7,6 +7,8 @@ import * as cors from "cors";
 import Types from "./types";
 import { injectable, inject } from "inversify";
 import { Routes } from "./routes";
+import { LexiconService } from "./crossword/lexicon-service";
+import { AbstractService } from "./AbstractService";
 
 @injectable()
 export class Application {
@@ -14,15 +16,19 @@ export class Application {
     private readonly internalError: number = 500;
     public app: express.Application;
 
-    constructor(@inject(Types.Routes) private api: Routes) {
+    constructor(
+        @inject(Types.Routes) private api: Routes,
+        @inject(Types.LexiconService) private lexicon: LexiconService) {
+
         this.app = express();
 
-        this.config();
+        this.configMiddleware();
 
+        this.addService(this.lexicon);
         this.routes();
     }
 
-    private config(): void {
+    private configMiddleware(): void {
         // Middlewares configuration
         this.app.use(logger("dev"));
         this.app.use(bodyParser.json());
@@ -32,13 +38,14 @@ export class Application {
         this.app.use(cors());
     }
 
+    private addService(service: AbstractService): void {
+        this.app.use(service.baseRoute, service.routes);
+    }
+
     public routes(): void {
         const router: express.Router = express.Router();
-
         router.use(this.api.routes);
-
         this.app.use(router);
-
         this.errorHandeling();
     }
 

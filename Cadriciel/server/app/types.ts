@@ -1,9 +1,10 @@
-export default  {
+export default {
         Server: Symbol("Server"),
         Application: Symbol("Application"),
         Routes: Symbol("Routes"),
         Index: Symbol("Index"),
-        Grid : Symbol("Grid"),
-        RoutePiste: Symbol("RoutePiste"),
-        Lexique: Symbol("Lexique")
+        TrackRoute: Symbol("TrackRoute"),
+        LexiconService: Symbol("LexiconService"),
+        Lexicon: Symbol("Lexicon"),
+        Grid: Symbol("Grid")
 };
