@@ -1,11 +1,12 @@
 import { Injectable } from "@angular/core";
-import { Vector2, Vector3, PerspectiveCamera, WebGLRenderer, Scene, AmbientLight,BoxGeometry,Line, MeshBasicMaterial, Mesh, SphereGeometry, Geometry, PointsMaterial, Points, LineBasicMaterial } from "three";
+import { Vector2, Vector3, PerspectiveCamera, OrthographicCamera,
+  WebGLRenderer, Scene, AmbientLight, BoxGeometry, Line, MeshBasicMaterial,
+  Mesh, SphereGeometry, Geometry, PointsMaterial, Points, LineBasicMaterial } from "three";
 
 const FAR_CLIPPING_PLANE: number = 1000;
 const NEAR_CLIPPING_PLANE: number = 1;
 const FIELD_OF_VIEW: number = 70;
 
-//const INITIAL_CAMERA_POSITION_Y: number = 25;
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
 
@@ -13,14 +14,19 @@ const AMBIENT_LIGHT_OPACITY: number = 0.5;
 export class EditorRenderService {
 
   private mouse: THREE.Vector2;
-  private camera: PerspectiveCamera;
+  private camera: OrthographicCamera;
   private containerEditor: HTMLDivElement;
   private scene: THREE.Scene;
   private renderer: WebGLRenderer;
   private point: Points;
   private ballon: Mesh;
   private cube: Mesh;
-  private line : Line;
+  private line: Line;
+
+  private LEFT_PLANE: number;
+  private RIGHT_PLANE: number;
+  private TOP_PLANE: number;
+  private BOTTOM_PLANE: number;
 
 
   public constructor() {
@@ -39,13 +45,25 @@ export class EditorRenderService {
   private async createScene(): Promise<void> {
   this.scene = new Scene();
 
-  this.camera = new PerspectiveCamera(
+  /*this.camera = new PerspectiveCamera(
       FIELD_OF_VIEW,
       this.getAspectRatio(),
       NEAR_CLIPPING_PLANE,
       FAR_CLIPPING_PLANE
   );
+  */
+  this.LEFT_PLANE = -(this.containerEditor.clientWidth / 2);
+  this.RIGHT_PLANE = (this.containerEditor.clientWidth / 2);
+  this.TOP_PLANE = (this.containerEditor.clientHeight / 2);
+  this.BOTTOM_PLANE = -(this.containerEditor.clientHeight / 2);
 
+  this.camera = new OrthographicCamera(
+    this.LEFT_PLANE,
+    this.RIGHT_PLANE,
+    this.TOP_PLANE,
+    this.BOTTOM_PLANE,
+    NEAR_CLIPPING_PLANE,
+    FAR_CLIPPING_PLANE );
   this.camera.position.set(0, 0, 10);
   this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
 }
@@ -80,16 +98,16 @@ export class EditorRenderService {
     const offsetX: number = this.containerEditor.offsetLeft + this.containerEditor.clientLeft;
     const offsetY: number = this.containerEditor.offsetTop - document.documentElement.scrollTop + this.containerEditor.clientTop;
     if (event.clientX > offsetX && event.clientY > offsetY) {
-      this.mouse.x = (event.clientX - offsetX);
-      this.mouse.y = (event.clientY - offsetY);
+      this.mouse.x = (event.clientX - offsetX) - (this.containerEditor.clientWidth/2)
+      this.mouse.y = -((event.clientY - offsetY) - (this.containerEditor.clientHeight/2));
       // Créér un cube de test lors du click de souris
-      const geometry: BoxGeometry = new BoxGeometry( 1, 1, 0 );
+      const geometry: BoxGeometry = new BoxGeometry( 10, 10, 0 );
       const material: MeshBasicMaterial = new MeshBasicMaterial( { color: 0X00FF00 } );
       this.cube = new Mesh( geometry, material );
-      //this.cube.position.set(this.mouse.x, this.mouse.y, 0);
+      this.cube.position.set(this.mouse.x, this.mouse.y, 0);
       this.scene.add( this.cube );
       this.createPoint (this.mouse.x/100, this.mouse.y/100);
-      //this.createBall(this.mouse.x, this.mouse.y); 
+      this.createBall(this.mouse.x, this.mouse.y); 
       this.DrawLine(this.mouse.x, this.mouse.y);
     }
   }
