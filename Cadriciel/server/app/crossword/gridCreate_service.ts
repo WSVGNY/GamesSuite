@@ -104,11 +104,15 @@ module Route {
         // vertical then verifies that if a word is not long enough, that it atleast figures in the valid horizontal grid array
         // if not present, the grid is then declared unvalid
         private createWordsInGrid(): boolean {
+            this.tooShortWords = [];
+            this.visitedAndValidHorizontal  = [];
+            this.visitedAndValidVertical = [];
             let isValid: boolean = this.createWordsInGridHorizontally();
 
             if (!isValid) {
                 if (this.createWordsInGridVertically()) {
                     isValid = true;
+                    //console.log(this.tooShortWords);
                     for (let i: number = 0; i < this.tooShortWords.length; i++) {
                         let g: Vec2 = this.tooShortWords[i];
                         let h: Vec2 = this.visitedAndValidVertical.find((v: Vec2) => v.$x === g.$x && v.$y === g.$y);
