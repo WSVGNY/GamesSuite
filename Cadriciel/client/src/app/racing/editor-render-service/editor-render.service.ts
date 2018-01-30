@@ -1,11 +1,10 @@
 import { Injectable } from "@angular/core";
-import { Vector2, Vector3, PerspectiveCamera, OrthographicCamera,
-  WebGLRenderer, Scene, AmbientLight, BoxGeometry, Line, MeshBasicMaterial,
-  Mesh, SphereGeometry, Geometry, PointsMaterial, Points, LineBasicMaterial } from "three";
+import { Vector2, Vector3, OrthographicCamera,
+  WebGLRenderer, Scene, AmbientLight, Line, MeshBasicMaterial,
+  Mesh, SphereGeometry, Geometry, Points, LineBasicMaterial } from "three";
 
 const FAR_CLIPPING_PLANE: number = 1000;
 const NEAR_CLIPPING_PLANE: number = 1;
-const FIELD_OF_VIEW: number = 70;
 
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
@@ -20,7 +19,6 @@ export class EditorRenderService {
   private renderer: WebGLRenderer;
   private point: Points;
   private ballon: Mesh;
-  private cube: Mesh;
   private line: Line;
 
   private LEFT_PLANE: number;
@@ -76,20 +74,12 @@ export class EditorRenderService {
   this.render();
 }
 
-  private getAspectRatio(): number {
-  return this.containerEditor.clientWidth / this.containerEditor.clientHeight;
-}
-
   private render(): void {
   requestAnimationFrame(() => this.render());
-  // this.update();
-  // this.cube.rotation.x += 0.1;
-  // this.cube.rotation.y += 0.1;
   this.renderer.render(this.scene, this.camera);
 }
 
   public onResize(): void {
-  this.camera.aspect = this.getAspectRatio();
   this.camera.updateProjectionMatrix();
   this.renderer.setSize(this.containerEditor.clientWidth, this.containerEditor.clientHeight);
 }
@@ -100,35 +90,15 @@ export class EditorRenderService {
     if (event.clientX > offsetX && event.clientY > offsetY) {
       this.mouse.x = (event.clientX - offsetX) - (this.containerEditor.clientWidth/2)
       this.mouse.y = -((event.clientY - offsetY) - (this.containerEditor.clientHeight/2));
-      // Créér un cube de test lors du click de souris
-      const geometry: BoxGeometry = new BoxGeometry( 10, 10, 0 );
-      const material: MeshBasicMaterial = new MeshBasicMaterial( { color: 0X00FF00 } );
-      this.cube = new Mesh( geometry, material );
-      this.cube.position.set(this.mouse.x, this.mouse.y, 0);
-      this.scene.add( this.cube );
-      this.createPoint (this.mouse.x/100, this.mouse.y/100);
-      this.createBall(this.mouse.x, this.mouse.y); 
+      
+      this.addPoint(this.mouse.x, this.mouse.y); 
       this.DrawLine(this.mouse.x, this.mouse.y);
     }
   }
 
-  public createPoint (x:number, y: number) : void {
-
-    const geometry2 = new Geometry();
-    geometry2.vertices.push(new Vector3( 2, 3, 3));
-    /*this.geometry2.addAttribute( 'position', new BufferAttribute( 0xff10000,3 ) );
-    this.geometry2.addAttribute( 'customColor', new BufferAttribute( colors, 3 ) );
-    this.geometry2.addAttribute( 'size', new BufferAttribute( sizes, 1 ) );*/
-    const material2 = new PointsMaterial( { size: 30, sizeAttenuation: false, color: 0x881080 } );
-    this.point = new Points(geometry2, material2);
-    this.point.position.set( x, y, 0 );
-    this.scene.add( this.point );
-
-  }
-
-  public createBall (x : number, y : number) : void {
-    const geomerty = new SphereGeometry(1,  1, 1);
-    const material = new MeshBasicMaterial ( {color : 0xffff00});
+  public addPoint (x : number, y : number) : void {
+    const geomerty = new SphereGeometry(8,  8, 8);
+    const material = new MeshBasicMaterial ( {color : 0xff1101});
     this.ballon = new Mesh(geomerty, material);
     this.ballon.position.set(x ,y ,0);
     this.scene.add (this.ballon);
