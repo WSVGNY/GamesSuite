@@ -5,5 +5,6 @@ export default {
         Index: Symbol("Index"),
         TrackRoute: Symbol("TrackRoute"),
         LexiconService: Symbol("LexiconService"),
+        Lexicon: Symbol("Lexicon"),
         Grid: Symbol("Grid")
 };

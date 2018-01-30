@@ -1,70 +1,31 @@
-import { Request, Response, NextFunction } from "express";
-import "reflect-metadata";
-import { injectable, } from "inversify";
-import * as https from "https";
-import { IncomingMessage } from "http";
+import { injectable, inject } from "inversify";
+import Types from "../types";
+import { Router, Request, Response, NextFunction } from "express";
+import { Lexicon } from "./lexicon";
+import { AbstractService } from "../AbstractService";
 
-module Route {
-    @injectable()
-    export class LexiconService {
+@injectable()
+export class LexiconService extends AbstractService {
+    public readonly baseRoute: string = "/lexicon";
 
-        /**
-         * These functions work asynchronously to get words and definitions from the Datamuse api
-         * To get them synchronously, we use a promise to return the result from the server then
-         */
+    public constructor( @inject(Types.Lexicon) private lexicon: Lexicon) {
+        super();
+    }
 
-        private readonly BASE_URL: string = "https://api.datamuse.com/words?";
-        private readonly INDENTATION_LENGTH: number = 2;
+    public get routes(): Router {
+        const router: Router = Router();
 
-        public getWordAndDefinition(req: Request, res: Response, next: NextFunction): void {
-            const urlOptions: string = "sp=" + req.params.word + "&md=d";
+        router.get("/definition/:word", (req: Request, res: Response, next: NextFunction) =>
+            this.lexicon.getWordAndDefinition(req, res, next)
+        );
+        router.get("/frequency/:word", (req: Request, res: Response, next: NextFunction) =>
+            this.lexicon.getFrequency(req, res, next)
+        );
+        router.get("/constraints/:constraints", (req: Request, res: Response, next: NextFunction) =>
+            this.lexicon.getWordListFromConstraint(req, res, next)
+        );
 
-            this.getFromApi(urlOptions).then(
-                (result: string) => {
-                    const wordAndDef: ({ "word": string; } | { "def": string; }) = {
-                        "word": result[0]["word"],
-                        "def": result[0]["defs"][0].substring(this.INDENTATION_LENGTH)
-                    };
-                    res.json(wordAndDef);
-                }
-            ).catch((e: Error) => console.error(e));
-        }
-
-        public getFrequency(req: Request, res: Response, next: NextFunction): void {
-            const urlOptions: string = "sp=" + req.params.word + "&md=f";
-
-            this.getFromApi(urlOptions).then(
-                (result: string) => {
-                    const num: number = result[0]["tags"][0].substring(this.INDENTATION_LENGTH);
-                    res.send(num);
-                }
-            ).catch((e: Error) => console.error(e));
-        }
-
-        public getWordListFromConstraint(req: Request, res: Response, next: NextFunction): void {
-            const urlOptions: string = "sp=" + req.params.constraints;
-
-            this.getFromApi(urlOptions).then(
-                (result: string) => {
-                    res.json(result);
-                }
-            ).catch((e: Error) => console.error(e));
-        }
-
-        private async getFromApi(urlOptions: string): Promise<string> {
-            return new Promise<string>(
-                (resolve: (value?: string | PromiseLike<string>) => void, reject: (reason?: Error) => void) => {
-                    https.get(this.BASE_URL + urlOptions, (response: IncomingMessage) => {
-                        response.on("data", (d: string | Buffer) => {
-                            resolve(JSON.parse(d.toString()));
-                        });
-                    }).on("error", (e: Error) => {
-                        reject(e);
-                    });
-                }
-            );
-        }
+        return router;
     }
 }
 
-export = Route;
