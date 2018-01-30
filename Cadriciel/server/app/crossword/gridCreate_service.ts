@@ -15,34 +15,36 @@ module Route {
         private readonly SIZE_GRID_Y: number = 10;
         private readonly NUMBER_OF_TILES: number = this.SIZE_GRID_X * this.SIZE_GRID_Y;
         // tslint:disable-next-line:no-magic-numbers
-        private readonly BLACK_TILES_RATIO: number = this.NUMBER_OF_TILES * 0.20; // 0.25
+        private readonly BLACK_TILES_RATIO: number = this.NUMBER_OF_TILES * 0.25; // 0.25
         private readonly MIN_WORD_LENGTH: number = 2;
         private grid: GridBox[][];
-        private tileIdCounter: Vec2 = new Vec2(0, 0);
         private charGrid: Char[][];
 
         public gridCreate(req: Request, res: Response, next: NextFunction): void {
-            this.newGrid();
+            while(!this.newGrid()){}
             res.send(this.grid);
         }
 
-        private newGrid(): void {
+        private newGrid(): boolean {
             this.grid = new Array<Array<GridBox>>();
-
+            console.log("Created a new Grid");
             for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
                 const row: GridBox[] = new Array<GridBox>();
 
                 for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                    row.push(new GridBox(new Vec2(this.tileIdCounter.$x, this.tileIdCounter.$y), false));
-                    this.tileIdCounter.$x++;
+                    row.push(new GridBox(new Vec2(j, i), false));
                 }
                 this.grid.push(row);
-                this.tileIdCounter.$y++;
-                this.tileIdCounter.$x = 0;
             }
-            this.placeBlackGridTiles();
+            if(!this.placeBlackGridTiles()){
+                return false;
+            }
+            console.log("PlaceBlackGridTiles Done");
             this.createCharGrid();
+            console.log("Created Char Grid");
             this.bindCharToGrid();
+            console.log("Binded Char to Grid");
+            return true;
         }
 
         private createCharGrid(): void {
@@ -70,38 +72,38 @@ module Route {
             }
         }
 
-        private placeBlackGridTiles(): void {
+        private placeBlackGridTiles(): boolean {
             // fill array 0->numberOfTile
             let array: Vec2[] = this.fillShuffledArray();
-
+            console.log("Filled shuffled Array");
             // pick tiles in shuffled array 0->BLACK_TILES_RATIO
             for (let i: number = 0; i < this.BLACK_TILES_RATIO; i++) {
                 const randomTileId: Vec2 = array[i];
                 this.findMatchingTileById(randomTileId).$black = true;
             }
+            console.log("Placed Black Grid Tiles");
 
-            if (!this.verifyBlackGridValidity()){
-                this.newGrid();
-                this.placeBlackGridTiles();
+            if (!this.verifyBlackGridValidity()) {
+                console.log("Grid Verification Failed");
+                return false;
             }
-
-            // TODO: Verify that there's no tile left alone horizontally and vertically
-            // TODO: Create the words
+            console.log("Grid Verification Passed");
+            return true;
 
         }
 
         // returns false if there's a word of 1 letter
         private verifyBlackGridValidity(): boolean {
             let isValid: boolean = this.createWordsInGridHorizontally();
-            this.createWordsInGridVertically()
-
+            if (isValid) {
+                this.createWordsInGridVertically()
+            }
             return isValid;
+
         }
 
-        // TODO: accept length of 1 if its vertically a word
-        // Horizontal MUST be called first because it fills an array that certifies the grid is valid
-        // vertical then verifies that if a word is not long enough, that it atleast figures in the valid horizontal grid array
-        // if not present, the grid is then declared unvalid
+        // Horizontal MUST be called first because it tests single boxes vertically
+        // In vertical, it supposes that all single boxes are valid
 
         // tslint:disable-next-line:max-func-body-length
         private createWordsInGridHorizontally(): boolean {
@@ -115,16 +117,20 @@ module Route {
                         }
                         if (wordLength < this.MIN_WORD_LENGTH) {
                             isValid = false;
-                            if(i+1 < this.SIZE_GRID_Y) {
-                                isValid=!this.grid[i+1][j].$black;
+                            if (i + 1 < this.SIZE_GRID_Y) {
+                                isValid = !this.grid[i + 1][j].$black;
                             }
-                            if(i-1>0 && !isValid){
-                                isValid=!this.grid[i-1][j].$black;
+                            if (i - 1 > 0 && !isValid) {
+                                isValid = !this.grid[i - 1][j].$black;
                             }
+                            if (!isValid) {
+                                return isValid;
+                            }
+
                         } else {
                             // TODO: Change word id
                             this.grid[i][j].$word = new Word(null, null, true, wordLength, this.grid[i][j].$id, null);
-                            j += wordLength-1;
+                            j += wordLength;
                         }
                     }
                 }
@@ -144,7 +150,7 @@ module Route {
                         if (wordLength > this.MIN_WORD_LENGTH) {
                             // TODO: Change word id
                             this.grid[j][i].$word = new Word(null, null, true, wordLength, this.grid[j][i].$id, null);
-                            j += wordLength-1;
+                            j += wordLength;
                         }
                     }
                 }
@@ -172,7 +178,6 @@ module Route {
         }
 
         private findMatchingTileById(id: Vec2): GridBox {
-
             for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
                 for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
                     if (this.grid[i][j].$id.$x === id.$x &&
