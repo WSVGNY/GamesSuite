@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
-import { Vector2, Vector3, OrthographicCamera,
-  WebGLRenderer, Scene, AmbientLight, Line, MeshBasicMaterial,
-  Mesh, SphereGeometry, Geometry, Points, LineBasicMaterial } from "three";
+import { Vector2, OrthographicCamera,
+  WebGLRenderer, Scene, AmbientLight} from "three";
+import { TrackVertices } from "../trackVertices";
 
 const FAR_CLIPPING_PLANE: number = 1000;
 const NEAR_CLIPPING_PLANE: number = 1;
@@ -17,15 +17,13 @@ export class EditorRenderService {
   private containerEditor: HTMLDivElement;
   private scene: THREE.Scene;
   private renderer: WebGLRenderer;
-  private point: Points;
-  private ballon: Mesh;
-  private line: Line;
 
   private LEFT_PLANE: number;
   private RIGHT_PLANE: number;
   private TOP_PLANE: number;
   private BOTTOM_PLANE: number;
-  //private arrayPoints: Array<Mesh>;
+  private listOfPoints :TrackVertices;
+
 
 
   public constructor() {
@@ -92,28 +90,9 @@ export class EditorRenderService {
       this.mouse.x = (event.clientX - offsetX) - (this.containerEditor.clientWidth/2)
       this.mouse.y = -((event.clientY - offsetY) - (this.containerEditor.clientHeight/2));
       
-      this.addPoint(this.mouse.x, this.mouse.y); 
-      this.DrawLine(this.mouse.x, this.mouse.y);
+      this.listOfPoints.addVertex(this.mouse.x, this.mouse.y); 
     }
   }
 
-  public addPoint (x : number, y : number) : void {
-    const geomerty = new SphereGeometry(8,  8, 8);
-    const material = new MeshBasicMaterial ( {color : 0xff1101});
-    this.ballon = new Mesh(geomerty, material);
-    this.ballon.position.set(x ,y ,0);
-    
-    this.scene.add (this.ballon);
-  }
 
-  public DrawLine (x : number, y : number) {
-    const LineMaterial = new LineBasicMaterial ({ color: 0x0110ff });
-    const geometry = new Geometry();
-    geometry.vertices.push(new Vector3(this.point.position.x,this.point.position.y , 0));
-    geometry.vertices.push(new Vector3(x, y, 0));
-    //geometry.vertices.push(new Vector3(10, 0, 0));
-    //lines are drawn between each consecutive pair of vertices, but not between the first and last (the line is not closed)
-    this.line = new Line(geometry, LineMaterial);
-    this.scene.add(this.line);
-  }
 }
