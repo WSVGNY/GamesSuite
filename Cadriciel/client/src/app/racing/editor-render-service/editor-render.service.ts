@@ -25,6 +25,7 @@ export class EditorRenderService {
   private RIGHT_PLANE: number;
   private TOP_PLANE: number;
   private BOTTOM_PLANE: number;
+  //private arrayPoints: Array<Mesh>;
 
 
   public constructor() {
@@ -101,6 +102,7 @@ export class EditorRenderService {
     const material = new MeshBasicMaterial ( {color : 0xff1101});
     this.ballon = new Mesh(geomerty, material);
     this.ballon.position.set(x ,y ,0);
+    
     this.scene.add (this.ballon);
   }
 
