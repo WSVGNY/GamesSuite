@@ -94,4 +94,8 @@ export class EditorRenderService {
       this.listOfPoints.addVertex(this.mouse.x, this.mouse.y); 
     }
   }
+
+  public pressRightClic (event : MouseEvent){
+    this.listOfPoints.removeLastVertex();
+  }
 }

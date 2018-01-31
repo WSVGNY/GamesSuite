@@ -53,4 +53,9 @@ export class EditorComponent implements AfterViewInit {
     public onResize(): void {
         this.editorRenderService.onResize();
     }
+
+  @HostListener("window:onRightClick", ["$event"])
+    public onRightClic(event: MouseEvent): void {
+        this.editorRenderService.pressRightClic(event);
+    }
 }
