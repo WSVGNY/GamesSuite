@@ -14,7 +14,7 @@ export class Lexicon {
     public getDefinition(word: string): string {
         let definitions: string = word["defs"];
         try {
-            if (this.difficulty === Difficulty.EASY)
+            if (this.difficulty === "EASY")
                 return definitions[0];
             else {
                 try {
@@ -30,7 +30,7 @@ export class Lexicon {
 
     private checkFrequency(word: string): boolean {
         let frequency: number = word["tags"][0].substring(2);
-        if (this.difficulty === Difficulty.HARD) {
+        if (this.difficulty === "HARD") {
             if (frequency < this.FREQUENCY_DELIMITER)
                 return true;
             else
