@@ -21,6 +21,7 @@ export class TrackVertices {
         vertex.position.set(x, y, 0);
         this.scene.add (vertex);
         this.vertices.push(vertex);
+        this.connectPoints();
     }
 
     public removeLastVertex(): void {

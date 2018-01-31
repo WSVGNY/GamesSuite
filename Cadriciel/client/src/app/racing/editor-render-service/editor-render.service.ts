@@ -41,6 +41,7 @@ export class EditorRenderService {
 
   private async createScene(): Promise<void> {
   this.scene = new Scene();
+  this.listOfPoints = new TrackVertices(this.scene);
 
   /*this.camera = new PerspectiveCamera(
       FIELD_OF_VIEW,
@@ -93,6 +94,4 @@ export class EditorRenderService {
       this.listOfPoints.addVertex(this.mouse.x, this.mouse.y); 
     }
   }
-
-
 }
