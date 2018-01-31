@@ -117,4 +117,3 @@ export class EditorRenderService {
     this.scene.add(this.line);
   }
 }
-
