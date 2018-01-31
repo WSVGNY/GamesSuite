@@ -1,4 +1,4 @@
-import { SphereGeometry, MeshBasicMaterial, Mesh, Scene, Line, Geometry, LineBasicMaterial, Vector3 } from "three";
+import { SphereGeometry, MeshBasicMaterial, Mesh, Scene, Line, Geometry, LineBasicMaterial, Vector3, Vector2 } from "three";
 
 const RED: number = 0xFF1101;
 const BLUE: number = 0x0110FF;
@@ -18,9 +18,9 @@ export class TrackVertices {
         this.vertices = new Array();
     }
 
-    public addVertex(x: number, y: number): void {
+    public addVertex(position: Vector2): void {
         const vertex: Mesh = new Mesh(VERTEX_GEOMETRY, VERTEX_MATERIAL);
-        vertex.position.set(x, y, 0);
+        vertex.position.set(position.x, position.y, 0);
         this.scene.add (vertex);
         this.vertices.push(vertex);
         this.connectPoints();
@@ -28,6 +28,7 @@ export class TrackVertices {
 
     public removeLastVertex(): void {
         this.scene.remove(this.vertices.pop());
+        this.connectPoints();
     }
 
     public connectPoints (): void {

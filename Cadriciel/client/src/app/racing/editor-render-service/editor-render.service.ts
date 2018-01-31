@@ -7,6 +7,9 @@ const FAR_CLIPPING_PLANE: number = 1000;
 const NEAR_CLIPPING_PLANE: number = 1;
 const CAMERA_Z_POSITION: number = 10;
 
+const LEFT_CLICK_KEYCODE: number = 1;
+const RIGHT_CLICK_KEYCODE: number = 1;
+
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
 
@@ -83,17 +86,35 @@ export class EditorRenderService {
   this.renderer.setSize(this.containerEditor.clientWidth, this.containerEditor.clientHeight);
 }
 
-  public handleMouseDown(event: MouseEvent): void {
-    const offsetX: number = this.containerEditor.offsetLeft + this.containerEditor.clientLeft;
-    const offsetY: number = this.containerEditor.offsetTop - document.documentElement.scrollTop + this.containerEditor.clientTop;
-    if (event.clientX > offsetX && event.clientY > offsetY) {
-      this.mouse.x = (event.clientX - offsetX) - (this.containerEditor.clientWidth / 2);
-      this.mouse.y = -((event.clientY - offsetY) - (this.containerEditor.clientHeight / 2));
-      this.listOfPoints.addVertex(this.mouse.x, this.mouse.y);
+  public computeMouseCoordinates(event: MouseEvent): boolean {
+    const offset: Vector2 = new Vector2();
+    offset.x = this.containerEditor.offsetLeft + this.containerEditor.clientLeft;
+    offset.y = this.containerEditor.offsetTop - document.documentElement.scrollTop + this.containerEditor.clientTop;
+    const containerCenter: Vector2 = new Vector2();
+    containerCenter.x = this.containerEditor.clientWidth / 2;
+    containerCenter.y = this.containerEditor.clientHeight / 2;
+
+    if (event.clientX > offset.x && event.clientY > offset.y) {
+      this.mouse = new Vector2((event.clientX - offset.x) - containerCenter.x, -((event.clientY - offset.y) - containerCenter.y));
+
+      return true;
+    } else {
+
+      return false;
     }
   }
 
-  public pressRightClic (event : MouseEvent){
-    this.listOfPoints.removeLastVertex();
+  public handleMouseDown(event: MouseEvent): void {
+    if (this.computeMouseCoordinates(event)) {
+      switch (event.which) {
+        case LEFT_CLICK_KEYCODE:
+            this.listOfPoints.addVertex(this.mouse);
+            break;
+        case RIGHT_CLICK_KEYCODE:
+            this.listOfPoints.removeLastVertex();
+            break;
+        default:
+      }
+    }
   }
 }
