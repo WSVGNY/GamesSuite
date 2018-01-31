@@ -12,10 +12,14 @@ export class TrackVertices {
     private vertices: Array<Mesh>;
     private scene: Scene;
     private line: Line;
+    private lines : Array<Line>;
+    private numberOfVertices : number;
 
     public constructor(scene: Scene) {
         this.scene = scene;
         this.vertices = new Array();
+        this.lines = new Array();
+        this.numberOfVertices = 0;
     }
 
     public addVertex(position: Vector2): void {
@@ -23,21 +27,26 @@ export class TrackVertices {
         vertex.position.set(position.x, position.y, 0);
         this.scene.add (vertex);
         this.vertices.push(vertex);
-        this.connectPoints();
+        if (this.numberOfVertices > 0 ){
+            this.connectPoints(this.vertices[this.numberOfVertices-1], this.vertices[this.numberOfVertices]);
+        }
+        this.numberOfVertices = this.numberOfVertices + 1;
     }
 
     public removeLastVertex(): void {
         this.scene.remove(this.vertices.pop());
-        this.connectPoints();
+        this.scene.remove (this.lines.pop());
+
     }
 
-    public connectPoints (): void {
-        for (let i: number = 0; i < this.vertices.length; i++) {
+    public connectPoints (v1 : Mesh , v2 : Mesh): void {
             const LINE_GEOMETRY: Geometry = new Geometry();
-            LINE_GEOMETRY.vertices.push(new Vector3(this.vertices[i].position.x, this.vertices[i].position.y , 0));
-            LINE_GEOMETRY.vertices.push(new Vector3(this.vertices[i + 1].position.x, this.vertices[i + 1].position.y , 0));
+            LINE_GEOMETRY.vertices.push(new Vector3(v1.position.x, v1.position.y , 0));
+            LINE_GEOMETRY.vertices.push(new Vector3(v2.position.x, v2.position.y , 0));
             this.line = new Line(LINE_GEOMETRY, LINE_MATERIAL);
+            this.lines.push(this.line);
             this.scene.add(this.line);
         }
+    
     }
 }

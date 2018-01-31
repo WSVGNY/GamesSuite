@@ -8,7 +8,7 @@ const NEAR_CLIPPING_PLANE: number = 1;
 const CAMERA_Z_POSITION: number = 10;
 
 const LEFT_CLICK_KEYCODE: number = 1;
-const RIGHT_CLICK_KEYCODE: number = 1;
+const RIGHT_CLICK_KEYCODE: number = 3;
 
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
