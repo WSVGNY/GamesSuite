@@ -5,6 +5,7 @@ import { TrackVertices } from "../trackVertices";
 
 const FAR_CLIPPING_PLANE: number = 1000;
 const NEAR_CLIPPING_PLANE: number = 1;
+const CAMERA_Z_POSITION: number = 10;
 
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
@@ -22,9 +23,7 @@ export class EditorRenderService {
   private RIGHT_PLANE: number;
   private TOP_PLANE: number;
   private BOTTOM_PLANE: number;
-  private listOfPoints :TrackVertices;
-
-
+  private listOfPoints: TrackVertices;
 
   public constructor() {
         this.mouse = new Vector2(0, 0);
@@ -62,7 +61,7 @@ export class EditorRenderService {
     this.BOTTOM_PLANE,
     NEAR_CLIPPING_PLANE,
     FAR_CLIPPING_PLANE );
-  this.camera.position.set(0, 0, 10);
+  this.camera.position.set(0, 0, CAMERA_Z_POSITION);
   this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
 }
 
@@ -88,10 +87,9 @@ export class EditorRenderService {
     const offsetX: number = this.containerEditor.offsetLeft + this.containerEditor.clientLeft;
     const offsetY: number = this.containerEditor.offsetTop - document.documentElement.scrollTop + this.containerEditor.clientTop;
     if (event.clientX > offsetX && event.clientY > offsetY) {
-      this.mouse.x = (event.clientX - offsetX) - (this.containerEditor.clientWidth/2)
-      this.mouse.y = -((event.clientY - offsetY) - (this.containerEditor.clientHeight/2));
-      
-      this.listOfPoints.addVertex(this.mouse.x, this.mouse.y); 
+      this.mouse.x = (event.clientX - offsetX) - (this.containerEditor.clientWidth / 2);
+      this.mouse.y = -((event.clientY - offsetY) - (this.containerEditor.clientHeight / 2));
+      this.listOfPoints.addVertex(this.mouse.x, this.mouse.y);
     }
   }
 
