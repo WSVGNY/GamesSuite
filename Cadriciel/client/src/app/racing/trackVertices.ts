@@ -5,6 +5,7 @@ const BLUE: number = 0x0110FF;
 const RADIUS: number = 8;
 const VERTEX_GEOMETRY: SphereGeometry  = new SphereGeometry(RADIUS, RADIUS, RADIUS);
 const VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial ({color : RED});
+const VERTEX_MATERIAL2: MeshBasicMaterial = new MeshBasicMaterial ({color : 0xFF1493});
 const LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial ({ color: BLUE });
 
 export class TrackVertices {
@@ -14,6 +15,7 @@ export class TrackVertices {
     private line: Line;
     private lines : Array<Line>;
     private numberOfVertices : number;
+    private material : MeshBasicMaterial;
 
     public constructor(scene: Scene) {
         this.scene = scene;
@@ -23,7 +25,12 @@ export class TrackVertices {
     }
 
     public addVertex(position: Vector2): void {
-        const vertex: Mesh = new Mesh(VERTEX_GEOMETRY, VERTEX_MATERIAL);
+        if(this.numberOfVertices == 0 ){
+            this.material = VERTEX_MATERIAL2;
+        }else{
+            this.material = VERTEX_MATERIAL;
+        }
+        const vertex: Mesh = new Mesh(VERTEX_GEOMETRY, this.material);
         vertex.position.set(position.x, position.y, 0);
         this.scene.add (vertex);
         this.vertices.push(vertex);
