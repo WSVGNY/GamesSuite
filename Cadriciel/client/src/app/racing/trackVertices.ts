@@ -36,6 +36,7 @@ export class TrackVertices {
     public removeLastVertex(): void {
         this.scene.remove(this.vertices.pop());
         this.scene.remove (this.lines.pop());
+        this.numberOfVertices--;
 
     }
 
