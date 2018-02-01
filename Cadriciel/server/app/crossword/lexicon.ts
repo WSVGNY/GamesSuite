@@ -8,14 +8,22 @@ import { Difficulty } from "../../../common/crossword/difficulty"
 export class Lexicon {
 
     private readonly BASE_URL: string = "https://api.datamuse.com/words?";
-    private difficulty: Difficulty = Difficulty.EASY;
+    private difficulty: Difficulty;
     private readonly FREQUENCY_DELIMITER: number = 10;
 
     public getDefinition(word: string): string {
         let definitions: string = word["defs"];
+        //console.log(word);
+        for(var i=0; i<(word["defs"].length);i++){      //fait un internal Server error seulement dans le cas ou le mot n'a aucune definition car length est undefined
+            if(definitions[i][0]=="a"){               //s'assurer que le mot ne soit ni un adverbe ni un adjectif
+                delete(word["defs"][i]);
+            }
+        }
+        console.log(word["word"]);
         try {
-            if (this.difficulty === "EASY")
-                return definitions[0];
+            if (this.difficulty === "EASY"){
+                    return definitions[0];
+            }
             else {
                 try {
                     return definitions[1];
@@ -48,8 +56,9 @@ export class Lexicon {
 
         requestPromise(this.BASE_URL + "sp=" + req.params.constraints + "&md=fd").then(
             (result: string) => {
+                
                 let words = JSON.parse(result.toString());
-                // console.log(words);
+               // console.log(words);
                 let random: number;
                 let responseWord: { "word": string, "def": string } = {
                     "word": "",
@@ -61,9 +70,10 @@ export class Lexicon {
                     badWord = true;
                     random = Math.floor(Math.random() * words.length);
                     let tempWord = words[random];
-                    responseWord.word = tempWord.word;
+                    responseWord.word = tempWord.word.toUpperCase();
+                    
 
-                    console.log(tempWord.word);
+                   console.log(tempWord.word);
 
                     if (this.checkFrequency(tempWord)) {
                         responseWord["def"] = this.getDefinition(tempWord);
