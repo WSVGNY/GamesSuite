@@ -1,60 +1,53 @@
-import { SphereGeometry, MeshBasicMaterial, Mesh, Scene, Line, Geometry, LineBasicMaterial, Vector3, Vector2 } from "three";
+import { SphereGeometry, MeshBasicMaterial, Mesh, Scene, Line, Geometry, LineBasicMaterial, Vector3} from "three";
 
 const RED: number = 0xFF1101;
 const BLUE: number = 0x0110FF;
 const RADIUS: number = 8;
 const VERTEX_GEOMETRY: SphereGeometry  = new SphereGeometry(RADIUS, RADIUS, RADIUS);
-const VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial ({color : RED});
-const VERTEX_MATERIAL2: MeshBasicMaterial = new MeshBasicMaterial ({color : 0xFF1493});
+const SIMPLE_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial ({color : RED});
+const START_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial ({color : 0xFF1493});
 const LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial ({ color: BLUE });
 
 export class TrackVertices {
 
     private vertices: Array<Mesh>;
+    private connections: Array<Line>;
     private scene: Scene;
     private line: Line;
-    private lines : Array<Line>;
-    private numberOfVertices : number;
-    private material : MeshBasicMaterial;
+    private nbVertices: number;
 
     public constructor(scene: Scene) {
         this.scene = scene;
         this.vertices = new Array();
-        this.lines = new Array();
-        this.numberOfVertices = 0;
+        this.connections = new Array();
+        this.nbVertices = 0;
     }
 
-    public addVertex(position: Vector2): void {
-        if(this.numberOfVertices == 0 ){
-            this.material = VERTEX_MATERIAL2;
-        }else{
-            this.material = VERTEX_MATERIAL;
-        }
-        const vertex: Mesh = new Mesh(VERTEX_GEOMETRY, this.material);
+    public addVertex(position: Vector3): void {
+        const vertex: Mesh = (this.nbVertices === 0 ) ?
+            new Mesh(VERTEX_GEOMETRY, START_VERTEX_MATERIAL) :
+            new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
         vertex.position.set(position.x, position.y, 0);
         this.scene.add (vertex);
         this.vertices.push(vertex);
-        if (this.numberOfVertices > 0 ){
-            this.connectPoints(this.vertices[this.numberOfVertices-1], this.vertices[this.numberOfVertices]);
+        if (this.nbVertices > 0 ) {
+            this.createConnection(this.vertices[this.nbVertices - 1], this.vertices[this.nbVertices]);
         }
-        this.numberOfVertices = this.numberOfVertices + 1;
+        this.nbVertices++;
     }
 
     public removeLastVertex(): void {
         this.scene.remove(this.vertices.pop());
-        this.scene.remove (this.lines.pop());
-        this.numberOfVertices--;
-
+        this.scene.remove (this.connections.pop());
+        this.nbVertices--;
     }
 
-    public connectPoints (v1 : Mesh , v2 : Mesh): void {
-            const LINE_GEOMETRY: Geometry = new Geometry();
-            LINE_GEOMETRY.vertices.push(new Vector3(v1.position.x, v1.position.y , 0));
-            LINE_GEOMETRY.vertices.push(new Vector3(v2.position.x, v2.position.y , 0));
-            this.line = new Line(LINE_GEOMETRY, LINE_MATERIAL);
-            this.lines.push(this.line);
-            this.scene.add(this.line);
-        }
-    
+    public createConnection (start: Mesh , end: Mesh): void {
+        const LINE_GEOMETRY: Geometry = new Geometry();
+        LINE_GEOMETRY.vertices.push(new Vector3(start.position.x, start.position.y , 0));
+        LINE_GEOMETRY.vertices.push(new Vector3(end.position.x, end.position.y , 0));
+        this.line = new Line(LINE_GEOMETRY, LINE_MATERIAL);
+        this.connections.push(this.line);
+        this.scene.add(this.line);
     }
 }

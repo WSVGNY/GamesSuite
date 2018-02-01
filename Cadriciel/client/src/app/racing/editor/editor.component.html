@@ -18,6 +18,6 @@
 
 <button (click)="goBack()">go back</button>
 <button (click)= "saveEvent ($event)" > Save </button>
-<h2>Coordonnées: X: {{this.editorRenderService.mouse.x}} Y: {{this.editorRenderService.mouse.y}}  </h2>
+<h2>Coordonnées: X: {{this.editorRenderService.mouseVector.x}} Y: {{this.editorRenderService.mouseVector.y}}  </h2>
 <div #containerEditor>
 </div>
