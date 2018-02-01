@@ -41,14 +41,4 @@ export class RacingComponent implements AfterViewInit {
     public get car(): Car {
         return this.renderService.car;
     }
-
-    @HostListener("window:mousedown", ["$event"])
-    public onMouseDown(event: MouseEvent): void {
-        this.renderService.handleMouseDown(event);
-    }
-
-    @HostListener("window:mouseup", ["$event"])
-    public onMouseUp(event: MouseEvent): void {
-        this.renderService.handleMouseUp(event);
-    }
 }

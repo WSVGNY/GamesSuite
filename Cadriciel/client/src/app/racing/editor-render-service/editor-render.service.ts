@@ -44,9 +44,13 @@ export class EditorRenderService {
 
   this.ASPECT_RATIO = this.containerEditor.clientWidth / this.containerEditor.clientHeight;
   this.camera = new OrthographicCamera(
+    // tslint:disable-next-line:no-magic-numbers
     -this.ASPECT_RATIO * VIEW_SIZE / 2,
+    // tslint:disable-next-line:no-magic-numbers
     this.ASPECT_RATIO * VIEW_SIZE / 2,
+    // tslint:disable-next-line:no-magic-numbers
     VIEW_SIZE / 2,
+    // tslint:disable-next-line:no-magic-numbers
     -VIEW_SIZE / 2,
     NEAR_CLIPPING_PLANE,
     FAR_CLIPPING_PLANE );
