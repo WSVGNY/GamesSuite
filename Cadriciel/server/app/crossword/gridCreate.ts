@@ -19,13 +19,13 @@ export class Grid {
     private charGrid: Char[][];
 
     public gridCreate(req: Request, res: Response, next: NextFunction): void {
+        // tslint:disable-next-line:no-empty
         while (!this.newGrid()) { }
         res.send(this.grid);
     }
 
     private newGrid(): boolean {
         this.grid = new Array<Array<GridBox>>();
-        console.log("Created a new Grid");
         for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
             const row: GridBox[] = new Array<GridBox>();
 
@@ -37,17 +37,14 @@ export class Grid {
         if (!this.placeBlackGridTiles()) {
             return false;
         }
-        console.log("PlaceBlackGridTiles Done");
         this.createCharGrid();
-        console.log("Created Char Grid");
         this.bindCharToGrid();
-        console.log("Binded Char to Grid");
+
         return true;
     }
 
     private createCharGrid(): void {
         this.charGrid = new Array<Array<Char>>();
-
         for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
             const row: Char[] = new Array<Char>();
 
@@ -72,32 +69,28 @@ export class Grid {
 
     private placeBlackGridTiles(): boolean {
         // fill array 0->numberOfTile
-        let array: Vec2[] = this.fillShuffledArray();
-        console.log("Filled shuffled Array");
+        const array: Vec2[] = this.fillShuffledArray();
         // pick tiles in shuffled array 0->BLACK_TILES_RATIO
         for (let i: number = 0; i < this.BLACK_TILES_RATIO; i++) {
             const randomTileId: Vec2 = array[i];
             this.findMatchingTileById(randomTileId).$black = true;
         }
-        console.log("Placed Black Grid Tiles");
 
         if (!this.verifyBlackGridValidity()) {
-            console.log("Grid Verification Failed");
             return false;
         }
-        console.log("Grid Verification Passed");
-        return true;
 
+        return true;
     }
 
     // returns false if there's a word of 1 letter
     private verifyBlackGridValidity(): boolean {
-        let isValid: boolean = this.createWordsInGridHorizontally();
+        const isValid: boolean = this.createWordsInGridHorizontally();
         if (isValid) {
-            this.createWordsInGridVertically()
+            this.createWordsInGridVertically();
         }
-        return isValid;
 
+        return isValid;
     }
 
     // Horizontal MUST be called first because it tests single boxes vertically
@@ -126,7 +119,6 @@ export class Grid {
                         }
 
                     } else {
-                        // TODO: Change word id
                         this.grid[i][j].$word = new Word(null, null, true, wordLength, this.grid[i][j].$id, null);
                         j += wordLength;
                     }
