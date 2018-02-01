@@ -13,26 +13,23 @@ export class Lexicon {
 
     public getDefinition(word: string): string {
         let definitions: string = word["defs"];
-        //console.log(word);
-        for(var i=0; i<(word["defs"].length);i++){      //fait un internal Server error seulement dans le cas ou le mot n'a aucune definition car length est undefined
-            if(definitions[i][0]=="a"){               //s'assurer que le mot ne soit ni un adverbe ni un adjectif
-                delete(word["defs"][i]);
+        if (definitions === undefined)
+            return null;
+
+        for (var i = 0; i < (word["defs"].length); i++) {   // fait un internal Server error seulement dans le cas ou le mot n'a aucune definition car length est undefined
+            if (definitions[i][0] == "a") {                 // s'assurer que le mot ne soit ni un adverbe ni un adjectif
+                delete (word["defs"][i]);
             }
         }
-        console.log(word["word"]);
-        try {
-            if (this.difficulty === "EASY"){
-                    return definitions[0];
+
+        if (this.difficulty === "EASY") {
+            return definitions[0];
+        } else {
+            if (definitions.length >= 2) {
+                return definitions[1];
+            } else {
+                return definitions[0];
             }
-            else {
-                try {
-                    return definitions[1];
-                } catch (e) {
-                    return definitions[0];
-                }
-            }
-        } catch (e) {
-            return null;
         }
     }
 
@@ -56,9 +53,9 @@ export class Lexicon {
 
         requestPromise(this.BASE_URL + "sp=" + req.params.constraints + "&md=fd").then(
             (result: string) => {
-                
+
                 let words = JSON.parse(result.toString());
-               // console.log(words);
+                // console.log(words);
                 let random: number;
                 let responseWord: { "word": string, "def": string } = {
                     "word": "",
@@ -71,20 +68,20 @@ export class Lexicon {
                     random = Math.floor(Math.random() * words.length);
                     let tempWord = words[random];
                     responseWord.word = tempWord.word.toUpperCase();
-                    
 
-                   console.log(tempWord.word);
+                    console.log(tempWord.word + " f=" + tempWord.tags + " def=" + tempWord.defs);
 
                     if (this.checkFrequency(tempWord)) {
                         responseWord["def"] = this.getDefinition(tempWord);
-                        if (responseWord["def"] === null)
-                            delete words[tempWord];
-                        else
+                        if (responseWord["def"] !== null) {
                             badWord = false;
-                    } else {
+                        }
+                    }
+                    if (badWord) {
                         let removeIndex = words.findIndex((word: any) => word === tempWord);
                         words.splice(removeIndex, 1);
                     }
+
                     if (words.length === 0) {
                         responseWord = {
                             "word": "",
