@@ -16,7 +16,7 @@ export class EditorComponent implements AfterViewInit {
   @ViewChild("containerEditor")
     private containerRef: ElementRef;
 
-  @Input() public piste: Track;
+  @Input() public track: Track;
 
   public constructor(
     private route: ActivatedRoute,
