@@ -8,6 +8,7 @@ import Types from "./types";
 import { injectable, inject } from "inversify";
 import { Routes } from "./routes";
 import { LexiconService } from "./crossword/lexicon-service";
+import { GridCreateService} from "./crossword/gridCreate-service";
 import { AbstractService } from "./AbstractService";
 
 @injectable()
@@ -18,13 +19,16 @@ export class Application {
 
     constructor(
         @inject(Types.Routes) private api: Routes,
-        @inject(Types.LexiconService) private lexicon: LexiconService) {
+        @inject(Types.LexiconService) private lexicon: LexiconService,
+        @inject(Types.GridCreateService) private grid: GridCreateService
+    ) {
 
         this.app = express();
 
         this.configMiddleware();
 
         this.addService(this.lexicon);
+        this.addService(this.grid);
         this.routes();
     }
 

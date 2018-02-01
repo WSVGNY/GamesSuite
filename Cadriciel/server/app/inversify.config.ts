@@ -7,7 +7,8 @@ import { Routes } from "./routes";
 import { TrackRoute } from "./routes/track-route";
 import { LexiconService } from "./crossword/lexicon-service";
 import { Lexicon } from "./crossword/lexicon";
-import { Grid } from "./crossword/gridCreate_service";
+import { GridCreateService } from "./crossword/gridCreate-service";
+import { Grid} from "./crossword/gridCreate";
 
 const container: Container = new Container();
 
@@ -19,5 +20,6 @@ container.bind(Types.TrackRoute).to(TrackRoute);
 container.bind(Types.LexiconService).to(LexiconService);
 container.bind(Types.Lexicon).to(Lexicon);
 container.bind(Types.Grid).to(Grid);
+container.bind(Types.GridCreateService).to(GridCreateService);
 
 export { container };

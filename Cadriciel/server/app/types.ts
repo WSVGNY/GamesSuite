@@ -6,5 +6,6 @@ export default {
         TrackRoute: Symbol("TrackRoute"),
         LexiconService: Symbol("LexiconService"),
         Lexicon: Symbol("Lexicon"),
-        Grid: Symbol("Grid")
+        Grid: Symbol("Grid"),
+        GridCreateService: Symbol("GridCreateService")
 };

@@ -10,7 +10,7 @@ import {GridBox} from "../../../../common/crossword/gridBox";
 @Injectable()
 export class GridService {
 
-  private readonly BASE_URL: string = "http://localhost:3000/gridGet";
+  private readonly BASE_URL: string = "http://localhost:3000/grid/gridGet";
   public constructor(private http: HttpClient) { }
 
   public gridGet(): Observable<GridBox[][]> {

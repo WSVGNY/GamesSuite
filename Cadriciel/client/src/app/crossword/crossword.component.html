@@ -3,6 +3,7 @@
         <div *ngFor="let gridBox of gridBoxLine">
             <div [ngClass]="{filledGridBox : gridBox.black, emptyGridBox : !gridBox.black}">
                 <!-- <span>{{gridBox.id}}</span> -->
+                <div>{{gridBox.value}}</div>
             </div>
         </div>
     </div>
