@@ -8,15 +8,15 @@ import { of } from "rxjs/observable/of";
 import {GridBox} from "../../../../common/crossword/gridBox";
 
 @Injectable()
-export class EmptyGridService {
+export class GridService {
 
-  private readonly BASE_URL: string = "http://localhost:3000/emptyGridGet";
+  private readonly BASE_URL: string = "http://localhost:3000/grid/gridGet";
   public constructor(private http: HttpClient) { }
 
-  public emptyGridGet(): Observable<GridBox[][]> {
+  public gridGet(): Observable<GridBox[][]> {
 
     return this.http.get<GridBox[][]>(this.BASE_URL).pipe(
-      catchError(this.handleError<GridBox[][]>("emptyGridGet"))
+      catchError(this.handleError<GridBox[][]>("gridGet"))
     );
   }
 

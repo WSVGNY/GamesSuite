@@ -3,7 +3,7 @@ import { ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
 
 import { Track } from "../../../../../common/racing/track";
-import { PistesService } from "../track-service/track.service";
+import { TrackService } from "../track-service/track.service";
 import { EditorRenderService } from "../editor-render-service/editor-render.service";
 
 @Component({
@@ -20,7 +20,7 @@ export class EditorComponent implements AfterViewInit {
 
   public constructor(
     private route: ActivatedRoute,
-    private pistesService: PistesService,
+    private trackService: TrackService,
     private location: Location,
     private editorRenderService: EditorRenderService
   ) { }
@@ -36,8 +36,8 @@ export class EditorComponent implements AfterViewInit {
 
   public getPiste(): void {
     const id: number = +this.route.snapshot.paramMap.get("id");
-    this.pistesService.getPisteParID(id)
-      .subscribe((piste) => this.piste = piste);
+    this.trackService.getPisteParID(id)
+      .subscribe((track) => this.track = track);
   }
 
   public goBack(): void {
