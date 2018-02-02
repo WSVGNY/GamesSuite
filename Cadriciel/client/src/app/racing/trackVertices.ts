@@ -15,7 +15,8 @@ export class TrackVertices {
     private scene: Scene;
     private line: Line;
     private nbVertices: number;
-    private first : Mesh;
+    private firstVertex: Mesh;
+    private lastVertex: Mesh;
 
     public constructor(scene: Scene) {
         this.scene = scene;
@@ -31,13 +32,14 @@ export class TrackVertices {
         vertex.position.set(position.x, position.y, 0);
         this.scene.add (vertex);
         this.vertices.push(vertex);
-        if (this.nbVertices == 0 ){ 
-            this.first = vertex;
+        if (this.nbVertices === 0 ) {
+            this.firstVertex = vertex;
         }
         if (this.nbVertices > 0 ) {
             this.createConnection(this.vertices[this.nbVertices - 1], this.vertices[this.nbVertices]);
         }
         this.nbVertices++;
+        this.lastVertex = vertex;
     }
 
     public removeLastVertex(): void {
@@ -46,7 +48,7 @@ export class TrackVertices {
         this.nbVertices--;
     }
 
-    public createConnection (start: Mesh , end: Mesh): void {
+    public createConnection(start: Mesh , end: Mesh): void {
         const LINE_GEOMETRY: Geometry = new Geometry();
         LINE_GEOMETRY.vertices.push(new Vector3(start.position.x, start.position.y , 0));
         LINE_GEOMETRY.vertices.push(new Vector3(end.position.x, end.position.y , 0));
@@ -55,7 +57,12 @@ export class TrackVertices {
         this.scene.add(this.line);
     }
 
-    public getFirst () : Mesh {
-        return this.first;
+    public getFirstVertex(): Mesh {
+        return this.firstVertex;
     }
+
+    public getLastVertex(): Mesh {
+        return this.lastVertex;
+    }
+
 }

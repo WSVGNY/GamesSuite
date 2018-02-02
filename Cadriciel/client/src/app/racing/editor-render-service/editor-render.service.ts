@@ -80,19 +80,15 @@ export class EditorRenderService {
     const offset: Vector2 = new Vector2();
     offset.x = this.containerEditor.offsetLeft + this.containerEditor.clientLeft;
     offset.y = this.containerEditor.offsetTop - document.documentElement.scrollTop + this.containerEditor.clientTop;
+
     const containerCenter: Vector2 = new Vector2();
     containerCenter.x = this.containerEditor.clientWidth / 2;
     containerCenter.y = this.containerEditor.clientHeight / 2;
 
-    if (event.clientX > offset.x && event.clientY > offset.y) {
-      this.mouseVector.x = (event.clientX - offset.x - containerCenter.x) * VIEW_SIZE / this.containerEditor.clientHeight;
-      this.mouseVector.y = -(event.clientY - offset.y - containerCenter.y) * VIEW_SIZE / this.containerEditor.clientHeight;
+    this.mouseVector.x = (event.clientX - offset.x - containerCenter.x) * VIEW_SIZE / this.containerEditor.clientHeight;
+    this.mouseVector.y = -(event.clientY - offset.y - containerCenter.y) * VIEW_SIZE / this.containerEditor.clientHeight;
 
-      return true;
-    } else {
-
-      return false;
-    }
+    return (event.clientX > offset.x && event.clientY > offset.y) ? true : false;
   }
 
   public handleMouseDown(event: MouseEvent): void {
@@ -102,14 +98,13 @@ export class EditorRenderService {
             const direction: Vector3 = this.mouseVector.clone().sub(this.camera.position).normalize();
             this.raycaster.set(this.camera.position, direction);
             if ( this.raycaster.intersectObjects(this.scene.children, true).length ) {
-              if (this.raycaster.intersectObject(this.listOfPoints.getFirst(), true).length){
-                //Code pour sauvegarder la boucle
-                alert("La boucle est bouclée :) ");
-              }
-              else {
+              if (this.raycaster.intersectObject(this.listOfPoints.getFirstVertex(), true).length) {
+                // Code pour sauvegarder la boucle
+                this.listOfPoints.createConnection(this.listOfPoints.getFirstVertex(), this.listOfPoints.getLastVertex());
+              } else {
                 alert( "hit!");
               }
-            }else {
+            } else {
               this.listOfPoints.addVertex(this.mouseVector);
             }
             break;
