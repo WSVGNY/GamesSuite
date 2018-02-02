@@ -91,9 +91,10 @@ export class Lexicon {
                         badWord = false;
                     }
                 } while (badWord);
-
-
-
+               
+                responseWord["word"] = removeAccent(responseWord["word"]);
+                responseWord["def"] = responseWord["def"].substring(2);
+                
                 res.send(responseWord);
             }
         ).catch((e: Error) => {
@@ -101,6 +102,15 @@ export class Lexicon {
             res.send(500);
         });
     }
+}
 
-    
+function removeAccent(word: string) {
+    word = word.replace(new RegExp(/[àáâä]/g),"a");
+    word = word.replace(new RegExp(/ç/g),"c");
+    word = word.replace(new RegExp(/[èéêë]/g),"e");
+    word = word.replace(new RegExp(/[ìíîï]/g),"i");                
+    word = word.replace(new RegExp(/[òóôö]/g),"o");
+    word = word.replace(new RegExp(/[ùúûü]/g),"u");
+    word = word.replace(new RegExp(/\W/g),"");        //delete non word characters (hyphens, apostrophes, etc.)
+    return word;
 }
