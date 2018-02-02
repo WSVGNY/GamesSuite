@@ -5,6 +5,8 @@ import { GridBox } from "../../../common/crossword/gridBox";
 import { Word } from "../../../common/crossword/word";
 import { Vec2 } from "../../../common/crossword/vec2";
 import { Char } from "../../../common/crossword/char";
+import * as requestPromise from "request-promise-native";
+import { Difficulty } from "../../../common/crossword/difficulty";
 
 @injectable()
 export class Grid {
@@ -50,10 +52,22 @@ export class Grid {
         return true;
     }
 
+    private getWordFromAPI(constraints: string, difficulty: Difficulty): Word {
+        requestPromise(this.URL_WORD_API + constraints + "/" + difficulty.toString() ).then(
+            (result: string) => { 
+                let word: Word = new Word(null, null, null, null, null, null);
+
+                return word;
+            }
+        ).catch((e: Error) => {
+            console.error(e);
+        });
+    }
     private sortWordsList(): void {
         if (this.words !== undefined) {
             this.words.sort((a: Word, b: Word) => b.$length - a.$length);
         }
+        console.log(this.words);
     }
 
     private createCharGrid(): void {
