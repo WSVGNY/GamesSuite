@@ -44,9 +44,19 @@ export class EditorComponent implements AfterViewInit {
     this.location.back();
   }
 
-  @HostListener("window:click", ["$event"])
+  @HostListener("window:mousedown", ["$event"])
     public onMouseDown(event: MouseEvent): void {
         this.editorRenderService.handleMouseDown(event);
+    }
+
+  @HostListener("window:mousemove", ["$event"])
+    public onMouseMove(event: MouseEvent): void {
+        this.editorRenderService.handleMouseMove(event);
+    }
+
+  @HostListener("window:mouseup", ["$event"])
+    public onMouseUp(event: MouseEvent): void {
+        this.editorRenderService.handleMouseUp(event);
     }
 
   @HostListener("window:resize", ["$event"])
