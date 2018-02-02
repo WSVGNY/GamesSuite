@@ -30,6 +30,7 @@ export class TrackVertices {
             new Mesh(VERTEX_GEOMETRY, START_VERTEX_MATERIAL) :
             new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
         vertex.position.set(position.x, position.y, 0);
+        vertex.name = "vertex" + this.nbVertices;
         this.scene.add (vertex);
         this.vertices.push(vertex);
         if (this.nbVertices === 0 ) {
@@ -63,6 +64,24 @@ export class TrackVertices {
 
     public getLastVertex(): Mesh {
         return this.lastVertex;
+    }
+
+    public getVertices(): Array<Mesh> {
+        return this.vertices;
+    }
+
+    public isEmpty(): boolean {
+        return (this.nbVertices === 0) ? true : false;
+    }
+
+    public setVertexPosition( vertexName: String, position: Vector3 ): void {
+        // tslint:disable-next-line:prefer-const
+        for (let entry of this.vertices) {
+            if (entry.name === vertexName) {
+                entry.position.x = position.x;
+                entry.position.y = position.y;
+            }
+        }
     }
 
 }

@@ -81,32 +81,41 @@ export class EditorRenderService {
     offset.x = this.containerEditor.offsetLeft + this.containerEditor.clientLeft;
     offset.y = this.containerEditor.offsetTop - document.documentElement.scrollTop + this.containerEditor.clientTop;
 
-    const containerCenter: Vector2 = new Vector2();
-    containerCenter.x = this.containerEditor.clientWidth / 2;
-    containerCenter.y = this.containerEditor.clientHeight / 2;
+    const center: Vector2 = new Vector2();
+    // tslint:disable-next-line:no-magic-numbers
+    center.x = this.containerEditor.clientWidth / 2;
+    // tslint:disable-next-line:no-magic-numbers
+    center.y = this.containerEditor.clientHeight / 2;
 
-    this.mouseVector.x = (event.clientX - offset.x - containerCenter.x) * VIEW_SIZE / this.containerEditor.clientHeight;
-    this.mouseVector.y = -(event.clientY - offset.y - containerCenter.y) * VIEW_SIZE / this.containerEditor.clientHeight;
+    this.mouseVector.x = (event.clientX - offset.x - center.x) * VIEW_SIZE / this.containerEditor.clientHeight;
+    this.mouseVector.y = -(event.clientY - offset.y - center.y) * VIEW_SIZE / this.containerEditor.clientHeight;
 
     return (event.clientX > offset.x && event.clientY > offset.y) ? true : false;
+  }
+
+  public computeLeftClickAction(): void {
+    const direction: Vector3 = this.mouseVector.clone().sub(this.camera.position).normalize();
+    this.raycaster.set(this.camera.position, direction);
+    if (!this.listOfPoints.isEmpty()) {
+      if (this.raycaster.intersectObject(this.listOfPoints.getFirstVertex(), true).length) {
+        // Code pour sauvegarder la boucle
+        this.listOfPoints.createConnection(this.listOfPoints.getFirstVertex(), this.listOfPoints.getLastVertex());
+      } else if (this.raycaster.intersectObjects(this.listOfPoints.getVertices(), true).length) {
+        const point: string = this.raycaster.intersectObjects(this.listOfPoints.getVertices(), true)[0].object.name;
+        this.listOfPoints.setVertexPosition(point, this.mouseVector);
+      } else {
+        this.listOfPoints.addVertex(this.mouseVector);
+      }
+    } else {
+      this.listOfPoints.addVertex(this.mouseVector);
+    }
   }
 
   public handleMouseDown(event: MouseEvent): void {
     if (this.computeMouseCoordinates(event)) {
       switch (event.which) {
         case LEFT_CLICK_KEYCODE:
-            const direction: Vector3 = this.mouseVector.clone().sub(this.camera.position).normalize();
-            this.raycaster.set(this.camera.position, direction);
-            if ( this.raycaster.intersectObjects(this.scene.children, true).length ) {
-              if (this.raycaster.intersectObject(this.listOfPoints.getFirstVertex(), true).length) {
-                // Code pour sauvegarder la boucle
-                this.listOfPoints.createConnection(this.listOfPoints.getFirstVertex(), this.listOfPoints.getLastVertex());
-              } else {
-                alert( "hit!");
-              }
-            } else {
-              this.listOfPoints.addVertex(this.mouseVector);
-            }
+            this.computeLeftClickAction();
             break;
         case RIGHT_CLICK_KEYCODE:
             this.listOfPoints.removeLastVertex();
