@@ -102,9 +102,16 @@ export class EditorRenderService {
             const direction: Vector3 = this.mouseVector.clone().sub(this.camera.position).normalize();
             this.raycaster.set(this.camera.position, direction);
             if ( this.raycaster.intersectObjects(this.scene.children, true).length ) {
-              alert( "hit!");
+              if (this.raycaster.intersectObject(this.listOfPoints.getFirst(), true).length){
+                //Code pour sauvegarder la boucle
+                alert("La boucle est bouclée :) ");
+              }
+              else {
+                alert( "hit!");
+              }
+            }else {
+              this.listOfPoints.addVertex(this.mouseVector);
             }
-            this.listOfPoints.addVertex(this.mouseVector);
             break;
         case RIGHT_CLICK_KEYCODE:
             this.listOfPoints.removeLastVertex();
