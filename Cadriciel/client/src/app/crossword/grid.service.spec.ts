@@ -4,14 +4,14 @@ import { GridService } from "./grid.service";
 
 import { AppModule } from "../app.module";
 
-import {APP_BASE_HREF} from "@angular/common";
+import { APP_BASE_HREF } from "@angular/common";
 
 describe("GridService", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [GridService,
-        {provide: APP_BASE_HREF, useValue : "/" }],
-      imports:[AppModule],
+                  { provide: APP_BASE_HREF, useValue: "/" }],
+      imports: [AppModule],
     });
   });
 

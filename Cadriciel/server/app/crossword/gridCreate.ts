@@ -13,10 +13,13 @@ export class Grid {
     private readonly SIZE_GRID_Y: number = 10;
     private readonly NUMBER_OF_TILES: number = this.SIZE_GRID_X * this.SIZE_GRID_Y;
     // tslint:disable-next-line:no-magic-numbers
-    private readonly BLACK_TILES_RATIO: number = this.NUMBER_OF_TILES * 0.25; // 0.25
+    private readonly BLACK_TILES_RATIO: number = this.NUMBER_OF_TILES * 0.4; // 0.25
     private readonly MIN_WORD_LENGTH: number = 2;
     private grid: GridBox[][];
     private charGrid: Char[][];
+    private words: Word[];
+    private wordId: number;
+    private wordDefID: number;
 
     public gridCreate(req: Request, res: Response, next: NextFunction): void {
         // tslint:disable-next-line:no-empty
@@ -85,6 +88,9 @@ export class Grid {
 
     // returns false if there's a word of 1 letter
     private verifyBlackGridValidity(): boolean {
+        this.wordId = 1;
+        this.wordDefID = 1;
+        this.words = [];
         const isValid: boolean = this.createWordsInGridHorizontally();
         if (isValid) {
             this.createWordsInGridVertically();
@@ -117,9 +123,9 @@ export class Grid {
                         if (!isValid) {
                             return isValid;
                         }
-
                     } else {
-                        this.grid[i][j].$word = new Word(null, null, true, wordLength, this.grid[i][j].$id, null);
+                        this.words[this.wordId - 1] = new Word(this.wordId++, this.wordDefID++,
+                                                               true, wordLength, this.grid[i][j].$id, null);
                         j += wordLength;
                     }
                 }
@@ -137,9 +143,9 @@ export class Grid {
                     while (j + wordLength < this.SIZE_GRID_Y && !this.grid[j + wordLength][i].$black) {
                         wordLength++;
                     }
-                    if (wordLength > this.MIN_WORD_LENGTH) {
-                        // TODO: Change word id
-                        this.grid[j][i].$word = new Word(null, null, true, wordLength, this.grid[j][i].$id, null);
+                    if (wordLength >= this.MIN_WORD_LENGTH) {
+                        this.words[this.wordId - 1] = new Word(this.wordId++, this.findHorizontalWordDefID(i, j),
+                                                               false, wordLength, this.grid[j][i].$id, null);
                         j += wordLength;
                     }
                 }
@@ -177,5 +183,15 @@ export class Grid {
             }
         }
         throw new Error("GridTile not found");
+    }
+
+    private findHorizontalWordDefID(i: number, j: number): number {
+        for (const word of this.words) {
+            if (word.$startPos.$x === i && word.$startPos.$y === j) {
+                return word.$definitionID;
+            }
+        }
+
+        return this.wordDefID++;
     }
 }
