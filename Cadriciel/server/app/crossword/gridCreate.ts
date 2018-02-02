@@ -42,8 +42,15 @@ export class Grid {
         }
         this.createCharGrid();
         this.bindCharToGrid();
+        this.sortWordsList();
 
         return true;
+    }
+
+    private sortWordsList(): void {
+        if (this.words !== undefined) {
+            this.words.sort((a: Word, b: Word) => b.$length - a.$length);
+        }
     }
 
     private createCharGrid(): void {
