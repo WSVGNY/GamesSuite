@@ -13,7 +13,7 @@ export class Grid {
     private readonly SIZE_GRID_Y: number = 10;
     private readonly NUMBER_OF_TILES: number = this.SIZE_GRID_X * this.SIZE_GRID_Y;
     // tslint:disable-next-line:no-magic-numbers
-    private readonly BLACK_TILES_RATIO: number = this.NUMBER_OF_TILES * 0.60; // 0.25
+    private readonly BLACK_TILES_RATIO: number = this.NUMBER_OF_TILES * 0.35; // 0.25
     private readonly MIN_WORD_LENGTH: number = 2;
     private grid: GridBox[][];
     private charGrid: Char[][];
@@ -131,7 +131,7 @@ export class Grid {
                     }
                 } else {
                     blackCpt++;
-                    if (blackCpt > this.SIZE_GRID_X - this.MIN_WORD_LENGTH){
+                    if (blackCpt >= (this.SIZE_GRID_X - this.MIN_WORD_LENGTH)) {
                         return false;
                     }
                 }
@@ -158,7 +158,7 @@ export class Grid {
                     }
                 } else {
                     blackCpt++;
-                    if (blackCpt > this.SIZE_GRID_X - this.MIN_WORD_LENGTH) {
+                    if (blackCpt >= (this.SIZE_GRID_X - this.MIN_WORD_LENGTH)) {
                         return false;
                     }
                 }
