@@ -13,7 +13,7 @@ export class Grid {
     private readonly SIZE_GRID_Y: number = 10;
     private readonly NUMBER_OF_TILES: number = this.SIZE_GRID_X * this.SIZE_GRID_Y;
     // tslint:disable-next-line:no-magic-numbers
-    private readonly BLACK_TILES_RATIO: number = this.NUMBER_OF_TILES * 0.4; // 0.25
+    private readonly BLACK_TILES_RATIO: number = this.NUMBER_OF_TILES * 0.60; // 0.25
     private readonly MIN_WORD_LENGTH: number = 2;
     private grid: GridBox[][];
     private charGrid: Char[][];
@@ -91,9 +91,9 @@ export class Grid {
         this.wordId = 1;
         this.wordDefID = 1;
         this.words = [];
-        const isValid: boolean = this.createWordsInGridHorizontally();
+        let isValid: boolean = this.createWordsInGridHorizontally();
         if (isValid) {
-            this.createWordsInGridVertically();
+            isValid = this.createWordsInGridVertically();
         }
 
         return isValid;
@@ -105,6 +105,7 @@ export class Grid {
     // tslint:disable-next-line:max-func-body-length
     private createWordsInGridHorizontally(): boolean {
         let isValid: boolean = true;
+        let blackCpt: number = 0;
         for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
             for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
                 if (!this.grid[i][j].$black) {
@@ -128,14 +129,21 @@ export class Grid {
                                                                true, wordLength, this.grid[i][j].$id, null);
                         j += wordLength;
                     }
+                } else {
+                    blackCpt++;
+                    if (blackCpt > this.SIZE_GRID_X - this.MIN_WORD_LENGTH){
+                        return false;
+                    }
                 }
             }
+            blackCpt = 0;
         }
 
         return isValid;
     }
 
-    private createWordsInGridVertically(): void {
+    private createWordsInGridVertically(): boolean {
+        let blackCpt: number = 0;
         for (let i: number = 0; i < this.SIZE_GRID_X; i++) {
             for (let j: number = 0; j < this.SIZE_GRID_Y; j++) {
                 if (!this.grid[j][i].$black) {
@@ -148,9 +156,17 @@ export class Grid {
                                                                false, wordLength, this.grid[j][i].$id, null);
                         j += wordLength;
                     }
+                } else {
+                    blackCpt++;
+                    if (blackCpt > this.SIZE_GRID_X - this.MIN_WORD_LENGTH) {
+                        return false;
+                    }
                 }
             }
+            blackCpt = 0;
         }
+
+        return true;
     }
 
     // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
