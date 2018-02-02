@@ -16,9 +16,10 @@ export class Lexicon {
         if (definitions === undefined)
             return null;
 
-        for (var i = 0; i < (word["defs"].length); i++) {   // fait un internal Server error seulement dans le cas ou le mot n'a aucune definition car length est undefined
+        for (var i = 0; i < (word["defs"].length); i++) {   
             if (definitions[i][0] == "a") {                 // s'assurer que le mot ne soit ni un adverbe ni un adjectif
                 delete (word["defs"][i]);
+                return null;
             }
         }
 
@@ -69,7 +70,7 @@ export class Lexicon {
                     let tempWord = words[random];
                     responseWord.word = tempWord.word.toUpperCase();
 
-                    console.log(tempWord.word + " f=" + tempWord.tags + " def=" + tempWord.defs);
+                    //console.log(tempWord.word + " f=" + tempWord.tags + " def=" + tempWord.defs);
 
                     if (this.checkFrequency(tempWord)) {
                         responseWord["def"] = this.getDefinition(tempWord);
@@ -91,6 +92,8 @@ export class Lexicon {
                     }
                 } while (badWord);
 
+
+
                 res.send(responseWord);
             }
         ).catch((e: Error) => {
@@ -98,4 +101,6 @@ export class Lexicon {
             res.send(500);
         });
     }
+
+    
 }
