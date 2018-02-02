@@ -55,8 +55,6 @@ export class Grid {
                 console.log(result);
             }
         ).catch((e: Error) => console.error(e));
-
-        return true;
     }
 
     private async getWordFromAPI(constraints: string, difficulty: Difficulty): Promise<ResponseWordFromAPI> {

@@ -12,8 +12,6 @@ it("Grid contains appropriate number of black tiles", (done: MochaDone) => {
             }
         }
     }
-    console.log(numBlackTiles);
-    console.log(grid["BLACK_TILES_RATIO"] * grid["NUMBER_OF_TILES"]);
     assert(numBlackTiles >= grid["BLACK_TILES_RATIO"] * grid["NUMBER_OF_TILES"]);
     done();
 });
