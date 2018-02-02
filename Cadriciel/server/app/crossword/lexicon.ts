@@ -3,6 +3,7 @@ import "reflect-metadata";
 import { injectable, } from "inversify";
 import * as requestPromise from "request-promise-native";
 import { Difficulty } from "../../../common/crossword/difficulty"
+import { ResponseWordFromAPI } from "../../../common/communication/responseWordFromAPI";
 
 @injectable()
 export class Lexicon {
@@ -57,38 +58,34 @@ export class Lexicon {
                 let words = JSON.parse(result.toString());
                 // console.log(words);
                 let random: number;
-                let responseWord: { "word": string, "def": string } = {
-                    "word": "",
-                    "def": ""
-                };
+                let responseWord: ResponseWordFromAPI = new ResponseWordFromAPI();
                 let badWord: boolean = true;
 
                 do {
                     badWord = true;
                     random = Math.floor(Math.random() * words.length);
                     let tempWord = words[random];
-                    responseWord.word = tempWord.word.toUpperCase();
+                    responseWord.$word = tempWord.word.toUpperCase();
 
                     console.log(tempWord.word + " f=" + tempWord.tags + " def=" + tempWord.defs);
 
                     if (this.checkFrequency(tempWord)) {
-                        responseWord["def"] = this.getDefinition(tempWord);
-                        if (responseWord["def"] !== null) {
+                        responseWord.$definition = this.getDefinition(tempWord);
+                        if (responseWord.$definition !== null) {
                             badWord = false;
                         }
                     }
+
                     if (badWord) {
                         let removeIndex = words.findIndex((word: any) => word === tempWord);
                         words.splice(removeIndex, 1);
                     }
 
                     if (words.length === 0) {
-                        responseWord = {
-                            "word": "",
-                            "def": ""
-                        };
+                        responseWord = new ResponseWordFromAPI();
                         badWord = false;
                     }
+
                 } while (badWord);
 
                 res.send(responseWord);
