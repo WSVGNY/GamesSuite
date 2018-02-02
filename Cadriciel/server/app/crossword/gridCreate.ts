@@ -7,6 +7,7 @@ import { Vec2 } from "../../../common/crossword/vec2";
 import { Char } from "../../../common/crossword/char";
 import * as requestPromise from "request-promise-native";
 import { Difficulty } from "../../../common/crossword/difficulty";
+import { ResponseWordFromAPI } from "../../../common/communication/responseWordFromAPI";
 
 @injectable()
 export class Grid {
@@ -49,25 +50,31 @@ export class Grid {
         this.bindCharToGrid();
         this.sortWordsList();
 
+        this.getWordFromAPI("%3f%3f%3f", Difficulty.easy).then(
+            (result: ResponseWordFromAPI) => {
+                console.log(result);
+            }
+        ).catch((e: Error) => console.error(e));
+
         return true;
     }
 
-    private getWordFromAPI(constraints: string, difficulty: Difficulty): Word {
-        requestPromise(this.URL_WORD_API + constraints + "/" + difficulty.toString() ).then(
-            (result: string) => { 
-                let word: Word = new Word(null, null, null, null, null, null);
-
-                return word;
+    private async getWordFromAPI(constraints: string, difficulty: Difficulty): Promise<ResponseWordFromAPI> {
+        let responseWord: ResponseWordFromAPI;
+        await requestPromise(this.URL_WORD_API + constraints + "/" + difficulty).then(
+            (result: ResponseWordFromAPI) => {
+                responseWord = result;
             }
         ).catch((e: Error) => {
             console.error(e);
         });
+
+        return responseWord;
     }
     private sortWordsList(): void {
         if (this.words !== undefined) {
             this.words.sort((a: Word, b: Word) => b.$length - a.$length);
         }
-        console.log(this.words);
     }
 
     private createCharGrid(): void {
@@ -150,7 +157,7 @@ export class Grid {
                         }
                     } else {
                         this.words[this.wordId - 1] = new Word(this.wordId++, this.wordDefID++,
-                                                               true, wordLength, this.grid[i][j].$id, null);
+                            true, wordLength, this.grid[i][j].$id, null);
                         j += wordLength;
                         wordCnt++;
                     }
@@ -176,7 +183,7 @@ export class Grid {
                     }
                     if (wordLength >= this.MIN_WORD_LENGTH) {
                         this.words[this.wordId - 1] = new Word(this.wordId++, this.findHorizontalWordDefID(i, j),
-                                                               false, wordLength, this.grid[j][i].$id, null);
+                            false, wordLength, this.grid[j][i].$id, null);
                         j += wordLength;
                         wordCnt++;
                     }

@@ -67,7 +67,7 @@ export class Lexicon {
                     let tempWord = words[random];
                     responseWord.$word = tempWord.word.toUpperCase();
 
-                    console.log(tempWord.word + " f=" + tempWord.tags + " def=" + tempWord.defs);
+                   // console.log(tempWord.word + " f=" + tempWord.tags + " def=" + tempWord.defs);
 
                     if (this.checkFrequency(tempWord)) {
                         responseWord.$definition = this.getDefinition(tempWord);
@@ -88,7 +88,7 @@ export class Lexicon {
 
                 } while (badWord);
 
-                res.send(responseWord);
+                res.send(JSON.stringify(responseWord));
             }
         ).catch((e: Error) => {
             console.error(e);
