@@ -13,13 +13,16 @@ export class Grid {
     private readonly SIZE_GRID_Y: number = 10;
     private readonly NUMBER_OF_TILES: number = this.SIZE_GRID_X * this.SIZE_GRID_Y;
     // tslint:disable-next-line:no-magic-numbers
-    private readonly BLACK_TILES_RATIO: number = this.NUMBER_OF_TILES * 0.35; // 0.25
+    private readonly BLACK_TILES_RATIO: number = this.NUMBER_OF_TILES * 0.25; // 0.25
     private readonly MIN_WORD_LENGTH: number = 2;
     private grid: GridBox[][];
     private charGrid: Char[][];
     private words: Word[];
     private wordId: number;
     private wordDefID: number;
+    private readonly URL_WORD_API: string = "http://localhost:3000/lexicon/constraints/";
+
+
 
     public gridCreate(req: Request, res: Response, next: NextFunction): void {
         // tslint:disable-next-line:no-empty
@@ -112,7 +115,7 @@ export class Grid {
     // tslint:disable-next-line:max-func-body-length
     private createWordsInGridHorizontally(): boolean {
         let isValid: boolean = true;
-        let blackCpt: number = 0;
+        let wordCnt: number = 0;
         for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
             for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
                 if (!this.grid[i][j].$black) {
@@ -135,22 +138,21 @@ export class Grid {
                         this.words[this.wordId - 1] = new Word(this.wordId++, this.wordDefID++,
                                                                true, wordLength, this.grid[i][j].$id, null);
                         j += wordLength;
-                    }
-                } else {
-                    blackCpt++;
-                    if (blackCpt >= (this.SIZE_GRID_X - this.MIN_WORD_LENGTH)) {
-                        return false;
+                        wordCnt++;
                     }
                 }
             }
-            blackCpt = 0;
+            if (wordCnt < 1) {
+                return false;
+            }
+            wordCnt = 0;
         }
 
         return isValid;
     }
 
     private createWordsInGridVertically(): boolean {
-        let blackCpt: number = 0;
+        let wordCnt: number = 0;
         for (let i: number = 0; i < this.SIZE_GRID_X; i++) {
             for (let j: number = 0; j < this.SIZE_GRID_Y; j++) {
                 if (!this.grid[j][i].$black) {
@@ -162,15 +164,14 @@ export class Grid {
                         this.words[this.wordId - 1] = new Word(this.wordId++, this.findHorizontalWordDefID(i, j),
                                                                false, wordLength, this.grid[j][i].$id, null);
                         j += wordLength;
-                    }
-                } else {
-                    blackCpt++;
-                    if (blackCpt >= (this.SIZE_GRID_X - this.MIN_WORD_LENGTH)) {
-                        return false;
+                        wordCnt++;
                     }
                 }
             }
-            blackCpt = 0;
+            if (wordCnt < 1) {
+                return false;
+            }
+            wordCnt = 0;
         }
 
         return true;
