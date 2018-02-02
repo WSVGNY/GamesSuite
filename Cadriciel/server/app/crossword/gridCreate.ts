@@ -15,8 +15,8 @@ export class Grid {
     private readonly SIZE_GRID_X: number = 10;
     private readonly SIZE_GRID_Y: number = 10;
     private readonly NUMBER_OF_TILES: number = this.SIZE_GRID_X * this.SIZE_GRID_Y;
-    // tslint:disable-next-line:no-magic-numbers
-    private readonly BLACK_TILES_RATIO: number = this.NUMBER_OF_TILES * 0.25; // 0.25
+    private readonly BLACK_TILES_RATIO: number = 0.4;
+    private readonly NUM_BLACK_TILES: number = this.NUMBER_OF_TILES * this.BLACK_TILES_RATIO;
     private readonly MIN_WORD_LENGTH: number = 2;
     private grid: GridBox[][];
     private charGrid: Char[][];
@@ -25,26 +25,26 @@ export class Grid {
     private wordDefID: number;
     private readonly URL_WORD_API: string = "http://localhost:3000/lexicon/constraints/";
 
-
-
     public gridCreate(req: Request, res: Response, next: NextFunction): void {
-        // tslint:disable-next-line:no-empty
-        while (!this.newGrid()) { }
+        this.newGrid();
         res.send(this.grid);
     }
 
-    private newGrid(): boolean {
-        this.grid = new Array<Array<GridBox>>();
-        for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
-            const row: GridBox[] = new Array<GridBox>();
+    private newGrid(): void {
+        const isValidGrid: boolean = false;
+        while (!isValidGrid) {
+            this.grid = new Array<Array<GridBox>>();
+            for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
+                const row: GridBox[] = new Array<GridBox>();
 
-            for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                row.push(new GridBox(new Vec2(j, i), false));
+                for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
+                    row.push(new GridBox(new Vec2(j, i), false));
+                }
+                this.grid.push(row);
             }
-            this.grid.push(row);
-        }
-        if (!this.placeBlackGridTiles()) {
-            return false;
+            if (this.placeBlackGridTiles()) {
+                break;
+            }
         }
         this.createCharGrid();
         this.bindCharToGrid();
@@ -104,8 +104,7 @@ export class Grid {
     private placeBlackGridTiles(): boolean {
         // fill array 0->numberOfTile
         const array: Vec2[] = this.fillShuffledArray();
-        // pick tiles in shuffled array 0->BLACK_TILES_RATIO
-        for (let i: number = 0; i < this.BLACK_TILES_RATIO; i++) {
+        for (let i: number = 0; i < this.NUM_BLACK_TILES; i++) {
             const randomTileId: Vec2 = array[i];
             this.findMatchingTileById(randomTileId).$black = true;
         }
@@ -133,7 +132,6 @@ export class Grid {
     // Horizontal MUST be called first because it tests single boxes vertically
     // In vertical, it supposes that all single boxes are valid
 
-    // tslint:disable-next-line:max-func-body-length
     private createWordsInGridHorizontally(): boolean {
         let isValid: boolean = true;
         let wordCnt: number = 0;
@@ -145,19 +143,13 @@ export class Grid {
                         wordLength++;
                     }
                     if (wordLength < this.MIN_WORD_LENGTH) {
-                        isValid = false;
-                        if (i + 1 < this.SIZE_GRID_Y) {
-                            isValid = !this.grid[i + 1][j].$black;
-                        }
-                        if (i - 1 > 0 && !isValid) {
-                            isValid = !this.grid[i - 1][j].$black;
-                        }
+                        isValid = this.verifyVertically(i, j);
                         if (!isValid) {
                             return isValid;
                         }
                     } else {
-                        this.words[this.wordId - 1] = new Word(this.wordId++, this.wordDefID++,
-                            true, wordLength, this.grid[i][j].$id, null);
+                        this.words[this.wordId - 1] =
+                        new Word(this.wordId++, this.wordDefID++, true, wordLength, this.grid[i][j].$id, null);
                         j += wordLength;
                         wordCnt++;
                     }
@@ -172,6 +164,17 @@ export class Grid {
         return isValid;
     }
 
+    private verifyVertically(i: number, j: number): boolean {
+        if (i + 1 < this.SIZE_GRID_Y) {
+            return !this.grid[i + 1][j].$black;
+        }
+        if (i - 1 > 0) {
+            return !this.grid[i - 1][j].$black;
+        }
+
+        return false;
+    }
+
     private createWordsInGridVertically(): boolean {
         let wordCnt: number = 0;
         for (let i: number = 0; i < this.SIZE_GRID_X; i++) {
@@ -182,8 +185,8 @@ export class Grid {
                         wordLength++;
                     }
                     if (wordLength >= this.MIN_WORD_LENGTH) {
-                        this.words[this.wordId - 1] = new Word(this.wordId++, this.findHorizontalWordDefID(i, j),
-                            false, wordLength, this.grid[j][i].$id, null);
+                        this.words[this.wordId - 1] =
+                        new Word(this.wordId++, this.findHorizontalWordDefID(i, j), false, wordLength, this.grid[j][i].$id, null);
                         j += wordLength;
                         wordCnt++;
                     }
