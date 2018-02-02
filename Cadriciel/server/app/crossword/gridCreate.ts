@@ -46,9 +46,18 @@ export class Grid {
                 break;
             }
         }
+
+        this.wordFillControler();
+    }
+
+    private wordFillControler(): void {
         this.createCharGrid();
         this.bindCharToGrid();
         this.sortWordsList();
+        this.fillWords();
+    }
+
+    private fillWords(): void {
 
         this.getWordFromAPI("%3f%3f%3f", Difficulty.easy).then(
             (result: ResponseWordFromAPI) => {
@@ -56,6 +65,7 @@ export class Grid {
             }
         ).catch((e: Error) => console.error(e));
     }
+
 
     private async getWordFromAPI(constraints: string, difficulty: Difficulty): Promise<ResponseWordFromAPI> {
         let responseWord: ResponseWordFromAPI;
@@ -147,7 +157,7 @@ export class Grid {
                         }
                     } else {
                         this.words[this.wordId - 1] =
-                        new Word(this.wordId++, this.wordDefID++, true, wordLength, this.grid[i][j].$id, null);
+                        new Word(this.wordId++, this.wordDefID++, true, wordLength, this.grid[i][j].$id);
                         j += wordLength;
                         wordCnt++;
                     }
@@ -177,17 +187,18 @@ export class Grid {
         let wordCnt: number = 0;
         for (let i: number = 0; i < this.SIZE_GRID_X; i++) {
             for (let j: number = 0; j < this.SIZE_GRID_Y; j++) {
-                if (!this.grid[j][i].$black) {
-                    let wordLength: number = 1;
-                    while (j + wordLength < this.SIZE_GRID_Y && !this.grid[j + wordLength][i].$black) {
-                        wordLength++;
-                    }
-                    if (wordLength >= this.MIN_WORD_LENGTH) {
-                        this.words[this.wordId - 1] =
-                        new Word(this.wordId++, this.findHorizontalWordDefID(i, j), false, wordLength, this.grid[j][i].$id, null);
-                        j += wordLength;
-                        wordCnt++;
-                    }
+                if (this.grid[j][i].$black) {
+                    continue;
+                }
+                let wordLength: number = 1;
+                while (j + wordLength < this.SIZE_GRID_Y && !this.grid[j + wordLength][i].$black) {
+                    wordLength++;
+                }
+                if (wordLength >= this.MIN_WORD_LENGTH) {
+                    this.words[this.wordId - 1] =
+                    new Word(this.wordId++, this.findHorizontalWordDefID(i, j), false, wordLength, this.grid[j][i].$id);
+                    j += wordLength;
+                    wordCnt++;
                 }
             }
             if (wordCnt < 1) {
