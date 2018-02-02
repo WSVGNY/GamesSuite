@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
-import { PerspectiveCamera, WebGLRenderer, Scene, AmbientLight } from "three";
+import { PerspectiveCamera, WebGLRenderer, Scene, AmbientLight} from "three";
 import { Car } from "../car/car";
 
 const FAR_CLIPPING_PLANE: number = 1000;
@@ -136,21 +136,5 @@ export class RenderService {
             default:
                 break;
         }
-    }
-
-     // TODO: Create an event handler service.
-     public handleMouseDown(event: MouseEvent): void {
-        this._car.isAcceleratorPressed = true;
-        // event.clientX
-        
-        // event.clientY
-    }
-
-    // TODO: Create an event handler service.
-    public handleMouseUp(event: MouseEvent): void {
-        this._car.isAcceleratorPressed = false;
-        // event.clientX
-        
-        // event.clientY
     }
 }

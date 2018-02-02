@@ -1,6 +1,6 @@
 import { injectable, inject } from "inversify";
 import Types from "../types";
-import { Router, Request, Response, NextFunction } from "express";
+import { Router, Request, Response } from "express";
 import { Lexicon } from "./lexicon";
 import { AbstractService } from "../AbstractService";
 
@@ -15,14 +15,8 @@ export class LexiconService extends AbstractService {
     public get routes(): Router {
         const router: Router = Router();
 
-        router.get("/definition/:word", (req: Request, res: Response, next: NextFunction) =>
-            this.lexicon.getWordAndDefinition(req, res, next)
-        );
-        router.get("/frequency/:word", (req: Request, res: Response, next: NextFunction) =>
-            this.lexicon.getFrequency(req, res, next)
-        );
-        router.get("/constraints/:constraints", (req: Request, res: Response, next: NextFunction) =>
-            this.lexicon.getWordListFromConstraint(req, res, next)
+        router.get("/constraints/:constraints/:difficulty", (req: Request, res: Response) =>
+            this.lexicon.getWordListFromConstraint(req, res)
         );
 
         return router;

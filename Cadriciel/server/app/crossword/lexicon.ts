@@ -1,54 +1,101 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import "reflect-metadata";
 import { injectable, } from "inversify";
 import * as requestPromise from "request-promise-native";
+import { Difficulty } from "../../../common/crossword/difficulty"
 
 @injectable()
 export class Lexicon {
 
-    /**
-     * These functions work asynchronously to get words and definitions from the Datamuse api
-     * To get them synchronously, we use a promise to return the result from the server then
-     */
-
     private readonly BASE_URL: string = "https://api.datamuse.com/words?";
-    private readonly INDENTATION_LENGTH: number = 2;
+    private difficulty: Difficulty;
+    private readonly FREQUENCY_DELIMITER: number = 10;
 
-    public getWordAndDefinition(req: Request, res: Response, next: NextFunction): void {
-        const urlOptions: string = "sp=" + req.params.word + "&md=d";
+    public getDefinition(word: string): string {
+        let definitions: string = word["defs"];
+        if (definitions === undefined)
+            return null;
 
-        requestPromise(this.BASE_URL + urlOptions).then(
+        for (var i = 0; i < (word["defs"].length); i++) {   // fait un internal Server error seulement dans le cas ou le mot n'a aucune definition car length est undefined
+            if (definitions[i][0] == "a") {                 // s'assurer que le mot ne soit ni un adverbe ni un adjectif
+                delete (word["defs"][i]);
+            }
+        }
+
+        if (this.difficulty === "EASY") {
+            return definitions[0];
+        } else {
+            if (definitions.length >= 2) {
+                return definitions[1];
+            } else {
+                return definitions[0];
+            }
+        }
+    }
+
+    private checkFrequency(word: string): boolean {
+        let frequency: number = word["tags"][0].substring(2);
+        if (this.difficulty === "HARD") {
+            if (frequency < this.FREQUENCY_DELIMITER)
+                return true;
+            else
+                return false;
+        } else {
+            if (frequency >= this.FREQUENCY_DELIMITER)
+                return true;
+            else
+                return false;
+        }
+    }
+
+    public getWordListFromConstraint(req: Request, res: Response): void {
+        this.difficulty = req.params.difficulty;
+
+        requestPromise(this.BASE_URL + "sp=" + req.params.constraints + "&md=fd").then(
             (result: string) => {
-                result = JSON.parse(result.toString());
-                const wordAndDef: ({ "word": string; } | { "def": string; }) = {
-                    "word": result[0]["word"],
-                    "def": result[0]["defs"][0].substring(this.INDENTATION_LENGTH)
+
+                let words = JSON.parse(result.toString());
+                // console.log(words);
+                let random: number;
+                let responseWord: { "word": string, "def": string } = {
+                    "word": "",
+                    "def": ""
                 };
-                res.json(wordAndDef);
+                let badWord: boolean = true;
+
+                do {
+                    badWord = true;
+                    random = Math.floor(Math.random() * words.length);
+                    let tempWord = words[random];
+                    responseWord.word = tempWord.word.toUpperCase();
+
+                    console.log(tempWord.word + " f=" + tempWord.tags + " def=" + tempWord.defs);
+
+                    if (this.checkFrequency(tempWord)) {
+                        responseWord["def"] = this.getDefinition(tempWord);
+                        if (responseWord["def"] !== null) {
+                            badWord = false;
+                        }
+                    }
+                    if (badWord) {
+                        let removeIndex = words.findIndex((word: any) => word === tempWord);
+                        words.splice(removeIndex, 1);
+                    }
+
+                    if (words.length === 0) {
+                        responseWord = {
+                            "word": "",
+                            "def": ""
+                        };
+                        badWord = false;
+                    }
+                } while (badWord);
+
+                res.send(responseWord);
             }
-        ).catch((e: Error) => console.error(e));
-    }
-
-    public getFrequency(req: Request, res: Response, next: NextFunction): void {
-        const urlOptions: string = "sp=" + req.params.word + "&md=f";
-
-        requestPromise(this.BASE_URL + urlOptions).then(
-            (result: string) => {
-                result = JSON.parse(result.toString());
-                const num: number = result[0]["tags"][0].substring(this.INDENTATION_LENGTH);
-                res.send(num);
-            }
-        ).catch((e: Error) => console.error(e));
-    }
-
-    public getWordListFromConstraint(req: Request, res: Response, next: NextFunction): void {
-        const urlOptions: string = "sp=" + req.params.constraints;
-
-        requestPromise(this.BASE_URL + urlOptions).then(
-            (result: string) => {
-                result = JSON.parse(result.toString());
-                res.json(result);
-            }
-        ).catch((e: Error) => console.error(e));
+        ).catch((e: Error) => {
+            console.error(e);
+            res.send(500);
+        });
     }
 }
