@@ -59,7 +59,7 @@ export class Lexicon {
                 // console.log(words);
                 let random: number;
                 let responseWord: ResponseWordFromAPI = new ResponseWordFromAPI();
-                console.log(responseWord);
+                //console.log(responseWord);
                 let badWord: boolean = true;
 
                 do {
@@ -90,6 +90,7 @@ export class Lexicon {
                 } while (badWord);
 
                 res.send(JSON.stringify(responseWord));
+                //res.send(responseWord);
             }
         ).catch((e: Error) => {
             console.error(e);

@@ -63,21 +63,22 @@ export class Grid {
 
         for (let i: number = 0; i < this.words.length - this.words.length + 1; ++i) {
             const wordConstraints: string = this.createWordConstraints(i);
-            //const word: Word = this.words[i];
-            console.log("allo");
-            console.log(wordConstraints);
+            const word: Word = this.words[i];
+            //console.log("allo");
+            //console.log(wordConstraints);
             this.getWordFromAPI(wordConstraints, Difficulty.easy).then(
                 (result: ResponseWordFromAPI) => {
-                    // result = JSON.parse(result);
+                    //result = JSON.parse(result);
+                    // temporary, wait for result to be received and defined
+                    //while (result.$word === undefined) { }
+                    word.$word = result.$word;
+                    word.$definition = result.$definition;
                     console.log(result.$word);
-                    console.log(result);
-                    this.words[i].$word = result.$word;
-                    this.words[i].$definition = result.$definition;
-                    console.log("ALLO");
-                    console.log(result.$word);
-                    //const splittedWord: string[] = Array.from(result.$word);
+                    console.log("bye");
+
+                    // const splittedWord: string[] = Array.from(result.$word);
                     // for (let j: number = 0; j < splittedWord.length; ++j) {
-                    //     if (this.words[i].$horizontal) {
+                    //     if (word.$horizontal) {
                     //         this.charGrid[word.$startPos.$y][word.$startPos.$x + j].$value = splittedWord[j];
                     //     } else {
                     //         this.charGrid[word.$startPos.$y + j][word.$startPos.$x].$value = splittedWord[j];
@@ -117,9 +118,16 @@ export class Grid {
 
     private async getWordFromAPI(constraints: string, difficulty: Difficulty): Promise<ResponseWordFromAPI> {
         let responseWord: ResponseWordFromAPI;
+        //this.gridService.gridGet().subscribe((grid: GridBox[][]) => this.grid = grid);
         await requestPromise(this.URL_WORD_API + constraints + "/" + difficulty).then(
             (result: ResponseWordFromAPI) => {
                 responseWord = result;
+                console.log("bonjour");
+                console.log(result);
+                console.log(responseWord);
+                console.log(result.$word);
+                console.log(responseWord.$word);
+
             }
         ).catch((e: Error) => {
             console.error(e);
