@@ -94,12 +94,9 @@ export class Lexicon {
 
                 } while (badWord);
 
-                console.log(responseWord.word);
-
                 responseWord.word = removeAccent(responseWord.word);
                 responseWord.definition = responseWord.definition.substring(2);
 
-                console.log(JSON.stringify(responseWord));
                 res.send(JSON.stringify(responseWord));
 
             }

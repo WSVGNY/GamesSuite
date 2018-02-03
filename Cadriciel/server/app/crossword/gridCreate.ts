@@ -27,11 +27,11 @@ export class Grid {
     private readonly URL_WORD_API: string = "http://localhost:3000/lexicon/constraints/";
 
     public gridCreate(req: Request, res: Response, next: NextFunction): void {
-        this.newGrid();
-        res.send(this.grid);
+        this.newGrid().then((result: boolean) => res.send(this.grid));
+
     }
 
-    private newGrid(): void {
+    private async newGrid(): Promise<boolean> {
         const isValidGrid: boolean = false;
         while (!isValidGrid) {
             this.grid = new Array<Array<GridBox>>();
@@ -48,46 +48,51 @@ export class Grid {
             }
         }
 
-        this.wordFillControler();
+        await this.wordFillControler().then((result: boolean ) => console.log("allo")).catch((e: Error) => console.error(e));
+
+        return true;
     }
 
-    private wordFillControler(): void {
+    private async wordFillControler(): Promise<boolean> {
         this.createCharGrid();
         //this.bindCharToGrid();
         this.sortWordsList();
-        this.fillWords();
-        this.bindCharToGrid();
+        await this.fillWords().then(
+            (result: boolean) => {
+                console.log("allo");
+                this.bindCharToGrid();
+                console.log("bye");
+            }).catch((e: Error) => console.error(e));
+
+        return true;
     }
 
-    private fillWords(): void {
-
-        for (let i: number = 0; i < this.words.length - this.words.length + 1; ++i) {
+    private async fillWords(): Promise<boolean> {
+        for (let i: number = 0; i < this.words.length; ++i) {
             const wordConstraints: string = this.createWordConstraints(i);
             const word: Word = this.words[i];
-            //console.log("allo");
-            //console.log(wordConstraints);
-            this.getWordFromAPI(wordConstraints, Difficulty.easy).then(
-                (result: ResponseWordFromAPI) => {
-                    //result = JSON.parse(result);
-                    // temporary, wait for result to be received and defined
-                    //while (result.$word === undefined) { }
-                    word.$word = result.$word;
-                    word.$definition = result.$definition;
-                    // console.log(result.$word);
-                    // console.log("bye");
-                    // console.log(word["word"]);
 
-                    // const splittedWord: string[] = Array.from(result.$word);
-                    // for (let j: number = 0; j < splittedWord.length; ++j) {
-                    //     if (word.$horizontal) {
-                    //         this.charGrid[word.$startPos.$y][word.$startPos.$x + j].$value = splittedWord[j];
-                    //     } else {
-                    //         this.charGrid[word.$startPos.$y + j][word.$startPos.$x].$value = splittedWord[j];
-                    //     }
-                    // }
+            await this.getWordFromAPI(wordConstraints, Difficulty.easy).then(
+                (result: ResponseWordFromAPI) => {
+                    word.$word = result.$word;
+                    // word.$definition = result.$definition;
+
+                    //console.log(word);
+
+                    const splittedWord: string[] = Array.from(result.$word);
+                    for (let j: number = 0; j < splittedWord.length; ++j) {
+                        if (word.$horizontal) {
+                            this.charGrid[word.$startPos.$y][word.$startPos.$x + j].$value = splittedWord[j];
+                        } else {
+                            this.charGrid[word.$startPos.$y + j][word.$startPos.$x].$value = splittedWord[j];
+                        }
+                    }
+                    // console.log(this.charGrid);
                 }
             ).catch((e: Error) => console.error(e));
         }
+        console.log(this.charGrid);
+        return true;
     }
 
     private createWordConstraints(index: number): string {
@@ -125,13 +130,6 @@ export class Grid {
                 result = JSON.parse(result);
                 responseWord.$word = result["word"];
                 responseWord.$definition = result["definition"];
-                console.log("bonjour");
-                console.log(result);
-                console.log(responseWord);
-                console.log(result["word"]);
-                console.log(responseWord.$word);
-                console.log(responseWord["word"]);
-
             }
         ).catch((e: Error) => {
             console.error(e);
@@ -162,6 +160,7 @@ export class Grid {
     }
 
     private bindCharToGrid(): void {
+        console.log("bindChar");
         for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
             for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
                 this.grid[i][j].$value = this.charGrid[i][j].$value;
