@@ -17,9 +17,10 @@ export class Lexicon {
         if (definitions === undefined)
             return null;
 
-        for (var i = 0; i < (word["defs"].length); i++) {   // fait un internal Server error seulement dans le cas ou le mot n'a aucune definition car length est undefined
+        for (var i = 0; i < (word["defs"].length); i++) {   
             if (definitions[i][0] == "a") {                 // s'assurer que le mot ne soit ni un adverbe ni un adjectif
                 delete (word["defs"][i]);
+                return null;
             }
         }
 
@@ -68,7 +69,7 @@ export class Lexicon {
                     let tempWord = words[random];
                     responseWord.$word = tempWord.word.toUpperCase();
 
-                   // console.log(tempWord.word + " f=" + tempWord.tags + " def=" + tempWord.defs);
+                    //console.log(tempWord.word + " f=" + tempWord.tags + " def=" + tempWord.defs);
 
                     if (this.checkFrequency(tempWord)) {
                         responseWord.$definition = this.getDefinition(tempWord);
@@ -91,12 +92,26 @@ export class Lexicon {
 
                 console.log(responseWord.$word);
 
-                res.send(JSON.parse(JSON.stringify(responseWord)));
-                //res.send(responseWord);
+                responseWord["word"] = removeAccent(responseWord["word"]);
+                responseWord["def"] = responseWord["def"].substring(2);
+                
+                //res.send(JSON.parse(JSON.stringify(responseWord)));
+                res.send(responseWord);
             }
         ).catch((e: Error) => {
             console.error(e);
             res.send(500);
         });
     }
+}
+
+function removeAccent(word: string) {
+    word = word.replace(new RegExp(/[àáâä]/g),"a");
+    word = word.replace(new RegExp(/ç/g),"c");
+    word = word.replace(new RegExp(/[èéêë]/g),"e");
+    word = word.replace(new RegExp(/[ìíîï]/g),"i");                
+    word = word.replace(new RegExp(/[òóôö]/g),"o");
+    word = word.replace(new RegExp(/[ùúûü]/g),"u");
+    word = word.replace(new RegExp(/\W/g),"");        //delete non word characters (hyphens, apostrophes, etc.)
+    return word;
 }
