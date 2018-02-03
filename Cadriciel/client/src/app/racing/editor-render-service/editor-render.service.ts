@@ -102,8 +102,10 @@ export class EditorRenderService {
       if (this.raycaster.intersectObject(this.listOfPoints.getFirstVertex(), true).length) {
         // Code pour sauvegarder la boucle
         this.listOfPoints.createConnection(this.listOfPoints.getFirstVertex(), this.listOfPoints.getLastVertex());
+        alert("La boucle est bouclée comme JAJA frero !");
       } else if (this.raycaster.intersectObjects(this.listOfPoints.getVertices(), true).length) {
         this.selectedVertexName = this.raycaster.intersectObjects(this.listOfPoints.getVertices(), true)[0].object.name;
+        
 
       } else {
         this.listOfPoints.addVertex(this.mouseVector);
@@ -131,6 +133,7 @@ export class EditorRenderService {
     if (this.computeMouseCoordinates(event)) {
       if (this.isMouseDown === true && this.selectedVertexName !== "none") {
         this.listOfPoints.setVertexPosition(this.selectedVertexName, this.mouseVector);
+        this.listOfPoints.updateConnection(this.selectedVertexName, this.mouseVector);
       }
     }
   }
