@@ -8,7 +8,7 @@ import { Char } from "../../../common/crossword/char";
 import * as requestPromise from "request-promise-native";
 import { Difficulty } from "../../../common/crossword/difficulty";
 import { ResponseWordFromAPI } from "../../../common/communication/responseWordFromAPI";
-import { listenerCount } from "cluster";
+// import { listenerCount } from "cluster";
 
 @injectable()
 export class Grid {
@@ -63,7 +63,7 @@ export class Grid {
 
         for (let i: number = 0; i < this.words.length - this.words.length + 1; ++i) {
             const wordConstraints: string = this.createWordConstraints(i);
-            const word: Word = this.words[i];
+            //const word: Word = this.words[i];
             console.log("allo");
             console.log(wordConstraints);
             this.getWordFromAPI(wordConstraints, Difficulty.easy).then(
