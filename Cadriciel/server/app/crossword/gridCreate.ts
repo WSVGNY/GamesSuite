@@ -73,9 +73,9 @@ export class Grid {
                     //while (result.$word === undefined) { }
                     word.$word = result.$word;
                     word.$definition = result.$definition;
-                    console.log(result.$word);
-                    console.log("bye");
-                    console.log(word["word"]);
+                    // console.log(result.$word);
+                    // console.log("bye");
+                    // console.log(word["word"]);
 
                     // const splittedWord: string[] = Array.from(result.$word);
                     // for (let j: number = 0; j < splittedWord.length; ++j) {
@@ -94,7 +94,7 @@ export class Grid {
         let wordConstraints: string = "";
         const word: Word = this.words[index];
         if (word.$horizontal) {
-            for (let i: number = 0; i < word.$length; ++i ) {
+            for (let i: number = 0; i < word.$length; ++i) {
                 let charToAdd: string = this.charGrid[word.$startPos.$y][word.$startPos.$x + i].$value;
                 if (charToAdd === "?") {
                     charToAdd = "%3f";
@@ -102,7 +102,7 @@ export class Grid {
                 wordConstraints += charToAdd;
             }
         } else {
-            for (let i: number = 0; i < word.$length; ++i ) {
+            for (let i: number = 0; i < word.$length; ++i) {
                 let charToAdd: string = this.charGrid[word.$startPos.$y + i][word.$startPos.$x].$value;
                 if (charToAdd === "?") {
                     charToAdd = "%3f";
@@ -118,16 +118,19 @@ export class Grid {
 
 
     private async getWordFromAPI(constraints: string, difficulty: Difficulty): Promise<ResponseWordFromAPI> {
-        let responseWord: ResponseWordFromAPI;
+        let responseWord: ResponseWordFromAPI = new ResponseWordFromAPI();
         //this.gridService.gridGet().subscribe((grid: GridBox[][]) => this.grid = grid);
         await requestPromise(this.URL_WORD_API + constraints + "/" + difficulty).then(
-            (result: ResponseWordFromAPI) => {
-                responseWord = result;
+            (result: string) => {
+                result = JSON.parse(result);
+                responseWord.$word = result["word"];
+                responseWord.$definition = result["definition"];
                 console.log("bonjour");
                 console.log(result);
                 console.log(responseWord);
-                console.log(result.$word);
+                console.log(result["word"]);
                 console.log(responseWord.$word);
+                console.log(responseWord["word"]);
 
             }
         ).catch((e: Error) => {
@@ -214,7 +217,7 @@ export class Grid {
                         }
                     } else {
                         this.words[this.wordId - 1] =
-                        new Word(this.wordId++, this.wordDefID++, true, wordLength, this.grid[i][j].$id);
+                            new Word(this.wordId++, this.wordDefID++, true, wordLength, this.grid[i][j].$id);
                         j += wordLength;
                         wordCnt++;
                     }
@@ -253,7 +256,7 @@ export class Grid {
                 }
                 if (wordLength >= this.MIN_WORD_LENGTH) {
                     this.words[this.wordId - 1] =
-                    new Word(this.wordId++, this.findHorizontalWordDefID(i, j), false, wordLength, this.grid[j][i].$id);
+                        new Word(this.wordId++, this.findHorizontalWordDefID(i, j), false, wordLength, this.grid[j][i].$id);
                     j += wordLength;
                     wordCnt++;
                 }
