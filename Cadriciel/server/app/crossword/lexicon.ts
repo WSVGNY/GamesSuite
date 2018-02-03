@@ -89,7 +89,9 @@ export class Lexicon {
 
                 } while (badWord);
 
-                res.send(JSON.stringify(responseWord));
+                console.log(responseWord.$word);
+
+                res.send(JSON.parse(JSON.stringify(responseWord)));
                 //res.send(responseWord);
             }
         ).catch((e: Error) => {

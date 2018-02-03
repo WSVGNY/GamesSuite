@@ -75,6 +75,7 @@ export class Grid {
                     word.$definition = result.$definition;
                     console.log(result.$word);
                     console.log("bye");
+                    console.log(word["word"]);
 
                     // const splittedWord: string[] = Array.from(result.$word);
                     // for (let j: number = 0; j < splittedWord.length; ++j) {
