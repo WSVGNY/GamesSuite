@@ -64,7 +64,7 @@ export class TrackVertices {
         this.scene.add(this.line);
     }
 
-    public updateConnection(vertexName : String , position : Vector3): void { 
+    public updateLeftConnection(vertexName : String , position : Vector3): void { 
         for (let i: number = 0; i < this.vertices.length; ++i ) {
             if (this.vertices[i].name === vertexName) {
                 const LINE_GEOMETRY: Geometry = new Geometry();
@@ -75,16 +75,27 @@ export class TrackVertices {
                 this.connections[i-1] = new Line(LINE_GEOMETRY, LINE_MATERIAL);
                 this.scene.add(this.connections[i-1]);
 
-                const LINE_GEOMETRY2: Geometry = new Geometry();
+                /*const LINE_GEOMETRY2: Geometry = new Geometry();
                 LINE_GEOMETRY2.vertices.push(new Vector3(position.x, position.y , 0));
                 LINE_GEOMETRY2.vertices.push(new Vector3(this.vertices[i].position.x, this.vertices[i].position.y , 0));
+                this.scene.remove(this.connections[i]);
+                this.connections[i] = new Line(LINE_GEOMETRY2, LINE_MATERIAL);
+                this.scene.add(this.connections[i]);*/
+            }
+        }
+    }
+    public updateRightConnection(vertexName : String , position : Vector3) : void {
+        for (let i: number = 0; i < this.vertices.length; ++i ) {
+            if (this.vertices[i].name === vertexName) {
+                const LINE_GEOMETRY2: Geometry = new Geometry();
+                LINE_GEOMETRY2.vertices.push(new Vector3(position.x, position.y , 0));
+                LINE_GEOMETRY2.vertices.push(new Vector3(this.vertices[i + 1].position.x, this.vertices[i + 1].position.y , 0));
                 this.scene.remove(this.connections[i]);
                 this.connections[i] = new Line(LINE_GEOMETRY2, LINE_MATERIAL);
                 this.scene.add(this.connections[i]);
             }
         }
     }
-
     public getFirstVertex(): Mesh {
         return this.firstVertex;
     }

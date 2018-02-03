@@ -133,7 +133,8 @@ export class EditorRenderService {
     if (this.computeMouseCoordinates(event)) {
       if (this.isMouseDown === true && this.selectedVertexName !== "none") {
         this.listOfPoints.setVertexPosition(this.selectedVertexName, this.mouseVector);
-        this.listOfPoints.updateConnection(this.selectedVertexName, this.mouseVector);
+        this.listOfPoints.updateLeftConnection(this.selectedVertexName, this.mouseVector);
+        this.listOfPoints.updateRightConnection(this.selectedVertexName, this.mouseVector);
       }
     }
   }
