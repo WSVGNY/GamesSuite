@@ -59,6 +59,7 @@ export class Lexicon {
                 // console.log(words);
                 let random: number;
                 let responseWord: ResponseWordFromAPI = new ResponseWordFromAPI();
+                console.log(responseWord);
                 let badWord: boolean = true;
 
                 do {
