@@ -69,6 +69,7 @@
         "no-eval": true,
         "no-misused-new": true,
         "no-non-null-assertion": true,
+        "no-null-keyword": true,
         "no-shadowed-variable": true,
         "no-string-literal": false,
         "no-string-throw": true,

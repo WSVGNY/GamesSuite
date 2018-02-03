@@ -60,6 +60,7 @@ export class Lexicon {
                 // console.log(words);
                 let random: number;
                 let responseWord: ResponseWordFromAPI = new ResponseWordFromAPI();
+                //console.log(responseWord);
                 let badWord: boolean = true;
 
                 do {
@@ -67,7 +68,6 @@ export class Lexicon {
                     random = Math.floor(Math.random() * words.length);
                     let tempWord = words[random];
                     responseWord.$word = tempWord.word.toUpperCase();
-
 
                     if (this.checkFrequency(tempWord)) {
                         responseWord.$definition = this.getDefinition(tempWord);
@@ -88,10 +88,12 @@ export class Lexicon {
 
                 } while (badWord);
 
-               
-                responseWord["word"] = removeAccent(responseWord["word"]);
-                responseWord["def"] = responseWord["def"].substring(2);
+                console.log(responseWord.$word);
+
+                responseWord.$word= removeAccent(responseWord.$word);
+                responseWord.$definition = responseWord.$definition.substring(2);
                 
+                //res.send(JSON.parse(JSON.stringify(responseWord)));
                 res.send(responseWord);
 
             }
