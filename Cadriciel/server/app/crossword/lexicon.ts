@@ -12,7 +12,6 @@ export class Lexicon {
     private difficulty: Difficulty;
     private readonly FREQUENCY_DELIMITER: number = 10;
     private readonly INTERNAL_SERVER_ERROR_CODE: number = 500;
-    private readonly FREQUENCY_DELIMITER: number = 10;
 
     private getDefinition(word: string): string {
         const definitions: string = word["defs"];
@@ -20,10 +19,13 @@ export class Lexicon {
             return "";
         }
         for (let i: number = 0; i < (word["defs"].length); i++) {
+            let counter: number = word["defs"].length;
             if (definitions[i][0] === "a") {                 // s'assurer que le mot ne soit ni un adverbe ni un adjectif
                 delete (word["defs"][i]);
-
-                return "";
+                counter--;
+                if (counter === 0) {
+                    return "";
+                }
             }
         }
         if (this.difficulty === "EASY") {
