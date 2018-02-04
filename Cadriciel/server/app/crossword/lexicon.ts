@@ -17,9 +17,10 @@ export class Lexicon {
         if (definitions === undefined)
             return null;
 
-        for (var i = 0; i < (word["defs"].length); i++) {   // fait un internal Server error seulement dans le cas ou le mot n'a aucune definition car length est undefined
+        for (var i = 0; i < (word["defs"].length); i++) {
             if (definitions[i][0] == "a") {                 // s'assurer que le mot ne soit ni un adverbe ni un adjectif
                 delete (word["defs"][i]);
+                return null;
             }
         }
 
@@ -58,20 +59,22 @@ export class Lexicon {
                 let words = JSON.parse(result.toString());
                 // console.log(words);
                 let random: number;
-                let responseWord: ResponseWordFromAPI = new ResponseWordFromAPI();
+                let responseWord: { "word": string, "definition": string } = {
+                    "word": "",
+                    "definition": ""
+                };
+                //console.log(responseWord);
                 let badWord: boolean = true;
 
                 do {
                     badWord = true;
                     random = Math.floor(Math.random() * words.length);
                     let tempWord = words[random];
-                    responseWord.$word = tempWord.word.toUpperCase();
-
-                   // console.log(tempWord.word + " f=" + tempWord.tags + " def=" + tempWord.defs);
+                    responseWord.word = tempWord.word.toUpperCase();
 
                     if (this.checkFrequency(tempWord)) {
-                        responseWord.$definition = this.getDefinition(tempWord);
-                        if (responseWord.$definition !== null) {
+                        responseWord.definition = this.getDefinition(tempWord);
+                        if (responseWord.definition !== null) {
                             badWord = false;
                         }
                     }
@@ -82,17 +85,35 @@ export class Lexicon {
                     }
 
                     if (words.length === 0) {
-                        responseWord = new ResponseWordFromAPI();
+                        responseWord = {
+                            "word": "",
+                            "definition": ""
+                        };
                         badWord = false;
                     }
 
                 } while (badWord);
 
+                responseWord.word = removeAccent(responseWord.word);
+                responseWord.definition = responseWord.definition.substring(2);
+
                 res.send(JSON.stringify(responseWord));
+
             }
         ).catch((e: Error) => {
             console.error(e);
             res.send(500);
         });
     }
+}
+
+function removeAccent(word: string) {
+    word = word.replace(new RegExp(/[àáâä]/g), "a");
+    word = word.replace(new RegExp(/ç/g), "c");
+    word = word.replace(new RegExp(/[èéêë]/g), "e");
+    word = word.replace(new RegExp(/[ìíîï]/g), "i");
+    word = word.replace(new RegExp(/[òóôö]/g), "o");
+    word = word.replace(new RegExp(/[ùúûü]/g), "u");
+    word = word.replace(new RegExp(/\W/g), "");        //delete non word characters (hyphens, apostrophes, etc.)
+    return word;
 }

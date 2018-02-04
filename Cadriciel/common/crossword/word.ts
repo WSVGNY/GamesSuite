@@ -2,7 +2,8 @@ import { Vec2 } from "./vec2";
 
 export class Word {
 
-
+	private word: string;
+	private definition: string;
 	public get $id(): number {
 		return this.id;
 	}
@@ -48,12 +49,19 @@ export class Word {
         this.startPos.$y = value.$x;
 	}
 
+	public get $definition(): string {
+		return this.definition;
+	}
+
+	public set $definition(value: string) {
+		this.definition = value;
+	}
+	
     public constructor(
         private id: number,
-        private definitionID: number,
+		private definitionID: number,
         private horizontal: boolean,
         private length: number,
-        private startPos: Vec2,
-        private word: string) {
+        private startPos: Vec2) {
     };
 }
