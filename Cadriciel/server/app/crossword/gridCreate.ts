@@ -5,7 +5,7 @@ import { GridBox } from "../../../common/crossword/gridBox";
 import { Word } from "../../../common/crossword/word";
 import { Vec2 } from "../../../common/crossword/vec2";
 import { WordFiller } from "./wordFiller";
-import { BlackTiledGrid } from "./blackGridTilesPlacer";
+import { BlackTiledGrid } from "./blackTiledGrid";
 
 @injectable()
 export class Grid {

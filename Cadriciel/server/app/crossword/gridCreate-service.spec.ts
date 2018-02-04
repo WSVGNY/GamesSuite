@@ -1,6 +1,11 @@
 import assert = require("assert");
 import { Grid } from "./gridCreate";
-// import { BlackTiledGrid } from "./blackGridTilesPlacer";
+import { BlackTiledGrid } from "./blackTiledGrid";
+
+it("Grid is defined on creation", (done: MochaDone) => {
+    const grid: Grid = new Grid();
+    assert(grid !== undefined);
+});
 
 it("Grid contains appropriate number of black tiles", (done: MochaDone) => {
     const grid: Grid = new Grid();
