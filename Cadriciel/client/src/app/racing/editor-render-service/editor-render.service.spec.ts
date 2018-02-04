@@ -22,10 +22,9 @@ describe("EditorRenderService", () => {
     expect(service).toBeTruthy();
   }));
 
-  it("should add a first point on the scene when the clic is in the scene", ()  => {
-    listOfPoints.addVertex(vector1);
-    result = scene.getChildByName("vertex0").name === "vertex0";
-    // if (scene.getChildByName("vertex0").name === "vertex0" ) {
+  it("should add a point in the scene.", ()  => {
+    listOfPoints.addVertex(new Vector3( 0, 0, 0 ));
+    result = scene.getChildByName("vertex0") !== null;
     expect(result).toBeTruthy();
   });
 
