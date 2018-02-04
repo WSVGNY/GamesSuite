@@ -56,7 +56,7 @@ export class TrackVertices {
         }
     }
 
-    private createConnection(start: Mesh , end: Mesh): void {
+    public createConnection(start: Mesh , end: Mesh): void {
         const LINE_GEOMETRY: Geometry = new Geometry();
         LINE_GEOMETRY.vertices.push(new Vector3(start.position.x, start.position.y , 0));
         LINE_GEOMETRY.vertices.push(new Vector3(end.position.x, end.position.y , 0));
