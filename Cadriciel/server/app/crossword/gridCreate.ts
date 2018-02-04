@@ -17,7 +17,7 @@ export class Grid {
     public readonly SIZE_GRID_X: number = 10;
     public readonly SIZE_GRID_Y: number = 10;
     public readonly NUMBER_OF_TILES: number = this.SIZE_GRID_X * this.SIZE_GRID_Y;
-    public readonly BLACK_TILES_RATIO: number = 0.4;
+    public readonly BLACK_TILES_RATIO: number = 0.5;
     public readonly NUM_BLACK_TILES: number = this.NUMBER_OF_TILES * this.BLACK_TILES_RATIO;
     public readonly MIN_WORD_LENGTH: number = 2;
     private grid: GridBox[][];
@@ -222,28 +222,47 @@ export class Grid {
     }
 
     private async fillWords(): Promise<boolean> {
-        for (const word of this.words) {
+        let nmbrBackTrack: number = 1;
+        let backTrackStartedOn: number = 0;
+        for (let i: number = 0; i < this.words.length; i++) {
+            const word: Word = this.words[i];
             const wordConstraints: string = new WordConstraint(word, this.charGrid).$value;
-
             await this.getWordFromAPI(wordConstraints, Difficulty.easy).then(
                 (result: ResponseWordFromAPI) => {
                     word.$word = result.$word;
-                    // word.$definition = result.$definition;
-
-                    const splittedWord: string[] = Array.from(result.$word);
-                    for (let j: number = 0; j < splittedWord.length; ++j) {
-                        if (word.$horizontal) {
-                            this.charGrid[word.$startPos.$y][word.$startPos.$x + j].$value = splittedWord[j];
-                        } else {
-                            this.charGrid[word.$startPos.$y + j][word.$startPos.$x].$value = splittedWord[j];
+                    console.log(word.$word + ", " + word.$startPos.$x + "," + word.$startPos.$y);
+                    if (word.$word === "") {
+                        backTrackStartedOn = i;
+                        for (let j: number = i; j > i - nmbrBackTrack; j--) {
+                            this.words[j].resetValue();
                         }
+                        i -= nmbrBackTrack;
+                        for (let j: number = i; j < i + nmbrBackTrack; j++) {
+                            this.updateCharGrid(this.words[j]);
+                        }
+                        if (i === 0 || i === backTrackStartedOn) {
+                            nmbrBackTrack = 0;
+                            backTrackStartedOn = 0;
+                        }
+                        nmbrBackTrack++;
                     }
-                    // console.log(this.charGrid);
+                    this.updateCharGrid(word);
                 }
             ).catch((e: Error) => console.error(e));
         }
 
         return true;
+    }
+
+    private updateCharGrid(word: Word): void {
+        const splittedWord: string[] = Array.from(word.$word);
+        for (let i: number = 0; i < splittedWord.length; ++i) {
+            if (word.$horizontal) {
+                this.charGrid[word.$startPos.$y][word.$startPos.$x + i].$value = splittedWord[i];
+            } else {
+                this.charGrid[word.$startPos.$y + i][word.$startPos.$x].$value = splittedWord[i];
+            }
+        }
     }
 
     private async getWordFromAPI(constraints: string, difficulty: Difficulty): Promise<ResponseWordFromAPI> {
@@ -255,7 +274,7 @@ export class Grid {
                 responseWord.$definition = result["definition"];
             }
         ).catch((e: Error) => {
-            console.error(e);
+            // console.error(e);
         });
 
         return responseWord;
