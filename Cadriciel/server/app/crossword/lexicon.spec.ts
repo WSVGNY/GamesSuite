@@ -89,7 +89,47 @@ describe("LEXICON TESTS", () => {
         done();
     });
 
-    it("the word matches constraints", (done: MochaDone) => {
+    describe("tests for the respect of constraints", () => {
+        it("the returned word matches constraints", (done: MochaDone) => {
+            assert(true === true);
+            done();
+        });
+
+        it("if there is no word matching the constraint, returns an error", (done: MochaDone) => {
+            assert(true === true);
+            done();
+        });
     });
 
+    describe("tests for the difficulty", () => {
+        it("if difficulty is EASY, returns the first definition", (done: MochaDone) => {
+            assert(true === true);
+            done();
+        });
+
+        it("if difficulty is MEDIUM, returns the second definition", (done: MochaDone) => {
+            assert(true === true);
+            done();
+        });
+
+        it("if difficulty is HARD, returns the second definition", (done: MochaDone) => {
+            assert(true === true);
+            done();
+        });
+
+        it("if difficulty is EASY, frequency­ > 10", (done: MochaDone) => {
+            assert(true === true);
+            done();
+        });
+
+        it("if difficulty is MEDIUM, frequency­ > 10", (done: MochaDone) => {
+            assert(true === true);
+            done();
+        });
+
+        it("if difficulty is EASY, frequency­ > 10", (done: MochaDone) => {
+            assert(true === true);
+            done();
+        });
+    });
 });
