@@ -36,9 +36,9 @@ export class TrackService {
         );
     }
 
-    public deleteTrack(trackId: number): Observable<boolean> {
-        return this.http.delete<boolean>(this.BASE_URL + "/delete/" + trackId, this.httpOptions).pipe(
-            catchError(this.handleError<boolean>("deleteTrack"))
+    public deleteTrack(trackId: number): Observable<Track[]> {
+        return this.http.delete<Track[]>(this.BASE_URL + "/delete/" + trackId, this.httpOptions).pipe(
+            catchError(this.handleError<Track[]>("deleteTrack"))
         );
     }
 

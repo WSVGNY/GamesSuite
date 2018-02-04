@@ -24,7 +24,6 @@ export class TrackService extends AbstractService {
         );
 
         router.post("/new/:name", (req: Request, res: Response) => {
-            console.log("track-service");
             this.piste.newTrack(req, res);
         });
 
