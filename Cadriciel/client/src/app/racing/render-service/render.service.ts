@@ -1,7 +1,8 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
-import { PerspectiveCamera, WebGLRenderer, Scene, AmbientLight} from "three";
+import { PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, Matrix4, Vector3} from "three";
 import { Car } from "../car/car";
+import { DEG_TO_RAD, RAD_TO_DEG } from "../constants";
 
 const FAR_CLIPPING_PLANE: number = 1000;
 const NEAR_CLIPPING_PLANE: number = 1;
@@ -12,7 +13,8 @@ const LEFT_KEYCODE: number = 65;        // a
 const BRAKE_KEYCODE: number = 83;       // s
 const RIGHT_KEYCODE: number = 68;       // d
 
-const INITIAL_CAMERA_POSITION_Y: number = 25;
+const INITIAL_CAMERA_POSITION_X: number = 7;
+const INITIAL_CAMERA_POSITION_Y: number = 3;
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
 
@@ -67,8 +69,8 @@ export class RenderService {
         );
 
         await this._car.init();
-        this.camera.position.set(0, INITIAL_CAMERA_POSITION_Y, 0);
-        this.camera.lookAt(this._car.position);
+        this.camera.position.set(INITIAL_CAMERA_POSITION_X, INITIAL_CAMERA_POSITION_Y, 0);
+        this.camera.lookAt(this._car.mesh.position);
         this.scene.add(this._car);
         this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
     }
@@ -90,6 +92,25 @@ export class RenderService {
     private render(): void {
         requestAnimationFrame(() => this.render());
         this.update();
+        console.log(this._car.angle);
+        this.camera.position.set(this._car.currentPosition.x + Math.sin(this._car.angle * DEG_TO_RAD) * INITIAL_CAMERA_POSITION_X,
+                                 this._car.currentPosition.y + INITIAL_CAMERA_POSITION_Y, 
+                                 this._car.currentPosition.z + Math.cos(this._car.angle * DEG_TO_RAD) * INITIAL_CAMERA_POSITION_X);
+        
+        
+        // const rotationMatrix: Matrix4 = new Matrix4();
+        // const carDirection: Vector3 = new Vector3(0, 0, -1);
+
+        // rotationMatrix.extractRotation(this._car.mesh.matrix);
+        // carDirection.applyMatrix4(rotationMatrix);
+        // console.log(carDirection);
+        // this.mesh.rotateY(omega);
+        // this.camera.rotateOnAxis(carDirection, 1);
+        //this.camera.rotateOnAxis(this._car.mesh.position, this._car.angle);
+
+        this.camera.lookAt(this._car.mesh.position);
+
+        
         this.renderer.render(this.scene, this.camera);
         this.stats.update();
     }
