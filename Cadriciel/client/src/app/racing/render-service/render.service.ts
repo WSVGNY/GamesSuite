@@ -21,6 +21,8 @@ const AMBIENT_LIGHT_OPACITY: number = 0.5;
 const TEMP_GRID_SIZE: number = 100;
 const TEMP_GRID_ORIENTATION: number = 90;
 
+const PLAYER_CAMERA: string = "PLAYER_CAMERA";
+
 @Injectable()
 export class RenderService {
     private camera: PerspectiveCamera;
@@ -72,6 +74,7 @@ export class RenderService {
             NEAR_CLIPPING_PLANE,
             FAR_CLIPPING_PLANE
         );
+        this.camera.name = PLAYER_CAMERA;
         this.camera.position.z = INITIAL_CAMERA_POSITION_Z;
         this.camera.position.y = INITIAL_CAMERA_POSITION_Y;
         this._car.attachCamera(this.camera);

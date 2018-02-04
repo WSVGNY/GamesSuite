@@ -49,8 +49,8 @@ export class Car extends Object3D {
         return this.mesh.position;
     }
 
-    public get getMesh(): Object3D {
-        return this.mesh;
+    public getChild(childName: string): Object3D {
+        return this.mesh.getObjectByName(childName);
     }
 
     public attachCamera(camera: Camera): void {
