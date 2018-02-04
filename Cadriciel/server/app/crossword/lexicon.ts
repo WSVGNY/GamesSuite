@@ -57,13 +57,13 @@ export class Lexicon {
     }
 
     private removeAccent(word: string): string {
-        word = word.replace(new RegExp(/[àáâä]/g), "a");
-        word = word.replace(new RegExp(/ç/g), "c");
-        word = word.replace(new RegExp(/[èéêë]/g), "e");
-        word = word.replace(new RegExp(/[ìíîï]/g), "i");
-        word = word.replace(new RegExp(/[òóôö]/g), "o");
-        word = word.replace(new RegExp(/[ùúûü]/g), "u");
-        word = word.replace(new RegExp(/\W/g), "");        // delete non word characters (hyphens, apostrophes, etc.)
+        word = word.replace(new RegExp(/[àáâä]/gi), "A");
+        word = word.replace(new RegExp(/ç/gi), "C");
+        word = word.replace(new RegExp(/[èéêë]/gi), "E");
+        word = word.replace(new RegExp(/[ìíîï]/gi), "I");
+        word = word.replace(new RegExp(/[òóôö]/gi), "O");
+        word = word.replace(new RegExp(/[ùúûü]/gi), "U");
+        word = word.replace(new RegExp(/\W/gi), "");        // delete non word characters (hyphens, apostrophes, etc.)
 
         return word;
     }
