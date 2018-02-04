@@ -1,5 +1,3 @@
-// taken from https://stackoverflow.com/questions/42678891/typescript-character-type
-
 export class Char {
    
     private value: string;
