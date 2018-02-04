@@ -9,7 +9,7 @@ import { Lexicon } from "./lexicon";
 
 it("lexicon should be defined", (done: MochaDone) => {
     const lex: LexiconService = new LexiconService(new Lexicon());
-    assert(lex != null && lex !== undefined);
+    assert(lex !== undefined);
     done();
 });
 /*

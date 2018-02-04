@@ -15,7 +15,7 @@ export class LexiconService extends AbstractService {
     public get routes(): Router {
         const router: Router = Router();
 
-        router.get("/constraints/:constraints/:difficulty", (req: Request, res: Response) =>
+        router.get("/:constraints/:difficulty", (req: Request, res: Response) =>
             this.lexicon.getWordListFromConstraint(req, res)
         );
 

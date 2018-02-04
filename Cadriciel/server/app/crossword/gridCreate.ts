@@ -24,7 +24,7 @@ export class Grid {
     private words: Word[];
     private wordId: number;
     private wordDefID: number;
-    private readonly URL_WORD_API: string = "http://localhost:3000/lexicon/constraints/";
+    private readonly URL_WORD_API: string = "http://localhost:3000/lexicon/";
 
     public gridCreate(req: Request, res: Response, next: NextFunction): void {
         this.newGrid();

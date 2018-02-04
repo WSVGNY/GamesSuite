@@ -1,31 +1,47 @@
 import assert = require("assert");
 import { Lexicon } from "./lexicon";
-describe("TESTS DE LA PARTIE LEXIQUE",  () => {
+import { ResponseWordFromAPI } from "../../../common/communication/responseWordFromAPI";
+import * as requestPromise from "request-promise-native";
+
+const BASE_URL: string = "http://localhost:3000/lexicon/";
+const TIMEOUT: number = 15000;
+
+describe("LEXICON TESTS", () => {
     describe("word should be a noun or a verb", () => {
         it("word is a verb", (done: MochaDone) => {
             const lex: Lexicon = new Lexicon();
-            const word: string = "ask";
-            const definition: string = lex.getDefinition(word);
-            console.log(word);
-            console.log(definition);
-            assert(definition[0][0] === "v");
-            done();
+            setTimeout(done, TIMEOUT);
+            let word: ResponseWordFromAPI;
+            requestPromise(BASE_URL + "/ask").then((response: string) => {
+                word = JSON.parse(response);
+                assert(word.$definition[0][0] === "v");
+                done();
+            }).catch(done);
+
         });
 
         it("word is a noun", (done: MochaDone) => {
             const lex: Lexicon = new Lexicon();
-            const word: string = "talk";
-            const definition: string = lex.getDefinition(word);
-            assert(definition[0][0] === "n");
-            done();
+            setTimeout(done, TIMEOUT);
+            let word: ResponseWordFromAPI;
+            requestPromise(BASE_URL + "/test").then((response: string) => {
+                word = JSON.parse(response);
+                assert(word.$definition[0][0] === "v");
+                done();
+            }).catch(done);
+
         });
 
         it("if word is an adj or adv, return null", (done: MochaDone) => {
             const lex: Lexicon = new Lexicon();
-            const word: string = "____";
-            const definition: string = lex.getDefinition(word);
-            assert(definition[0] === null);
-            done();
+            setTimeout(done, TIMEOUT);
+            let word: ResponseWordFromAPI;
+            requestPromise(BASE_URL + "/beautiful").then((response: string) => {
+                word = JSON.parse(response);
+                assert(word.$definition[0][0] === "v");
+                done();
+            }).catch(done);
+
         });
 
     });
