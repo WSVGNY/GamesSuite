@@ -1,4 +1,4 @@
-import { Vector3, Matrix4, Object3D, ObjectLoader, Euler, Quaternion } from "three";
+import { Vector3, Matrix4, Object3D, ObjectLoader, Euler, Quaternion, Camera } from "three";
 import { Engine } from "./engine";
 import { MS_TO_SECONDS, GRAVITY, PI_OVER_2, RAD_TO_DEG } from "../constants";
 import { Wheel } from "./wheel";
@@ -47,6 +47,14 @@ export class Car extends Object3D {
 
     public get currentPosition(): Vector3 {
         return this.mesh.position;
+    }
+
+    public get getMesh(): Object3D {
+        return this.mesh;
+    }
+
+    public setCamera(camera: Camera): void {
+        this.mesh.add(camera);
     }
 
     private get direction(): Vector3 {

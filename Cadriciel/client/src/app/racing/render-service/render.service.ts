@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
-import { PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, Matrix4, Vector3} from "three";
+import { PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, Matrix4, Vector3, CubeGeometry,
+     MeshLambertMaterial, MeshBasicMaterial, Mesh, PlaneGeometry} from "three";
 import { Car } from "../car/car";
 import { DEG_TO_RAD, RAD_TO_DEG } from "../constants";
 
@@ -13,8 +14,8 @@ const LEFT_KEYCODE: number = 65;        // a
 const BRAKE_KEYCODE: number = 83;       // s
 const RIGHT_KEYCODE: number = 68;       // d
 
-const INITIAL_CAMERA_POSITION_X: number = 7;
-const INITIAL_CAMERA_POSITION_Y: number = 3;
+const INITIAL_CAMERA_POSITION_X: number = 0;
+const INITIAL_CAMERA_POSITION_Y: number = -10;
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
 
@@ -69,9 +70,24 @@ export class RenderService {
         );
 
         await this._car.init();
-        this.camera.position.set(INITIAL_CAMERA_POSITION_X, INITIAL_CAMERA_POSITION_Y, 0);
-        this.camera.lookAt(this._car.mesh.position);
+        
+        //this.camera.add(this._car.getMesh);
+        //this.camera.position.set(0, 0, 0);
+        //this.camera.lookAt(this._car.getMesh.position);
+        //this._car.setCamera( this.camera ); // CHANGED
         this.scene.add(this._car);
+
+        const groundGeometry: PlaneGeometry = new PlaneGeometry( 100, 100, 100, 100 );
+        const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ wireframe: true, color: 0x00FF00 });
+        const ground: Mesh = new Mesh( groundGeometry, groundMaterial );
+        this.scene.add( ground );
+
+        const cubeGeometry: CubeGeometry = new CubeGeometry( 1, 2, 1 );
+        const cubeMaterial: MeshLambertMaterial  = new MeshLambertMaterial({ color: 0xFF0000 });
+        const cube: Mesh = new Mesh( cubeGeometry, cubeMaterial );
+        //this.scene.add( cube );
+        
+
         this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
     }
 
@@ -92,27 +108,20 @@ export class RenderService {
     private render(): void {
         requestAnimationFrame(() => this.render());
         this.update();
-        console.log(this._car.angle);
-        this.camera.position.set(this._car.currentPosition.x + Math.sin(this._car.angle * DEG_TO_RAD) * INITIAL_CAMERA_POSITION_X,
-                                 this._car.currentPosition.y + INITIAL_CAMERA_POSITION_Y, 
-                                 this._car.currentPosition.z + Math.cos(this._car.angle * DEG_TO_RAD) * INITIAL_CAMERA_POSITION_X);
-        
-        
-        // const rotationMatrix: Matrix4 = new Matrix4();
-        // const carDirection: Vector3 = new Vector3(0, 0, -1);
-
-        // rotationMatrix.extractRotation(this._car.mesh.matrix);
-        // carDirection.applyMatrix4(rotationMatrix);
-        // console.log(carDirection);
-        // this.mesh.rotateY(omega);
-        // this.camera.rotateOnAxis(carDirection, 1);
-        //this.camera.rotateOnAxis(this._car.mesh.position, this._car.angle);
-
-        this.camera.lookAt(this._car.mesh.position);
-
+        //this.camera.position.set(this._car.currentPosition.x+10, this._car.currentPosition.y+5, this._car.currentPosition.z);
+        this.camera.position.y = this._car.currentPosition.y + 5  ;
+        this.camera.position.x = (this._car.currentPosition.x + 15  )
+        this.camera.position.z = (this._car.currentPosition.z+15) * Math.cos(this._car.angle * DEG_TO_RAD);
+        this.camera.lookAt(this._car.currentPosition);
         
         this.renderer.render(this.scene, this.camera);
         this.stats.update();
+
+        // console.log(this._car.angle);
+        /*this.camera.position.set(this._car.currentPosition.x + Math.sin(this._car.angle * DEG_TO_RAD) * INITIAL_CAMERA_POSITION_X,
+                                 this._car.currentPosition.y + INITIAL_CAMERA_POSITION_Y, 
+                                 this._car.currentPosition.z + Math.cos(this._car.angle * DEG_TO_RAD) * INITIAL_CAMERA_POSITION_X);
+        */
     }
 
     public onResize(): void {
