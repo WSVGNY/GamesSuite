@@ -98,20 +98,23 @@ export class EditorRenderService {
   public computeLeftClickAction(event: MouseEvent): void {
     const direction: Vector3 = this.mouseVector.clone().sub(this.camera.position).normalize();
     this.raycaster.set(this.camera.position, direction);
-    if (!this.listOfPoints.isEmpty()) {
+    if (this.listOfPoints.isEmpty()) {
+      this.listOfPoints.addVertex(this.mouseVector);
+    } else {
       if (this.raycaster.intersectObject(this.listOfPoints.getFirstVertex(), true).length) {
         // Code pour sauvegarder la boucle
-        this.listOfPoints.createConnection(this.listOfPoints.getFirstVertex(), this.listOfPoints.getLastVertex());
-        alert("La boucle est bouclée comme JAJA frero !");
+        if (this.listOfPoints.$isComplete()) {
+          this.selectedVertexName = this.raycaster.intersectObjects(this.listOfPoints.getVertices(), true)[0].object.name;
+        } else {
+          this.listOfPoints.completeLoop();
+        }
       } else if (this.raycaster.intersectObjects(this.listOfPoints.getVertices(), true).length) {
         this.selectedVertexName = this.raycaster.intersectObjects(this.listOfPoints.getVertices(), true)[0].object.name;
-        
-
       } else {
-        this.listOfPoints.addVertex(this.mouseVector);
+        if (!this.listOfPoints.$isComplete()) {
+            this.listOfPoints.addVertex(this.mouseVector);
+        }
       }
-    } else {
-      this.listOfPoints.addVertex(this.mouseVector);
     }
   }
 
@@ -133,8 +136,6 @@ export class EditorRenderService {
     if (this.computeMouseCoordinates(event)) {
       if (this.isMouseDown === true && this.selectedVertexName !== "none") {
         this.listOfPoints.setVertexPosition(this.selectedVertexName, this.mouseVector);
-        this.listOfPoints.updateLeftConnection(this.selectedVertexName, this.mouseVector);
-        this.listOfPoints.updateRightConnection(this.selectedVertexName, this.mouseVector);
       }
     }
   }
@@ -144,5 +145,9 @@ export class EditorRenderService {
       this.isMouseDown = false;
       this.selectedVertexName = "none";
     }
+  }
+
+  public onContextMenu(event: MouseEvent): void {
+    event.preventDefault();
   }
 }
