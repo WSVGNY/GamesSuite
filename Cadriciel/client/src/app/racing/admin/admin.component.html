@@ -1,9 +1,11 @@
 <h2>Les pistes</h2>
-<ul class="track">
-  <li *ngFor="let track of tracks">
+<ul class="tracks">
+  <li class="track" *ngFor="let track of tracks">
     <a routerLink="/admin/{{track.id}}">
       <span class="badge">{{track.id}}</span> {{track.name}}
     </a>
+    <button (click)="deleteTrack(track.id)">Delete</button>
   </li>
-  <button (click)="saveEvent ($event)" Save></button>
+  <button (click)="newTrack()">New</button>
+  <p>{{message}}</p>
 </ul>
