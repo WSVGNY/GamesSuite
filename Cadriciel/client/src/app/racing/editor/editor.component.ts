@@ -63,4 +63,10 @@ export class EditorComponent implements AfterViewInit {
     public onResize(): void {
         this.editorRenderService.onResize();
     }
+
+  @HostListener("window:contextmenu", ["$event"])
+    public onContextMenu(event: MouseEvent): void {
+        this.editorRenderService.onContextMenu(event);
+    }
+
 }
