@@ -63,7 +63,6 @@ export class WordFiller {
             await this.getWordFromAPI(wordConstraints).then(
                 (result: ResponseWordFromAPI) => {
                     word.$word = result.$word;
-                    console.log(word.$word + ", " + word.$startPos.$x + "," + word.$startPos.$y);
                     if (word.$word === "") {
                         backTrackStartedOn = i;
                         for (let j: number = i; j > i - nmbrBackTrack; j--) {

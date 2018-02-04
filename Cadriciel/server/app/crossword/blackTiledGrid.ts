@@ -7,7 +7,7 @@ import { Vec2 } from "../../../common/crossword/vec2";
 @injectable()
 export class BlackTiledGrid {
 
-    public readonly BLACK_TILES_RATIO: number = 0.5;
+    public readonly BLACK_TILES_RATIO: number = 0.45;
     public readonly NUMBER_OF_TILES: number = this.SIZE_GRID_X * this.SIZE_GRID_Y;
     public readonly NUM_BLACK_TILES: number = this.NUMBER_OF_TILES * this.BLACK_TILES_RATIO;
     public readonly MIN_WORD_LENGTH: number = 2;
