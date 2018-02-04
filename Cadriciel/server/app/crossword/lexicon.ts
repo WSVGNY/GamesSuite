@@ -106,8 +106,8 @@ export class Lexicon {
                 res.send(this.getValidWordFromList(result.toString()));
             }
         ).catch((e: Error) => {
-            console.error(e);
-            res.send(this.INTERNAL_SERVER_ERROR_CODE);
+            const status: number = +e.message.substring(0, 3);
+            res.sendStatus(status);
         });
     }
 }
