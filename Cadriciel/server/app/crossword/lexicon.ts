@@ -11,7 +11,9 @@ export class Lexicon {
     private readonly BASE_URL: string = "https://api.datamuse.com/words?";
     private difficulty: Difficulty;
     private readonly FREQUENCY_DELIMITER: number = 10;
-    private readonly INTERNAL_SERVER_ERROR_CODE: number = 500;
+    private readonly MIN_NUMBER_OF_DEFINITION: number = 2;
+    private readonly UNWANTED_POSITION_LENGTH: number = 2;
+    private readonly ERROR_STATUS_CODE_LENGTH: number = 3;
 
     private getDefinition(word: string): string {
         const definitions: string = word["defs"];
@@ -28,10 +30,10 @@ export class Lexicon {
                 }
             }
         }
-        if (this.difficulty === "EASY") {
+        if (this.difficulty === Difficulty.easy) {
             return definitions[0];
         } else {
-            if (definitions.length >= 2) {
+            if (definitions.length >= this.MIN_NUMBER_OF_DEFINITION) {
                 return definitions[1];
             } else {
                 return definitions[0];
@@ -40,8 +42,8 @@ export class Lexicon {
     }
 
     private checkFrequency(word: string): boolean {
-        const frequency: number = word["tags"][0].substring(2);
-        if (this.difficulty === "HARD") {
+        const frequency: number = word["tags"][0].substring(this.UNWANTED_POSITION_LENGTH);
+        if (this.difficulty === Difficulty.hard) {
             if (frequency < this.FREQUENCY_DELIMITER) {
                 return true;
             } else {
@@ -106,7 +108,7 @@ export class Lexicon {
                 res.send(this.getValidWordFromList(result.toString()));
             }
         ).catch((e: Error) => {
-            const status: number = +e.message.substring(0, 3);
+            const status: number = +e.message.substring(0, this.ERROR_STATUS_CODE_LENGTH);
             res.sendStatus(status);
         });
     }
