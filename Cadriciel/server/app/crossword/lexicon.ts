@@ -55,6 +55,18 @@ export class Lexicon {
         }
     }
 
+    public removeAccent(word: string): string {
+        word = word.replace(new RegExp(/[àáâä]/g), "a");
+        word = word.replace(new RegExp(/ç/g), "c");
+        word = word.replace(new RegExp(/[èéêë]/g), "e");
+        word = word.replace(new RegExp(/[ìíîï]/g), "i");
+        word = word.replace(new RegExp(/[òóôö]/g), "o");
+        word = word.replace(new RegExp(/[ùúûü]/g), "u");
+        word = word.replace(new RegExp(/\W/g), "");
+        
+        return word;
+    }
+
     public getWordListFromConstraint(req: Request, res: Response): void {
         this.difficulty = req.params.difficulty;
         requestPromise(this.BASE_URL + "sp=" + req.params.constraints + "&md=fd").then(
@@ -96,13 +108,4 @@ export class Lexicon {
     }
 }
 
-function removeAccent(word: string): string {
-    word = word.replace(new RegExp(/[àáâä]/g), "a");
-    word = word.replace(new RegExp(/ç/g), "c");
-    word = word.replace(new RegExp(/[èéêë]/g), "e");
-    word = word.replace(new RegExp(/[ìíîï]/g), "i");
-    word = word.replace(new RegExp(/[òóôö]/g), "o");
-    word = word.replace(new RegExp(/[ùúûü]/g), "u");
-    word = word.replace(new RegExp(/\W/g), "");
-    return word;
-}
+
