@@ -1,6 +1,6 @@
 import assert = require("assert");
 import { Grid } from "./gridCreate";
-import { BlackTiledGrid } from "./blackTiledGrid";
+// import { BlackTiledGrid } from "./blackTiledGrid";
 
 it("Grid is defined on creation", (done: MochaDone) => {
     const grid: Grid = new Grid();
