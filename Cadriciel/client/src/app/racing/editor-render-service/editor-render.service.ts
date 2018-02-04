@@ -11,6 +11,12 @@ const LEFT_CLICK_KEYCODE: number = 1;
 const RIGHT_CLICK_KEYCODE: number = 3;
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
+enum Action {
+  ADD_POINT = 1,
+  SET_SELECTED_VERTEX,
+  COMPLETE_LOOP,
+  NONE
+}
 
 @Injectable()
 export class EditorRenderService {
@@ -78,7 +84,7 @@ export class EditorRenderService {
   this.renderer.setSize(this.containerEditor.clientWidth, this.containerEditor.clientHeight);
 }
 
-  public computeMouseCoordinates(event: MouseEvent): boolean {
+  public computeMouseCoordinates(posX: number, posY: number): boolean {
     const offset: Vector2 = new Vector2();
     offset.x = this.containerEditor.offsetLeft + this.containerEditor.clientLeft;
     offset.y = this.containerEditor.offsetTop - document.documentElement.scrollTop + this.containerEditor.clientTop;
@@ -89,41 +95,57 @@ export class EditorRenderService {
     // tslint:disable-next-line:no-magic-numbers
     center.y = this.containerEditor.clientHeight / 2;
 
-    this.mouseVector.x = (event.clientX - offset.x - center.x) * VIEW_SIZE / this.containerEditor.clientHeight;
-    this.mouseVector.y = -(event.clientY - offset.y - center.y) * VIEW_SIZE / this.containerEditor.clientHeight;
+    this.mouseVector.x = (posX - offset.x - center.x) * VIEW_SIZE / this.containerEditor.clientHeight;
+    this.mouseVector.y = -(posY - offset.y - center.y) * VIEW_SIZE / this.containerEditor.clientHeight;
 
-    return (event.clientX > offset.x && event.clientY > offset.y) ? true : false;
+    return (posX > offset.x && posY > offset.y) ? true : false;
   }
 
-  public computeLeftClickAction(event: MouseEvent): void {
+  private computeLeftClickAction(): Action {
     const direction: Vector3 = this.mouseVector.clone().sub(this.camera.position).normalize();
     this.raycaster.set(this.camera.position, direction);
     if (this.listOfPoints.isEmpty()) {
-      this.listOfPoints.addVertex(this.mouseVector);
+      return Action.ADD_POINT;
     } else {
       if (this.raycaster.intersectObject(this.listOfPoints.getFirstVertex(), true).length) {
-        // Code pour sauvegarder la boucle
         if (this.listOfPoints.$isComplete()) {
-          this.selectedVertexName = this.raycaster.intersectObjects(this.listOfPoints.getVertices(), true)[0].object.name;
+          return Action.SET_SELECTED_VERTEX;
         } else {
-          this.listOfPoints.completeLoop();
+          return Action.COMPLETE_LOOP;
         }
       } else if (this.raycaster.intersectObjects(this.listOfPoints.getVertices(), true).length) {
-        this.selectedVertexName = this.raycaster.intersectObjects(this.listOfPoints.getVertices(), true)[0].object.name;
+        return Action.SET_SELECTED_VERTEX ;
       } else {
         if (!this.listOfPoints.$isComplete()) {
-            this.listOfPoints.addVertex(this.mouseVector);
+            return Action.ADD_POINT;
         }
       }
     }
+
+    return Action.NONE;
   }
 
-  public handleMouseDown(event: MouseEvent): void {
-    if (this.computeMouseCoordinates(event)) {
+  private computeAction(actionId: Action): void {
+    switch (actionId) {
+      case Action.ADD_POINT:
+      this.listOfPoints.addVertex(this.mouseVector);
+      break;
+      case Action.SET_SELECTED_VERTEX:
+      this.selectedVertexName = this.raycaster.intersectObjects(this.listOfPoints.getVertices(), true)[0].object.name;
+      break;
+      case Action.COMPLETE_LOOP:
+      this.listOfPoints.completeLoop();
+      break;
+      default:
+    }
+  }
+  public handleMouseDown(buttonId: number, x: number, y: number): void {
+    if (this.computeMouseCoordinates(x, y)) {
       this.isMouseDown = true;
-      switch (event.which) {
+      switch (buttonId) {
         case LEFT_CLICK_KEYCODE:
-            this.computeLeftClickAction(event);
+            const operation: Action = this.computeLeftClickAction();
+            this.computeAction(operation);
             break;
         case RIGHT_CLICK_KEYCODE:
             this.listOfPoints.removeLastVertex();
@@ -132,16 +154,16 @@ export class EditorRenderService {
       }
     }
   }
-  public handleMouseMove (event: MouseEvent): void {
-    if (this.computeMouseCoordinates(event)) {
+  public handleMouseMove (x: number, y: number): void {
+    if (this.computeMouseCoordinates(x, y)) {
       if (this.isMouseDown === true && this.selectedVertexName !== "none") {
         this.listOfPoints.setVertexPosition(this.selectedVertexName, this.mouseVector);
       }
     }
   }
 
-  public handleMouseUp (event: MouseEvent): void {
-    if (this.computeMouseCoordinates(event)) {
+  public handleMouseUp (x: number, y: number): void {
+    if (this.computeMouseCoordinates(x, y)) {
       this.isMouseDown = false;
       this.selectedVertexName = "none";
     }
