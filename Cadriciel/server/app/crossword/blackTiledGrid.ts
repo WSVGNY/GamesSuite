@@ -18,7 +18,7 @@ export class BlackTiledGrid {
 
     public constructor(private SIZE_GRID_X: number, private SIZE_GRID_Y: number,
                        private grid: GridBox[][]) {
-                        this.words = this.placeBlackGridTiles();
+                       this.words = this.placeBlackGridTiles();
     }
 
     public placeBlackGridTiles(): Word[] {
