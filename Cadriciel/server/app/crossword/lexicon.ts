@@ -11,8 +11,10 @@ export class Lexicon {
     private readonly BASE_URL: string = "https://api.datamuse.com/words?";
     private difficulty: Difficulty;
     private readonly FREQUENCY_DELIMITER: number = 10;
+    private readonly INTERNAL_SERVER_ERROR_CODE: number = 500;
+    private readonly FREQUENCY_DELIMITER: number = 10;
 
-    public getDefinition(word: string): string {
+    private getDefinition(word: string): string {
         const definitions: string = word["defs"];
         if (definitions === undefined) {
             return "";
@@ -39,12 +41,12 @@ export class Lexicon {
         const frequency: number = word["tags"][0].substring(2);
         if (this.difficulty === "HARD") {
             if (frequency < this.FREQUENCY_DELIMITER) {
-               return true;
+                return true;
             } else {
                 return false;
             }
         } else {
-            if (frequency >= this.FREQUENCY_DELIMITER){
+            if (frequency >= this.FREQUENCY_DELIMITER) {
                 return true;
             } else {
                 return false;
@@ -52,7 +54,7 @@ export class Lexicon {
         }
     }
 
-    public removeAccent(word: string): string {
+    private removeAccent(word: string): string {
         word = word.replace(new RegExp(/[àáâä]/g), "a");
         word = word.replace(new RegExp(/ç/g), "c");
         word = word.replace(new RegExp(/[èéêë]/g), "e");
@@ -64,51 +66,46 @@ export class Lexicon {
         return word;
     }
 
-    public getWordListFromConstraint(req: Request, res: Response): void {
-        this.difficulty = req.params.difficulty;
+    private getValidWordFromList(result: string): ResponseWordFromAPI {
+        const words: string[] = JSON.parse(result);
+        let responseWord: ResponseWordFromAPI = new ResponseWordFromAPI();
+        let badWord: boolean;
+        do {
+            badWord = true;
+            const random: number = Math.floor(Math.random() * words.length);
+            const randomWordFromList: string = words[random];
+            responseWord.$word = randomWordFromList["word"].toUpperCase();
 
+            if (this.checkFrequency(randomWordFromList)) {
+                responseWord.$definition = this.getDefinition(randomWordFromList);
+                if (responseWord.$definition !== "") {
+                    badWord = false;
+                }
+            }
+
+            if (badWord) {
+                words.splice(words.findIndex((word: string) => word === randomWordFromList), 1);
+            }
+
+            if (words.length === 0) {
+                responseWord = new ResponseWordFromAPI();
+                badWord = false;
+            }
+        } while (badWord);
+        responseWord.$word = this.removeAccent(responseWord.$word);
+
+        return responseWord;
+    }
+
+    public getWordFromConstraint(req: Request, res: Response): void {
+        this.difficulty = req.params.difficulty;
         requestPromise(this.BASE_URL + "sp=" + req.params.constraints + "&md=fd").then(
             (result: string) => {
-
-                let words = JSON.parse(result.toString());
-                let random: number;
-                let responseWord: ResponseWordFromAPI = new ResponseWordFromAPI();
-                let badWord: boolean = true;
-
-                do {
-                    badWord = true;
-                    random = Math.floor(Math.random() * words.length);
-                    let tempWord = words[random];
-                    responseWord.$word = tempWord.word.toUpperCase();
-
-                    if (this.checkFrequency(tempWord)) {
-                        responseWord.$definition = this.getDefinition(tempWord);
-                        if (responseWord.$definition !== "") {
-                            badWord = false;
-                        }
-                    }
-
-                    if (badWord) {
-                        let removeIndex = words.findIndex((word: any) => word === tempWord);
-                        words.splice(removeIndex, 1);
-                    }
-
-                    if (words.length === 0) {
-                        responseWord = new ResponseWordFromAPI();
-                        badWord = false;
-                    }
-
-                } while (badWord);
-
-                responseWord.$word= this.removeAccent(responseWord.$word);
-                responseWord.$definition = responseWord.$definition.substring(2);
-                //res.send(JSON.parse(JSON.stringify(responseWord)));
-                res.send(responseWord);
-
+                res.send(this.getValidWordFromList(result.toString()));
             }
         ).catch((e: Error) => {
             console.error(e);
-            res.send(500);
+            res.send(this.INTERNAL_SERVER_ERROR_CODE);
         });
     }
 }

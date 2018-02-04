@@ -18,7 +18,6 @@ describe("LEXICON TESTS", () => {
                 assert(word.$definition[0][0] === "v");
                 done();
             }).catch(done);
-
         });
 
         it("word is a noun", (done: MochaDone) => {
