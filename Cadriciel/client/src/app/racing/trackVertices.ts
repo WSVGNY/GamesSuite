@@ -5,11 +5,11 @@ const GREEN: number = 0x26FF00;
 const WHITE: number = 0xFFFFFF;
 const PINK: number = 0xFF00BF;
 const RADIUS: number = 12;
-const VERTEX_GEOMETRY: SphereGeometry  = new SphereGeometry(RADIUS, RADIUS, RADIUS);
+export const VERTEX_GEOMETRY: SphereGeometry  = new SphereGeometry(RADIUS, RADIUS, RADIUS);
 const START_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial ({color : PINK});
-const SIMPLE_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial ({color : ORANGE});
+export const SIMPLE_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial ({color : ORANGE});
 const START_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial ({ color: GREEN });
-const LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial ({ color: WHITE });
+export const LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial ({ color: WHITE });
 
 export class TrackVertices {
 
@@ -29,20 +29,44 @@ export class TrackVertices {
     }
 
     public addVertex(position: Vector3): void {
+        const vertex: Mesh = this.createVertex(position);
+        this.scene.add (vertex);
+        this.vertices.push(vertex);
+        if (this.vertices.length <= 1) {
+            this.firstVertex = vertex;
+        } else {
+            this.addConnection(this.lastVertex, vertex);
+        }
+        this.nbVertices++;
+        this.lastVertex = vertex;
+    }
+
+    private createVertex(position: Vector3): Mesh {
         const vertex: Mesh = (this.nbVertices === 0 ) ?
             new Mesh(VERTEX_GEOMETRY, START_VERTEX_MATERIAL) :
             new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
         vertex.position.set(position.x, position.y, 0);
         vertex.name = (this.nbVertices) ? "vertex" + this.nbVertices : "Start";
-        this.scene.add (vertex);
-        this.vertices.push(vertex);
-        if (this.nbVertices === 0 ) {
-            this.firstVertex = vertex;
-        } else {
-            this.createConnection(this.lastVertex, vertex);
-        }
-        this.nbVertices++;
-        this.lastVertex = vertex;
+
+        return vertex;
+    }
+
+    public addConnection(firstVertex: Mesh , secondVertex: Mesh): void {
+        const connection: Line = this.createConnection(firstVertex, secondVertex);
+        this.connections.push(connection);
+        this.scene.add(connection);
+    }
+
+    private createConnection(start: Mesh , end: Mesh): Line {
+        const LINE_GEOMETRY: Geometry = new Geometry();
+        LINE_GEOMETRY.vertices.push(new Vector3(start.position.x, start.position.y , 0));
+        LINE_GEOMETRY.vertices.push(new Vector3(end.position.x, end.position.y , 0));
+        const connection: Line = (this.connections.length) ?
+            new Line(LINE_GEOMETRY, LINE_MATERIAL) :
+            new Line(LINE_GEOMETRY, START_LINE_MATERIAL);
+        connection.name = "connection" + (this.connections.length);
+
+        return connection;
     }
 
     public removeLastVertex(): void {
@@ -56,20 +80,8 @@ export class TrackVertices {
         }
     }
 
-    public createConnection(start: Mesh , end: Mesh): void {
-        const LINE_GEOMETRY: Geometry = new Geometry();
-        LINE_GEOMETRY.vertices.push(new Vector3(start.position.x, start.position.y , 0));
-        LINE_GEOMETRY.vertices.push(new Vector3(end.position.x, end.position.y , 0));
-        const connection: Line = (this.connections.length) ?
-            new Line(LINE_GEOMETRY, LINE_MATERIAL) :
-            new Line(LINE_GEOMETRY, START_LINE_MATERIAL);
-        connection.name = "connection" + this.nbVertices;
-        this.connections.push(connection);
-        this.scene.add(connection);
-    }
-
     public completeLoop(): void {
-        this.createConnection(this.lastVertex, this.firstVertex);
+        this.addConnection(this.lastVertex, this.firstVertex);
         this.isComplete = true;
     }
 
@@ -82,21 +94,29 @@ export class TrackVertices {
         this.scene.add(this.connections[this.vertices.indexOf(vertex1)]);
     }
 
-    public setVertexPosition( vertexName: String, position: Vector3 ): void {
+    public updateFollowingConnection( entry: Mesh ): void {
+        // Check if entry is the first vertex when track is complete
+        if (this.isComplete && this.vertices.indexOf(entry) + 1 === this.vertices.length) {
+            this.updateConnection(entry, this.firstVertex);
+
+        // Check if entry is the last vertex when track is incomplete
+        } else if (this.vertices.indexOf(entry) + 1 !== this.vertices.length) {
+            const nextVertex: Mesh = this.vertices[this.vertices.indexOf(entry) + 1];
+            this.updateConnection(entry, nextVertex);
+        }
+    }
+
+    public setVertexPosition( vertexName: String, newPosition: Vector3 ): void {
         // tslint:disable-next-line:prefer-const
         for (let entry of this.vertices) {
             if (entry.name === vertexName) {
-                entry.position.x = position.x;
-                entry.position.y = position.y;
-                if (this.isComplete && this.vertices.indexOf(entry) + 1 === this.nbVertices) {
-                    this.updateConnection(entry, this.firstVertex);
-                } else if (this.vertices.indexOf(entry) + 1 !== this.nbVertices) {
-                    const nextVertex: Mesh = this.vertices[this.vertices.indexOf(entry) + 1];
-                    this.updateConnection(entry, nextVertex);
+                entry.position.x = newPosition.x;
+                entry.position.y = newPosition.y;
+                this.updateFollowingConnection( entry );
 
-                }
                 if (this.isComplete && entry === this.firstVertex) {
                     this.updateConnection(this.lastVertex, entry);
+
                 } else {
                     const previousVertex: Mesh = this.vertices[this.vertices.indexOf(entry) - 1];
                     this.updateConnection(previousVertex, entry);
@@ -118,7 +138,7 @@ export class TrackVertices {
     }
 
     public isEmpty(): boolean {
-        return (this.nbVertices === 0) ? true : false;
+        return (this.vertices.length === 0) ? true : false;
     }
 
     public $isComplete(): boolean {

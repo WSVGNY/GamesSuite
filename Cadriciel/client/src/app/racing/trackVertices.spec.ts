@@ -1,25 +1,47 @@
-import { TestBed, inject } from "@angular/core/testing";
-import { TrackVertices } from "./trackVertices";
-import { Scene, Vector3 } from "three";
+import { TrackVertices, VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL, LINE_MATERIAL } from "./trackVertices";
+import { Scene, Vector3, Mesh, Geometry, Line } from "three";
 
 describe("TrackVertices", () => {
     let scene: Scene;
-    let trackVerticies: TrackVertices;
+    let trackVertices: TrackVertices;
 
     beforeEach(() => {
         scene = new Scene();
-        trackVerticies = new TrackVertices(scene);
+        trackVertices = new TrackVertices(scene);
     });
 
     it("should cerate a point in the scene", ()  => {
-        trackVerticies.addVertex(new Vector3( 0, 0, 0 ));
+        trackVertices.addVertex(new Vector3( 0, 0, 0 ));
         expect(scene.getChildByName("vertex0") === null).toBeFalsy();
     });
 
     it("should create a connection between two points", ()  => {
-        trackVerticies.addVertex(new Vector3( 0, 0, 0 ));
-        trackVerticies.addVertex(new Vector3( 1, 1, 0 ));
-        expect(scene.getChildByName("connection1").name === null).toBeFalsy();
+        const vertex0: Mesh = new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
+        const vertex1: Mesh = new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
+        vertex0.position.set(0, 0, 0 );
+        vertex1.position.set(0, 0, 0 );
+        trackVertices.addConnection(vertex0, vertex1);
+        expect(scene.getChildByName("connection0").name === null).toBeFalsy();
+    });
+
+    it("should remove the last point added to the scene", ()  => {
+        const vertex: Mesh = new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
+        vertex.position.set(0, 0, 0 );
+        trackVertices["vertices"].push(vertex);
+        scene.add(vertex);
+        trackVertices.removeLastVertex();
+        expect(scene.children.length).toBeFalsy();
+    });
+
+    it("should remove the last connection added to the scene", ()  => {
+        const LINE_GEOMETRY: Geometry = new Geometry();
+        LINE_GEOMETRY.vertices.push(new Vector3(0, 0, 0));
+        LINE_GEOMETRY.vertices.push(new Vector3(1, 1, 1));
+        const connection: Line = new Line(LINE_GEOMETRY, LINE_MATERIAL);
+        trackVertices["connections"].push(connection);
+        scene.add(connection);
+        trackVertices.removeLastVertex();
+        expect(scene.children.length).toBeFalsy();
     });
 
     /*it("should remove a point from the list of points and the connection assiciated this it", () => {
