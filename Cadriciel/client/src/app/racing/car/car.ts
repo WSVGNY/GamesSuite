@@ -53,7 +53,7 @@ export class Car extends Object3D {
         return this.mesh;
     }
 
-    public setCamera(camera: Camera): void {
+    public attachCamera(camera: Camera): void {
         this.mesh.add(camera);
     }
 

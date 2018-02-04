@@ -1,9 +1,9 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
-import { PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, Matrix4, Vector3, CubeGeometry,
+import { PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, /*Matrix4, Vector3,*/ CubeGeometry,
      MeshLambertMaterial, MeshBasicMaterial, Mesh, PlaneGeometry} from "three";
 import { Car } from "../car/car";
-import { DEG_TO_RAD, RAD_TO_DEG } from "../constants";
+import { DEG_TO_RAD, /*RAD_TO_DEG*/ } from "../constants";
 
 const FAR_CLIPPING_PLANE: number = 1000;
 const NEAR_CLIPPING_PLANE: number = 1;
@@ -14,8 +14,8 @@ const LEFT_KEYCODE: number = 65;        // a
 const BRAKE_KEYCODE: number = 83;       // s
 const RIGHT_KEYCODE: number = 68;       // d
 
-const INITIAL_CAMERA_POSITION_X: number = 0;
-const INITIAL_CAMERA_POSITION_Y: number = -10;
+//const INITIAL_CAMERA_POSITION_X: number = 0;
+//const INITIAL_CAMERA_POSITION_Y: number = -10;
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
 
@@ -61,6 +61,12 @@ export class RenderService {
 
     private async createScene(): Promise<void> {
         this.scene = new Scene();
+        await this._car.init();
+        this.scene.add(this._car);
+        // this.camera.add(this._car.getMesh);
+        // this.camera.position.set(0, 0, 0);
+        // this.camera.lookAt(this._car.getMesh.position);
+        // this._car.setCamera( this.camera ); // CHANGED
 
         this.camera = new PerspectiveCamera(
             FIELD_OF_VIEW,
@@ -68,26 +74,15 @@ export class RenderService {
             NEAR_CLIPPING_PLANE,
             FAR_CLIPPING_PLANE
         );
-
-        await this._car.init();
-        
-        //this.camera.add(this._car.getMesh);
-        //this.camera.position.set(0, 0, 0);
-        //this.camera.lookAt(this._car.getMesh.position);
-        //this._car.setCamera( this.camera ); // CHANGED
-        this.scene.add(this._car);
+        this.camera.position.z = 10;
+        this.camera.position.y = 5;
+        this._car.attachCamera(this.camera);
 
         const groundGeometry: PlaneGeometry = new PlaneGeometry( 100, 100, 100, 100 );
         const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ wireframe: true, color: 0x00FF00 });
         const ground: Mesh = new Mesh( groundGeometry, groundMaterial );
+        ground.rotateX( DEG_TO_RAD * 90 );
         this.scene.add( ground );
-
-        const cubeGeometry: CubeGeometry = new CubeGeometry( 1, 2, 1 );
-        const cubeMaterial: MeshLambertMaterial  = new MeshLambertMaterial({ color: 0xFF0000 });
-        const cube: Mesh = new Mesh( cubeGeometry, cubeMaterial );
-        //this.scene.add( cube );
-        
-
         this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
     }
 
@@ -108,13 +103,13 @@ export class RenderService {
     private render(): void {
         requestAnimationFrame(() => this.render());
         this.update();
-        //this.camera.position.set(this._car.currentPosition.x+10, this._car.currentPosition.y+5, this._car.currentPosition.z);
-        this.camera.position.y = this._car.currentPosition.y + 5  ;
-        this.camera.position.x = (this._car.currentPosition.x + 15  )
-        this.camera.position.z = (this._car.currentPosition.z+15) * Math.cos(this._car.angle * DEG_TO_RAD);
-        this.camera.lookAt(this._car.currentPosition);
-        
+        // this.camera.position.set(this._car.currentPosition.x+10, this._car.currentPosition.y+5, this._car.currentPosition.z);
+        // this.camera.position.y = this._car.currentPosition.y + 5  ;
+        // this.camera.position.x = (this._car.currentPosition.x + 15  )
+        // this.camera.position.z = (this._car.currentPosition.z+15) * Math.cos(this._car.angle * DEG_TO_RAD);
+        // this.camera.lookAt(this._car.currentPosition);
         this.renderer.render(this.scene, this.camera);
+        // this._car.getMesh.rotation.y += 0.1;
         this.stats.update();
 
         // console.log(this._car.angle);
