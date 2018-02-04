@@ -12,12 +12,12 @@ import { ResponseWordFromAPI } from "../../../common/communication/responseWordF
 @injectable()
 export class Grid {
 
-    private readonly SIZE_GRID_X: number = 10;
-    private readonly SIZE_GRID_Y: number = 10;
-    private readonly NUMBER_OF_TILES: number = this.SIZE_GRID_X * this.SIZE_GRID_Y;
-    private readonly BLACK_TILES_RATIO: number = 0.4;
-    private readonly NUM_BLACK_TILES: number = this.NUMBER_OF_TILES * this.BLACK_TILES_RATIO;
-    private readonly MIN_WORD_LENGTH: number = 2;
+    public readonly SIZE_GRID_X: number = 10;
+    public readonly SIZE_GRID_Y: number = 10;
+    public readonly NUMBER_OF_TILES: number = this.SIZE_GRID_X * this.SIZE_GRID_Y;
+    public readonly BLACK_TILES_RATIO: number = 0.4;
+    public readonly NUM_BLACK_TILES: number = this.NUMBER_OF_TILES * this.BLACK_TILES_RATIO;
+    public readonly MIN_WORD_LENGTH: number = 2;
     private grid: GridBox[][];
     private charGrid: Char[][];
     private words: Word[];
@@ -52,7 +52,7 @@ export class Grid {
 
         this.getWordFromAPI("%3f%3f%3f", Difficulty.easy).then(
             (result: ResponseWordFromAPI) => {
-                console.log(result);
+                // console.log(result);
             }
         ).catch((e: Error) => console.error(e));
     }
