@@ -16,13 +16,17 @@ export class BlackTiledGrid {
     private wordDefID: number;
     private words: Word[];
 
+    public get $words(): Word[] {
+        return this.words;
+    }
+
     public constructor(private SIZE_GRID_X: number, private SIZE_GRID_Y: number,
                        private grid: GridBox[][]) {
-                        this.words = this.placeBlackGridTiles();
+                       this.words = this.placeBlackGridTiles();
     }
 
     public placeBlackGridTiles(): Word[] {
-        const array: Vec2[] = this.fillShuffledArray();
+        const array: Vec2[] = this.createShuffledArray();
         for (let i: number = 0; i < this.NUM_BLACK_TILES; i++) {
             const randomTileId: Vec2 = array[i];
             this.findMatchingTileById(randomTileId).$black = true;
@@ -32,15 +36,10 @@ export class BlackTiledGrid {
         } else {
             return undefined;
         }
-
-    }
-
-    public get $words(): Word[] {
-        return this.words;
     }
 
     // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
-    private fillShuffledArray(): Array<Vec2> {
+    private createShuffledArray(): Array<Vec2> {
         const array: Array<Vec2> = [];
         let arrayIndex: number = 0;
         for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
@@ -70,6 +69,8 @@ export class BlackTiledGrid {
     }
 
     // returns false if there's a word of 1 letter
+    // Horizontal must be called first because it verifies that 1 letter word are at least of 2 letters vertically
+    // Vertical executes with the assumption that this verification has been made.
     private verifyBlackGridValidity(): boolean {
         this.wordId = 1;
         this.wordDefID = 1;
@@ -87,10 +88,7 @@ export class BlackTiledGrid {
         for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
             for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
                 if (!this.grid[i][j].$black) {
-                    let wordLength: number = 1;
-                    while (j + wordLength < this.SIZE_GRID_X && !this.grid[i][j + wordLength].$black) {
-                        wordLength++;
-                    }
+                    const wordLength: number = this.calculateWordLength(true, i, j);
                     if (wordLength < this.MIN_WORD_LENGTH) {
                         if (!this.verifyVertically(i, j)) {
                             return false;
@@ -130,10 +128,8 @@ export class BlackTiledGrid {
                 if (this.grid[j][i].$black) {
                     continue;
                 }
-                let wordLength: number = 1;
-                while (j + wordLength < this.SIZE_GRID_Y && !this.grid[j + wordLength][i].$black) {
-                    wordLength++;
-                }
+                const wordLength: number = this.calculateWordLength(true, i, j);
+
                 if (wordLength >= this.MIN_WORD_LENGTH) {
                     this.words[this.wordId - 1] =
                         new Word(this.wordId++, this.findHorizontalWordDefID(i, j), false, wordLength, this.grid[j][i].$id);
@@ -148,6 +144,21 @@ export class BlackTiledGrid {
         }
 
         return true;
+    }
+
+    private calculateWordLength(isHorizontal: boolean, i: number, j: number): number {
+        let wordLength: number = 1;
+        if (isHorizontal) {
+            while (j + wordLength < this.SIZE_GRID_X && !this.grid[i][j + wordLength].$black) {
+                wordLength++;
+            }
+        } else {
+            while (j + wordLength < this.SIZE_GRID_Y && !this.grid[j + wordLength][i].$black) {
+                wordLength++;
+            }
+        }
+
+        return wordLength;
     }
 
     private findHorizontalWordDefID(i: number, j: number): number {
