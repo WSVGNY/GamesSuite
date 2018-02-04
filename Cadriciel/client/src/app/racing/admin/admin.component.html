@@ -1,8 +1,8 @@
 <h2>Les pistes</h2>
-<ul class="piste">
-  <li *ngFor="let piste of pistes">
-    <a routerLink="/admin/{{piste.id}}">
-      <span class="badge">{{piste.id}}</span> {{piste.name}}
+<ul class="track">
+  <li *ngFor="let piste of tracks">
+    <a routerLink="/admin/{{track.id}}">
+      <span class="badge">{{track.id}}</span> {{track.name}}
     </a>
   </li>
 <button (click)= "saveEvent ($event)" Save ></button>

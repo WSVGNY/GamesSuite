@@ -124,4 +124,8 @@ export class TrackVertices {
     public $isComplete(): boolean {
         return this.isComplete;
     }
+
+    public getScene(): Scene {
+        return this.scene;
+    }
 }
