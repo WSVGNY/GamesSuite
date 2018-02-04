@@ -14,7 +14,7 @@ export class Lexicon {
 
     public getDefinition(word: string): string {
         const definitions: string = word["defs"];
-        if (definitions === undefined){
+        if (definitions === undefined) {
             return "";
         }
         for (let i: number = 0; i < (word["defs"].length); i++) {
@@ -52,6 +52,18 @@ export class Lexicon {
         }
     }
 
+    public removeAccent(word: string): string {
+        word = word.replace(new RegExp(/[àáâä]/g), "a");
+        word = word.replace(new RegExp(/ç/g), "c");
+        word = word.replace(new RegExp(/[èéêë]/g), "e");
+        word = word.replace(new RegExp(/[ìíîï]/g), "i");
+        word = word.replace(new RegExp(/[òóôö]/g), "o");
+        word = word.replace(new RegExp(/[ùúûü]/g), "u");
+        word = word.replace(new RegExp(/\W/g), "");        // delete non word characters (hyphens, apostrophes, etc.)
+
+        return word;
+    }
+
     public getWordListFromConstraint(req: Request, res: Response): void {
         this.difficulty = req.params.difficulty;
 
@@ -59,10 +71,8 @@ export class Lexicon {
             (result: string) => {
 
                 let words = JSON.parse(result.toString());
-                // console.log(words);
                 let random: number;
                 let responseWord: ResponseWordFromAPI = new ResponseWordFromAPI();
-                //console.log(responseWord);
                 let badWord: boolean = true;
 
                 do {
@@ -90,11 +100,8 @@ export class Lexicon {
 
                 } while (badWord);
 
-                console.log(responseWord.$word);
-
-                responseWord.$word= removeAccent(responseWord.$word);
+                responseWord.$word= this.removeAccent(responseWord.$word);
                 responseWord.$definition = responseWord.$definition.substring(2);
-                
                 //res.send(JSON.parse(JSON.stringify(responseWord)));
                 res.send(responseWord);
 
@@ -104,15 +111,4 @@ export class Lexicon {
             res.send(500);
         });
     }
-}
-
-function removeAccent(word: string) {
-    word = word.replace(new RegExp(/[àáâä]/g),"a");
-    word = word.replace(new RegExp(/ç/g),"c");
-    word = word.replace(new RegExp(/[èéêë]/g),"e");
-    word = word.replace(new RegExp(/[ìíîï]/g),"i");                
-    word = word.replace(new RegExp(/[òóôö]/g),"o");
-    word = word.replace(new RegExp(/[ùúûü]/g),"u");
-    word = word.replace(new RegExp(/\W/g),"");        //delete non word characters (hyphens, apostrophes, etc.)
-    return word;
 }
