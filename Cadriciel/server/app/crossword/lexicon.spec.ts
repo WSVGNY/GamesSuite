@@ -1,5 +1,16 @@
+
+/*
+
 import assert = require("assert");
-import { Grid } from "./gridCreate";
+import { Lexicon } from "./lexicon";
+
+it("word doesn't contain any special characters", (done: MochaDone) => {
+    const lex: Lexicon = new Lexicon();
+    lex.getDefinition("test");
+    
+    done();
+});
+
 
 it("Grid contains appropriate number of black tiles", (done: MochaDone) => {
     const grid: Grid = new Grid();
@@ -15,3 +26,5 @@ it("Grid contains appropriate number of black tiles", (done: MochaDone) => {
     assert(numBlackTiles >= grid["BLACK_TILES_RATIO"] * grid["NUMBER_OF_TILES"]);
     done();
 });
+
+*/

@@ -2,7 +2,7 @@ import { Application } from "./app";
 import * as http from "http";
 import Types from "./types";
 import { injectable, inject } from "inversify";
-import { IServerAddress } from "./iserver.address";
+// import { IServerAddress } from "./iserver.address";
 
 @injectable()
 export class Server {
@@ -55,9 +55,9 @@ export class Server {
      * Se produit lorsque le serveur se met à écouter sur le port.
      */
     private  onListening(): void {
-        const addr: IServerAddress = this.server.address();
-        const bind: string = (typeof addr === "string") ? `pipe ${addr}` : `port ${addr.port}`;
+        // const addr: IServerAddress = this.server.address();
+        // const bind: string = (typeof addr === "string") ? `pipe ${addr}` : `port ${addr.port}`;
         // tslint:disable-next-line:no-console
-        console.log(`Listening on ${bind}`);
+        //console.log(`Listening on ${bind}`);
     }
 }
