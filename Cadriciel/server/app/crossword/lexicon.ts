@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import "reflect-metadata";
 import { injectable, } from "inversify";
 import * as requestPromise from "request-promise-native";
-import { Difficulty } from "../../../common/crossword/difficulty"
+import { Difficulty } from "../../../common/crossword/difficulty";
 import { ResponseWordFromAPI } from "../../../common/communication/responseWordFromAPI";
 
 @injectable()

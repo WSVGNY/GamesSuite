@@ -8,6 +8,7 @@ import { Char } from "../../../common/crossword/char";
 import * as requestPromise from "request-promise-native";
 import { Difficulty } from "../../../common/crossword/difficulty";
 import { ResponseWordFromAPI } from "../../../common/communication/responseWordFromAPI";
+import { WordConstraint } from "./wordConstraint";
 // import { listenerCount } from "cluster";
 
 @injectable()
@@ -37,7 +38,6 @@ export class Grid {
             this.grid = new Array<Array<GridBox>>();
             for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
                 const row: GridBox[] = new Array<GridBox>();
-
                 for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
                     row.push(new GridBox(new Vec2(j, i), false));
                 }
@@ -48,124 +48,9 @@ export class Grid {
             }
         }
 
-        await this.wordFillControler().then((result: boolean ) => console.log("allo")).catch((e: Error) => console.error(e));
+        await this.wordFillControler();
 
         return true;
-    }
-
-    private async wordFillControler(): Promise<boolean> {
-        this.createCharGrid();
-        //this.bindCharToGrid();
-        this.sortWordsList();
-        await this.fillWords().then(
-            (result: boolean) => {
-                console.log("allo");
-                this.bindCharToGrid();
-                console.log("bye");
-            }).catch((e: Error) => console.error(e));
-
-        return true;
-    }
-
-    private async fillWords(): Promise<boolean> {
-        for (let i: number = 0; i < this.words.length; ++i) {
-            const wordConstraints: string = this.createWordConstraints(i);
-            const word: Word = this.words[i];
-
-            await this.getWordFromAPI(wordConstraints, Difficulty.easy).then(
-                (result: ResponseWordFromAPI) => {
-                    word.$word = result.$word;
-                    // word.$definition = result.$definition;
-
-                    //console.log(word);
-
-                    const splittedWord: string[] = Array.from(result.$word);
-                    for (let j: number = 0; j < splittedWord.length; ++j) {
-                        if (word.$horizontal) {
-                            this.charGrid[word.$startPos.$y][word.$startPos.$x + j].$value = splittedWord[j];
-                        } else {
-                            this.charGrid[word.$startPos.$y + j][word.$startPos.$x].$value = splittedWord[j];
-                        }
-                    }
-                    // console.log(this.charGrid);
-                }
-            ).catch((e: Error) => console.error(e));
-        }
-        console.log(this.charGrid);
-        return true;
-    }
-
-    private createWordConstraints(index: number): string {
-        let wordConstraints: string = "";
-        const word: Word = this.words[index];
-        if (word.$horizontal) {
-            for (let i: number = 0; i < word.$length; ++i) {
-                let charToAdd: string = this.charGrid[word.$startPos.$y][word.$startPos.$x + i].$value;
-                if (charToAdd === "?") {
-                    charToAdd = "%3f";
-                }
-                wordConstraints += charToAdd;
-            }
-        } else {
-            for (let i: number = 0; i < word.$length; ++i) {
-                let charToAdd: string = this.charGrid[word.$startPos.$y + i][word.$startPos.$x].$value;
-                if (charToAdd === "?") {
-                    charToAdd = "%3f";
-                }
-                wordConstraints += charToAdd;
-            }
-        }
-
-        //console.log(word);
-
-        return wordConstraints;
-    }
-
-
-    private async getWordFromAPI(constraints: string, difficulty: Difficulty): Promise<ResponseWordFromAPI> {
-        let responseWord: ResponseWordFromAPI = new ResponseWordFromAPI();
-        //this.gridService.gridGet().subscribe((grid: GridBox[][]) => this.grid = grid);
-        await requestPromise(this.URL_WORD_API + constraints + "/" + difficulty).then(
-            (result: string) => {
-                result = JSON.parse(result);
-                responseWord.$word = result["word"];
-                responseWord.$definition = result["definition"];
-            }
-        ).catch((e: Error) => {
-            console.error(e);
-        });
-
-        return responseWord;
-    }
-    private sortWordsList(): void {
-        if (this.words !== undefined) {
-            this.words.sort((a: Word, b: Word) => b.$length - a.$length);
-        }
-    }
-
-    private createCharGrid(): void {
-        this.charGrid = new Array<Array<Char>>();
-        for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
-            const row: Char[] = new Array<Char>();
-
-            for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                if (this.grid[i][j].$black === false) {
-                    row.push(new Char("?"));
-                } else {
-                    row.push(new Char("#"));
-                }
-            }
-            this.charGrid.push(row);
-        }
-    }
-
-    private bindCharToGrid(): void {
-        console.log("bindChar");
-        for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
-            for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                this.grid[i][j].$value = this.charGrid[i][j].$value;
-            }
-        }
     }
 
     private placeBlackGridTiles(): boolean {
@@ -175,12 +60,41 @@ export class Grid {
             const randomTileId: Vec2 = array[i];
             this.findMatchingTileById(randomTileId).$black = true;
         }
-
         if (!this.verifyBlackGridValidity()) {
             return false;
         }
 
         return true;
+    }
+
+    // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+    private fillShuffledArray(): Array<Vec2> {
+        const array: Array<Vec2> = [];
+        let arrayIndex: number = 0;
+        for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
+            for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
+                array[arrayIndex++] = new Vec2(j, i);
+            }
+        }
+
+        // shuffle array
+        for (let i: number = array.length - 1; i > 0; i--) {
+            const j: number = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+
+        return array;
+    }
+
+    private findMatchingTileById(id: Vec2): GridBox {
+        for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
+            for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
+                if (this.grid[i][j].$id.equals(id)) {
+                    return this.grid[i][j];
+                }
+            }
+        }
+        throw new Error("GridTile not found");
     }
 
     // returns false if there's a word of 1 letter
@@ -196,11 +110,7 @@ export class Grid {
         return isValid;
     }
 
-    // Horizontal MUST be called first because it tests single boxes vertically
-    // In vertical, it supposes that all single boxes are valid
-
     private createWordsInGridHorizontally(): boolean {
-        let isValid: boolean = true;
         let wordCnt: number = 0;
         for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
             for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
@@ -210,9 +120,8 @@ export class Grid {
                         wordLength++;
                     }
                     if (wordLength < this.MIN_WORD_LENGTH) {
-                        isValid = this.verifyVertically(i, j);
-                        if (!isValid) {
-                            return isValid;
+                        if (!this.verifyVertically(i, j)) {
+                            return false;
                         }
                     } else {
                         this.words[this.wordId - 1] =
@@ -228,7 +137,7 @@ export class Grid {
             wordCnt = 0;
         }
 
-        return isValid;
+        return true;
     }
 
     private verifyVertically(i: number, j: number): boolean {
@@ -269,38 +178,6 @@ export class Grid {
         return true;
     }
 
-    // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
-    private fillShuffledArray(): Array<Vec2> {
-        const array: Array<Vec2> = [];
-        let arrayIndex: number = 0;
-        for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
-            for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                // array[arrayIndex++] = this.grid[i][j].$id;
-                array[arrayIndex++] = new Vec2(j, i);
-            }
-        }
-
-        // shuffle array
-        for (let i: number = array.length - 1; i > 0; i--) {
-            const j: number = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-
-        return array;
-    }
-
-    private findMatchingTileById(id: Vec2): GridBox {
-        for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
-            for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                if (this.grid[i][j].$id.$x === id.$x &&
-                    this.grid[i][j].$id.$y === id.$y) {
-                    return this.grid[i][j];
-                }
-            }
-        }
-        throw new Error("GridTile not found");
-    }
-
     private findHorizontalWordDefID(i: number, j: number): number {
         for (const word of this.words) {
             if (word.$startPos.$x === i && word.$startPos.$y === j) {
@@ -310,4 +187,86 @@ export class Grid {
 
         return this.wordDefID++;
     }
+
+    private async wordFillControler(): Promise<boolean> {
+        this.createCharGrid();
+        this.sortWordsList();
+        await this.fillWords().then(
+            (result: boolean) => {
+                this.bindCharToGrid();
+            }).catch((e: Error) => console.error(e));
+
+        return true;
+    }
+
+    private createCharGrid(): void {
+        this.charGrid = new Array<Array<Char>>();
+        for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
+            const row: Char[] = new Array<Char>();
+
+            for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
+                if (this.grid[i][j].$black === false) {
+                    row.push(new Char("?"));
+                } else {
+                    row.push(new Char("#"));
+                }
+            }
+            this.charGrid.push(row);
+        }
+    }
+
+    private sortWordsList(): void {
+        if (this.words !== undefined) {
+            this.words.sort((a: Word, b: Word) => b.$length - a.$length);
+        }
+    }
+
+    private async fillWords(): Promise<boolean> {
+        for (const word of this.words) {
+            const wordConstraints: string = new WordConstraint(word, this.charGrid).$value;
+
+            await this.getWordFromAPI(wordConstraints, Difficulty.easy).then(
+                (result: ResponseWordFromAPI) => {
+                    word.$word = result.$word;
+                    // word.$definition = result.$definition;
+
+                    const splittedWord: string[] = Array.from(result.$word);
+                    for (let j: number = 0; j < splittedWord.length; ++j) {
+                        if (word.$horizontal) {
+                            this.charGrid[word.$startPos.$y][word.$startPos.$x + j].$value = splittedWord[j];
+                        } else {
+                            this.charGrid[word.$startPos.$y + j][word.$startPos.$x].$value = splittedWord[j];
+                        }
+                    }
+                    // console.log(this.charGrid);
+                }
+            ).catch((e: Error) => console.error(e));
+        }
+
+        return true;
+    }
+
+    private async getWordFromAPI(constraints: string, difficulty: Difficulty): Promise<ResponseWordFromAPI> {
+        const responseWord: ResponseWordFromAPI = new ResponseWordFromAPI();
+        await requestPromise(this.URL_WORD_API + constraints + "/" + difficulty).then(
+            (result: string) => {
+                result = JSON.parse(result);
+                responseWord.$word = result["word"];
+                responseWord.$definition = result["definition"];
+            }
+        ).catch((e: Error) => {
+            console.error(e);
+        });
+
+        return responseWord;
+    }
+
+    private bindCharToGrid(): void {
+        for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
+            for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
+                this.grid[i][j].$value = this.charGrid[i][j].$value;
+            }
+        }
+    }
+
 }
