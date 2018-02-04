@@ -12,7 +12,7 @@ it("lexicon should be defined", (done: MochaDone) => {
     assert(lex != null && lex !== undefined);
     done();
 });
-
+/*
 it("lexicon should return a word with a definition", (done: MochaDone) => {
     // let wordAndDef: ({ "word": string; } | { "def": string; });
     // setTimeout(done, TIMEOUT);
@@ -43,3 +43,4 @@ it("lexicon should return a words frequency", (done: MochaDone) => {
     //     done();
     // });
 });
+*/

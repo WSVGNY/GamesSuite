@@ -25,14 +25,21 @@ export class Lexicon {
         }
 
         if (this.difficulty === "EASY") {
+            console.log(definitions[0]);
             return definitions[0];
+            
         } else {
             if (definitions.length >= 2) {
+                console.log(definitions[1]);
                 return definitions[1];
+                
             } else {
+                console.log(definitions[0]);
                 return definitions[0];
+                
             }
         }
+        
     }
 
     private checkFrequency(word: string): boolean {

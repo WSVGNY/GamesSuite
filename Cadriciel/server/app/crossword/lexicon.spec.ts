@@ -1,30 +1,46 @@
-
-/*
-
 import assert = require("assert");
 import { Lexicon } from "./lexicon";
 
-it("word doesn't contain any special characters", (done: MochaDone) => {
+describe("word should be a noun or a verb", function(){
+    it("word is a verb", (done: MochaDone) => {
+        const lex: Lexicon = new Lexicon();
+        let word:string = "ask";
+        let definition : string = lex.getDefinition(word);
+        assert(definition[0][0] == "v");
+        done();
+    });
+
+    it("if word is an adj or adv, return null", (done: MochaDone) => {
+        const lex: Lexicon = new Lexicon();
+        let word:string = "____";
+        let definition : string = lex.getDefinition(word);
+        assert(definition[0] == null);
+        done();
+    });
+
+});
+  
+it("if there is no definitions, it should return null", (done: MochaDone) => {
     const lex: Lexicon = new Lexicon();
-    lex.getDefinition("test");
+    let definition : string = lex.getDefinition("zent");
+    assert(definition == null);
+    done();
+});
+
+/*
+it("word shouldn't contain any accents or special characters", (done: MochaDone) => {
+    const lex: Lexicon = new Lexicon();
+    const word:string = "àéì--Ç"
+    lex.removeAccent(word);
+    console.log(word);
+    assert(word!="aei");
+    done();
+});
+
     
-    done();
-});
 
 
-it("Grid contains appropriate number of black tiles", (done: MochaDone) => {
-    const grid: Grid = new Grid();
-    grid["newGrid"]();
-    let numBlackTiles: number = 0;
-    for (let i: number = 0; i < grid["SIZE_GRID_X"]; i++) {
-        for (let j: number = 0; j < grid["SIZE_GRID_Y"]; j++) {
-            if (grid["grid"][i][j].$black) {
-                numBlackTiles++;
-            }
-        }
-    }
-    assert(numBlackTiles >= grid["BLACK_TILES_RATIO"] * grid["NUMBER_OF_TILES"]);
-    done();
-});
+it("the word matches constraints", (done: MochaDone) => {
+    });
 
-*/
+    */

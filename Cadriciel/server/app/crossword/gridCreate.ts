@@ -73,9 +73,9 @@ export class Grid {
                     //while (result.$word === undefined) { }
                     word.$word = result.$word;
                     word.$definition = result.$definition;
-                    console.log(result.$word);
-                    console.log("bye");
-                    console.log(word["word"]);
+                    //console.log(result.$word);
+                    //console.log("bye");
+                    //console.log(word["word"]);
 
                     // const splittedWord: string[] = Array.from(result.$word);
                     // for (let j: number = 0; j < splittedWord.length; ++j) {
@@ -123,11 +123,11 @@ export class Grid {
         await requestPromise(this.URL_WORD_API + constraints + "/" + difficulty).then(
             (result: ResponseWordFromAPI) => {
                 responseWord = result;
-                console.log("bonjour");
-                console.log(result);
-                console.log(responseWord);
-                console.log(result.$word);
-                console.log(responseWord.$word);
+              //  console.log("bonjour");
+              //  console.log(result);
+               /// console.log(responseWord);
+               // console.log(result.$word);
+              //  console.log(responseWord.$word);
 
             }
         ).catch((e: Error) => {
