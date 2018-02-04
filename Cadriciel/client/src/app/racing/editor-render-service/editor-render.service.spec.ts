@@ -8,10 +8,7 @@ describe("EditorRenderService", () => {
   let result: boolean = false;
   const scene: Scene = new Scene();
   const listOfPoints: TrackVertices = new TrackVertices(scene);
-<<<<<<< HEAD
   const vector1: Vector3 = new Vector3( 0, 0, 0 );
-=======
->>>>>>> cc8bc44a5e39083acd11814e04b1f3f0ef3f186c
   const vector2: Vector3 = new Vector3( 3, 1, 0 );
   const vector3: Vector3 = new Vector3( 2, -1, 0 );
   // const expectedName: String = "vertex0";
@@ -25,13 +22,8 @@ describe("EditorRenderService", () => {
     expect(service).toBeTruthy();
   }));
 
-<<<<<<< HEAD
-  it("should add a point in the scene.", ()  => {
-    listOfPoints.addVertex(vector1);
-=======
   it("should add a point in the scene", ()  => {
     listOfPoints.addVertex(new Vector3( 0, 0, 0 ));
->>>>>>> cc8bc44a5e39083acd11814e04b1f3f0ef3f186c
     result = scene.getChildByName("vertex0") !== null;
     expect(result).toBeTruthy();
   });
