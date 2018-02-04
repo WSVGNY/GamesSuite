@@ -1,23 +1,25 @@
 import { SphereGeometry, MeshBasicMaterial, Mesh, Scene, Line, Geometry, LineBasicMaterial, Vector3} from "three";
 
-const RED: number = 0xFF1101;
-const BLUE: number = 0x0110FF;
-const RADIUS: number = 8;
+const ORANGE: number = 0xFF6600;
+const GREEN: number = 0x26FF00;
+const WHITE: number = 0xFFFFFF;
+const PINK: number = 0xFF00BF;
+const RADIUS: number = 12;
 const VERTEX_GEOMETRY: SphereGeometry  = new SphereGeometry(RADIUS, RADIUS, RADIUS);
-const SIMPLE_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial ({color : RED});
-const START_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial ({color : 0xFF1493});
-const LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial ({ color: BLUE });
+const START_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial ({color : PINK});
+const SIMPLE_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial ({color : ORANGE});
+const START_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial ({ color: GREEN });
+const LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial ({ color: WHITE });
 
 export class TrackVertices {
 
     private vertices: Array<Mesh>;
     private connections: Array<Line>;
     private scene: Scene;
-    private line: Line;
     private nbVertices: number;
     private firstVertex: Mesh;
     private lastVertex: Mesh;
-    private update: Vector3;
+    private isComplete: boolean = false;
 
     public constructor(scene: Scene) {
         this.scene = scene;
@@ -31,18 +33,13 @@ export class TrackVertices {
             new Mesh(VERTEX_GEOMETRY, START_VERTEX_MATERIAL) :
             new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
         vertex.position.set(position.x, position.y, 0);
-        if (this.nbVertices == 0){
-            vertex.name = "Start";
-        }else {
-            vertex.name = "vertex" + this.nbVertices;
-        }
+        vertex.name = (this.nbVertices) ? "vertex" + this.nbVertices : "Start";
         this.scene.add (vertex);
         this.vertices.push(vertex);
         if (this.nbVertices === 0 ) {
             this.firstVertex = vertex;
-        }
-        if (this.nbVertices > 0 ) {
-            this.createConnection(this.vertices[this.nbVertices - 1], this.vertices[this.nbVertices]);
+        } else {
+            this.createConnection(this.lastVertex, vertex);
         }
         this.nbVertices++;
         this.lastVertex = vertex;
@@ -52,50 +49,62 @@ export class TrackVertices {
         this.scene.remove(this.vertices.pop());
         this.scene.remove (this.connections.pop());
         this.nbVertices--;
+        this.lastVertex = this.vertices[this.nbVertices - 1];
+        if (this.isComplete) {
+            this.isComplete = false;
+            this.scene.remove (this.connections.pop());
+        }
     }
 
     public createConnection(start: Mesh , end: Mesh): void {
         const LINE_GEOMETRY: Geometry = new Geometry();
         LINE_GEOMETRY.vertices.push(new Vector3(start.position.x, start.position.y , 0));
         LINE_GEOMETRY.vertices.push(new Vector3(end.position.x, end.position.y , 0));
-        this.line = new Line(LINE_GEOMETRY, LINE_MATERIAL);
-        this.line.name = "connection" + this.nbVertices;
-        this.connections.push(this.line);
-        this.scene.add(this.line);
+        const connection: Line = (this.connections.length) ?
+            new Line(LINE_GEOMETRY, LINE_MATERIAL) :
+            new Line(LINE_GEOMETRY, START_LINE_MATERIAL);
+        connection.name = "connection" + this.nbVertices;
+        this.connections.push(connection);
+        this.scene.add(connection);
     }
 
-    public updateLeftConnection(vertexName : String , position : Vector3): void { 
-        for (let i: number = 0; i < this.vertices.length; ++i ) {
-            if (this.vertices[i].name === vertexName) {
-                const LINE_GEOMETRY: Geometry = new Geometry();
-                LINE_GEOMETRY.vertices.push(new Vector3(this.vertices[i-1].position.x, this.vertices[i-1].position.y , 0));
-                LINE_GEOMETRY.vertices.push(new Vector3(position.x, position.y , 0));
-                this.scene.remove(this.connections[i-1]);
-                //this.connections[i].geometry = LINE_GEOMETRY; 
-                this.connections[i-1] = new Line(LINE_GEOMETRY, LINE_MATERIAL);
-                this.scene.add(this.connections[i-1]);
+    public completeLoop(): void {
+        this.createConnection(this.lastVertex, this.firstVertex);
+        this.isComplete = true;
+    }
 
-                /*const LINE_GEOMETRY2: Geometry = new Geometry();
-                LINE_GEOMETRY2.vertices.push(new Vector3(position.x, position.y , 0));
-                LINE_GEOMETRY2.vertices.push(new Vector3(this.vertices[i].position.x, this.vertices[i].position.y , 0));
-                this.scene.remove(this.connections[i]);
-                this.connections[i] = new Line(LINE_GEOMETRY2, LINE_MATERIAL);
-                this.scene.add(this.connections[i]);*/
+    public updateConnection(vertex1: Mesh, vertex2: Mesh ): void {
+        const LINE_GEOMETRY: Geometry = new Geometry();
+        LINE_GEOMETRY.vertices.push(new Vector3(vertex1.position.x, vertex1.position.y , 0));
+        LINE_GEOMETRY.vertices.push(new Vector3(vertex2.position.x, vertex2.position.y , 0));
+        this.scene.remove(this.connections[this.vertices.indexOf(vertex1)]);
+        this.connections[this.vertices.indexOf(vertex1)] = new Line(LINE_GEOMETRY, LINE_MATERIAL);
+        this.scene.add(this.connections[this.vertices.indexOf(vertex1)]);
+    }
+
+    public setVertexPosition( vertexName: String, position: Vector3 ): void {
+        // tslint:disable-next-line:prefer-const
+        for (let entry of this.vertices) {
+            if (entry.name === vertexName) {
+                entry.position.x = position.x;
+                entry.position.y = position.y;
+                if (this.isComplete && this.vertices.indexOf(entry) + 1 === this.nbVertices) {
+                    this.updateConnection(entry, this.firstVertex);
+                } else if (this.vertices.indexOf(entry) + 1 !== this.nbVertices) {
+                    const nextVertex: Mesh = this.vertices[this.vertices.indexOf(entry) + 1];
+                    this.updateConnection(entry, nextVertex);
+
+                }
+                if (this.isComplete && entry === this.firstVertex) {
+                    this.updateConnection(this.lastVertex, entry);
+                } else {
+                    const previousVertex: Mesh = this.vertices[this.vertices.indexOf(entry) - 1];
+                    this.updateConnection(previousVertex, entry);
+                }
             }
         }
     }
-    public updateRightConnection(vertexName : String , position : Vector3) : void {
-        for (let i: number = 0; i < this.vertices.length; ++i ) {
-            if (this.vertices[i].name === vertexName) {
-                const LINE_GEOMETRY2: Geometry = new Geometry();
-                LINE_GEOMETRY2.vertices.push(new Vector3(position.x, position.y , 0));
-                LINE_GEOMETRY2.vertices.push(new Vector3(this.vertices[i + 1].position.x, this.vertices[i + 1].position.y , 0));
-                this.scene.remove(this.connections[i]);
-                this.connections[i] = new Line(LINE_GEOMETRY2, LINE_MATERIAL);
-                this.scene.add(this.connections[i]);
-            }
-        }
-    }
+
     public getFirstVertex(): Mesh {
         return this.firstVertex;
     }
@@ -112,14 +121,7 @@ export class TrackVertices {
         return (this.nbVertices === 0) ? true : false;
     }
 
-    public setVertexPosition( vertexName: String, position: Vector3 ): void {
-        // tslint:disable-next-line:prefer-const
-        for (let entry of this.vertices) {
-            if (entry.name === vertexName) {
-                entry.position.x = position.x;
-                entry.position.y = position.y;
-            }
-        }
+    public $isComplete(): boolean {
+        return this.isComplete;
     }
-
 }
