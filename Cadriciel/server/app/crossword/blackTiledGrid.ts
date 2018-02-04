@@ -5,7 +5,7 @@ import { Word } from "../../../common/crossword/word";
 import { Vec2 } from "../../../common/crossword/vec2";
 
 @injectable()
-export class BlackGridTilesPlacer {
+export class BlackTiledGrid {
 
     public readonly BLACK_TILES_RATIO: number = 0.5;
     public readonly NUMBER_OF_TILES: number = this.SIZE_GRID_X * this.SIZE_GRID_Y;
@@ -18,24 +18,24 @@ export class BlackGridTilesPlacer {
 
     public constructor(private SIZE_GRID_X: number, private SIZE_GRID_Y: number,
                        private grid: GridBox[][]) {
-                        this.words = [];
+                        this.words = this.placeBlackGridTiles();
     }
 
-    public placeBlackGridTiles(): [boolean, Word[]] {
-        // fill array 0->numberOfTile
+    public placeBlackGridTiles(): Word[] {
         const array: Vec2[] = this.fillShuffledArray();
         for (let i: number = 0; i < this.NUM_BLACK_TILES; i++) {
             const randomTileId: Vec2 = array[i];
             this.findMatchingTileById(randomTileId).$black = true;
         }
-        if (!this.verifyBlackGridValidity()) {
-            return [false, this.words];
+        if (this.verifyBlackGridValidity()) {
+            return this.words;
+        } else {
+            return undefined;
         }
 
-        return [true, this.words];
     }
 
-    public returnWords(): Word[]{
+    public get $words(): Word[] {
         return this.words;
     }
 
