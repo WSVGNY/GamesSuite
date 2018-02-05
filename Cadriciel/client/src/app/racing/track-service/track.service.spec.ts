@@ -4,14 +4,14 @@ import { TrackService } from './track.service';
 
 import { AppModule } from '../../app.module';
 
-import {APP_BASE_HREF} from '@angular/common';
+import { APP_BASE_HREF } from '@angular/common';
 
 describe('PistesService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [TrackService,
-        {provide: APP_BASE_HREF, useValue : '/' }],
-      imports:[AppModule]
+        { provide: APP_BASE_HREF, useValue: '/' }],
+      imports: [AppModule]
     });
   });
 
