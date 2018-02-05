@@ -13,7 +13,7 @@ export class Lexicon {
     private readonly FREQUENCY_DELIMITER: number = 10;
     private readonly MIN_NUMBER_OF_DEFINITION: number = 2;
     private readonly UNWANTED_CHARACTERS_LENGTH: number = 2;
-    private readonly ERROR_STATUS_CODE_LENGTH: number = 3;
+    private readonly ERROR_STATUS_CODE: number = 500;
 
     private getDefinition(word: string): string {
         const definitions: string = word["defs"];
@@ -109,7 +109,7 @@ export class Lexicon {
         this.difficulty = req.params.difficulty;
         requestPromise(this.BASE_URL + "sp=" + this.removeAccent(req.params.constraints) + "&md=fd").then(
             (result: string) => {
-                let words: string[] = JSON.parse(result.toString());
+                const words: string[] = JSON.parse(result.toString());
                 if (words === undefined || words.length === 0) {
                     res.send(new ResponseWordFromAPI());
                 } else {
@@ -117,8 +117,7 @@ export class Lexicon {
                 }
             }
         ).catch((e: Error) => {
-            const status: number = +e.message.substring(0, this.ERROR_STATUS_CODE_LENGTH);
-            res.sendStatus(status);
+            res.sendStatus(this.ERROR_STATUS_CODE);
         });
     }
 }

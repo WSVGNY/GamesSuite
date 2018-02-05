@@ -1,7 +1,6 @@
 import { Component } from "@angular/core";
 import { } from "@angular/";
 import { GridBox } from "../../../../common/crossword/gridBox";
-
 import { GridService } from "./grid.service";
 
 @Component({
@@ -9,7 +8,6 @@ import { GridService } from "./grid.service";
   templateUrl: "./crossword.component.html",
   styleUrls: ["./crossword.component.css"]
 })
-
 export class CrosswordComponent {
 
   public constructor(private gridService: GridService) {
@@ -22,5 +20,4 @@ export class CrosswordComponent {
   public onSelect(gridBox: GridBox): void {
     this.selectedGridBox = gridBox;
   }
-
 }

@@ -129,7 +129,7 @@ export class BlackTiledGrid {
                 if (this.grid[j][i].$black) {
                     continue;
                 }
-                const wordLength: number = this.calculateWordLength(true, i, j);
+                const wordLength: number = this.calculateWordLength(false, i, j);
 
                 if (wordLength >= this.MIN_WORD_LENGTH) {
                     this.words[this.wordId - 1] =
