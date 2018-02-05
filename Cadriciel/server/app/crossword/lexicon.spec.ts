@@ -7,7 +7,7 @@ import { Difficulty } from "../../../common/crossword/difficulty";
 const SERVICE_BASE_URL: string = "http://localhost:3000/lexicon/";
 const DATAMUSE_BASE_URL: string = "https://api.datamuse.com/words?md=fd&sp=";
 const UNWANTED_CHARACTERS_LENGTH: number = 2;
-const FREQUENCY_DELIMITER: number = 10;
+const FREQUENCY_DELIMITER: number = 5;
 // const TIMEOUT: number = 15000;
 
 describe("LEXICON TESTS", () => {

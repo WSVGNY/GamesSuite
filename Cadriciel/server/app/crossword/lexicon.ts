@@ -10,10 +10,10 @@ export class Lexicon {
 
     private readonly BASE_URL: string = "https://api.datamuse.com/words?";
     private difficulty: Difficulty;
-    private readonly FREQUENCY_DELIMITER: number = 10;
+    private readonly FREQUENCY_DELIMITER: number = 5;
     private readonly MIN_NUMBER_OF_DEFINITION: number = 2;
     private readonly UNWANTED_CHARACTERS_LENGTH: number = 2;
-    private readonly ERROR_STATUS_CODE: number = 500;
+    private readonly ERROR_STATUS_CODE_LENGTH: number = 3;
 
     private getDefinition(word: string): string {
         const definitions: string = word["defs"];
@@ -117,7 +117,8 @@ export class Lexicon {
                 }
             }
         ).catch((e: Error) => {
-            res.sendStatus(this.ERROR_STATUS_CODE);
+            const status: number = +e.message.substring(0, this.ERROR_STATUS_CODE_LENGTH);
+            res.sendStatus(status);
         });
     }
 }
