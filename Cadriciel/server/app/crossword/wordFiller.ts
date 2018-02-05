@@ -24,14 +24,30 @@ export class WordFiller {
     }
 
     public async wordFillControler(): Promise<boolean> {
-        this.createCharGrid();
-        this.sortWordsList();
-        await this.fillWords().then(
-            (result: boolean) => {
-                this.bindCharToGrid();
-            }).catch((e: Error) => console.error(e));
+        let fail: boolean = true;
+        do {
+            this.createCharGrid();
+            this.sortWordsList();
+            await this.fillWords().then(
+                (result: boolean) => {
+                    this.bindCharToGrid();
+                    fail = this.gridContainsIncompleteWord();
+                }).catch((e: Error) => console.error(e));
+        } while (fail);
 
         return true;
+    }
+
+    private gridContainsIncompleteWord(): boolean {
+        for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
+            for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
+                if (this.charGrid[i][j].$value === "?") {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private createCharGrid(): void {
