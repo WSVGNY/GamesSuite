@@ -1,15 +1,16 @@
-import { assert } from "../routes/sample.spec";
-import { LexiconService } from "./lexicon-service";
+import assert = require("assert");
+// import { LexiconService } from "./lexicon-service";
 // import * as http from "http";
 // import * as requestPromise from "request-promise-native";
-import { Lexicon } from "./lexicon";
+// import { Lexicon } from "./lexicon";
 
 // const BASE_URL: string = "http://localhost:3000/lexicon/";
 // const TIMEOUT: number = 15000;
 
 it("lexicon should be defined", (done: MochaDone) => {
-    const lex: LexiconService = new LexiconService(new Lexicon());
-    assert(lex != null && lex !== undefined);
+    // const lex: LexiconService = new LexiconService(new Lexicon());
+    // assert(lex != null && lex !== undefined);
+    assert(false);
     done();
 });
 
@@ -25,7 +26,8 @@ it("lexicon should return a word with a definition", (done: MochaDone) => {
     //         && typeof wordAndDef["def"] === "string");
     //     done();
     // }).catch(done);
-
+    assert(false);
+    done();
 });
 
 it("lexicon should return a words frequency", (done: MochaDone) => {
@@ -42,4 +44,16 @@ it("lexicon should return a words frequency", (done: MochaDone) => {
     //     assert(false);
     //     done();
     // });
+    assert(false);
+    done();
+});
+
+it("lexicon difficulty level corresponds to demanded difficulty", (done: MochaDone) => {
+    assert(false);
+    done();
+});
+
+it("Special characters should be ignored when sent or recieved from api", (done: MochaDone) => {
+    assert(false);
+    done();
 });
