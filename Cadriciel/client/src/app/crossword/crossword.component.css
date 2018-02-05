@@ -1,10 +1,10 @@
 #grid {
-  border: 1px solid black;
-  width: 600px;
-  height: 600px;
-  margin: 0 auto;
+    border: 1px solid black;
+    width: 600px;
+    height: 600px;
+    margin: 0 auto;
 }
-  .emptyGridBox{
+.emptyGridBox{
     width: 56px;
     height: 56px;
     border: 2px solid black;
@@ -13,8 +13,8 @@
     float: left;
     text-align: center;
     text-transform: uppercase;
-  }
-  .filledGridBox{
+}
+.filledGridBox{
     width: 56px;
     height: 56px;
     background: black;
@@ -22,4 +22,4 @@
     padding: 0;
     margin: 0;
     float: left;
-  }
+}
