@@ -13,7 +13,7 @@ export class Lexicon {
     private readonly FREQUENCY_DELIMITER: number = 10;
     private readonly MIN_NUMBER_OF_DEFINITION: number = 2;
     private readonly UNWANTED_POSITION_LENGTH: number = 2;
-    private readonly ERROR_STATUS_CODE_LENGTH: number = 3;
+    private readonly ERROR_STATUS_CODE: number = 500;
 
     private getDefinition(word: string): string {
         const definitions: string = word["defs"];
@@ -108,8 +108,7 @@ export class Lexicon {
                 res.send(this.getValidWordFromList(result.toString()));
             }
         ).catch((e: Error) => {
-            const status: number = +e.message.substring(0, this.ERROR_STATUS_CODE_LENGTH);
-            res.sendStatus(status);
+            res.sendStatus(this.ERROR_STATUS_CODE);
         });
     }
 }

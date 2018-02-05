@@ -56,10 +56,9 @@ export class WordFiller {
         }
     }
 
-    // tslint:disable-next-line:max-func-body-length
     private async fillWords(): Promise<boolean> {
-        let nmbrBackTrack: number = 1;
-        let backTrackStartedOn: number = 0;
+        const nmbrBackTrack: number = 1;
+        const backTrackStartedOn: number = 0;
         for (let i: number = 0; i < this.words.length; i++) {
             const word: Word = this.words[i];
             const wordConstraints: string = new WordConstraint(word, this.charGrid).$value;
@@ -67,21 +66,10 @@ export class WordFiller {
                 (result: ResponseWordFromAPI) => {
                     word.$word = result.$word;
                     if (word.$word === "") {
-                        backTrackStartedOn = i;
-                        for (let j: number = i; j > i - nmbrBackTrack; j--) {
-                            this.words[j].resetValue();
-                        }
-                        i -= nmbrBackTrack;
-                        for (let j: number = i; j < i + nmbrBackTrack; j++) {
-                            this.updateCharGrid(this.words[j]);
-                        }
-                        if (i === 0 || i === backTrackStartedOn) {
-                            nmbrBackTrack = 0;
-                            backTrackStartedOn = 0;
-                        }
-                        nmbrBackTrack++;
+                        this.backTrack(word, i, nmbrBackTrack, backTrackStartedOn);
+                    } else {
+                        this.updateCharGrid(word);
                     }
-                    this.updateCharGrid(word);
                 }
             ).catch((e: Error) => console.error(e));
         }
@@ -113,6 +101,22 @@ export class WordFiller {
         });
 
         return responseWord;
+    }
+
+    private backTrack(word: Word, i: number, backTrackStartedOn: number, nmbrBackTrack: number): void {
+        backTrackStartedOn = i;
+        for (let j: number = i; j > i - nmbrBackTrack; j--) {
+            this.words[j].resetValue();
+        }
+        i -= nmbrBackTrack;
+        for (let j: number = i; j < i + nmbrBackTrack; j++) {
+            this.updateCharGrid(this.words[j]);
+        }
+        if (i === 0 || i === backTrackStartedOn) {
+            nmbrBackTrack = 0;
+            backTrackStartedOn = 0;
+        }
+        nmbrBackTrack++;
     }
 
     private bindCharToGrid(): void {
