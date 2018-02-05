@@ -22,4 +22,3 @@ export class LexiconService extends AbstractService {
         return router;
     }
 }
-
