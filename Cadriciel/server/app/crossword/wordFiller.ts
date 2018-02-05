@@ -75,6 +75,7 @@ export class WordFiller {
 
     private async fillWords(): Promise<boolean> {
         for (const word of this.words) {
+            let resultFromAPI: ResponseWordFromAPI;
             let sameWordExists: boolean = false;
             let numTry: number = 0;
             const wordConstraints: string = new WordConstraint(word, this.charGrid).$value;
@@ -82,22 +83,28 @@ export class WordFiller {
                 sameWordExists = false;
                 await this.getWordFromAPI(wordConstraints).then(
                     (result: ResponseWordFromAPI) => {
-                        // console.log(result.$word);
-                        for (const verifWord of this.words) {
-                            if (verifWord.$definition !== "" && verifWord.$word === result.$word) {
-                                sameWordExists = true;
-                                numTry++;
+                        resultFromAPI = result;
+                        if (result.$word !== "") {
+                            for (const verifWord of this.words) {
+                                if (verifWord.$word === result.$word) {
+                                    sameWordExists = true;
+                                    numTry++;
+                                }
                             }
-                        }
-                        if (!sameWordExists) {
-                            numTry = 0;
-                            word.$word = result.$word;
-                            this.updateCharGrid(word);
+                            if (!sameWordExists) {
+                                numTry = 0;
+                                word.$word = result.$word;
+                                this.updateCharGrid(word);
+                            }
+                        } else {
+                            sameWordExists=true;
                         }
                     }
                 ).catch((e: Error) => console.error(e));
-
             } while (sameWordExists && numTry < this.MAX_REQUEST_TRIES);
+            if (resultFromAPI.$word === "") {
+                return false;
+            }
         }
 
         return true;
@@ -118,6 +125,7 @@ export class WordFiller {
         const responseWord: ResponseWordFromAPI = new ResponseWordFromAPI();
         await requestPromise(this.URL_WORD_API + constraints + "/" + this.gridDifficulty).then(
             (result: string) => {
+                console.log(result);
                 result = JSON.parse(result);
                 responseWord.$word = result["word"];
                 responseWord.$definition = result["definition"];
