@@ -1,5 +1,4 @@
 import { TestBed, inject } from "@angular/core/testing";
-
 import { EditorRenderService } from "./editor-render.service";
 import { TrackVertices, VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL } from "../trackVertices";
 import {  Scene, Vector3, Mesh } from "three";
