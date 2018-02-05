@@ -1,5 +1,4 @@
-import { Component, OnInit } from "@angular/core";
-import { Message } from "../../../common/communication/message";
+import { Component } from "@angular/core";
 
 @Component({
     selector: "app-root",
