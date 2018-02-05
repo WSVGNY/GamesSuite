@@ -31,9 +31,8 @@ export class Grid {
                 break;
             }
         }
-        // TODO: Uncomment because API's down right now
-        // const wordFiller: WordFiller = new WordFiller(this.SIZE_GRID_X, this.SIZE_GRID_Y, this.grid, this.words);
-        // await wordFiller.wordFillControler();
+        const wordFiller: WordFiller = new WordFiller(this.SIZE_GRID_X, this.SIZE_GRID_Y, this.grid, this.words);
+        await wordFiller.wordFillControler();
 
         return true;
     }
