@@ -15,6 +15,7 @@ export class WordFiller {
     private charGrid: Char[][];
     private readonly URL_WORD_API: string = "http://localhost:3000/lexicon/";
     private readonly gridDifficulty: Difficulty = Difficulty.easy;
+    private readonly MAX_REQUEST_TRIES: number = 3;
 
     public constructor(
         private SIZE_GRID_X: number,
@@ -82,8 +83,8 @@ export class WordFiller {
                 await this.getWordFromAPI(wordConstraints).then(
                     (result: ResponseWordFromAPI) => {
                         // console.log(result.$word);
-                        for (let i: number = 0; i < this.words.length; i++) {
-                            if (this.words[i].$word !== undefined && this.words[i].$word === result.$word) {
+                        for (const verifWord of this.words) {
+                            if (verifWord.$word !== undefined && verifWord.$word === result.$word) {
                                 sameWordExists = true;
                                 numTry++;
                             }
@@ -96,7 +97,7 @@ export class WordFiller {
                     }
                 ).catch((e: Error) => console.error(e));
 
-            } while (sameWordExists && numTry < 3);
+            } while (sameWordExists && numTry < this.MAX_REQUEST_TRIES);
         }
 
         return true;
