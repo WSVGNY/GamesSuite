@@ -13,7 +13,7 @@ describe("EditorComponent", () => {
       // imports: [AppModule],
       providers: [ActivatedRoute]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

@@ -30,9 +30,9 @@ export class TrackService {
         );
     }
 
-    public newTrack(trackName: string): Observable<Track> {
-        return this.http.post<Track>(this.BASE_URL + "/new/" + trackName, this.httpOptions).pipe(
-            catchError(this.handleError<Track>("newTrack"))
+    public newTrack(trackName: string): Observable<Track[]> {
+        return this.http.post<Track[]>(this.BASE_URL + "/new/" + trackName, this.httpOptions).pipe(
+            catchError(this.handleError<Track[]>("newTrack"))
         );
     }
 
