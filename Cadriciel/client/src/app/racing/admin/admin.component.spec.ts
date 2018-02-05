@@ -13,7 +13,7 @@ describe("AdminComponent", () => {
             imports: [AppModule],
             providers: [{ provide: APP_BASE_HREF, useValue: "/" }]
         }).compileComponents();
-        await component.getTracks();
+        await component["getTracksFromServer"];
     });
 
     beforeEach(() => {
@@ -27,19 +27,19 @@ describe("AdminComponent", () => {
     });
 
     it("should get tracks", async () => {
-        expect(component.tracks.length).toBeGreaterThan(0);
+        expect(component["tracks"].length).toBeGreaterThan(0);
     });
 
     it("should create a new track", async () => {
-        const oldLength: number = component.tracks.length;
+        const oldLength: number = component["tracks"].length;
         await component.newTrack("test track");
-        expect(component.tracks.length).toEqual(oldLength + 1);
+        expect(component["tracks"].length).toEqual(oldLength + 1);
     });
 
     it("should delete tracks", async () => {
-        const id: number = component.tracks.length - 1;
-        const oldLength: number = component.tracks.length;
+        const id: number = component["tracks"].length - 1;
+        const oldLength: number = component["tracks"].length;
         await component.deleteTrack(id);
-        expect(component.tracks.length).toEqual(oldLength - 1);
+        expect(component["tracks"].length).toEqual(oldLength - 1);
     });
 });

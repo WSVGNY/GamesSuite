@@ -114,7 +114,6 @@ export class RenderService {
         this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
     }
 
-    // TODO: Create an event handler service.
     public handleKeyDown(event: KeyboardEvent): void {
         switch (event.keyCode) {
             case ACCELERATE_KEYCODE:
@@ -134,7 +133,6 @@ export class RenderService {
         }
     }
 
-    // TODO: Create an event handler service.
     public handleKeyUp(event: KeyboardEvent): void {
         switch (event.keyCode) {
             case ACCELERATE_KEYCODE:

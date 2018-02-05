@@ -4,7 +4,8 @@
     height: 600px;
     margin: 0 auto;
 }
-.emptyGridBox{
+
+.emptyGridBox {
     width: 56px;
     height: 56px;
     border: 2px solid black;
@@ -14,7 +15,8 @@
     text-align: center;
     text-transform: uppercase;
 }
-.filledGridBox{
+
+.filledGridBox {
     width: 56px;
     height: 56px;
     background: black;

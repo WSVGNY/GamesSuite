@@ -3,23 +3,23 @@ import { EditorComponent } from "./editor.component";
 import { ActivatedRoute } from "@angular/router";
 
 describe("EditorComponent", () => {
-  let component: EditorComponent;
-  let fixture: ComponentFixture<EditorComponent>;
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ EditorComponent ],
-      providers: [ActivatedRoute]
-    })
-      .compileComponents();
-  }));
+    let component: EditorComponent;
+    let fixture: ComponentFixture<EditorComponent>;
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            declarations: [EditorComponent],
+            providers: [ActivatedRoute]
+        })
+            .compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(EditorComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(EditorComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it("should create", () => {
-    expect(component).toBeTruthy();
-  });
+    it("should create", () => {
+        expect(component).toBeTruthy();
+    });
 });

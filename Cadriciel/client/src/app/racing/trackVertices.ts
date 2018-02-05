@@ -113,8 +113,7 @@ export class TrackVertices {
     }
 
     public moveVertex(vertexName: String, newPosition: Vector3): void {
-        // tslint:disable-next-line:prefer-const
-        for (let entry of this.vertices) {
+        for (const entry of this.vertices) {
             if (entry.name === vertexName) {
                 this.setVertexPosition(entry, newPosition);
                 this.updatePreviousConnection(entry);

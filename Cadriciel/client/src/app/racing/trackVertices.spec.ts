@@ -25,18 +25,6 @@ describe("TrackVertices", () => {
         expect(scene.getChildByName("connection0")).toBeDefined();
     });
 
-    it("first vertex of new connection should be the point before it", ()  => {
-        const vertex0: Mesh = new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
-        const vertex1: Mesh = new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
-        vertex0.position.set(0, 0, 0 );
-        vertex1.position.set(1, 1, 0 );
-        trackVertices.addConnection(vertex0, vertex1);
-        const connection: Line = scene.getChildByName("connection0") as Line;
-        const geometry: Geometry = connection["geometry"] as Geometry;
-        const vertices: Array<Vector3> = geometry["vertices"];
-        expect(vertices.length === 0).toBeTruthy();
-    });
-
     it("should remove the last point added to the scene", ()  => {
         const vertex: Mesh = new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
         vertex.position.set(0, 0, 0 );
@@ -56,22 +44,16 @@ describe("TrackVertices", () => {
         trackVertices.removeLastVertex();
         expect(scene.children.length).toBeFalsy();
     });
-/*
+
     it("should update the position of a dragged point", ()  => {
         const vertex: Mesh = new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
         vertex.position.set(0, 0, 0 );
         vertex.name = "vertex0";
         trackVertices["vertices"].push(vertex);
         scene.add(vertex);
-        trackVertices.moveVertex("vertex0", new Vector3(2, 2, 0));
-        expect(scene.).toBeFalsy();
+        const VXY: number = 2;
+        trackVertices.setVertexPosition(scene.getObjectByName("vertex0") as Mesh, new Vector3(VXY, VXY, 0));
+        expect(scene.getObjectByName("vertex0").position).toEqual(new Vector3(VXY, VXY, 0));
     });
-*/
-/*
-    it("should  loop the track when we add a point on the start Point ", () => {
-        trackVertices.addVertex(vector1);
-        result = listOfPoints.$isComplete();
-        expect(result).toBeTruthy();
-    });
-    */
+
 });

@@ -10,12 +10,16 @@ import { GridService } from "./grid.service";
 })
 export class CrosswordComponent {
 
-    public constructor(private gridService: GridService) {
-        this.gridService.gridGet().subscribe((grid: GridBox[][]) => this.grid = grid);
-    }
-
     public selectedGridBox: GridBox;
     private grid: GridBox[][];
+
+    public constructor(private gridService: GridService) {
+        this.createGrid();
+    }
+
+    public createGrid(): void {
+        this.gridService.gridGet().subscribe((grid: GridBox[][]) => this.grid = grid);
+    }
 
     public onSelect(gridBox: GridBox): void {
         this.selectedGridBox = gridBox;

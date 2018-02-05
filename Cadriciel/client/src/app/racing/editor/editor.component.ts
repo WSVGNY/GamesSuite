@@ -1,7 +1,6 @@
 import { Component, AfterViewInit, Input, HostListener, ElementRef, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
-
 import { Track } from "../../../../../common/racing/track";
 import { TrackService } from "../track-service/track.service";
 import { EditorRenderService } from "../editor-render-service/editor-render.service";
@@ -11,6 +10,7 @@ import { EditorRenderService } from "../editor-render-service/editor-render.serv
     templateUrl: "./editor.component.html",
     styleUrls: ["./editor.component.css"]
 })
+
 export class EditorComponent implements AfterViewInit {
 
     @ViewChild("containerEditor")
@@ -27,7 +27,6 @@ export class EditorComponent implements AfterViewInit {
 
     public ngAfterViewInit(): void {
         this.getTrack();
-
         this.editorRenderService
             .initialize(this.containerRef.nativeElement)
             .then(/* do nothing */)
