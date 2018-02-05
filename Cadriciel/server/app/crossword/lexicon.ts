@@ -17,13 +17,13 @@ export class Lexicon {
 
     private getDefinition(word: string): string {
         const definitions: string = word["defs"];
-        if (definitions === undefined) {
+        if (definitions === undefined || definitions === "") {
             return "";
         }
-        for (let i: number = 0; i < (word["defs"].length); i++) {
+        for (let i: number = word["defs"].length - 1; i >= 0; i--) {
             let counter: number = word["defs"].length;
-            if (definitions[i][0] === "a") {                 // s'assurer que le mot ne soit ni un adverbe ni un adjectif
-                delete (word["defs"][i]);
+            if (definitions[i][0] === "a") {                // s'assurer que le mot ne soit ni un adverbe ni un adjectif
+                word["defs"].splice(i, 1);
                 counter--;
                 if (counter === 0) {
                     return "";
@@ -88,13 +88,13 @@ export class Lexicon {
             }
 
             if (badWord) {
+                responseWord = new ResponseWordFromAPI();
                 words.splice(words.findIndex((word: string) => word === randomWordFromList), 1);
+                if (words.length === 0) {
+                    badWord = false;
+                }
             }
 
-            if (words.length === 0) {
-                responseWord = new ResponseWordFromAPI();
-                badWord = false;
-            }
         } while (badWord);
         responseWord.$word = this.removeAccent(responseWord.$word);
 
