@@ -87,18 +87,19 @@ export class BlackTiledGrid {
         let wordCnt: number = 0;
         for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
             for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                if (!this.grid[i][j].$black) {
-                    const wordLength: number = this.calculateWordLength(true, i, j);
-                    if (wordLength < this.MIN_WORD_LENGTH) {
-                        if (!this.verifyVertically(i, j)) {
-                            return false;
-                        }
-                    } else {
-                        this.words[this.wordId - 1] =
-                            new Word(this.wordId++, this.wordDefID++, true, wordLength, this.grid[i][j].$id);
-                        j += wordLength;
-                        wordCnt++;
+                if (this.grid[i][j].$black) {
+                    continue;
+                }
+                const wordLength: number = this.calculateWordLength(true, i, j);
+                if (wordLength < this.MIN_WORD_LENGTH) {
+                    if (!this.verifyVertically(i, j)) {
+                        return false;
                     }
+                } else {
+                    this.words[this.wordId - 1] =
+                        new Word(this.wordId++, this.wordDefID++, true, wordLength, this.grid[i][j].$id);
+                    j += wordLength;
+                    wordCnt++;
                 }
             }
             if (wordCnt < 1) {
