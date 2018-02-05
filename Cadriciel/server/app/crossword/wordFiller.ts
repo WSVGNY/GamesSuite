@@ -74,13 +74,29 @@ export class WordFiller {
 
     private async fillWords(): Promise<boolean> {
         for (const word of this.words) {
+            let sameWordExists: boolean = false;
+            let numTry: number = 0;
             const wordConstraints: string = new WordConstraint(word, this.charGrid).$value;
-            await this.getWordFromAPI(wordConstraints).then(
-                (result: ResponseWordFromAPI) => {
-                    word.$word = result.$word;
-                    this.updateCharGrid(word);
-                }
-            ).catch((e: Error) => console.error(e));
+            do {
+                sameWordExists = false;
+                await this.getWordFromAPI(wordConstraints).then(
+                    (result: ResponseWordFromAPI) => {
+                        // console.log(result.$word);
+                        for (let i: number = 0; i < this.words.length; i++) {
+                            if (this.words[i].$word !== undefined && this.words[i].$word === result.$word) {
+                                sameWordExists = true;
+                                numTry++;
+                            }
+                        }
+                        if (!sameWordExists) {
+                            numTry = 0;
+                            word.$word = result.$word;
+                            this.updateCharGrid(word);
+                        }
+                    }
+                ).catch((e: Error) => console.error(e));
+
+            } while (sameWordExists && numTry < 3);
         }
 
         return true;
