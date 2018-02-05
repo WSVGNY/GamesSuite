@@ -1,13 +1,13 @@
 import assert = require("assert");
 import { ResponseWordFromAPI } from "../../../common/communication/responseWordFromAPI";
 import * as requestPromise from "request-promise-native";
+import { Lexicon } from "./lexicon";
 
 const BASE_URL: string = "http://localhost:3000/lexicon/";
-const TIMEOUT: number = 15000;
+// const TIMEOUT: number = 15000;
 
 describe("LEXICON TESTS", () => {
-    it("is datamuse down", (done: MochaDone) => {
-        // for (let i: number = 0; i < 10; i++) {
+    it("is datamuse up", (done: MochaDone) => {
         requestPromise("https://api.datamuse.com/words?sp=????&md=fd").then((response: string) => {
             done();
         }).catch((e: Error) => {
@@ -15,21 +15,14 @@ describe("LEXICON TESTS", () => {
             assert(false);
             done();
         });
-        // }
     });
 
     describe("word should be a noun or a verb", () => {
         it("word is a verb", (done: MochaDone) => {
-            setTimeout(done, TIMEOUT);
-            let word: ResponseWordFromAPI;
-            requestPromise(BASE_URL + "/ask/EASY").then((response: ResponseWordFromAPI) => {
-                // word = JSON.parse(response);
-                word = response;
-                console.log(word);
-                console.log(word["word"]);
-                console.log(word.$word);
-                console.log(word[0]);
-                assert(word.$definition[0] === "v");
+            let word: ResponseWordFromAPI = new ResponseWordFromAPI();
+            requestPromise(BASE_URL + "ask/EASY").then((response: string) => {
+                word = JSON.parse(response);
+                assert(word["definition"][0] === "v");
                 done();
             }).catch((e: Error) => {
                 console.error(e.message);
@@ -39,11 +32,10 @@ describe("LEXICON TESTS", () => {
         });
 
         it("word is a noun", (done: MochaDone) => {
-            setTimeout(done, TIMEOUT);
             let word: ResponseWordFromAPI;
-            requestPromise(BASE_URL + "/test/EASY").then((response: string) => {
+            requestPromise(BASE_URL + "test/EASY").then((response: string) => {
                 word = JSON.parse(response);
-                assert(word.$definition[0] === "n");
+                assert(word["definition"][0] === "n");
                 done();
             }).catch((e: Error) => {
                 console.error(e.message);
@@ -54,11 +46,10 @@ describe("LEXICON TESTS", () => {
         });
 
         it("if word is an adj or adv, return empty word", (done: MochaDone) => {
-            setTimeout(done, TIMEOUT);
             let word: ResponseWordFromAPI;
-            requestPromise(BASE_URL + "/beautiful/EASY").then((response: string) => {
+            requestPromise(BASE_URL + "beautiful/EASY").then((response: string) => {
                 word = JSON.parse(response);
-                assert(word.$word === "" && word.$definition === "");
+                assert(word["word"] === "" && word["definition"] === "");
                 done();
             }).catch((e: Error) => {
                 console.error(e.message);
@@ -69,11 +60,10 @@ describe("LEXICON TESTS", () => {
     });
 
     it("if there is no definitions, it should return empty word", (done: MochaDone) => {
-        setTimeout(done, TIMEOUT);
         let word: ResponseWordFromAPI;
-        requestPromise(BASE_URL + "/zent/EASY").then((response: string) => {
+        requestPromise(BASE_URL + "zent/EASY").then((response: string) => {
             word = JSON.parse(response);
-            assert(word.$word === "" && word.$definition === "");
+            assert(word["word"] === "" && word["definition"] === "");
             done();
         }).catch((e: Error) => {
             console.error(e.message);
@@ -83,21 +73,38 @@ describe("LEXICON TESTS", () => {
     });
 
     it("word shouldn't contain any accents or special characters", (done: MochaDone) => {
-        // const lex: Lexicon = new Lexicon();
-        // const correctWord: string = lex.removeAccent(word);
-        // assert(correctWord === "aeic");
+        const lex: Lexicon = new Lexicon();
+        const correctWord: string = lex["removeAccent"]("éàïç");
+        assert(correctWord === "EAIC");
         done();
     });
 
     describe("tests for the respect of constraints", () => {
         it("the returned word matches constraints", (done: MochaDone) => {
-            assert(true === true);
-            done();
+            let word: ResponseWordFromAPI;
+            const TEST_LETTER_POSITION: number = 3;
+            requestPromise(BASE_URL + "t%3f%3ft/EASY").then((response: string) => {
+                word = JSON.parse(response);
+                assert(word["word"][0] === "T" && word["word"][TEST_LETTER_POSITION] === "T");
+                done();
+            }).catch((e: Error) => {
+                console.error(e.message);
+                assert(false);
+                done();
+            });
         });
 
-        it("if there is no word matching the constraint, returns an error", (done: MochaDone) => {
-            assert(true === true);
-            done();
+        it("if there is no word matching the constraint, returns an empty word", (done: MochaDone) => {
+            let word: ResponseWordFromAPI;
+            requestPromise(BASE_URL + "tttttt/EASY").then((response: string) => {
+                word = JSON.parse(response);
+                assert(word["word"] === "" && word["definition"] === "");
+                done();
+            }).catch((e: Error) => {
+                console.error(e.message);
+                assert(false);
+                done();
+            });
         });
     });
 

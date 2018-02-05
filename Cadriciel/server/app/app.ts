@@ -14,7 +14,7 @@ import { TrackService } from "./racing/track-service";
 @injectable()
 export class Application {
 
-    private readonly internalError: number = 500;
+    // private readonly internalError: number = 500;
     public app: express.Application;
 
     constructor(
@@ -30,8 +30,6 @@ export class Application {
         this.addService(this.lexicon);
         this.addService(this.grid);
         this.addService(this.tracks);
-
-        this.errorHandeling();
     }
 
     private configMiddleware(): void {
@@ -48,35 +46,35 @@ export class Application {
         this.app.use(service.baseRoute, service.routes);
     }
 
-    private errorHandeling(): void {
-        // Gestion des erreurs
-        this.app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
-            const err: Error = new Error("Not Found");
-            next(err);
-        });
+    // private errorHandeling(): void {
+    //     // Gestion des erreurs
+    //     this.app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+    //         const err: Error = new Error("Not Found");
+    //         next(err);
+    //     });
 
-        // development error handler
-        // will print stacktrace
-        if (this.app.get("env") === "development") {
-            // tslint:disable-next-line:no-any
-            this.app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-                res.status(err.status || this.internalError);
-                res.send({
-                    message: err.message,
-                    error: err
-                });
-            });
-        }
+    //     // development error handler
+    //     // will print stacktrace
+    //     if (this.app.get("env") === "development") {
+    //         // tslint:disable-next-line:no-any
+    //         this.app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    //             res.status(err.status || this.internalError);
+    //             res.send({
+    //                 message: err.message,
+    //                 error: err
+    //             });
+    //         });
+    //     }
 
-        // production error handler
-        // no stacktraces leaked to user (in production env only)
-        // tslint:disable-next-line:no-any
-        this.app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-            res.status(err.status || this.internalError);
-            res.send({
-                message: err.message,
-                error: {}
-            });
-        });
-    }
+    //     // production error handler
+    //     // no stacktraces leaked to user (in production env only)
+    //     // tslint:disable-next-line:no-any
+    //     this.app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+    //         res.status(err.status || this.internalError);
+    //         res.send({
+    //             message: err.message,
+    //             error: {}
+    //         });
+    //     });
+    // }
 }
