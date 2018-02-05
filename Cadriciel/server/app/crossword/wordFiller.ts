@@ -13,22 +13,42 @@ import { WordConstraint } from "./wordConstraint";
 export class WordFiller {
 
     private charGrid: Char[][];
-    private readonly URL_WORD_API: string = "http://localhost:3000/lexicon/constraints/";
+    private readonly URL_WORD_API: string = "http://localhost:3000/lexicon/";
     private readonly gridDifficulty: Difficulty = Difficulty.easy;
+    private readonly MAX_REQUEST_TRIES: number = 3;
 
-    public constructor(private SIZE_GRID_X: number, private SIZE_GRID_Y: number,
-                       private grid: GridBox[][], private words: Word[]) {
+    public constructor(
+        private SIZE_GRID_X: number,
+        private SIZE_GRID_Y: number,
+        private grid: GridBox[][],
+        private words: Word[]) {
     }
 
     public async wordFillControler(): Promise<boolean> {
-        this.createCharGrid();
-        this.sortWordsList();
-        await this.fillWords().then(
-            (result: boolean) => {
-                this.bindCharToGrid();
-            }).catch((e: Error) => console.error(e));
+        let fail: boolean = true;
+        do {
+            this.createCharGrid();
+            this.sortWordsList();
+            await this.fillWords().then(
+                (result: boolean) => {
+                    this.bindCharToGrid();
+                    fail = this.gridContainsIncompleteWord();
+                }).catch((e: Error) => console.error(e));
+        } while (fail);
 
         return true;
+    }
+
+    private gridContainsIncompleteWord(): boolean {
+        for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
+            for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
+                if (this.charGrid[i][j].$value === "?") {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     private createCharGrid(): void {
@@ -53,34 +73,31 @@ export class WordFiller {
         }
     }
 
-    // tslint:disable-next-line:max-func-body-length
     private async fillWords(): Promise<boolean> {
-        let nmbrBackTrack: number = 1;
-        let backTrackStartedOn: number = 0;
-        for (let i: number = 0; i < this.words.length; i++) {
-            const word: Word = this.words[i];
+        for (const word of this.words) {
+            let sameWordExists: boolean = false;
+            let numTry: number = 0;
             const wordConstraints: string = new WordConstraint(word, this.charGrid).$value;
-            await this.getWordFromAPI(wordConstraints).then(
-                (result: ResponseWordFromAPI) => {
-                    word.$word = result.$word;
-                    if (word.$word === "") {
-                        backTrackStartedOn = i;
-                        for (let j: number = i; j > i - nmbrBackTrack; j--) {
-                            this.words[j].resetValue();
+            do {
+                sameWordExists = false;
+                await this.getWordFromAPI(wordConstraints).then(
+                    (result: ResponseWordFromAPI) => {
+                        // console.log(result.$word);
+                        for (const verifWord of this.words) {
+                            if (verifWord.$definition !== "" && verifWord.$word === result.$word) {
+                                sameWordExists = true;
+                                numTry++;
+                            }
                         }
-                        i -= nmbrBackTrack;
-                        for (let j: number = i; j < i + nmbrBackTrack; j++) {
-                            this.updateCharGrid(this.words[j]);
+                        if (!sameWordExists) {
+                            numTry = 0;
+                            word.$word = result.$word;
+                            this.updateCharGrid(word);
                         }
-                        if (i === 0 || i === backTrackStartedOn) {
-                            nmbrBackTrack = 0;
-                            backTrackStartedOn = 0;
-                        }
-                        nmbrBackTrack++;
                     }
-                    this.updateCharGrid(word);
-                }
-            ).catch((e: Error) => console.error(e));
+                ).catch((e: Error) => console.error(e));
+
+            } while (sameWordExists && numTry < this.MAX_REQUEST_TRIES);
         }
 
         return true;
