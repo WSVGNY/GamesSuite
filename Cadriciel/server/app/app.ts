@@ -6,10 +6,10 @@ import * as bodyParser from "body-parser";
 import * as cors from "cors";
 import Types from "./types";
 import { injectable, inject } from "inversify";
-import { Routes } from "./routes";
 import { LexiconService } from "./crossword/lexicon-service";
-import { GridCreateService} from "./crossword/gridCreate-service";
+import { GridCreateService } from "./crossword/gridCreate-service";
 import { AbstractService } from "./AbstractService";
+import { TrackService } from "./racing/track-service";
 
 @injectable()
 export class Application {
@@ -18,9 +18,9 @@ export class Application {
     public app: express.Application;
 
     constructor(
-        @inject(Types.Routes) private api: Routes,
         @inject(Types.LexiconService) private lexicon: LexiconService,
-        @inject(Types.GridCreateService) private grid: GridCreateService
+        @inject(Types.GridCreateService) private grid: GridCreateService,
+        @inject(Types.TrackService) private tracks: TrackService
     ) {
 
         this.app = express();
@@ -29,7 +29,9 @@ export class Application {
 
         this.addService(this.lexicon);
         this.addService(this.grid);
-        this.routes();
+        this.addService(this.tracks);
+
+        this.errorHandeling();
     }
 
     private configMiddleware(): void {
@@ -44,13 +46,6 @@ export class Application {
 
     private addService(service: AbstractService): void {
         this.app.use(service.baseRoute, service.routes);
-    }
-
-    public routes(): void {
-        const router: express.Router = express.Router();
-        router.use(this.api.routes);
-        this.app.use(router);
-        this.errorHandeling();
     }
 
     private errorHandeling(): void {

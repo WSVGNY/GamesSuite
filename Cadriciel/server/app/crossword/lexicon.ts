@@ -1,54 +1,115 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response } from "express";
 import "reflect-metadata";
 import { injectable, } from "inversify";
 import * as requestPromise from "request-promise-native";
+import { Difficulty } from "../../../common/crossword/difficulty";
+import { ResponseWordFromAPI } from "../../../common/communication/responseWordFromAPI";
 
 @injectable()
 export class Lexicon {
 
-    /**
-     * These functions work asynchronously to get words and definitions from the Datamuse api
-     * To get them synchronously, we use a promise to return the result from the server then
-     */
-
     private readonly BASE_URL: string = "https://api.datamuse.com/words?";
-    private readonly INDENTATION_LENGTH: number = 2;
+    private difficulty: Difficulty;
+    private readonly FREQUENCY_DELIMITER: number = 10;
+    private readonly MIN_NUMBER_OF_DEFINITION: number = 2;
+    private readonly UNWANTED_POSITION_LENGTH: number = 2;
+    private readonly ERROR_STATUS_CODE_LENGTH: number = 3;
 
-    public getWordAndDefinition(req: Request, res: Response, next: NextFunction): void {
-        const urlOptions: string = "sp=" + req.params.word + "&md=d";
-
-        requestPromise(this.BASE_URL + urlOptions).then(
-            (result: string) => {
-                result = JSON.parse(result.toString());
-                const wordAndDef: ({ "word": string; } | { "def": string; }) = {
-                    "word": result[0]["word"],
-                    "def": result[0]["defs"][0].substring(this.INDENTATION_LENGTH)
-                };
-                res.json(wordAndDef);
+    private getDefinition(word: string): string {
+        const definitions: string = word["defs"];
+        if (definitions === undefined) {
+            return "";
+        }
+        for (let i: number = 0; i < (word["defs"].length); i++) {
+            let counter: number = word["defs"].length;
+            if (definitions[i][0] === "a") {                 // s'assurer que le mot ne soit ni un adverbe ni un adjectif
+                delete (word["defs"][i]);
+                counter--;
+                if (counter === 0) {
+                    return "";
+                }
             }
-        ).catch((e: Error) => console.error(e));
+        }
+        if (this.difficulty === Difficulty.easy) {
+            return definitions[0];
+        } else {
+            if (definitions.length >= this.MIN_NUMBER_OF_DEFINITION) {
+                return definitions[1];
+            } else {
+                return definitions[0];
+            }
+        }
     }
 
-    public getFrequency(req: Request, res: Response, next: NextFunction): void {
-        const urlOptions: string = "sp=" + req.params.word + "&md=f";
-
-        requestPromise(this.BASE_URL + urlOptions).then(
-            (result: string) => {
-                result = JSON.parse(result.toString());
-                const num: number = result[0]["tags"][0].substring(this.INDENTATION_LENGTH);
-                res.send(num);
+    private checkFrequency(word: string): boolean {
+        const frequency: number = word["tags"][0].substring(this.UNWANTED_POSITION_LENGTH);
+        if (this.difficulty === Difficulty.hard) {
+            if (frequency < this.FREQUENCY_DELIMITER) {
+                return true;
+            } else {
+                return false;
             }
-        ).catch((e: Error) => console.error(e));
+        } else {
+            if (frequency >= this.FREQUENCY_DELIMITER) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
-    public getWordListFromConstraint(req: Request, res: Response, next: NextFunction): void {
-        const urlOptions: string = "sp=" + req.params.constraints;
+    private removeAccent(word: string): string {
+        word = word.replace(new RegExp(/[àáâä]/gi), "A");
+        word = word.replace(new RegExp(/ç/gi), "C");
+        word = word.replace(new RegExp(/[èéêë]/gi), "E");
+        word = word.replace(new RegExp(/[ìíîï]/gi), "I");
+        word = word.replace(new RegExp(/[òóôö]/gi), "O");
+        word = word.replace(new RegExp(/[ùúûü]/gi), "U");
+        word = word.replace(new RegExp(/\W/gi), "");        // delete non word characters (hyphens, apostrophes, etc.)
 
-        requestPromise(this.BASE_URL + urlOptions).then(
-            (result: string) => {
-                result = JSON.parse(result.toString());
-                res.json(result);
+        return word;
+    }
+
+    private getValidWordFromList(result: string): ResponseWordFromAPI {
+        const words: string[] = JSON.parse(result);
+        let responseWord: ResponseWordFromAPI = new ResponseWordFromAPI();
+        let badWord: boolean;
+        do {
+            badWord = true;
+            const random: number = Math.floor(Math.random() * words.length);
+            const randomWordFromList: string = words[random];
+            responseWord.$word = randomWordFromList["word"].toUpperCase();
+
+            if (this.checkFrequency(randomWordFromList)) {
+                responseWord.$definition = this.getDefinition(randomWordFromList);
+                if (responseWord.$definition !== "") {
+                    badWord = false;
+                }
             }
-        ).catch((e: Error) => console.error(e));
+
+            if (badWord) {
+                words.splice(words.findIndex((word: string) => word === randomWordFromList), 1);
+            }
+
+            if (words.length === 0) {
+                responseWord = new ResponseWordFromAPI();
+                badWord = false;
+            }
+        } while (badWord);
+        responseWord.$word = this.removeAccent(responseWord.$word);
+
+        return responseWord;
+    }
+
+    public getWordFromConstraint(req: Request, res: Response): void {
+        this.difficulty = req.params.difficulty;
+        requestPromise(this.BASE_URL + "sp=" + req.params.constraints + "&md=fd").then(
+            (result: string) => {
+                res.send(this.getValidWordFromList(result.toString()));
+            }
+        ).catch((e: Error) => {
+            const status: number = +e.message.substring(0, this.ERROR_STATUS_CODE_LENGTH);
+            res.sendStatus(status);
+        });
     }
 }

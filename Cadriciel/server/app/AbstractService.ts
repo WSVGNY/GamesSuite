@@ -4,6 +4,5 @@ import { injectable } from "inversify";
 @injectable()
 export abstract class AbstractService {
     public readonly baseRoute: string;
-    public constructor() { }
     public abstract get routes(): Router;
 }

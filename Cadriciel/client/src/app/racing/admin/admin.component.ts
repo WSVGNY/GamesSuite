@@ -3,22 +3,32 @@ import { Track } from "../../../../../common/racing/track";
 import { TrackService } from "../track-service/track.service";
 
 @Component({
-  selector: "app-admin",
-  templateUrl: "./admin.component.html",
-  styleUrls: ["./admin.component.css"]
+    selector: "app-admin",
+    templateUrl: "./admin.component.html",
+    styleUrls: ["./admin.component.css"]
 })
 export class AdminComponent implements OnInit {
 
-  public tracks: Track[];
+    public tracks: Track[];
 
-  public constructor(private trackService: TrackService) { }
+    public constructor(private trackService: TrackService) { }
 
-  public ngOnInit(): void {
-    this.getPistes();
-  }
+    public ngOnInit(): void {
+        this.getTracks();
+    }
 
-  public getPistes(): void {
-    this.trackService.getListePiste()
-    .subscribe((tracks) => this.tracks = tracks);
-  }
+    public getTracks(): void {
+        this.trackService.getTrackList()
+            .subscribe((tracks: Track[]) => this.tracks = tracks);
+    }
+
+    public newTrack(trackName: string): void {
+        this.trackService.newTrack(trackName)
+            .subscribe((tracks: Track[]) => this.tracks = tracks);
+    }
+
+    public deleteTrack(id: number): void {
+        this.trackService.deleteTrack(id)
+            .subscribe((tracks: Track[]) => this.tracks = tracks);
+    }
 }
