@@ -2,17 +2,16 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { EditorComponent } from "./editor.component";
 import { ActivatedRoute } from "@angular/router";
-//import {AppModule} from "../../app.module"
+// import {AppModule} from "../../app.module"
 
-describe('EditorComponent', () => {
+describe("EditorComponent", () => {
   let component: EditorComponent;
   let fixture: ComponentFixture<EditorComponent>;
-  
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ EditorComponent ],
-      //imports: [AppModule],
-      providers:[ActivatedRoute]
+      // imports: [AppModule],
+      providers: [ActivatedRoute]
     })
     .compileComponents();
   }));
