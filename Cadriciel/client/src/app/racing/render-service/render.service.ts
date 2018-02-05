@@ -1,7 +1,9 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
-import { PerspectiveCamera, WebGLRenderer, Scene, AmbientLight} from "three";
+import { PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, /*Matrix4, Vector3,*/
+    MeshBasicMaterial, Mesh, PlaneGeometry} from "three";
 import { Car } from "../car/car";
+import { DEG_TO_RAD, /*RAD_TO_DEG*/ } from "../constants";
 
 const FAR_CLIPPING_PLANE: number = 1000;
 const NEAR_CLIPPING_PLANE: number = 1;
@@ -12,9 +14,14 @@ const LEFT_KEYCODE: number = 65;        // a
 const BRAKE_KEYCODE: number = 83;       // s
 const RIGHT_KEYCODE: number = 68;       // d
 
-const INITIAL_CAMERA_POSITION_Y: number = 25;
+const INITIAL_CAMERA_POSITION_Z: number = 10;
+const INITIAL_CAMERA_POSITION_Y: number = 5;
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
+const TEMP_GRID_SIZE: number = 100;
+const TEMP_GRID_ORIENTATION: number = 90;
+
+const PLAYER_CAMERA: string = "PLAYER_CAMERA";
 
 @Injectable()
 export class RenderService {
@@ -58,6 +65,8 @@ export class RenderService {
 
     private async createScene(): Promise<void> {
         this.scene = new Scene();
+        await this._car.init();
+        this.scene.add(this._car);
 
         this.camera = new PerspectiveCamera(
             FIELD_OF_VIEW,
@@ -65,11 +74,16 @@ export class RenderService {
             NEAR_CLIPPING_PLANE,
             FAR_CLIPPING_PLANE
         );
+        this.camera.name = PLAYER_CAMERA;
+        this.camera.position.z = INITIAL_CAMERA_POSITION_Z;
+        this.camera.position.y = INITIAL_CAMERA_POSITION_Y;
+        this._car.attachCamera(this.camera);
 
-        await this._car.init();
-        this.camera.position.set(0, INITIAL_CAMERA_POSITION_Y, 0);
-        this.camera.lookAt(this._car.position);
-        this.scene.add(this._car);
+        const groundGeometry: PlaneGeometry = new PlaneGeometry( TEMP_GRID_SIZE, TEMP_GRID_SIZE, TEMP_GRID_SIZE, TEMP_GRID_SIZE );
+        const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ wireframe: true, color: 0x00FF00 });
+        const ground: Mesh = new Mesh( groundGeometry, groundMaterial );
+        ground.rotateX( DEG_TO_RAD * TEMP_GRID_ORIENTATION );
+        this.scene.add( ground );
         this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
     }
 

@@ -1,6 +1,5 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
-
 import { RacingComponent } from "../racing/racing.component";
 import { CrosswordComponent } from "../crossword/crossword.component";
 import { AdminComponent } from "../racing/admin/admin.component";

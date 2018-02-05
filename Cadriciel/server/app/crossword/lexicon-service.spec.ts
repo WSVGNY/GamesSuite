@@ -1,4 +1,4 @@
-import { assert } from "../routes/sample.spec";
+import assert = require("assert");
 import { LexiconService } from "./lexicon-service";
 // import * as http from "http";
 // import * as requestPromise from "request-promise-native";

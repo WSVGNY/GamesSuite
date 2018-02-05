@@ -6,7 +6,6 @@ import * as bodyParser from "body-parser";
 import * as cors from "cors";
 import Types from "./types";
 import { injectable, inject } from "inversify";
-import { Routes } from "./routes";
 import { LexiconService } from "./crossword/lexicon-service";
 import { GridCreateService } from "./crossword/gridCreate-service";
 import { AbstractService } from "./AbstractService";
@@ -15,11 +14,9 @@ import { TrackService } from "./racing/track-service";
 @injectable()
 export class Application {
 
-    private readonly internalError: number = 500;
     public app: express.Application;
 
     constructor(
-        @inject(Types.Routes) private api: Routes,
         @inject(Types.LexiconService) private lexicon: LexiconService,
         @inject(Types.GridCreateService) private grid: GridCreateService,
         @inject(Types.TrackService) private tracks: TrackService
@@ -32,7 +29,6 @@ export class Application {
         this.addService(this.lexicon);
         this.addService(this.grid);
         this.addService(this.tracks);
-        this.routes();
     }
 
     private configMiddleware(): void {
@@ -47,44 +43,5 @@ export class Application {
 
     private addService(service: AbstractService): void {
         this.app.use(service.baseRoute, service.routes);
-    }
-
-    public routes(): void {
-        const router: express.Router = express.Router();
-        router.use(this.api.routes);
-        this.app.use(router);
-        this.errorHandeling();
-    }
-
-    private errorHandeling(): void {
-        // Gestion des erreurs
-        this.app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
-            const err: Error = new Error("Not Found");
-            next(err);
-        });
-
-        // development error handler
-        // will print stacktrace
-        if (this.app.get("env") === "development") {
-            // tslint:disable-next-line:no-any
-            this.app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-                res.status(err.status || this.internalError);
-                res.send({
-                    message: err.message,
-                    error: err
-                });
-            });
-        }
-
-        // production error handler
-        // no stacktraces leaked to user (in production env only)
-        // tslint:disable-next-line:no-any
-        this.app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-            res.status(err.status || this.internalError);
-            res.send({
-                message: err.message,
-                error: {}
-            });
-        });
     }
 }

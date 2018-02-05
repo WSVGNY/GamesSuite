@@ -1,7 +1,5 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-
 import { CrosswordComponent } from "./crossword.component";
-// import { AppModule } from "../app.module";
 import {GridService} from "./grid.service";
 import { HttpClientModule, HttpClient } from "@angular/common/http";
 
@@ -14,8 +12,7 @@ describe("CrosswordComponent", () => {
       declarations: [ CrosswordComponent ],
       imports: [HttpClientModule],
       providers: [GridService,
-                  HttpClient,
-                  ]
+                  HttpClient]
     })
     .compileComponents();
   }));

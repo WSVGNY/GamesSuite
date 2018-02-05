@@ -17,23 +17,17 @@ export class Grid {
 
     public gridCreate(req: Request, res: Response, next: NextFunction): void {
         this.newGrid().then((result: boolean) => res.send(this.grid));
-
     }
 
     private async newGrid(): Promise<boolean> {
         const isValidGrid: boolean = false;
         while (!isValidGrid) {
-            this.grid = new Array<Array<GridBox>>();
-            for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
-                const row: GridBox[] = new Array<GridBox>();
-                for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                    row.push(new GridBox(new Vec2(j, i), false));
-                }
-                this.grid.push(row);
-            }
+            this.createEmptyArray();
+
             const blackTiledGrid: BlackTiledGrid = new BlackTiledGrid(this.SIZE_GRID_X, this.SIZE_GRID_Y, this.grid);
-            this.words = blackTiledGrid.$words;
-            if (this.words !== undefined) {
+
+            if ( blackTiledGrid.$words !== undefined) {
+                this.words = blackTiledGrid.$words;
                 break;
             }
         }
@@ -42,4 +36,16 @@ export class Grid {
 
         return true;
     }
+
+    private createEmptyArray(): void {
+        this.grid = new Array<Array<GridBox>>();
+        for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
+            const row: GridBox[] = new Array<GridBox>();
+            for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
+                row.push(new GridBox(new Vec2(j, i), false));
+            }
+            this.grid.push(row);
+        }
+    }
+
 }

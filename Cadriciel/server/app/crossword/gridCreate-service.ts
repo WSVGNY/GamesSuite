@@ -19,6 +19,7 @@ export class GridCreateService extends AbstractService {
             this.grid = new Grid;
             this.grid.gridCreate(req, res, next);
         });
+
         return router;
     }
 }
