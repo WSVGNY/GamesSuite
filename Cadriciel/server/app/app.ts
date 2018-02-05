@@ -14,7 +14,7 @@ import { TrackService } from "./racing/track-service";
 @injectable()
 export class Application {
 
-    private readonly internalError: number = 500;
+    // private readonly internalError: number = 500;
     public app: express.Application;
 
     constructor(
@@ -30,7 +30,6 @@ export class Application {
         this.addService(this.lexicon);
         this.addService(this.grid);
         this.addService(this.tracks);
-        this.routes();
     }
 
     private configMiddleware(): void {
@@ -46,14 +45,7 @@ export class Application {
     private addService(service: AbstractService): void {
         this.app.use(service.baseRoute, service.routes);
     }
-
-    public routes(): void {
-        const router: express.Router = express.Router();
-        router.use(this.api.routes);
-        this.app.use(router);
-        this.errorHandeling();
-    }
-
+/*
     private errorHandeling(): void {
         // Gestion des erreurs
         this.app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -85,4 +77,5 @@ export class Application {
             });
         });
     }
+    */
 }
