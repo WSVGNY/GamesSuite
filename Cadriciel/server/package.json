@@ -20,7 +20,7 @@
     "debug": "~2.2.0",
     "express": "4.15.4",
     "inversify": "^4.3.0",
-    "lint": "^1.1.2",
+    "jasmine-matchers": "^0.2.3",
     "morgan": "1.7.0",
     "nodemon": "^1.11.0",
     "reflect-metadata": "^0.1.10",
