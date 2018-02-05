@@ -69,6 +69,16 @@ it("Lexicon fills all words", (done: MochaDone) => {
 });
 
 it("Grid doesn't contain same words twice", (done: MochaDone) => {
-    assert(false);
+    const grid: Grid = new Grid();
+    grid["newGrid"]();
+    for (const word1 of grid["words"]) {
+        for (const word2 of grid["words"]) {
+            if (word1.$word === word2.$word && word1.$id !== word2.$id) {
+                assert(false);
+                done();
+            }
+        }
+    }
+    assert(true);
     done();
 });
