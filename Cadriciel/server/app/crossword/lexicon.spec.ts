@@ -1,35 +1,32 @@
 import assert = require("assert");
 import { ResponseWordFromAPI } from "../../../common/communication/responseWordFromAPI";
 import * as requestPromise from "request-promise-native";
+import { Lexicon } from "./lexicon";
+import { Difficulty } from "../../../common/crossword/difficulty";
 
-const BASE_URL: string = "http://localhost:3000/lexicon/";
-const TIMEOUT: number = 15000;
+const SERVICE_BASE_URL: string = "http://localhost:3000/lexicon/";
+const DATAMUSE_BASE_URL: string = "https://api.datamuse.com/words?md=fd&sp=";
+const UNWANTED_CHARACTERS_LENGTH: number = 2;
+const FREQUENCY_DELIMITER: number = 10;
+// const TIMEOUT: number = 15000;
 
 describe("LEXICON TESTS", () => {
-    it("is datamuse down", (done: MochaDone) => {
-        // for (let i: number = 0; i < 10; i++) {
-        requestPromise("https://api.datamuse.com/words?sp=????&md=fd").then((response: string) => {
+    it("is datamuse up", (done: MochaDone) => {
+        requestPromise(DATAMUSE_BASE_URL + "????").then((response: string) => {
             done();
         }).catch((e: Error) => {
             console.error(e.message);
             assert(false);
             done();
         });
-        // }
     });
 
     describe("word should be a noun or a verb", () => {
         it("word is a verb", (done: MochaDone) => {
-            setTimeout(done, TIMEOUT);
-            let word: ResponseWordFromAPI;
-            requestPromise(BASE_URL + "/ask/EASY").then((response: ResponseWordFromAPI) => {
-                // word = JSON.parse(response);
-                word = response;
-                console.log(word);
-                console.log(word["word"]);
-                console.log(word.$word);
-                console.log(word[0]);
-                assert(word.$definition[0] === "v");
+            let word: ResponseWordFromAPI = new ResponseWordFromAPI();
+            requestPromise(SERVICE_BASE_URL + "ask/" + Difficulty.easy).then((response: string) => {
+                word = JSON.parse(response);
+                assert(word["definition"][0] === "v");
                 done();
             }).catch((e: Error) => {
                 console.error(e.message);
@@ -39,11 +36,10 @@ describe("LEXICON TESTS", () => {
         });
 
         it("word is a noun", (done: MochaDone) => {
-            setTimeout(done, TIMEOUT);
             let word: ResponseWordFromAPI;
-            requestPromise(BASE_URL + "/test/EASY").then((response: string) => {
+            requestPromise(SERVICE_BASE_URL + "test/" + Difficulty.easy).then((response: string) => {
                 word = JSON.parse(response);
-                assert(word.$definition[0] === "n");
+                assert(word["definition"][0] === "n");
                 done();
             }).catch((e: Error) => {
                 console.error(e.message);
@@ -54,11 +50,10 @@ describe("LEXICON TESTS", () => {
         });
 
         it("if word is an adj or adv, return empty word", (done: MochaDone) => {
-            setTimeout(done, TIMEOUT);
             let word: ResponseWordFromAPI;
-            requestPromise(BASE_URL + "/beautiful/EASY").then((response: string) => {
+            requestPromise(SERVICE_BASE_URL + "beautiful/" + Difficulty.easy).then((response: string) => {
                 word = JSON.parse(response);
-                assert(word.$word === "" && word.$definition === "");
+                assert(word["word"] === "" && word["definition"] === "");
                 done();
             }).catch((e: Error) => {
                 console.error(e.message);
@@ -69,11 +64,10 @@ describe("LEXICON TESTS", () => {
     });
 
     it("if there is no definitions, it should return empty word", (done: MochaDone) => {
-        setTimeout(done, TIMEOUT);
         let word: ResponseWordFromAPI;
-        requestPromise(BASE_URL + "/zent/EASY").then((response: string) => {
+        requestPromise(SERVICE_BASE_URL + "zent/" + Difficulty.easy).then((response: string) => {
             word = JSON.parse(response);
-            assert(word.$word === "" && word.$definition === "");
+            assert(word["word"] === "" && word["definition"] === "");
             done();
         }).catch((e: Error) => {
             console.error(e.message);
@@ -82,54 +76,220 @@ describe("LEXICON TESTS", () => {
         });
     });
 
-    it("word shouldn't contain any accents or special characters", (done: MochaDone) => {
-        // const lex: Lexicon = new Lexicon();
-        // const correctWord: string = lex.removeAccent(word);
-        // assert(correctWord === "aeic");
-        done();
+    describe("tests for accents or special characters", () => {
+        it("word shouldn't contain any accents or special characters", (done: MochaDone) => {
+            const lex: Lexicon = new Lexicon();
+            const correctWord: string = lex["removeAccent"]("éàïç");
+            assert(correctWord === "EAIC");
+            done();
+        });
+
+        it("Special characters should be ignored when sent to the api", (done: MochaDone) => {
+            let word: ResponseWordFromAPI;
+            requestPromise(SERVICE_BASE_URL + "aréa/" + Difficulty.easy).then((response: string) => {
+                word = JSON.parse(response);
+                assert(word["word"] === "AREA");
+                done();
+            }).catch((e: Error) => {
+                console.error(e.message);
+                assert(false);
+                done();
+            });
+        });
+
+        it("Accents should be ignored even when sent in url encoding", (done: MochaDone) => {
+            let word: ResponseWordFromAPI;
+            requestPromise(SERVICE_BASE_URL + "ar%c3%a9a/" + Difficulty.easy).then((response: string) => {
+                word = JSON.parse(response);
+                assert(word["word"] === "AREA");
+                done();
+            }).catch((e: Error) => {
+                console.error(e.message);
+                assert(false);
+                done();
+            });
+        });
     });
 
     describe("tests for the respect of constraints", () => {
         it("the returned word matches constraints", (done: MochaDone) => {
-            assert(true === true);
-            done();
+            let word: ResponseWordFromAPI;
+            const TEST_LETTER_POSITION: number = 3;
+            requestPromise(SERVICE_BASE_URL + "t%3f%3ft/" + Difficulty.easy).then((response: string) => {
+                word = JSON.parse(response);
+                assert(word["word"][0] === "T" && word["word"][TEST_LETTER_POSITION] === "T");
+                done();
+            }).catch((e: Error) => {
+                console.error(e.message);
+                assert(false);
+                done();
+            });
         });
 
-        it("if there is no word matching the constraint, returns an error", (done: MochaDone) => {
-            assert(true === true);
-            done();
+        it("if there is no word matching the constraint, returns an empty word", (done: MochaDone) => {
+            let word: ResponseWordFromAPI;
+            requestPromise(SERVICE_BASE_URL + "ttttt/" + Difficulty.easy).then((response: string) => {
+                word = JSON.parse(response);
+                assert(word["word"] === "" && word["definition"] === "");
+                done();
+            }).catch((e: Error) => {
+                console.error(e.message);
+                assert(false);
+                done();
+            });
+        });
+
+        it("if is no word returned from the api, returns an empty word", (done: MochaDone) => {
+            let word: ResponseWordFromAPI;
+            requestPromise(SERVICE_BASE_URL + "tttttt/" + Difficulty.easy).then((response: string) => {
+                word = JSON.parse(response);
+                assert(word["word"] === "" && word["definition"] === "");
+                done();
+            }).catch((e: Error) => {
+                console.error(e.message);
+                assert(false);
+                done();
+            });
         });
     });
 
     describe("tests for the difficulty", () => {
         it("if difficulty is EASY, returns the first definition", (done: MochaDone) => {
-            assert(true === true);
-            done();
+            let wordFromService: ResponseWordFromAPI;
+            let wordFromDataMuse: string[];
+            requestPromise(SERVICE_BASE_URL + "test/" + Difficulty.easy).then((responseFromService: string) => {
+                wordFromService = JSON.parse(responseFromService);
+                requestPromise(DATAMUSE_BASE_URL + "test").then((responseFromDataMuse: string) => {
+                    wordFromDataMuse = JSON.parse(responseFromDataMuse);
+                    assert(wordFromDataMuse[0]["defs"][0] === wordFromService["definition"]);
+                    done();
+                }).catch((e: Error) => {
+                    console.error(e.message);
+                    assert(false);
+                    done();
+                });
+            }).catch((e: Error) => {
+                console.error(e.message);
+                assert(false);
+                done();
+            });
         });
 
         it("if difficulty is MEDIUM, returns the second definition", (done: MochaDone) => {
-            assert(true === true);
-            done();
+            let wordFromService: ResponseWordFromAPI;
+            let wordFromDataMuse: string[];
+            requestPromise(SERVICE_BASE_URL + "test/" + Difficulty.medium).then((responseFromService: string) => {
+                wordFromService = JSON.parse(responseFromService);
+                requestPromise(DATAMUSE_BASE_URL + "test").then((responseFromDataMuse: string) => {
+                    wordFromDataMuse = JSON.parse(responseFromDataMuse);
+                    assert(wordFromDataMuse[0]["defs"][1] === wordFromService["definition"]);
+                    done();
+                }).catch((e: Error) => {
+                    console.error(e.message);
+                    assert(false);
+                    done();
+                });
+            }).catch((e: Error) => {
+                console.error(e.message);
+                assert(false);
+                done();
+            });
         });
 
         it("if difficulty is HARD, returns the second definition", (done: MochaDone) => {
-            assert(true === true);
-            done();
+            let wordFromService: ResponseWordFromAPI;
+            let wordFromDataMuse: string[];
+            requestPromise(SERVICE_BASE_URL + "bust/" + Difficulty.hard).then((responseFromService: string) => {
+                wordFromService = JSON.parse(responseFromService);
+                requestPromise(DATAMUSE_BASE_URL + "bust").then((responseFromDataMuse: string) => {
+                    wordFromDataMuse = JSON.parse(responseFromDataMuse);
+                    assert(wordFromDataMuse[0]["defs"][1] === wordFromService["definition"]);
+                    done();
+                }).catch((e: Error) => {
+                    console.error(e.message);
+                    assert(false);
+                    done();
+                });
+            }).catch((e: Error) => {
+                console.error(e.message);
+                assert(false);
+                done();
+            });
         });
 
         it("if difficulty is EASY, frequency­ > 10", (done: MochaDone) => {
-            assert(true === true);
-            done();
+            let wordFromService: ResponseWordFromAPI;
+            let wordFromDataMuse: string[];
+            requestPromise(SERVICE_BASE_URL + "test/" + Difficulty.easy).then((responseFromService: string) => {
+                wordFromService = JSON.parse(responseFromService);
+                requestPromise(DATAMUSE_BASE_URL + "test").then((responseFromDataMuse: string) => {
+                    wordFromDataMuse = JSON.parse(responseFromDataMuse);
+                    const frequency: number = wordFromDataMuse[0]["tags"][0].substring(UNWANTED_CHARACTERS_LENGTH);
+                    assert(
+                        wordFromDataMuse[0]["word"].toUpperCase() === wordFromService["word"].toUpperCase()
+                        && (frequency > FREQUENCY_DELIMITER)
+                    );
+                    done();
+                }).catch((e: Error) => {
+                    console.error(e.message);
+                    assert(false);
+                    done();
+                });
+            }).catch((e: Error) => {
+                console.error(e.message);
+                assert(false);
+                done();
+            });
         });
 
         it("if difficulty is MEDIUM, frequency­ > 10", (done: MochaDone) => {
-            assert(true === true);
-            done();
+            let wordFromService: ResponseWordFromAPI;
+            let wordFromDataMuse: string[];
+            requestPromise(SERVICE_BASE_URL + "test/" + Difficulty.medium).then((responseFromService: string) => {
+                wordFromService = JSON.parse(responseFromService);
+                requestPromise(DATAMUSE_BASE_URL + "test").then((responseFromDataMuse: string) => {
+                    wordFromDataMuse = JSON.parse(responseFromDataMuse);
+                    const frequency: number = wordFromDataMuse[0]["tags"][0].substring(UNWANTED_CHARACTERS_LENGTH);
+                    assert(
+                        wordFromDataMuse[0]["word"].toUpperCase() === wordFromService["word"].toUpperCase()
+                        && (frequency > FREQUENCY_DELIMITER)
+                    );
+                    done();
+                }).catch((e: Error) => {
+                    console.error(e.message);
+                    assert(false);
+                    done();
+                });
+            }).catch((e: Error) => {
+                console.error(e.message);
+                assert(false);
+                done();
+            });
         });
 
-        it("if difficulty is EASY, frequency­ > 10", (done: MochaDone) => {
-            assert(true === true);
-            done();
+        it("if difficulty is HARD, frequency­ < 10", (done: MochaDone) => {
+            let wordFromService: ResponseWordFromAPI;
+            let wordFromDataMuse: string[];
+            requestPromise(SERVICE_BASE_URL + "bust/" + Difficulty.hard).then((responseFromService: string) => {
+                wordFromService = JSON.parse(responseFromService);
+                requestPromise(DATAMUSE_BASE_URL + "bust").then((responseFromDataMuse: string) => {
+                    wordFromDataMuse = JSON.parse(responseFromDataMuse);
+                    const frequency: number = wordFromDataMuse[0]["tags"][0].substring(UNWANTED_CHARACTERS_LENGTH);
+                    assert(
+                        wordFromDataMuse[0]["word"].toUpperCase() === wordFromService["word"].toUpperCase()
+                        && (frequency < FREQUENCY_DELIMITER)
+                    );
+                    done();
+                }).catch((e: Error) => {
+                    console.error(e.message);
+                    assert(false);
+                    done();
+                });
+            }).catch((e: Error) => {
+                console.error(e.message);
+                assert(false);
+                done();
+            });
         });
     });
 });
