@@ -24,6 +24,18 @@ describe("TrackVertices", () => {
         expect(scene.getChildByName("connection0").name === null).toBeFalsy();
     });
 
+    it("first vertex of new connection should be the point before it", ()  => {
+        const vertex0: Mesh = new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
+        const vertex1: Mesh = new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
+        vertex0.position.set(0, 0, 0 );
+        vertex1.position.set(1, 1, 0 );
+        trackVertices.addConnection(vertex0, vertex1);
+        const connection: Line = scene.getChildByName("connection0") as Line;
+        const geometry: Geometry = connection["geometry"] as Geometry;
+        const vertices: Array<Vector3> = geometry["vertices"];
+        expect(vertices.length === 0).toBeTruthy();
+    });
+
     it("should remove the last point added to the scene", ()  => {
         const vertex: Mesh = new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
         vertex.position.set(0, 0, 0 );
@@ -36,14 +48,24 @@ describe("TrackVertices", () => {
     it("should remove the last connection added to the scene", ()  => {
         const LINE_GEOMETRY: Geometry = new Geometry();
         LINE_GEOMETRY.vertices.push(new Vector3(0, 0, 0));
-        LINE_GEOMETRY.vertices.push(new Vector3(1, 1, 1));
+        LINE_GEOMETRY.vertices.push(new Vector3(1, 1, 0));
         const connection: Line = new Line(LINE_GEOMETRY, LINE_MATERIAL);
         trackVertices["connections"].push(connection);
         scene.add(connection);
         trackVertices.removeLastVertex();
         expect(scene.children.length).toBeFalsy();
     });
-
+/*
+    it("should update the position of a dragged point", ()  => {
+        const vertex: Mesh = new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
+        vertex.position.set(0, 0, 0 );
+        vertex.name = "vertex0";
+        trackVertices["vertices"].push(vertex);
+        scene.add(vertex);
+        trackVertices.moveVertex("vertex0", new Vector3(2, 2, 0));
+        expect(scene.).toBeFalsy();
+    });
+*/
     /*it("should remove a point from the list of points and the connection assiciated this it", () => {
         trackVerticies.removeLastVertex();
         result = scene.getChildByName("vertex1").name === "vertex1" || scene.getChildByName("connection1").name === "connexion1" ;
