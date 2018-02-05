@@ -10,6 +10,14 @@ it("Grid is defined on creation", (done: MochaDone) => {
     done();
 });
 
+it("Grid contains appropriate number of tiles", (done: MochaDone) => {
+    const grid: Grid = new Grid();
+    grid["newGrid"]();
+    const blackGrid: BlackTiledGrid = new BlackTiledGrid(grid.SIZE_GRID_X, grid.SIZE_GRID_Y, grid["grid"]);
+    assert(blackGrid.NUMBER_OF_TILES === grid.SIZE_GRID_X * grid.SIZE_GRID_Y);
+    done();
+});
+
 it("Grid contains appropriate number of black tiles", (done: MochaDone) => {
     const grid: Grid = new Grid();
     grid["newGrid"]();
@@ -26,11 +34,10 @@ it("Grid contains appropriate number of black tiles", (done: MochaDone) => {
     done();
 });
 
-it("Grid contains appropriate number of tiles", (done: MochaDone) => {
+it("Grid contains words", (done: MochaDone) => {
     const grid: Grid = new Grid();
     grid["newGrid"]();
-    const blackGrid: BlackTiledGrid = new BlackTiledGrid(grid.SIZE_GRID_X, grid.SIZE_GRID_Y, grid["grid"]);
-    assert(blackGrid.NUMBER_OF_TILES === grid.SIZE_GRID_X * grid.SIZE_GRID_Y);
+    assert(grid["words"].length > 0);
     done();
 });
 
@@ -48,22 +55,20 @@ it("Grid contains a word or more per line", (done: MochaDone) => {
     done();
 });
 
-it("BlackTiledGrid contains words", (done: MochaDone) => {
-    const grid: Grid = new Grid();
-    grid["newGrid"]();
-    assert(grid["words"].length > 0);
-    done();
-});
-
 it("Lexicon fills all words", (done: MochaDone) => {
     const grid: Grid = new Grid();
     grid["newGrid"]();
     for (const word of grid["words"]) {
-        if (word.$word === "" /*|| word.$word.indexOf("?", 0) > -1*/) {
+        if (word.$word === "" || String(word.$word).indexOf("?", 0) > -1) {
             assert(false);
             done();
         }
     }
     assert(true);
+    done();
+});
+
+it("Grid doesn't contain same words twice", (done: MochaDone) => {
+    assert(false);
     done();
 });

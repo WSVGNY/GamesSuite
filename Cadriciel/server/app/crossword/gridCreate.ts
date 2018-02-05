@@ -47,5 +47,4 @@ export class Grid {
             this.grid.push(row);
         }
     }
-
 }

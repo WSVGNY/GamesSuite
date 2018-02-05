@@ -16,9 +16,13 @@ export class BlackTiledGrid {
     private wordDefID: number;
     private words: Word[];
 
+    public get $words(): Word[] {
+        return this.words;
+    }
+
     public constructor(private SIZE_GRID_X: number, private SIZE_GRID_Y: number,
                        private grid: GridBox[][]) {
-        this.words = this.placeBlackGridTiles();
+                       this.words = this.placeBlackGridTiles();
     }
 
     public placeBlackGridTiles(): Word[] {
@@ -32,11 +36,6 @@ export class BlackTiledGrid {
         } else {
             return undefined;
         }
-
-    }
-
-    public get $words(): Word[] {
-        return this.words;
     }
 
     // https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array

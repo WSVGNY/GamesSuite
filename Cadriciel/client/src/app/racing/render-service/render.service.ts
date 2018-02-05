@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import { PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, /*Matrix4, Vector3,*/
-    MeshBasicMaterial, Mesh, PlaneGeometry} from "three";
+         MeshBasicMaterial, Mesh, PlaneGeometry} from "three";
 import { Car } from "../car/car";
 import { DEG_TO_RAD, /*RAD_TO_DEG*/ } from "../constants";
 
