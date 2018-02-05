@@ -13,11 +13,14 @@ import { WordConstraint } from "./wordConstraint";
 export class WordFiller {
 
     private charGrid: Char[][];
-    private readonly URL_WORD_API: string = "http://localhost:3000/lexicon/constraints/";
+    private readonly URL_WORD_API: string = "http://localhost:3000/lexicon/";
     private readonly gridDifficulty: Difficulty = Difficulty.easy;
 
-    public constructor(private SIZE_GRID_X: number, private SIZE_GRID_Y: number,
-                       private grid: GridBox[][], private words: Word[]) {
+    public constructor(
+        private SIZE_GRID_X: number,
+        private SIZE_GRID_Y: number,
+        private grid: GridBox[][],
+        private words: Word[]) {
     }
 
     public async wordFillControler(): Promise<boolean> {
