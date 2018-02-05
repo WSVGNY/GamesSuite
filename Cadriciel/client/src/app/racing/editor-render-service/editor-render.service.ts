@@ -11,12 +11,14 @@ const LEFT_CLICK_KEYCODE: number = 1;
 const RIGHT_CLICK_KEYCODE: number = 3;
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
-enum Action {
+declare global {
+  enum Action {
   ADD_POINT = 1,
   SET_SELECTED_VERTEX,
   COMPLETE_LOOP,
   NONE,
   REMOVE
+  }
 }
 
 @Injectable()

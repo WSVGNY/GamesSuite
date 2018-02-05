@@ -16,18 +16,18 @@ describe("EditorRenderService", () => {
     expect(service).toBeTruthy();
   }));
 
-  it("should change mouse coordinates", ()  => {
+  /*it("should change mouse coordinates", ()  => {
     expect(renderer.computeMouseCoordinates(0, 1)).toBeTruthy();
   });
 
   it("should not change mouse coordinates", ()  => {
     expect(renderer.computeMouseCoordinates(10000, 256666)).toBeFalsy();
-  });
+  });*/
 
   it("should execute the operation Add Vertex", ()  => {
     renderer["mouseVector"] = new Vector3(0, 1, 0);
     renderer["listOfPoints"] = new TrackVertices(scene);
-    expect(renderer["computeLeftClickAction"]()).toBe(1);
+    expect(renderer["computeLeftClickAction"]()).toBe(Action.ADD_POINT);
   });
 
   it("should execute the operation set selected vertex", ()  => {
@@ -36,7 +36,7 @@ describe("EditorRenderService", () => {
     scene.add(vertex1);
     renderer["mouseVector"] = new Vector3(0, 1, 0); // à modifier
     renderer["listOfPoints"] = new TrackVertices(scene);
-    expect(renderer["computeLeftClickAction"]()).toBe(2);
+    expect(renderer["computeLeftClickAction"]()).toBe(Action.SET_SELECTED_VERTEX);
   });
 
   it("should execute the operation complete loop", ()  => {
@@ -51,23 +51,23 @@ describe("EditorRenderService", () => {
     scene.add(vertex3);
     renderer["mouseVector"] = new Vector3(2, 1, 0); // à modifier
     renderer["listOfPoints"] = new TrackVertices(scene);
-    expect(renderer["computeLeftClickAction"]()).toBe(3);
+    expect(renderer["computeLeftClickAction"]()).toBe(Action.COMPLETE_LOOP);
   });
 
   it("should execute the operation none", ()  => {
     renderer["mouseVector"] = new Vector3(856, 999, 0); // à modifier
     renderer["listOfPoints"] = new TrackVertices(scene);
-    expect(renderer["computeLeftClickAction"]()).toBe(4);
+    expect(renderer["computeLeftClickAction"]()).toBe(Action.NONE);
   });
 
   it("should add a point to the scene", ()  => {
     const id: number = 1;
-    expect(renderer.handleMouseDown(id, 2, 3)).toBe(0);
+    expect(renderer.handleMouseDown(id, 2, 3)).toBe(Action.ADD_POINT);
   });
 
   it("should remove the last point from the scene", ()  => {
     const id: number = 2;
-    expect(renderer.handleMouseDown(id, 2, 3)).toBe(4);
+    expect(renderer.handleMouseDown(id, 2, 3)).toBe(Action.REMOVE);
   });
 
   it("should handle a point", ()  => {
