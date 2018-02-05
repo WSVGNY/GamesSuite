@@ -2,7 +2,6 @@ import "reflect-metadata";
 import { injectable, } from "inversify";
 import { GridBox } from "../../../common/crossword/gridBox";
 import { Word } from "../../../common/crossword/word";
-// import { Vec2 } from "../../../common/crossword/vec2";
 import { Char } from "../../../common/crossword/char";
 import * as requestPromise from "request-promise-native";
 import { Difficulty } from "../../../common/crossword/difficulty";
@@ -39,18 +38,6 @@ export class WordFiller {
         return true;
     }
 
-    private gridContainsIncompleteWord(): boolean {
-        for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
-            for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                if (this.charGrid[i][j].$value === "?") {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
     private createCharGrid(): void {
         this.charGrid = new Array<Array<Char>>();
         for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
@@ -82,13 +69,11 @@ export class WordFiller {
                 sameWordExists = false;
                 await this.getWordFromAPI(wordConstraints).then(
                     (result: ResponseWordFromAPI) => {
-                        // console.log(result.$word);
-                        for (const verifWord of this.words) {
-                            if (verifWord.$definition !== "" && verifWord.$word === result.$word) {
-                                sameWordExists = true;
-                                numTry++;
-                            }
+                        if (this.verifyWordAlreadyThere(result.$word)) {
+                            sameWordExists = true;
+                            numTry++;
                         }
+
                         if (!sameWordExists) {
                             numTry = 0;
                             word.$word = result.$word;
@@ -101,6 +86,16 @@ export class WordFiller {
         }
 
         return true;
+    }
+
+    private verifyWordAlreadyThere(wordToVerify: string): boolean {
+        for (const verifWord of this.words) {
+            if (verifWord.$definition !== "" && verifWord.$word === wordToVerify) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private updateCharGrid(word: Word): void {
@@ -123,7 +118,7 @@ export class WordFiller {
                 responseWord.$definition = result["definition"];
             }
         ).catch((e: Error) => {
-            // console.error(e);
+            console.error(e);
         });
 
         return responseWord;
@@ -135,5 +130,17 @@ export class WordFiller {
                 this.grid[i][j].$value = this.charGrid[i][j].$value;
             }
         }
+    }
+
+    private gridContainsIncompleteWord(): boolean {
+        for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
+            for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
+                if (this.charGrid[i][j].$value === "?") {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
