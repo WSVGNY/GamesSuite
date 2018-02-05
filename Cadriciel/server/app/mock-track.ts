@@ -1,6 +1,5 @@
 import { Track } from "../../common/racing/track";
 
-
 export let tracks: Track[] = [
     new Track(1, "Forêt"),
     new Track(2, "Désert"),

@@ -18,7 +18,6 @@ export class TrackRoute {
 
         //     db.db().find().toArray().then(() => {
 
-
         //     });
 
         //     res.send(this.tracks);
@@ -32,13 +31,13 @@ export class TrackRoute {
     }
 
     public newTrack(req: Request, res: Response): void {
-        let track: Track = new Track(tracks.length + 1, req.params.name);
+        const track: Track = new Track(tracks.length + 1, req.params.name);
         tracks.push(track);
-        res.send(track);
+        this.getTrackList(req, res);
     }
 
     public deleteTrack(req: Request, res: Response): void {
-        let removeIndex = tracks.findIndex((track: Track) => track.$id == req.params.id);
+        const removeIndex: number = tracks.findIndex((track: Track) => track.$id === +req.params.id);
         tracks.splice(removeIndex, 1);
         for (let i: number = removeIndex; i < tracks.length; i++) {
             tracks[i].$id--;
@@ -46,4 +45,3 @@ export class TrackRoute {
         this.getTrackList(req, res);
     }
 }
-

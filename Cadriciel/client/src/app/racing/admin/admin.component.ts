@@ -14,17 +14,17 @@ export class AdminComponent implements OnInit {
     public constructor(private trackService: TrackService) { }
 
     public ngOnInit(): void {
-        this.getTrackFromId();
+        this.getTracks();
     }
 
-    public getTrackFromId(): void {
+    public getTracks(): void {
         this.trackService.getTrackList()
             .subscribe((tracks: Track[]) => this.tracks = tracks);
     }
 
-    public newTrack(): void {
-        this.trackService.newTrack("New track")
-            .subscribe((track: Track) => this.tracks.push(track));
+    public newTrack(trackName: string): void {
+        this.trackService.newTrack(trackName)
+            .subscribe((tracks: Track[]) => this.tracks = tracks);
     }
 
     public deleteTrack(id: number): void {
