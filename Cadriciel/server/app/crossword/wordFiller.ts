@@ -57,19 +57,12 @@ export class WordFiller {
     }
 
     private async fillWords(): Promise<boolean> {
-        const nmbrBackTrack: number = 1;
-        const backTrackStartedOn: number = 0;
-        for (let i: number = 0; i < this.words.length; i++) {
-            const word: Word = this.words[i];
+        for (const word of this.words) {
             const wordConstraints: string = new WordConstraint(word, this.charGrid).$value;
             await this.getWordFromAPI(wordConstraints).then(
                 (result: ResponseWordFromAPI) => {
                     word.$word = result.$word;
-                    if (word.$word === "") {
-                        this.backTrack(word, i, nmbrBackTrack, backTrackStartedOn);
-                    } else {
-                        this.updateCharGrid(word);
-                    }
+                    this.updateCharGrid(word);
                 }
             ).catch((e: Error) => console.error(e));
         }
@@ -101,22 +94,6 @@ export class WordFiller {
         });
 
         return responseWord;
-    }
-
-    private backTrack(word: Word, i: number, backTrackStartedOn: number, nmbrBackTrack: number): void {
-        backTrackStartedOn = i;
-        for (let j: number = i; j > i - nmbrBackTrack; j--) {
-            this.words[j].resetValue();
-        }
-        i -= nmbrBackTrack;
-        for (let j: number = i; j < i + nmbrBackTrack; j++) {
-            this.updateCharGrid(this.words[j]);
-        }
-        if (i === 0 || i === backTrackStartedOn) {
-            nmbrBackTrack = 0;
-            backTrackStartedOn = 0;
-        }
-        nmbrBackTrack++;
     }
 
     private bindCharToGrid(): void {
