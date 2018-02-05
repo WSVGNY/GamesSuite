@@ -30,7 +30,6 @@ export class Application {
         this.addService(this.lexicon);
         this.addService(this.grid);
         this.addService(this.tracks);
-        this.routes();
     }
 
     private configMiddleware(): void {
@@ -47,13 +46,7 @@ export class Application {
         this.app.use(service.baseRoute, service.routes);
     }
 
-    public routes(): void {
-        const router: express.Router = express.Router();
-        router.use(this.api.routes);
-        this.app.use(router);
-        this.errorHandeling();
-    }
-
+    /*
     private errorHandeling(): void {
         // Gestion des erreurs
         this.app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -84,5 +77,5 @@ export class Application {
                 error: {}
             });
         });
-    }
+    }*/
 }
