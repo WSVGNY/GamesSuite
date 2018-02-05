@@ -8,5 +8,4 @@ import { Component } from "@angular/core";
 export class AppComponent {
 
     public readonly title: string = "LOG2990";
- 
 }

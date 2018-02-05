@@ -46,11 +46,27 @@ export class EditorComponent implements AfterViewInit {
 
     @HostListener("window:mousedown", ["$event"])
     public onMouseDown(event: MouseEvent): void {
-        this.editorRenderService.handleMouseDown(event);
+        this.editorRenderService.handleMouseDown(event.which, event.x, event.y);
+    }
+
+  @HostListener("window:mousemove", ["$event"])
+    public onMouseMove(event: MouseEvent): void {
+        this.editorRenderService.handleMouseMove(event.x, event.y);
+    }
+
+  @HostListener("window:mouseup", ["$event"])
+    public onMouseUp(event: MouseEvent): void {
+        this.editorRenderService.handleMouseUp(event.x, event.y);
     }
 
     @HostListener("window:resize", ["$event"])
     public onResize(): void {
         this.editorRenderService.onResize();
     }
+
+  @HostListener("window:contextmenu", ["$event"])
+    public onContextMenu(event: MouseEvent): void {
+        this.editorRenderService.onContextMenu(event);
+    }
+
 }
