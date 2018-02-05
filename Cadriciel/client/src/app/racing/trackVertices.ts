@@ -95,34 +95,37 @@ export class TrackVertices {
     }
 
     public updateFollowingConnection( entry: Mesh ): void {
-        // Check if entry is the first vertex when track is complete
         if (this.isComplete && this.vertices.indexOf(entry) + 1 === this.vertices.length) {
             this.updateConnection(entry, this.firstVertex);
-
-        // Check if entry is the last vertex when track is incomplete
         } else if (this.vertices.indexOf(entry) + 1 !== this.vertices.length) {
             const nextVertex: Mesh = this.vertices[this.vertices.indexOf(entry) + 1];
             this.updateConnection(entry, nextVertex);
         }
     }
 
-    public setVertexPosition( vertexName: String, newPosition: Vector3 ): void {
+    public updatePreviousConnection( entry: Mesh ): void {
+        if (this.isComplete && entry === this.firstVertex) {
+            this.updateConnection(this.lastVertex, entry);
+        } else {
+            const previousVertex: Mesh = this.vertices[this.vertices.indexOf(entry) - 1];
+            this.updateConnection(previousVertex, entry);
+        }
+    }
+
+    public moveVertex(vertexName: String, newPosition: Vector3): void {
         // tslint:disable-next-line:prefer-const
         for (let entry of this.vertices) {
             if (entry.name === vertexName) {
-                entry.position.x = newPosition.x;
-                entry.position.y = newPosition.y;
-                this.updateFollowingConnection( entry );
-
-                if (this.isComplete && entry === this.firstVertex) {
-                    this.updateConnection(this.lastVertex, entry);
-
-                } else {
-                    const previousVertex: Mesh = this.vertices[this.vertices.indexOf(entry) - 1];
-                    this.updateConnection(previousVertex, entry);
-                }
+                this.setVertexPosition(entry, newPosition);
+                this.updatePreviousConnection(entry);
+                this.updateFollowingConnection(entry);
             }
         }
+    }
+
+    public setVertexPosition( vertex: Mesh, newPosition: Vector3 ): void {
+        vertex.position.x = newPosition.x;
+        vertex.position.y = newPosition.y;
     }
 
     public getFirstVertex(): Mesh {

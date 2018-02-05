@@ -11,14 +11,13 @@ const LEFT_CLICK_KEYCODE: number = 1;
 const RIGHT_CLICK_KEYCODE: number = 3;
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
-enum Action {
+export enum Action {
   ADD_POINT = 1,
   SET_SELECTED_VERTEX,
   COMPLETE_LOOP,
   NONE,
   REMOVE
-}
-
+  }
 @Injectable()
 export class EditorRenderService {
 
@@ -85,7 +84,7 @@ export class EditorRenderService {
   this.renderer.setSize(this.containerEditor.clientWidth, this.containerEditor.clientHeight);
 }
 
-  public computeMouseCoordinates(posX: number, posY: number): boolean {
+  private computeMouseCoordinates(posX: number, posY: number): boolean {
     const offset: Vector2 = new Vector2();
     offset.x = this.containerEditor.offsetLeft + this.containerEditor.clientLeft;
     offset.y = this.containerEditor.offsetTop - document.documentElement.scrollTop + this.containerEditor.clientTop;
@@ -102,9 +101,12 @@ export class EditorRenderService {
     return (posX > offset.x && posY > offset.y) ? true : false;
   }
 
-  private computeLeftClickAction(): Action {
+  private detectObjectsCollision(): void {
     const direction: Vector3 = this.mouseVector.clone().sub(this.camera.position).normalize();
     this.raycaster.set(this.camera.position, direction);
+  }
+
+  private computeLeftClickAction(): Action {
     if (this.listOfPoints.isEmpty()) {
       return Action.ADD_POINT;
     } else {
@@ -129,22 +131,24 @@ export class EditorRenderService {
   private computeAction(actionId: Action): void {
     switch (actionId) {
       case Action.ADD_POINT:
-      this.listOfPoints.addVertex(this.mouseVector);
-      break;
+        this.listOfPoints.addVertex(this.mouseVector);
+        break;
       case Action.SET_SELECTED_VERTEX:
-      this.selectedVertexName = this.raycaster.intersectObjects(this.listOfPoints.getVertices(), true)[0].object.name;
-      break;
+        this.selectedVertexName = this.raycaster.intersectObjects(this.listOfPoints.getVertices(), true)[0].object.name;
+        break;
       case Action.COMPLETE_LOOP:
-      this.listOfPoints.completeLoop();
-      break;
+        this.listOfPoints.completeLoop();
+        break;
       default:
     }
   }
+
   public handleMouseDown(buttonId: number, x: number, y: number): Action {
     if (this.computeMouseCoordinates(x, y)) {
       this.isMouseDown = true;
       switch (buttonId) {
         case LEFT_CLICK_KEYCODE:
+            this.detectObjectsCollision();
             const operation: Action = this.computeLeftClickAction();
             this.computeAction(operation);
 
@@ -160,10 +164,11 @@ export class EditorRenderService {
 
     return Action.NONE;
   }
+
   public handleMouseMove (x: number, y: number): void {
     if (this.computeMouseCoordinates(x, y)) {
       if (this.isMouseDown === true && this.selectedVertexName !== "none") {
-        this.listOfPoints.setVertexPosition(this.selectedVertexName, this.mouseVector);
+        this.listOfPoints.moveVertex(this.selectedVertexName, this.mouseVector);
       }
     }
   }
