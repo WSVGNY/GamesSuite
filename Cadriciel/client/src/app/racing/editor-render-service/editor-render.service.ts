@@ -15,7 +15,8 @@ enum Action {
   ADD_POINT = 1,
   SET_SELECTED_VERTEX,
   COMPLETE_LOOP,
-  NONE
+  NONE,
+  REMOVE
 }
 
 @Injectable()
@@ -139,20 +140,25 @@ export class EditorRenderService {
       default:
     }
   }
-  public handleMouseDown(buttonId: number, x: number, y: number): void {
+  public handleMouseDown(buttonId: number, x: number, y: number): Action {
     if (this.computeMouseCoordinates(x, y)) {
       this.isMouseDown = true;
       switch (buttonId) {
         case LEFT_CLICK_KEYCODE:
             const operation: Action = this.computeLeftClickAction();
             this.computeAction(operation);
-            break;
+
+            return operation;
         case RIGHT_CLICK_KEYCODE:
             this.listOfPoints.removeLastVertex();
-            break;
+
+            return Action.REMOVE;
         default:
+        return Action.NONE;
       }
     }
+
+    return Action.NONE;
   }
   public handleMouseMove (x: number, y: number): void {
     if (this.computeMouseCoordinates(x, y)) {

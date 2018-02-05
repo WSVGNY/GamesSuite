@@ -2,7 +2,6 @@ import { Application } from "./app";
 import * as http from "http";
 import Types from "./types";
 import { injectable, inject } from "inversify";
-import { IServerAddress } from "./iserver.address";
 
 @injectable()
 export class Server {
@@ -20,7 +19,6 @@ export class Server {
 
         this.server.listen(this.appPort);
         this.server.on("error", (error: NodeJS.ErrnoException) => this.onError(error));
-        this.server.on("listening", () => this.onListening());
     }
 
     private normalizePort(val: number | string): number | string | boolean {
@@ -49,15 +47,5 @@ export class Server {
             default:
                 throw error;
         }
-    }
-
-    /**
-     * Se produit lorsque le serveur se met à écouter sur le port.
-     */
-    private  onListening(): void {
-        const addr: IServerAddress = this.server.address();
-        const bind: string = (typeof addr === "string") ? `pipe ${addr}` : `port ${addr.port}`;
-        // tslint:disable-next-line:no-console
-        console.log(`Listening on ${bind}`);
     }
 }

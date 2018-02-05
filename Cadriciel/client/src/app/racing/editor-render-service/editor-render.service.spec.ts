@@ -1,17 +1,12 @@
 import { TestBed, inject } from "@angular/core/testing";
 
 import { EditorRenderService } from "./editor-render.service";
-import { TrackVertices } from "../trackVertices";
-import {  Scene, Vector3 } from "three";
+import { TrackVertices, VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL } from "../trackVertices";
+import {  Scene, Vector3, Mesh } from "three";
 
 describe("EditorRenderService", () => {
-  let result: boolean = false;
   const scene: Scene = new Scene();
   const renderer: EditorRenderService = new EditorRenderService();
-  const vector1: Vector3 = new Vector3( 0, 0, 0 );
-  const vector2: Vector3 = new Vector3( 3, 1, 0 );
-  const vector3: Vector3 = new Vector3( 2, -1, 0 );
-  // const expectedName: String = "vertex0";
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [EditorRenderService]
@@ -22,37 +17,64 @@ describe("EditorRenderService", () => {
     expect(service).toBeTruthy();
   }));
 
-  /*it("should add a point in the scene", ()  => {
-    listOfPoints.addVertex(new Vector3( 0, 0, 0 ));
-    result = scene.getChildByName("vertex0") !== null;
-    expect(result).toBeTruthy();
-  });*/
-
   it("should change mouse coordinates", ()  => {
-    // const mouseEvent = document.createEvent("MouseEvents");
-    event = new MouseEvent("mousedown", {
-      "view": window,
-      "bubbles": true,
-      "cancelable": true,
-      "screenX": 0,
-      "screenY": 2
-    });
-    expect(renderer.computeMouseCoordinates).toBeTruthy();
+    expect(renderer.computeMouseCoordinates(0, 1)).toBeTruthy();
   });
 
   it("should not change mouse coordinates", ()  => {
-    // const mouseEvent = document.createEvent("MouseEvents");
-    event = new MouseEvent("mousedown", {
-      "view": window,
-      "bubbles": true,
-      "cancelable": true,
-      "screenX": 999,
-      "screenY": 666
-    });
-    expect(renderer.computeMouseCoordinates).toBeFalsy();
+    expect(renderer.computeMouseCoordinates(10000, 256666)).toBeFalsy();
   });
 
-  
+  it("should execute the operation Add Vertex", ()  => {
+    renderer["mouseVector"] = new Vector3(0, 1, 0);
+    renderer["listOfPoints"] = new TrackVertices(scene);
+    expect(renderer["computeLeftClickAction"]()).toBe(1);
+  });
 
+  it("should execute the operation set selected vertex", ()  => {
+    const vertex1: Mesh = new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
+    vertex1.position = new Vector3(0, 1, 0);
+    scene.add(vertex1);
+    renderer["mouseVector"] = new Vector3(0, 1, 0); // à modifier
+    renderer["listOfPoints"] = new TrackVertices(scene);
+    expect(renderer["computeLeftClickAction"]()).toBe(2);
+  });
+
+  it("should execute the operation complete loop", ()  => {
+    const vertex1: Mesh = new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
+    vertex1.position = new Vector3(0, 1, 0);
+    const vertex2: Mesh = new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
+    vertex1.position = new Vector3(1, 1, 0);
+    const vertex3: Mesh = new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
+    vertex1.position = new Vector3(2, 1, 0);
+    scene.add(vertex1);
+    scene.add(vertex2);
+    scene.add(vertex3);
+    renderer["mouseVector"] = new Vector3(2, 1, 0); // à modifier
+    renderer["listOfPoints"] = new TrackVertices(scene);
+    expect(renderer["computeLeftClickAction"]()).toBe(3);
+  });
+
+  it("should execute the operation none", ()  => {
+    renderer["mouseVector"] = new Vector3(856, 999, 0); // à modifier
+    renderer["listOfPoints"] = new TrackVertices(scene);
+    expect(renderer["computeLeftClickAction"]()).toBe(4);
+  });
+
+  it("should add a point to the scene", ()  => {
+    const id: number = 1;
+    expect(renderer.handleMouseDown(id, 2, 3)).toBe(0);
+  });
+
+  it("should remove the last point from the scene", ()  => {
+    const id: number = 2;
+    expect(renderer.handleMouseDown(id, 2, 3)).toBe(4);
+  });
+
+  it("should handle a point", ()  => {
+    renderer["mouseVector"] = new Vector3(0, 1, 0); // à modifier
+    renderer.handleMouseMove(2, 3);
+    expect(renderer["isMouseDown"]).toBeFalsy();
+  });
 
 });
