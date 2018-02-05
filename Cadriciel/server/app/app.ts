@@ -6,7 +6,6 @@ import * as bodyParser from "body-parser";
 import * as cors from "cors";
 import Types from "./types";
 import { injectable, inject } from "inversify";
-import { Routes } from "./routes";
 import { LexiconService } from "./crossword/lexicon-service";
 import { GridCreateService } from "./crossword/gridCreate-service";
 import { AbstractService } from "./AbstractService";
@@ -19,7 +18,6 @@ export class Application {
     public app: express.Application;
 
     constructor(
-        @inject(Types.Routes) private api: Routes,
         @inject(Types.LexiconService) private lexicon: LexiconService,
         @inject(Types.GridCreateService) private grid: GridCreateService,
         @inject(Types.TrackService) private tracks: TrackService
