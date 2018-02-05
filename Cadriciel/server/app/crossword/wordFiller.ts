@@ -84,7 +84,7 @@ export class WordFiller {
                     (result: ResponseWordFromAPI) => {
                         // console.log(result.$word);
                         for (const verifWord of this.words) {
-                            if (verifWord.$word !== undefined && verifWord.$word === result.$word) {
+                            if (verifWord.$definition !== "" && verifWord.$word === result.$word) {
                                 sameWordExists = true;
                                 numTry++;
                             }
