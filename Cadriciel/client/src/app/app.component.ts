@@ -1,6 +1,4 @@
 import { Component, OnInit } from "@angular/core";
-
-import { BasicService } from "./basic.service";
 import { Message } from "../../../common/communication/message";
 
 @Component({
@@ -8,14 +6,8 @@ import { Message } from "../../../common/communication/message";
     templateUrl: "./app.component.html",
     styleUrls: ["./app.component.css"]
 })
-export class AppComponent implements OnInit {
-
-    public constructor(private basicService: BasicService) { }
+export class AppComponent {
 
     public readonly title: string = "LOG2990";
-    public message: string;
-
-    public ngOnInit(): void {
-        this.basicService.basicGet().subscribe((message: Message) => this.message = message.title + message.body);
-    }
+ 
 }

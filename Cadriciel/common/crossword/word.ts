@@ -38,15 +38,15 @@ export class Word {
 
 	public set $word(value: string) {
 		this.word = value;
-    }
-    
-    public get $startPos(): Vec2 {
+	}
+
+	public get $startPos(): Vec2 {
 		return this.startPos;
 	}
 
 	public set $startPos(value: Vec2) {
-        this.startPos.$x = value.$x;
-        this.startPos.$y = value.$x;
+		this.startPos.$x = value.$x;
+		this.startPos.$y = value.$x;
 	}
 
 	public get $definition(): string {
@@ -56,12 +56,19 @@ export class Word {
 	public set $definition(value: string) {
 		this.definition = value;
 	}
-	
-    public constructor(
-        private id: number,
+
+	public constructor(
+		private id: number,
 		private definitionID: number,
-        private horizontal: boolean,
-        private length: number,
-        private startPos: Vec2) {
-    };
+		private horizontal: boolean,
+		private length: number,
+		private startPos: Vec2) {
+	};
+
+	public resetValue(): void {
+		this.word="";
+		for (let i: number = 0; i < this.length; i++) {
+			this.word+="?";
+		}
+	}
 }
