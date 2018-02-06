@@ -16,10 +16,12 @@ export class Grid {
     private grid: GridBox[][];
 
     public gridCreate(req: Request, res: Response, next: NextFunction): void {
-        this.newGrid().then((result: boolean) => res.send(this.grid));
+        this.newGrid()
+        .then(() => res.send(this.grid))
+        .catch((e: Error) => console.error(e.message));
     }
 
-    private async newGrid(): Promise<boolean> {
+    private async newGrid(): Promise<void> {
         const isValidGrid: boolean = false;
         while (!isValidGrid) {
             this.createEmptyArray();
@@ -33,8 +35,6 @@ export class Grid {
         }
         const wordFiller: WordFiller = new WordFiller(this.SIZE_GRID_X, this.SIZE_GRID_Y, this.grid, this.words);
         await wordFiller.wordFillControler();
-
-        return true;
     }
 
     private createEmptyArray(): void {

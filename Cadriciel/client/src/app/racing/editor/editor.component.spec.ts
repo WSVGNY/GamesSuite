@@ -9,8 +9,9 @@ describe("EditorComponent", () => {
         TestBed.configureTestingModule({
             declarations: [EditorComponent],
             providers: [ActivatedRoute]
-        })
-            .compileComponents();
+        }).compileComponents()
+        .then()
+        .catch((e: Error) => console.error(e.message));
     }));
 
     beforeEach(() => {

@@ -16,7 +16,9 @@ describe("CrosswordComponent", () => {
                 HttpClient
             ]
         })
-            .compileComponents();
+        .compileComponents()
+        .then()
+        .catch((e: Error) => console.error(e.message));
     }));
 
     beforeEach(() => {

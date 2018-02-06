@@ -6,7 +6,7 @@ export class WordConstraint {
     constructor(word: Word, charGrid: Char[][]) {
         if (word.$horizontal) {
             for (let i: number = 0; i < word.$length; ++i) {
-                let charToAdd: string = charGrid[word.$startPos.$y][word.$startPos.$x + i].$value;
+                let charToAdd: string = charGrid[word.$startPosition.$y][word.$startPosition.$x + i].$value;
                 if (charToAdd === "?") {
                     charToAdd = "%3f";
                 }
@@ -14,7 +14,7 @@ export class WordConstraint {
             }
         } else {
             for (let i: number = 0; i < word.$length; ++i) {
-                let charToAdd: string = charGrid[word.$startPos.$y + i][word.$startPos.$x].$value;
+                let charToAdd: string = charGrid[word.$startPosition.$y + i][word.$startPosition.$x].$value;
                 if (charToAdd === "?") {
                     charToAdd = "%3f";
                 }
@@ -22,6 +22,7 @@ export class WordConstraint {
             }
         }
     }
+
     public get $value(): string {
         return this.value;
     }

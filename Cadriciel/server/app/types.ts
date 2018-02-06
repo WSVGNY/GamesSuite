@@ -8,5 +8,5 @@ export default {
         LexiconService: Symbol("LexiconService"),
         Lexicon: Symbol("Lexicon"),
         Grid: Symbol("Grid"),
-        GridCreateService: Symbol("GridCreateService")
+        GridService: Symbol("GridService")
 };

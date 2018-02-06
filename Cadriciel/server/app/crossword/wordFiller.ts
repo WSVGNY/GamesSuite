@@ -24,16 +24,16 @@ export class WordFiller {
     }
 
     public async wordFillControler(): Promise<boolean> {
-        let fail: boolean = true;
+        let isFull: boolean = false;
         do {
             this.createCharGrid();
-            this.sortWordsList();
+            this.sortWords();
             await this.fillWords().then(
                 (result: boolean) => {
                     this.bindCharToGrid();
-                    fail = this.gridContainsIncompleteWord();
+                    isFull = !this.gridContainsIncompleteWord();
                 }).catch((e: Error) => console.error(e));
-        } while (fail);
+        } while (!isFull);
 
         return true;
     }
@@ -44,17 +44,17 @@ export class WordFiller {
             const row: Char[] = new Array<Char>();
 
             for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                if (this.grid[i][j].$black === false) {
-                    row.push(new Char("?"));
-                } else {
+                if (this.grid[i][j].$black) {
                     row.push(new Char("#"));
+                } else {
+                    row.push(new Char("?"));
                 }
             }
             this.charGrid.push(row);
         }
     }
 
-    private sortWordsList(): void {
+    private sortWords(): void {
         if (this.words !== undefined) {
             this.words.sort((a: Word, b: Word) => b.$length - a.$length);
         }
@@ -99,12 +99,12 @@ export class WordFiller {
     }
 
     private updateCharGrid(word: Word): void {
-        const splittedWord: string[] = Array.from(word.$word);
-        for (let i: number = 0; i < splittedWord.length; ++i) {
+        const splitWord: string[] = Array.from(word.$word);
+        for (let i: number = 0; i < splitWord.length; ++i) {
             if (word.$horizontal) {
-                this.charGrid[word.$startPos.$y][word.$startPos.$x + i].$value = splittedWord[i];
+                this.charGrid[word.$startPosition.$y][word.$startPosition.$x + i].$value = splitWord[i];
             } else {
-                this.charGrid[word.$startPos.$y + i][word.$startPos.$x].$value = splittedWord[i];
+                this.charGrid[word.$startPosition.$y + i][word.$startPosition.$x].$value = splitWord[i];
             }
         }
     }

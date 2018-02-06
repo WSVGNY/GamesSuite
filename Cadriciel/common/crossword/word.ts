@@ -40,13 +40,13 @@ export class Word {
 		this.word = value;
 	}
 
-	public get $startPos(): Vec2 {
-		return this.startPos;
+	public get $startPosition(): Vec2 {
+		return this.startPosition;
 	}
 
-	public set $startPos(value: Vec2) {
-		this.startPos.$x = value.$x;
-		this.startPos.$y = value.$x;
+	public set $startPosition(value: Vec2) {
+		this.startPosition.$x = value.$x;
+		this.startPosition.$y = value.$x;
 	}
 
 	public get $definition(): string {
@@ -62,7 +62,7 @@ export class Word {
 		private definitionID: number,
 		private horizontal: boolean,
 		private length: number,
-		private startPos: Vec2) {
+		private startPosition: Vec2) {
 	};
 
 	public resetValue(): void {

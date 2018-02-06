@@ -169,7 +169,7 @@ export class EditorRenderService {
 
     public handleMouseMove(x: number, y: number): void {
         if (this.computeMouseCoordinates(x, y)) {
-            if (this.isMouseDown === true && this.selectedVertexName !== "none") {
+            if (this.isMouseDown && this.selectedVertexName !== "none") {
                 this.trackVertices.moveVertex(this.selectedVertexName, this.mouseVector);
             }
         }
