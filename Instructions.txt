@@ -1,0 +1,10 @@
+--  http://localhost:4200/mot-croise :  affiche le jeu du mot croisé
+--  http://localhost:4200/course : affiche le jeu de course
+--  http://localhost:4200/admin : affiche la liste des pistes en donnant l'option d'en créer ou d'en deleter
+--  http://localhost:4200/admin/:id : ouvre l'editeur de la piste dont l'id est celui entré
+--  http://localhost:3000/grid/gridGet: retourne un JSON contenant tous les détails d'une grille de mot croisé
+-- http://localhost:3000/grid:
+-- http://localhost:3000/lexicon/:constraints/:difficulty : affiche un JSON contenant le mot retourné ainsi que sa définition. :constraints est la contrainte du mot désiré ex : r%3f%3f serait un mot de 3 lettre commencant par r. :difficulty est la difficulté désirée entre EASY, MEDIUM ou HARD
+
+
+Pour accéder à l'API Datamuse: Par exemple, si on veut les détails pour un mot de 4 lettres ayant un r à la 2e position https://api.datamuse.com/words?sp=%3fr%3f%3f&md=df
