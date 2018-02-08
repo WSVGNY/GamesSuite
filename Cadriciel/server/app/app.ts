@@ -7,7 +7,7 @@ import * as cors from "cors";
 import Types from "./types";
 import { injectable, inject } from "inversify";
 import { LexiconService } from "./crossword/lexicon-service";
-import { GridCreateService } from "./crossword/gridCreate-service";
+import { GridService } from "./crossword/grid-service";
 import { AbstractService } from "./AbstractService";
 import { TrackService } from "./racing/track-service";
 
@@ -18,7 +18,7 @@ export class Application {
 
     constructor(
         @inject(Types.LexiconService) private lexicon: LexiconService,
-        @inject(Types.GridCreateService) private grid: GridCreateService,
+        @inject(Types.GridService) private grid: GridService,
         @inject(Types.TrackService) private tracks: TrackService
     ) {
 

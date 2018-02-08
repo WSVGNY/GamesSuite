@@ -9,15 +9,15 @@ import { TrackService } from "../track-service/track.service";
 })
 export class AdminComponent implements OnInit {
 
-    public tracks: Track[];
+    private tracks: Track[];
 
     public constructor(private trackService: TrackService) { }
 
     public ngOnInit(): void {
-        this.getTracks();
+        this.getTracksFromServer();
     }
 
-    public getTracks(): void {
+    private getTracksFromServer(): void {
         this.trackService.getTrackList()
             .subscribe((tracks: Track[]) => this.tracks = tracks);
     }

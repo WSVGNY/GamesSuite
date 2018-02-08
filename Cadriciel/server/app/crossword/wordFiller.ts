@@ -2,7 +2,6 @@ import "reflect-metadata";
 import { injectable, } from "inversify";
 import { GridBox } from "../../../common/crossword/gridBox";
 import { Word } from "../../../common/crossword/word";
-// import { Vec2 } from "../../../common/crossword/vec2";
 import { Char } from "../../../common/crossword/char";
 import * as requestPromise from "request-promise-native";
 import { Difficulty } from "../../../common/crossword/difficulty";
@@ -25,30 +24,18 @@ export class WordFiller {
     }
 
     public async wordFillControler(): Promise<boolean> {
-        let fail: boolean = true;
+        let isFull: boolean = false;
         do {
             this.createCharGrid();
-            this.sortWordsList();
+            this.sortWords();
             await this.fillWords().then(
                 (result: boolean) => {
                     this.bindCharToGrid();
-                    fail = this.gridContainsIncompleteWord();
+                    isFull = !this.gridContainsIncompleteWord();
                 }).catch((e: Error) => console.error(e));
-        } while (fail);
+        } while (!isFull);
 
         return true;
-    }
-
-    private gridContainsIncompleteWord(): boolean {
-        for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
-            for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                if (this.charGrid[i][j].$value === "?") {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 
     private createCharGrid(): void {
@@ -57,17 +44,17 @@ export class WordFiller {
             const row: Char[] = new Array<Char>();
 
             for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                if (this.grid[i][j].$black === false) {
-                    row.push(new Char("?"));
-                } else {
+                if (this.grid[i][j].$black) {
                     row.push(new Char("#"));
+                } else {
+                    row.push(new Char("?"));
                 }
             }
             this.charGrid.push(row);
         }
     }
 
-    private sortWordsList(): void {
+    private sortWords(): void {
         if (this.words !== undefined) {
             this.words.sort((a: Word, b: Word) => b.$length - a.$length);
         }
@@ -75,7 +62,6 @@ export class WordFiller {
 
     private async fillWords(): Promise<boolean> {
         for (const word of this.words) {
-            let resultFromAPI: ResponseWordFromAPI;
             let sameWordExists: boolean = false;
             let numTry: number = 0;
             const wordConstraints: string = new WordConstraint(word, this.charGrid).$value;
@@ -83,40 +69,41 @@ export class WordFiller {
                 sameWordExists = false;
                 await this.getWordFromAPI(wordConstraints).then(
                     (result: ResponseWordFromAPI) => {
-                        resultFromAPI = result;
-                        if (result.$word !== "") {
-                            for (const verifWord of this.words) {
-                                if (verifWord.$word === result.$word) {
-                                    sameWordExists = true;
-                                    numTry++;
-                                }
-                            }
-                            if (!sameWordExists) {
-                                numTry = 0;
-                                word.$word = result.$word;
-                                this.updateCharGrid(word);
-                            }
-                        } else {
-                            sameWordExists=true;
+                        if (this.verifyWordAlreadyThere(result.$word)) {
+                            sameWordExists = true;
+                            numTry++;
+                        }
+
+                        if (!sameWordExists) {
+                            numTry = 0;
+                            word.$word = result.$word;
+                            this.updateCharGrid(word);
                         }
                     }
                 ).catch((e: Error) => console.error(e));
             } while (sameWordExists && numTry < this.MAX_REQUEST_TRIES);
-            if (resultFromAPI.$word === "") {
-                return false;
-            }
         }
 
         return true;
     }
 
+    private verifyWordAlreadyThere(wordToVerify: string): boolean {
+        for (const verifWord of this.words) {
+            if (verifWord.$definition !== "" && verifWord.$word === wordToVerify) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private updateCharGrid(word: Word): void {
-        const splittedWord: string[] = Array.from(word.$word);
-        for (let i: number = 0; i < splittedWord.length; ++i) {
+        const splitWord: string[] = Array.from(word.$word);
+        for (let i: number = 0; i < splitWord.length; ++i) {
             if (word.$horizontal) {
-                this.charGrid[word.$startPos.$y][word.$startPos.$x + i].$value = splittedWord[i];
+                this.charGrid[word.$startPosition.$y][word.$startPosition.$x + i].$value = splitWord[i];
             } else {
-                this.charGrid[word.$startPos.$y + i][word.$startPos.$x].$value = splittedWord[i];
+                this.charGrid[word.$startPosition.$y + i][word.$startPosition.$x].$value = splitWord[i];
             }
         }
     }
@@ -131,7 +118,7 @@ export class WordFiller {
                 responseWord.$definition = result["definition"];
             }
         ).catch((e: Error) => {
-            // console.error(e);
+            console.error(e);
         });
 
         return responseWord;
@@ -143,5 +130,17 @@ export class WordFiller {
                 this.grid[i][j].$value = this.charGrid[i][j].$value;
             }
         }
+    }
+
+    private gridContainsIncompleteWord(): boolean {
+        for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
+            for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
+                if (this.charGrid[i][j].$value === "?") {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

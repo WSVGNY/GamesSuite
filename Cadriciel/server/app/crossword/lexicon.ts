@@ -9,11 +9,11 @@ import { ResponseWordFromAPI } from "../../../common/communication/responseWordF
 export class Lexicon {
 
     private readonly BASE_URL: string = "https://api.datamuse.com/words?";
-    private difficulty: Difficulty;
-    private readonly FREQUENCY_DELIMITER: number = 10;
+    private difficulty: Difficulty = Difficulty.easy;
+    private readonly FREQUENCY_DELIMITER: number = 5;
     private readonly MIN_NUMBER_OF_DEFINITION: number = 2;
     private readonly UNWANTED_CHARACTERS_LENGTH: number = 2;
-    private readonly ERROR_STATUS_CODE: number = 500;
+    private readonly ERROR_STATUS_CODE_LENGTH: number = 3;
 
     private getDefinition(word: string): string {
         const definitions: string = word["defs"];
@@ -22,7 +22,8 @@ export class Lexicon {
         }
         for (let i: number = word["defs"].length - 1; i >= 0; i--) {
             let counter: number = word["defs"].length;
-            if (definitions[i][0] === "a") {                // s'assurer que le mot ne soit ni un adverbe ni un adjectif
+            // s'assurer que le mot ne soit ni un adverbe ni un adjectif
+            if (definitions[i][0] === "a") {
                 word["defs"].splice(i, 1);
                 counter--;
                 if (counter === 0) {
@@ -70,9 +71,21 @@ export class Lexicon {
     }
 
     private removeSpecialCharacters(word: string): string {
-        word = word.replace(new RegExp(/\W/gi), "");        // delete non word characters (hyphens, apostrophes, etc.)
+        // delete non word characters (hyphens, apostrophes, etc.)
+        word = word.replace(new RegExp(/\W/gi), "");
 
         return word;
+    }
+
+    private checkWordValidity(responseWord: ResponseWordFromAPI, randomWordFromList: string): boolean {
+        if (this.checkFrequency(randomWordFromList)) {
+            responseWord.$definition = this.getDefinition(randomWordFromList);
+            if (responseWord.$definition !== "") {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private getValidWordFromList(words: string[]): ResponseWordFromAPI {
@@ -84,12 +97,7 @@ export class Lexicon {
             const randomWordFromList: string = words[random];
             responseWord.$word = randomWordFromList["word"].toUpperCase();
 
-            if (this.checkFrequency(randomWordFromList)) {
-                responseWord.$definition = this.getDefinition(randomWordFromList);
-                if (responseWord.$definition !== "") {
-                    badWord = false;
-                }
-            }
+            badWord = this.checkWordValidity(responseWord, randomWordFromList);
 
             if (badWord) {
                 responseWord = new ResponseWordFromAPI();
@@ -117,7 +125,8 @@ export class Lexicon {
                 }
             }
         ).catch((e: Error) => {
-            res.sendStatus(this.ERROR_STATUS_CODE);
+            const status: number = +e.message.substring(0, this.ERROR_STATUS_CODE_LENGTH);
+            res.sendStatus(status);
         });
     }
 }

@@ -1,7 +1,6 @@
 import { Component, AfterViewInit, Input, HostListener, ElementRef, ViewChild } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
-
 import { Track } from "../../../../../common/racing/track";
 import { TrackService } from "../track-service/track.service";
 import { EditorRenderService } from "../editor-render-service/editor-render.service";
@@ -11,6 +10,7 @@ import { EditorRenderService } from "../editor-render-service/editor-render.serv
     templateUrl: "./editor.component.html",
     styleUrls: ["./editor.component.css"]
 })
+
 export class EditorComponent implements AfterViewInit {
 
     @ViewChild("containerEditor")
@@ -27,7 +27,6 @@ export class EditorComponent implements AfterViewInit {
 
     public ngAfterViewInit(): void {
         this.getTrack();
-
         this.editorRenderService
             .initialize(this.containerRef.nativeElement)
             .then(/* do nothing */)
@@ -49,12 +48,12 @@ export class EditorComponent implements AfterViewInit {
         this.editorRenderService.handleMouseDown(event.which, event.x, event.y);
     }
 
-  @HostListener("window:mousemove", ["$event"])
+    @HostListener("window:mousemove", ["$event"])
     public onMouseMove(event: MouseEvent): void {
         this.editorRenderService.handleMouseMove(event.x, event.y);
     }
 
-  @HostListener("window:mouseup", ["$event"])
+    @HostListener("window:mouseup", ["$event"])
     public onMouseUp(event: MouseEvent): void {
         this.editorRenderService.handleMouseUp(event.x, event.y);
     }
@@ -64,7 +63,7 @@ export class EditorComponent implements AfterViewInit {
         this.editorRenderService.onResize();
     }
 
-  @HostListener("window:contextmenu", ["$event"])
+    @HostListener("window:contextmenu", ["$event"])
     public onContextMenu(event: MouseEvent): void {
         this.editorRenderService.onContextMenu(event);
     }

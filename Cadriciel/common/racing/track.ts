@@ -19,5 +19,4 @@ export class Track {
     public set $name(value: string) {
         this.name = value;
     }
-
 }

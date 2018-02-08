@@ -5,7 +5,7 @@ import { Grid } from "./gridCreate";
 import { AbstractService } from "../AbstractService";
 
 @injectable()
-export class GridCreateService extends AbstractService {
+export class GridService extends AbstractService {
     public readonly baseRoute: string = "/grid";
 
     public constructor( @inject(Types.Grid) private grid: Grid) {
