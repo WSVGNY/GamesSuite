@@ -42,6 +42,12 @@ export class TrackService {
         );
     }
 
+    public putTrack(track: Track): Observable<Track> {
+        return this.http.put<Track>(this.BASE_URL + "/put/" + track.$id, track, this.httpOptions).pipe(
+            catchError(this.handleError<Track>("putTrack"))
+        );
+    }
+
     private handleError<T>(request: string, result?: T): (error: Error) => Observable<T> {
         return (error: Error): Observable<T> => {
             return of(result as T);
