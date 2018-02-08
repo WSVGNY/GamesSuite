@@ -6,6 +6,6 @@
     </a>
     <button (click)="deleteTrack(track.id)">Delete</button>
   </li>
-  <input #trackName value="New Track" (keyup.enter)="newTrack(trackName.value)" (blur)="newTrack(trackName.value); trackName.value='' ">
+  <input #trackName value="New Track" (keyup.enter)="newTrack(trackName.value)" (blur)="newTrack(trackName.value)">
   <button (click)="newTrack(trackName.value)">New Track</button>
 </ul>

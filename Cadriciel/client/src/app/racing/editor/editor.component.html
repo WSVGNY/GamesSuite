@@ -1,4 +1,5 @@
-<button (click)="goBack()">go back</button>
-<button (click)= "saveEvent ($event)" > Save </button>
+<button (click)="goBack()"> Go back </button>
+<input #trackName type="text" [value]="currentTrackName" (keyup.enter)="saveTrackName(trackName.value)" (blur)="saveTrackName(trackName.value)">
+<button (click)="saveTrack()"> Save </button>
 <div #containerEditor>
 </div>
