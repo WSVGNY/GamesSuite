@@ -11,7 +11,6 @@ import { WordConstraint } from "./wordConstraint";
 @injectable()
 export class WordFiller {
 
-    private charGrid: Char[][];
     private readonly URL_WORD_API: string = "http://localhost:3000/lexicon/";
     private readonly gridDifficulty: Difficulty = Difficulty.easy;
     private readonly MAX_REQUEST_TRIES: number = 3;
@@ -30,7 +29,6 @@ export class WordFiller {
             this.sortWords();
             await this.fillWords().then(
                 (result: boolean) => {
-                    this.bindCharToGrid();
                     isFull = !this.gridContainsIncompleteWord();
                 }).catch((e: Error) => console.error(e));
         } while (!isFull);
@@ -39,18 +37,10 @@ export class WordFiller {
     }
 
     private createCharGrid(): void {
-        this.charGrid = new Array<Array<Char>>();
         for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
-            const row: Char[] = new Array<Char>();
-
             for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                if (this.grid[i][j].$black) {
-                    row.push(new Char("#"));
-                } else {
-                    row.push(new Char("?"));
-                }
+                this.grid[i][j].$black ? this.grid[i][j].$char = new Char("#") : this.grid[i][j].$char = new Char("?");
             }
-            this.charGrid.push(row);
         }
     }
 
@@ -64,7 +54,7 @@ export class WordFiller {
         for (const word of this.words) {
             let sameWordExists: boolean = false;
             let numTry: number = 0;
-            const wordConstraints: string = new WordConstraint(word, this.charGrid).$value;
+            const wordConstraints: string = new WordConstraint(word, this.grid).$value;
             do {
                 sameWordExists = false;
                 await this.getWordFromAPI(wordConstraints).then(
@@ -76,7 +66,7 @@ export class WordFiller {
 
                         if (!sameWordExists) {
                             numTry = 0;
-                            word.$word = result.$word;
+                            word.$value = result.$word;
                             this.updateCharGrid(word);
                         }
                     }
@@ -89,7 +79,7 @@ export class WordFiller {
 
     private verifyWordAlreadyThere(wordToVerify: string): boolean {
         for (const verifWord of this.words) {
-            if (verifWord.$definition !== "" && verifWord.$word === wordToVerify) {
+            if (verifWord.$definition !== "" && verifWord.$value === wordToVerify) {
                 return true;
             }
         }
@@ -98,12 +88,12 @@ export class WordFiller {
     }
 
     private updateCharGrid(word: Word): void {
-        const splitWord: string[] = Array.from(word.$word);
+        const splitWord: string[] = Array.from(word.$value);
         for (let i: number = 0; i < splitWord.length; ++i) {
             if (word.$horizontal) {
-                this.charGrid[word.$startPosition.$y][word.$startPosition.$x + i].$value = splitWord[i];
+                this.grid[word.$startPosition.$y][word.$startPosition.$x + i].$char.$value = splitWord[i];
             } else {
-                this.charGrid[word.$startPosition.$y + i][word.$startPosition.$x].$value = splitWord[i];
+                this.grid[word.$startPosition.$y + i][word.$startPosition.$x].$char.$value = splitWord[i];
             }
         }
     }
@@ -112,7 +102,7 @@ export class WordFiller {
         const responseWord: ResponseWordFromAPI = new ResponseWordFromAPI();
         await requestPromise(this.URL_WORD_API + constraints + "/" + this.gridDifficulty).then(
             (result: string) => {
-                console.log(result);
+                // console.log(result);
                 result = JSON.parse(result);
                 responseWord.$word = result["word"];
                 responseWord.$definition = result["definition"];
@@ -124,18 +114,10 @@ export class WordFiller {
         return responseWord;
     }
 
-    private bindCharToGrid(): void {
-        for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
-            for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                this.grid[i][j].$value = this.charGrid[i][j].$value;
-            }
-        }
-    }
-
     private gridContainsIncompleteWord(): boolean {
         for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
             for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                if (this.charGrid[i][j].$value === "?") {
+                if (this.grid[i][j].$char.$value === "?") {
                     return true;
                 }
             }
