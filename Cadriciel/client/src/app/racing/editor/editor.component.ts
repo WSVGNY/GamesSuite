@@ -42,20 +42,20 @@ export class EditorComponent implements AfterViewInit, OnInit {
         this.trackService.getTrackFromId(id)
             .subscribe((track: Track) => {
                 this.trackChosenFromAdmin = new Track(track["id"], track["name"]);
-                console.log("track received : " + this.trackChosenFromAdmin.$id + " - " + this.trackChosenFromAdmin.$name);
                 this.currentTrackName = this.trackChosenFromAdmin.$name;
             });
     }
 
-    public saveTrackName(trackName: string): void {
-        console.log("name before = " + this.trackChosenFromAdmin.$name);
+    public saveTrack(): void {
         this.trackChosenFromAdmin.$name = this.currentTrackName;
-        console.log("name after = " + this.trackChosenFromAdmin.$name);
+        this.trackService.putTrack(this.trackChosenFromAdmin)
+            .subscribe((track: Track) => {
+                this.trackChosenFromAdmin = new Track(track["id"], track["name"]);
+            });
     }
 
-    public saveTrack(): void {
-        this.trackService.putTrack(this.trackChosenFromAdmin)
-            .subscribe((track: Track) => this.trackChosenFromAdmin = track);
+    public saveTrackName(trackName: string): void {
+        this.currentTrackName = trackName;
     }
 
     public goBack(): void {

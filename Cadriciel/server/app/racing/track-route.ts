@@ -11,7 +11,6 @@ export class TrackRoute {
     }
 
     public getTrackFromID(req: Request, res: Response): void {
-        // console.log(tracks[+req.params.id - 1]);
         res.send(tracks[+req.params.id - 1]);
     }
 
@@ -22,9 +21,7 @@ export class TrackRoute {
     }
 
     public editTrack(req: Request, res: Response): void {
-        const trackFromClient: Track = req.body;
-        console.log(req.body.toString());
-        console.log(trackFromClient.toString());
+        const trackFromClient: Track = new Track(req.body["id"], req.body["name"]);
         const trackIndex: number = tracks.findIndex((track: Track) => track.$id === +req.params.id);
         tracks[trackIndex] = trackFromClient;
         res.send(tracks[trackIndex]);
