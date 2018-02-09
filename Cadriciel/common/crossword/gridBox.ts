@@ -24,6 +24,18 @@ export class GridBox {
 		this.difficulty++;
 	}
 
+	public getConstraint(isHorizontal: boolean): Word {
+		for(const constraint of this.constraints){
+			if(constraint.$horizontal === isHorizontal){
+				return constraint;
+			}
+		}
+		throw new Error("No corresponding constraint found");
+	}
+
+	public getWord(): Word{
+		return this.constraints[0];
+	}
 	public get $difficulty(): number {
 		return this.difficulty;
 	}

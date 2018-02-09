@@ -4,6 +4,9 @@ export class Word {
 
 	private value: string;
 	private definition: string;
+	private constraints: Word[] = new Array<Word>();
+	private difficulty: number = 0;
+
 	public get $id(): number {
 		return this.id;
 	}
@@ -65,10 +68,19 @@ export class Word {
 		private startPosition: Vec2) {
 	};
 
+	public addConstraint(word: Word) {
+		this.constraints[this.difficulty] = word;
+		this.difficulty++;
+	}
+
+	public get $constraints(): Word[] {
+		return this.constraints;
+	}
+
 	public resetValue(): void {
-		this.value="";
+		this.value = "";
 		for (let i: number = 0; i < this.length; i++) {
-			this.value+="?";
+			this.value += "?";
 		}
 	}
 }

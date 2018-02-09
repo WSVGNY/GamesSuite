@@ -8,12 +8,17 @@ import { Difficulty } from "../../../common/crossword/difficulty";
 import { ResponseWordFromAPI } from "../../../common/communication/responseWordFromAPI";
 import { WordConstraint } from "./wordConstraint";
 
+const VERTICAL: boolean = false;
+const HORIZONTAL: boolean = true;
+const MAX_REQUEST_TRIES: number = 2;
+
 @injectable()
 export class WordFiller {
 
     private readonly URL_WORD_API: string = "http://localhost:3000/lexicon/";
     private readonly gridDifficulty: Difficulty = Difficulty.easy;
-    private readonly MAX_REQUEST_TRIES: number = 3;
+    private longestWord: Word;
+    private filledWords: Word[];
 
     public constructor(
         private SIZE_GRID_X: number,
@@ -26,10 +31,15 @@ export class WordFiller {
         let isFull: boolean = false;
         do {
             this.createCharGrid();
-            this.sortWords();
-            await this.fillWords().then(
+            this.generateConstraints();
+            this.filledWords = new Array<Word>();
+            console.log("RESTART");
+            await this.fillWord(this.longestWord).then(
                 (result: boolean) => {
-                    isFull = !this.gridContainsIncompleteWord();
+                    this.longestWord = this.gridContainsIncompleteWord();
+                    if (this.longestWord === undefined) {
+                        isFull = true;
+                    }
                 }).catch((e: Error) => console.error(e));
         } while (!isFull);
 
@@ -44,37 +54,81 @@ export class WordFiller {
         }
     }
 
-    private sortWords(): void {
-        if (this.words !== undefined) {
-            this.words.sort((a: Word, b: Word) => b.$length - a.$length);
+    private generateConstraints(): void {
+        let maxWordLength: number = 0;
+        for (const word of this.words) {
+            if (word.$length > maxWordLength) {
+                maxWordLength = word.$length;
+                this.longestWord = word;
+            }
+            if (word.$horizontal) {
+                for (let i: number = word.$startPosition.$x; i < word.$startPosition.$x + word.$length; i++) {
+                    if (this.grid[word.$startPosition.$y][i].$difficulty > 1) {
+                        word.addConstraint(this.grid[word.$startPosition.$y][i].getConstraint(VERTICAL));
+                    }
+                }
+            } else {
+                for (let i: number = word.$startPosition.$y; i < word.$startPosition.$y + word.$length; i++) {
+                    if (this.grid[i][word.$startPosition.$x].$difficulty > 1) {
+                        word.addConstraint(this.grid[i][word.$startPosition.$x].getConstraint(HORIZONTAL));
+                    }
+                }
+            }
         }
     }
 
-    private async fillWords(): Promise<boolean> {
-        for (const word of this.words) {
-            let sameWordExists: boolean = false;
-            let numTry: number = 0;
-            const wordConstraints: string = new WordConstraint(word, this.grid).$value;
-            do {
-                sameWordExists = false;
-                await this.getWordFromAPI(wordConstraints).then(
-                    (result: ResponseWordFromAPI) => {
-                        if (this.verifyWordAlreadyThere(result.$word)) {
-                            sameWordExists = true;
-                            numTry++;
-                        }
-
-                        if (!sameWordExists) {
-                            numTry = 0;
-                            word.$value = result.$word;
-                            this.updateCharGrid(word);
-                        }
+    // tslint:disable-next-line:max-func-body-length
+    private async fillWord(word: Word): Promise<boolean> {
+        console.log();
+        let sameWordExists: boolean = false;
+        const wordConstraint: WordConstraint = new WordConstraint(word, this.grid);
+        const wordConstraints: string = wordConstraint.$readyValue;
+        console.log("ID : " + word.$id);
+        for (let i: number = 0; i < MAX_REQUEST_TRIES; i++) {
+            sameWordExists = false;
+            await this.getWordFromAPI(wordConstraints).then(
+                (result: ResponseWordFromAPI) => {
+                    console.log("Resulted Word : " + result.$word);
+                    if (this.verifyWordAlreadyThere(result.$word) || result.$word === "") {
+                        sameWordExists = true;
                     }
-                ).catch((e: Error) => console.error(e));
-            } while (sameWordExists && numTry < this.MAX_REQUEST_TRIES);
+                    if (!sameWordExists) {
+                        word.$value = result.$word;
+                        this.updateCharGrid(word);
+                        this.filledWords.push(word);
+                    }
+                    console.log("Resulted ID : " + word.$id);
+                }
+            ).catch((e: Error) => console.error(e));
+            if (!sameWordExists) {
+                break;
+            }
+        }
+        if (sameWordExists) {
+            return false;
+        }
+        process.stdout.write("List of ID's : ");
+        for (const word2 of this.filledWords) {
+            process.stdout.write(word2.$id + ", ");
+        }
+        console.log();
+        let passed: boolean = true;
+        for (const next of word.$constraints) {
+            console.log("Next ID : " + next.$id);
+            if (this.filledWords.findIndex((wordIteration: Word) => next.$id === wordIteration.$id) === -1) {
+                await this.fillWord(next).then(
+                    (result: boolean) => {
+                        passed = result;
+                    }).catch((e: Error) => console.error(e));
+                if (!passed) {
+                    // break;
+                    word.$value = wordConstraint.$originalValue;
+                    await this.fillWord(word);
+                }
+            }
         }
 
-        return true;
+        return passed;
     }
 
     private verifyWordAlreadyThere(wordToVerify: string): boolean {
@@ -114,15 +168,15 @@ export class WordFiller {
         return responseWord;
     }
 
-    private gridContainsIncompleteWord(): boolean {
+    private gridContainsIncompleteWord(): Word {
         for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
             for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
                 if (this.grid[i][j].$char.$value === "?") {
-                    return true;
+                    return this.grid[i][j].getWord();
                 }
             }
         }
 
-        return false;
+        return undefined;
     }
 }

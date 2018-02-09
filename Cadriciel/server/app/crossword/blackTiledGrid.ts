@@ -6,7 +6,7 @@ import { Vec2 } from "../../../common/crossword/vec2";
 
 const HORIZONTAL: boolean = true;
 const VERTICAL: boolean = false;
-const MAX_DIFFICULTY: number = 98;
+const MAX_DIFFICULTY: number = 100;
 const BLACK_TILES_RATIO: number = 0.45;
 const MIN_WORD_LENGTH: number = 2;
 
