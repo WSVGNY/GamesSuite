@@ -12,12 +12,12 @@ import { WordConstraint } from "./wordConstraint";
 export class WordFiller {
 
     private readonly URL_WORD_API: string = "http://localhost:3000/lexicon/";
-    private readonly gridDifficulty: Difficulty = Difficulty.easy;
     private readonly MAX_REQUEST_TRIES: number = 3;
 
     public constructor(
         private SIZE_GRID_X: number,
         private SIZE_GRID_Y: number,
+        private gridDifficulty: Difficulty,
         private grid: GridBox[][],
         private words: Word[]) {
     }
