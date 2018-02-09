@@ -1,132 +1,141 @@
 import { Injectable } from "@angular/core";
-import { Vector3, OrthographicCamera, Scene, Raycaster } from "three";
-import { Observable } from "rxjs/Observable";
-import { of } from "rxjs/observable/of";
-
-export enum Action {
-  ADD_POINT = 1,
-  SET_SELECTED_VERTEX,
-  COMPLETE_LOOP,
-  NONE,
-  REMOVE
-}
+import { Vector3, Raycaster } from "three";
+import { EditorScene } from "../editorScene";
+import { EditorCamera } from "../editorCamera";
+import { Action } from "../action";
 
 const LEFT_CLICK_KEYCODE: number = 1;
 const RIGHT_CLICK_KEYCODE: number = 3;
 const HALF: number = 0.5;
 
-
 @Injectable()
 export class MouseEventHandlerService {
 
-  private mouseVector: THREE.Vector3;
-  private isMouseDown: boolean = false;
-  private trackVertices: TrackVertices;
-  private raycaster: Raycaster;
-  private selectedVertexName: string = "";
   private containerEditor: HTMLDivElement;
+  private raycaster: Raycaster;
+  private viewSize: number;
 
-  public constructor() { }
+  private mouseWorldCoordinates: Vector3;
+  private divOffset: Vector3;
+  private centerOffset: Vector3;
+  private selectedVertexName: string = "";
+  private isMouseDown: boolean = false;
 
-  public async initialize(containerEditor: HTMLDivElement): Promise<void> {
+  public constructor() {}
+
+  public async initialize(containerEditor: HTMLDivElement, viewSize: number): Promise<void> {
     if (containerEditor) {
         this.containerEditor = containerEditor;
     }
+    await
+    this.initialiseValues();
+    this.viewSize = viewSize;
+}
+
+  private async initialiseValues(): Promise<void> {
     this.raycaster = new Raycaster();
+    this.mouseWorldCoordinates = new Vector3(0, 0, 0);
+    this.divOffset = new Vector3(0, 0, 0);
+    this.centerOffset = new Vector3(0, 0, 0);
 }
 
-  // private computeMouseCoordinates(positionX: number, positionY: number): boolean {
-  private computeMouseCoordinates(position: Vector3, viewSize: number): boolean {
-    const offset: Vector3 = new Vector3();
-    offset.x = this.containerEditor.offsetLeft + this.containerEditor.clientLeft;
-    offset.y = this.containerEditor.offsetTop - document.documentElement.scrollTop + this.containerEditor.clientTop;
-    offset.z = 0;
-
-    const center: Vector3 = new Vector3();
-    center.x = this.containerEditor.clientWidth * HALF;
-    center.y = this.containerEditor.clientHeight * HALF;
-    center.z = 0;
-
-    this.mouseVector.x = (position.x - offset.x - center.x) * viewSize / this.containerEditor.clientHeight;
-    this.mouseVector.y = -(position.y - offset.y - center.y) * viewSize / this.containerEditor.clientHeight;
-
-    return (position.x > offset.x && position.y > offset.y) ? true : false;
+  public get $mouseWorldCoordinates(): Vector3 {
+    return this.mouseWorldCoordinates;
 }
 
-  private detectObjectsCollision(camera: OrthographicCamera, scene: Scene): void {
-    const direction: Vector3 = this.mouseVector.clone().sub(camera.position).normalize();
-    this.raycaster.set(camera.position, direction);
+  public get $selectedVertexName(): string {
+      return this.selectedVertexName;
+  }
+
+  public setSelectedVertexName(editorScene: EditorScene): void {
+    this.selectedVertexName = this.raycaster.intersectObjects(editorScene.$vertices, true)[0].object.name;
 }
 
-  private computeLeftClickAction(): Action {
-    if (this.trackVertices.isEmpty()) {
-        return Action.ADD_POINT;
-    } else {
-        if (this.raycaster.intersectObject(this.trackVertices.getFirstVertex(), true).length) {
-            if (this.trackVertices.$isComplete()) {
-                return Action.SET_SELECTED_VERTEX;
-            } else {
-                return Action.COMPLETE_LOOP;
-            }
-        } else if (this.raycaster.intersectObjects(this.trackVertices.getVertices(), true).length) {
+  private convertToWorldCoordinates(position: Vector3): void {
+    this.mouseWorldCoordinates.x =
+        (position.x - this.divOffset.x - this.centerOffset.x) *
+        this.viewSize / this.containerEditor.clientHeight;
+
+    this.mouseWorldCoordinates.y =
+        -(position.y - this.divOffset.y - this.centerOffset.y) *
+        this.viewSize / this.containerEditor.clientHeight;
+}
+
+  private computeDivOffset(): void {
+    this.divOffset.x = this.containerEditor.offsetLeft + this.containerEditor.clientLeft;
+    this.divOffset.y = this.containerEditor.offsetTop - document.documentElement.scrollTop + this.containerEditor.clientTop;
+    this.divOffset.z = 0;
+}
+
+  private computeCenterOffset(): void {
+    this.centerOffset.x = this.containerEditor.clientWidth * HALF;
+    this.centerOffset.y = this.containerEditor.clientHeight * HALF;
+    this.centerOffset.z = 0;
+}
+
+  private isMouseOnScene(position: Vector3): boolean {
+    this.computeDivOffset();
+    this.computeCenterOffset();
+
+    return (position.x > this.divOffset.x && position.y > this.divOffset.y) ? true : false;
+}
+
+  private setRaycaster(editorCamera: EditorCamera): void {
+    const direction: Vector3 = this.mouseWorldCoordinates.clone().sub(editorCamera.$camera.position).normalize();
+    this.raycaster.set(editorCamera.$camera.position, direction);
+}
+
+  private computeWhichLeftClickAction(editorScene: EditorScene): Action {
+    if (!editorScene.$isEmpty) {
+        if (this.raycaster.intersectObject(editorScene.$firstVertex, true).length) {
+            return (editorScene.$isComplete) ? Action.SET_SELECTED_VERTEX : Action.COMPLETE_TRACK;
+        } else if (this.raycaster.intersectObjects(editorScene.$vertices, true).length) {
             return Action.SET_SELECTED_VERTEX;
-        } else {
-            if (!this.trackVertices.$isComplete()) {
-                return Action.ADD_POINT;
+        } else  if (!editorScene.$isComplete) {
+            return Action.ADD_VERTEX;
+        }
+    } else {
+        return Action.ADD_VERTEX;
+    }
+
+    return Action.NONE;
+}
+
+  public handleMouseDown(event: MouseEvent, editorCamera: EditorCamera, editorScene: EditorScene ): Action {
+      const mouseScreenCoordinates: Vector3 = new Vector3(event.clientX, event.clientY, 0);
+      if (this.isMouseOnScene(mouseScreenCoordinates)) {
+            this.convertToWorldCoordinates(mouseScreenCoordinates);
+            this.isMouseDown = true;
+            switch (event.which) {
+                case LEFT_CLICK_KEYCODE:
+                    this.setRaycaster(editorCamera);
+
+                    return this.computeWhichLeftClickAction(editorScene);
+                case RIGHT_CLICK_KEYCODE:
+                    return (editorScene.$isEmpty) ? Action.NONE :  Action.REMOVE_VERTEX;
+                default:
+                    return Action.NONE;
             }
-        }
-    }
+      }
 
-    return Action.NONE;
+      return Action.NONE;
 }
 
-  private computeAction(actionId: Action): void {
-    switch (actionId) {
-        case Action.ADD_POINT:
-            this.trackVertices.addVertex(this.mouseVector);
-            break;
-        case Action.SET_SELECTED_VERTEX:
-            this.selectedVertexName = this.raycaster.intersectObjects(this.trackVertices.getVertices(), true)[0].object.name;
-            break;
-        case Action.COMPLETE_LOOP:
-            this.trackVertices.completeLoop();
-            break;
-        default:
-    }
-}
-
-  public handleMouseDown(buttonId: number, x: number, y: number): Action {
-    if (this.computeMouseCoordinates(x, y)) {
-        this.isMouseDown = true;
-        switch (buttonId) {
-            case LEFT_CLICK_KEYCODE:
-                this.detectObjectsCollision();
-                const operation: Action = this.computeLeftClickAction();
-                this.computeAction(operation);
-
-                return operation;
-            case RIGHT_CLICK_KEYCODE:
-                this.trackVertices.removeLastVertex();
-
-                return Action.REMOVE;
-            default:
-                return Action.NONE;
-        }
-    }
-
-    return Action.NONE;
-}
-
-  public handleMouseMove(x: number, y: number): void {
-    if (this.computeMouseCoordinates(x, y)) {
+  public handleMouseMove(event: MouseEvent): Action {
+    const mouseScreenCoordinates: Vector3 = new Vector3(event.clientX, event.clientY, 0);
+    if (this.isMouseOnScene(mouseScreenCoordinates)) {
+        this.convertToWorldCoordinates(mouseScreenCoordinates);
         if (this.isMouseDown && this.selectedVertexName !== "none") {
-            this.trackVertices.moveVertex(this.selectedVertexName, this.mouseVector);
+            return Action.MOVE_VERTEX;
         }
     }
+
+    return Action.NONE;
 }
 
-  public handleMouseUp(x: number, y: number): void {
-    if (this.computeMouseCoordinates(x, y)) {
+  public handleMouseUp(event: MouseEvent): void {
+    const mouseScreenCoordinates: Vector3 = new Vector3(event.clientX, event.clientY, 0);
+    if (this.isMouseOnScene(mouseScreenCoordinates)) {
         this.isMouseDown = false;
         this.selectedVertexName = "none";
     }
