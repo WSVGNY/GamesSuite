@@ -11,6 +11,8 @@ import { WordConstraint } from "./wordConstraint";
 const VERTICAL: boolean = false;
 const HORIZONTAL: boolean = true;
 const MAX_REQUEST_TRIES: number = 2;
+const MAX_TRIES_TO_BACKTRACK: number = 5;
+
 enum Token {
     Exit = 1,
     BackTrack,
@@ -24,6 +26,7 @@ export class WordFiller {
     private readonly gridDifficulty: Difficulty = Difficulty.easy;
     private longestWord: Word;
     private filledWords: Word[];
+    private backTrackCounter: number = 0;
 
     public constructor(
         private SIZE_GRID_X: number,
@@ -159,6 +162,13 @@ export class WordFiller {
             this.updateCharGrid(currentWord);
             const index: number = this.filledWords.findIndex((wordIteration: Word) => currentWord.$id === wordIteration.$id);
             this.filledWords.splice(index, 1);
+            this.backTrackCounter++;
+            console.log("COUNTER : " + this.backTrackCounter);
+            if (this.backTrackCounter > MAX_TRIES_TO_BACKTRACK) {
+                this.backTrackCounter = 0;
+
+                return Token.BackTrack;
+            }
             await this.fillWord(currentWord).then(
                 (result: Token) => {
                     state = result;
