@@ -123,6 +123,11 @@ export class WordFiller {
                 if (!passed) {
                     // break;
                     word.$value = wordConstraint.$originalValue;
+                    this.updateCharGrid(word);
+                    const index: number = this.filledWords.findIndex((wordIteration: Word) => word.$id === wordIteration.$id);
+                    console.log(this.filledWords.length);
+                    this.filledWords.splice(index, 1);
+                    console.log(this.filledWords.length);
                     await this.fillWord(word);
                 }
             }
