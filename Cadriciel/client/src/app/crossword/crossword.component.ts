@@ -18,10 +18,8 @@ export class CrosswordComponent {
     public constructor(private gridService: GridService) {
     }
 
-    public createGrid(): boolean {
+    public createGrid(): void {
         this.gridService.gridGet(this.difficulty).subscribe((grid: GridBox[][]) => this.grid = grid);
-
-        return true;
     }
 
     public onSelect(gridBox: GridBox): void {
