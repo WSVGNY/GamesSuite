@@ -21,11 +21,11 @@ export class EditorRenderService {
         if (containerEditor) {
             this.containerEditor = containerEditor;
         }
-        this.initialiseRenderer();
+        await this.initialiseRenderer();
         this.render(scene, camera);
     }
 
-    private initialiseRenderer(): void {
+    private async initialiseRenderer(): Promise<void> {
         this.renderer = new WebGLRenderer();
         this.renderer.setPixelRatio(devicePixelRatio);
         this.renderer.setSize(this.containerEditor.clientWidth, this.containerEditor.clientHeight);
@@ -36,9 +36,10 @@ export class EditorRenderService {
         requestAnimationFrame(() => this.render(scene, camera));
         this.renderer.render(scene, camera);
     }
-
-    public onResize(): void {
-        this.camera.updateProjectionMatrix();
+/*
+    public onResize(camera: Camera): void {
+        camera.updateProjectionMatrix();
         this.renderer.setSize(this.containerEditor.clientWidth, this.containerEditor.clientHeight);
     }
+    */
 }
