@@ -9,7 +9,7 @@ import { ResponseWordFromAPI } from "../../../common/communication/responseWordF
 export class Lexicon {
 
     private readonly BASE_URL: string = "https://api.datamuse.com/words?";
-    private difficulty: Difficulty = Difficulty.easy;
+    private difficulty: Difficulty = Difficulty.Easy;
     private readonly FREQUENCY_DELIMITER: number = 5;
     private readonly MIN_NUMBER_OF_DEFINITION: number = 2;
     private readonly UNWANTED_CHARACTERS_LENGTH: number = 2;
@@ -31,7 +31,7 @@ export class Lexicon {
                 }
             }
         }
-        if (this.difficulty === Difficulty.easy) {
+        if (this.difficulty === Difficulty.Easy) {
             return definitions[0];
         } else {
             if (definitions.length >= this.MIN_NUMBER_OF_DEFINITION) {
@@ -44,7 +44,7 @@ export class Lexicon {
 
     private checkFrequency(word: string): boolean {
         const frequency: number = word["tags"][0].substring(this.UNWANTED_CHARACTERS_LENGTH);
-        if (this.difficulty === Difficulty.hard) {
+        if (this.difficulty === Difficulty.Hard) {
             if (frequency < this.FREQUENCY_DELIMITER) {
                 return true;
             } else {

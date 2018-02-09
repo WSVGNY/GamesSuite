@@ -5,7 +5,7 @@ import {
 
 const WHITE: number = 0xFFFFFF;
 // const ORANGE: number = 0xFF6600;
-const GREEN: number = 0x26FF00;
+// const GREEN: number = 0x26FF00;
 const PINK: number = 0xFF00BF;
 const BLUE: number = 0x0066FF;
 const RADIUS: number = 12;
