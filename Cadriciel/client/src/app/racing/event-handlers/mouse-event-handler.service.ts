@@ -88,7 +88,13 @@ export class MouseEventHandlerService {
   private computeWhichLeftClickAction(editorScene: EditorScene): Action {
     if (!editorScene.$isEmpty) {
         if (this.raycaster.intersectObject(editorScene.$firstVertex, true).length) {
-            return (editorScene.$isComplete) ? Action.SET_SELECTED_VERTEX : Action.COMPLETE_TRACK;
+            if (editorScene.$nbVertices < 3) {
+                return Action.NONE;
+            } else if (editorScene.$isComplete) {
+                return Action.SET_SELECTED_VERTEX;
+            } else {
+                return Action.COMPLETE_TRACK;
+            }
         } else if (this.raycaster.intersectObjects(editorScene.$vertices, true).length) {
             return Action.SET_SELECTED_VERTEX;
         } else  if (!editorScene.$isComplete) {
