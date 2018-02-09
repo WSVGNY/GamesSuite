@@ -39,7 +39,7 @@ export class WordFiller {
             this.generateConstraints();
             this.filledWords = new Array<Word>();
             console.log("RESTART");
-            do{
+            do {
                 console.log("START PACKET");
                 await this.fillWord(this.longestWord).then(
                     (result: Token) => {
@@ -159,7 +159,10 @@ export class WordFiller {
             this.updateCharGrid(currentWord);
             const index: number = this.filledWords.findIndex((wordIteration: Word) => currentWord.$id === wordIteration.$id);
             this.filledWords.splice(index, 1);
-            await this.fillWord(currentWord);
+            await this.fillWord(currentWord).then(
+                (result: Token) => {
+                    state = result;
+                }).catch((e: Error) => console.error(e));
         }
 
         return state;
