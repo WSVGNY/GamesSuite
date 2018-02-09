@@ -77,13 +77,38 @@ export class WordFiller {
         }
     }
 
-    // tslint:disable-next-line:max-func-body-length
-    private async fillWord(word: Word): Promise<boolean> {
+    private async fillWord(currentWord: Word): Promise<boolean> {
         console.log();
         let sameWordExists: boolean = false;
-        const wordConstraint: WordConstraint = new WordConstraint(word, this.grid);
+        const wordConstraint: WordConstraint = new WordConstraint(currentWord, this.grid);
         const wordConstraints: string = wordConstraint.$readyValue;
-        console.log("ID : " + word.$id);
+        console.log("ID : " + currentWord.$id);
+        await this.tryWord(wordConstraints, currentWord).then(
+            (result: boolean) => {
+                sameWordExists = result;
+            }).catch((e: Error) => console.error(e));
+        if (sameWordExists) {
+            return false;
+        }
+        process.stdout.write("List of ID's : ");
+        for (const word2 of this.filledWords) {
+            process.stdout.write(word2.$id + ", ");
+        }
+        console.log();
+        let passed: boolean = true;
+        for (const next of currentWord.$constraints) {
+            console.log("Next ID : " + next.$id);
+            await this.manageBackTrack(next, currentWord, wordConstraint).then(
+                (result: boolean) => {
+                    passed = result;
+                }).catch((e: Error) => console.error(e));
+        }
+
+        return passed;
+    }
+
+    private async tryWord(wordConstraints: string, word: Word): Promise<boolean> {
+        let sameWordExists: boolean = false;
         for (let i: number = 0; i < MAX_REQUEST_TRIES; i++) {
             sameWordExists = false;
             await this.getWordFromAPI(wordConstraints).then(
@@ -104,32 +129,24 @@ export class WordFiller {
                 break;
             }
         }
-        if (sameWordExists) {
-            return false;
-        }
-        process.stdout.write("List of ID's : ");
-        for (const word2 of this.filledWords) {
-            process.stdout.write(word2.$id + ", ");
-        }
-        console.log();
-        let passed: boolean = true;
-        for (const next of word.$constraints) {
-            console.log("Next ID : " + next.$id);
-            if (this.filledWords.findIndex((wordIteration: Word) => next.$id === wordIteration.$id) === -1) {
-                await this.fillWord(next).then(
-                    (result: boolean) => {
-                        passed = result;
-                    }).catch((e: Error) => console.error(e));
-                if (!passed) {
-                    // break;
-                    word.$value = wordConstraint.$originalValue;
-                    this.updateCharGrid(word);
-                    const index: number = this.filledWords.findIndex((wordIteration: Word) => word.$id === wordIteration.$id);
-                    console.log(this.filledWords.length);
-                    this.filledWords.splice(index, 1);
-                    console.log(this.filledWords.length);
-                    await this.fillWord(word);
-                }
+
+        return sameWordExists;
+    }
+
+    private async manageBackTrack(next: Word, currentWord: Word, wordConstraint: WordConstraint): Promise<boolean> {
+        let passed: boolean;
+        if (this.filledWords.findIndex((wordIteration: Word) => next.$id === wordIteration.$id) === -1) {
+            await this.fillWord(next).then(
+                (result: boolean) => {
+                    passed = result;
+                }).catch((e: Error) => console.error(e));
+            if (!passed) {
+                // break;
+                currentWord.$value = wordConstraint.$originalValue;
+                this.updateCharGrid(currentWord);
+                const index: number = this.filledWords.findIndex((wordIteration: Word) => currentWord.$id === wordIteration.$id);
+                this.filledWords.splice(index, 1);
+                await this.fillWord(currentWord);
             }
         }
 
