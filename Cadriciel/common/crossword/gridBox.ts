@@ -4,53 +4,57 @@ import { Word } from "./word";
 
 export class GridBox {
 
-	private char: Char;
-	private constraints: Word[] = new Array<Word>();
-	private difficulty: number=0;
+    private char: Char;
+    private constraints: Word[] = new Array<Word>();
+    private difficulty: number = 0;
 
-	public constructor(private id: Vec2, private black: boolean) {
-	};
+    public constructor(private id: Vec2, private black: boolean) {
+    };
 
-	public get $char(): Char {
-		return this.char;
-	}
+    public get $char(): Char {
+        return this.char;
+    }
 
-	public set $char(value: Char) {
-		this.char = value;
-	}
+    public set $char(value: Char) {
+        this.char = value;
+    }
 
-	public addConstraint(word: Word) {
-		this.constraints[this.difficulty]=word;
-		this.difficulty++;
-	}
+    public addConstraint(word: Word) {
+        this.constraints[this.difficulty] = word;
+        this.difficulty++;
+    }
 
-	public getConstraint(isHorizontal: boolean): Word {
-		for(const constraint of this.constraints){
-			if(constraint.$horizontal === isHorizontal){
-				return constraint;
-			}
-		}
-		throw new Error("No corresponding constraint found");
-	}
+    public getConstraint(isHorizontal: boolean): Word {
+        for (const constraint of this.constraints) {
+            if (constraint.$horizontal === isHorizontal) {
+                return constraint;
+            }
+        }
+        throw new Error("No corresponding constraint found");
+    }
 
-	public getWord(): Word{
-		return this.constraints[0];
-	}
-	public get $difficulty(): number {
-		return this.difficulty;
-	}
+    public eliminateConstraints(): void {
+        this.constraints = undefined;
+    }
 
-	public get $id(): Vec2 {
-		return this.id;
-	}
+    public getWord(): Word {
+        return this.constraints[0];
+    }
+    public get $difficulty(): number {
+        return this.difficulty;
+    }
 
-	public get $black(): boolean {
-		return this.black;
-	}
+    public get $id(): Vec2 {
+        return this.id;
+    }
 
-	public set $black(black: boolean) {
-		this.black = black;
-	}
+    public get $black(): boolean {
+        return this.black;
+    }
+
+    public set $black(black: boolean) {
+        this.black = black;
+    }
 
 
 }

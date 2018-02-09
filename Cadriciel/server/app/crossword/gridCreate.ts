@@ -16,9 +16,14 @@ export class Grid {
     private grid: GridBox[][];
 
     public gridCreate(req: Request, res: Response, next: NextFunction): void {
-        this.newGrid()
-        .then(() => res.send(this.grid))
-        .catch((e: Error) => console.error(e.message));
+        this.newGrid().then(() => {
+            for (const row of this.grid) {
+                for (const box of row) {
+                    box.eliminateConstraints();
+                }
+            }
+            res.send(this.grid);
+        }).catch((e: Error) => console.error(e.message));
     }
 
     private async newGrid(): Promise<void> {
@@ -28,7 +33,7 @@ export class Grid {
 
             const blackTiledGrid: BlackTiledGrid = new BlackTiledGrid(this.SIZE_GRID_X, this.SIZE_GRID_Y, this.grid);
 
-            if ( blackTiledGrid.$words !== undefined) {
+            if (blackTiledGrid.$words !== undefined) {
                 this.words = blackTiledGrid.$words;
                 break;
             }

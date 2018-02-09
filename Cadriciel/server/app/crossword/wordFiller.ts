@@ -11,6 +11,11 @@ import { WordConstraint } from "./wordConstraint";
 const VERTICAL: boolean = false;
 const HORIZONTAL: boolean = true;
 const MAX_REQUEST_TRIES: number = 2;
+enum Token {
+    Exit = 1,
+    BackTrack,
+    Pass
+}
 
 @injectable()
 export class WordFiller {
@@ -34,13 +39,16 @@ export class WordFiller {
             this.generateConstraints();
             this.filledWords = new Array<Word>();
             console.log("RESTART");
-            await this.fillWord(this.longestWord).then(
-                (result: boolean) => {
-                    this.longestWord = this.gridContainsIncompleteWord();
-                    if (this.longestWord === undefined) {
-                        isFull = true;
-                    }
-                }).catch((e: Error) => console.error(e));
+            do{
+                console.log("START PACKET");
+                await this.fillWord(this.longestWord).then(
+                    (result: Token) => {
+                        this.longestWord = this.gridContainsIncompleteWord();
+                        if (this.longestWord === undefined) {
+                            isFull = true;
+                        }
+                    }).catch((e: Error) => console.error(e));
+            } while (!isFull);
         } while (!isFull);
 
         return true;
@@ -77,47 +85,54 @@ export class WordFiller {
         }
     }
 
-    private async fillWord(currentWord: Word): Promise<boolean> {
+    // tslint:disable-next-line:max-func-body-length
+    private async fillWord(currentWord: Word): Promise<Token> {
         console.log();
-        let sameWordExists: boolean = false;
+        let sameWordExists: Token;
         const wordConstraint: WordConstraint = new WordConstraint(currentWord, this.grid);
         const wordConstraints: string = wordConstraint.$readyValue;
         console.log("ID : " + currentWord.$id);
         await this.tryWord(wordConstraints, currentWord).then(
-            (result: boolean) => {
+            (result: Token) => {
                 sameWordExists = result;
             }).catch((e: Error) => console.error(e));
-        if (sameWordExists) {
-            return false;
+        if (sameWordExists === Token.BackTrack) {
+            return Token.BackTrack;
         }
         process.stdout.write("List of ID's : ");
         for (const word2 of this.filledWords) {
             process.stdout.write(word2.$id + ", ");
         }
         console.log();
-        let passed: boolean = true;
+        let state: Token;
+        process.stdout.write("List of Constraints ID's : ");
         for (const next of currentWord.$constraints) {
-            console.log("Next ID : " + next.$id);
-            await this.manageBackTrack(next, currentWord, wordConstraint).then(
-                (result: boolean) => {
-                    passed = result;
-                }).catch((e: Error) => console.error(e));
+            process.stdout.write(next.$id + ", ");
+        }
+        console.log();
+        for (const next of currentWord.$constraints) {
+            if (this.filledWords.findIndex((wordIteration: Word) => next.$id === wordIteration.$id) === -1) {
+                await this.manageBackTrack(next, currentWord, wordConstraint).then(
+                    (result: Token) => {
+                        state = result;
+                    }).catch((e: Error) => console.error(e));
+            }
         }
 
-        return passed;
+        return state;
     }
 
-    private async tryWord(wordConstraints: string, word: Word): Promise<boolean> {
-        let sameWordExists: boolean = false;
+    private async tryWord(wordConstraints: string, word: Word): Promise<Token> {
+        let state: Token;
         for (let i: number = 0; i < MAX_REQUEST_TRIES; i++) {
-            sameWordExists = false;
+            state = Token.Pass;
             await this.getWordFromAPI(wordConstraints).then(
                 (result: ResponseWordFromAPI) => {
                     console.log("Resulted Word : " + result.$word);
                     if (this.verifyWordAlreadyThere(result.$word) || result.$word === "") {
-                        sameWordExists = true;
+                        state = Token.BackTrack;
                     }
-                    if (!sameWordExists) {
+                    if (state === Token.Pass) {
                         word.$value = result.$word;
                         this.updateCharGrid(word);
                         this.filledWords.push(word);
@@ -125,32 +140,29 @@ export class WordFiller {
                     console.log("Resulted ID : " + word.$id);
                 }
             ).catch((e: Error) => console.error(e));
-            if (!sameWordExists) {
+            if (state === Token.Pass) {
                 break;
             }
         }
 
-        return sameWordExists;
+        return state;
     }
 
-    private async manageBackTrack(next: Word, currentWord: Word, wordConstraint: WordConstraint): Promise<boolean> {
-        let passed: boolean;
-        if (this.filledWords.findIndex((wordIteration: Word) => next.$id === wordIteration.$id) === -1) {
-            await this.fillWord(next).then(
-                (result: boolean) => {
-                    passed = result;
-                }).catch((e: Error) => console.error(e));
-            if (!passed) {
-                // break;
-                currentWord.$value = wordConstraint.$originalValue;
-                this.updateCharGrid(currentWord);
-                const index: number = this.filledWords.findIndex((wordIteration: Word) => currentWord.$id === wordIteration.$id);
-                this.filledWords.splice(index, 1);
-                await this.fillWord(currentWord);
-            }
+    private async manageBackTrack(next: Word, currentWord: Word, wordConstraint: WordConstraint): Promise<Token> {
+        let state: Token;
+        await this.fillWord(next).then(
+            (result: Token) => {
+                state = result;
+            }).catch((e: Error) => console.error(e));
+        if (state === Token.BackTrack) {
+            currentWord.$value = wordConstraint.$originalValue;
+            this.updateCharGrid(currentWord);
+            const index: number = this.filledWords.findIndex((wordIteration: Word) => currentWord.$id === wordIteration.$id);
+            this.filledWords.splice(index, 1);
+            await this.fillWord(currentWord);
         }
 
-        return passed;
+        return state;
     }
 
     private verifyWordAlreadyThere(wordToVerify: string): boolean {
