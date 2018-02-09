@@ -85,7 +85,7 @@ describe("GRID CREATE TESTS", () => {
         const grid: Grid = new Grid();
         grid["newGrid"]().then(() => {
             for (const word of grid["words"]) {
-                if (word.$word === "" || String(word.$word).indexOf("?", 0) > -1) {
+                if (word.$value === "" || String(word.$value).indexOf("?", 0) > -1) {
                     assert(false);
                     done();
                 }
@@ -104,7 +104,7 @@ describe("GRID CREATE TESTS", () => {
         grid["newGrid"]().then(() => {
             for (const word1 of grid["words"]) {
                 for (const word2 of grid["words"]) {
-                    if (word1.$word === word2.$word && word1.$id !== word2.$id) {
+                    if (word1.$value === word2.$value && word1.$id !== word2.$id) {
                         assert(false);
                         done();
                     }

@@ -15,7 +15,7 @@ export class GridService extends AbstractService {
     public get routes(): Router {
         const router: Router = Router();
 
-        router.get("/gridGet", (req: Request, res: Response, next: NextFunction) => {
+        router.get("/gridGet/:difficulty", (req: Request, res: Response, next: NextFunction) => {
             this.grid = new Grid;
             this.grid.gridCreate(req, res, next);
         });

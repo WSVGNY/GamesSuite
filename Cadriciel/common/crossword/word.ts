@@ -2,7 +2,7 @@ import { Vec2 } from "./vec2";
 
 export class Word {
 
-	private word: string;
+	private value: string;
 	private definition: string;
 	public get $id(): number {
 		return this.id;
@@ -32,12 +32,12 @@ export class Word {
 		this.length = value;
 	}
 
-	public get $word(): string {
-		return this.word;
+	public get $value(): string {
+		return this.value;
 	}
 
-	public set $word(value: string) {
-		this.word = value;
+	public set $value(value: string) {
+		this.value = value;
 	}
 
 	public get $startPosition(): Vec2 {
@@ -66,9 +66,9 @@ export class Word {
 	};
 
 	public resetValue(): void {
-		this.word="";
+		this.value="";
 		for (let i: number = 0; i < this.length; i++) {
-			this.word+="?";
+			this.value+="?";
 		}
 	}
 }

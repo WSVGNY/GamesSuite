@@ -1,41 +1,44 @@
 import { Vec2 } from "./vec2";
+import { Char } from "./char";
 import { Word } from "./word";
 
 export class GridBox {
 
-	private value: string;
-	private word: Word;
+	private char: Char;
+	private constraints: Word[] = new Array<Word>();
+	private difficulty: number=0;
 
-  public constructor(private id: Vec2, private black: boolean) {
+	public constructor(private id: Vec2, private black: boolean) {
 	};
-	
-	public get $word(): Word {
-		return this.word;
+
+	public get $char(): Char {
+		return this.char;
 	}
 
-	public set $word(value: Word) {
-		this.word = value;
+	public set $char(value: Char) {
+		this.char = value;
 	}
 
-	public get $value(): string {
-		return this.value;
+	public addConstraint(word: Word) {
+		this.constraints[this.difficulty]=word;
+		this.difficulty++;
 	}
 
-	public set $value(value: string) {
-		this.value = value;
+	public get $difficulty(): number {
+		return this.difficulty;
 	}
 
-  public get $id(): Vec2 {
+	public get $id(): Vec2 {
 		return this.id;
 	}
 
 	public get $black(): boolean {
 		return this.black;
-  }
-  
-  public set $black(black: boolean){
-    this.black = black;
-  }
+	}
+
+	public set $black(black: boolean) {
+		this.black = black;
+	}
 
 
 }
