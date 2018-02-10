@@ -114,12 +114,19 @@ export class WordFiller {
             process.stdout.write(next.$id + ", ");
         }
         console.log();
-        for (const next of currentWord.$constraints) {
+        // for (const next of currentWord.$constraints) {
+        for (let i: number = 0; i < currentWord.$constraints.length; ++i) {
+            const next: Word = currentWord.$constraints[i];
             if (this.filledWords.findIndex((wordIteration: Word) => next.$id === wordIteration.$id) === -1) {
                 next.parentCaller = currentWord;
                 await this.manageBackTrack(next, currentWord, wordConstraint).then(
                     (result: Token) => {
                         state = result;
+                        if (state === Token.BackTrack) {
+                            console.log("ALLO");
+                            i--;
+                            this.manageBackTrack(currentWord, undefined, wordConstraint);
+                        }
                     }).catch((e: Error) => console.error(e));
             }
         }
