@@ -27,6 +27,7 @@ export class WordFiller {
     private longestWord: Word;
     private filledWords: Word[];
     private backTrackCounter: number = 0;
+    private backTrackingWord: Word;
 
     public constructor(
         private SIZE_GRID_X: number,
@@ -136,6 +137,11 @@ export class WordFiller {
                         state = Token.BackTrack;
                     }
                     if (state === Token.Pass) {
+                        if (this.backTrackingWord !== undefined && this.backTrackingWord === word) {
+                            this.backTrackCounter = 0;
+                            this.backTrackingWord = undefined;
+                        }
+
                         word.$value = result.$word;
                         this.updateCharGrid(word);
                         this.filledWords.push(word);
@@ -163,8 +169,9 @@ export class WordFiller {
             const index: number = this.filledWords.findIndex((wordIteration: Word) => currentWord.$id === wordIteration.$id);
             this.filledWords.splice(index, 1);
             this.backTrackCounter++;
+            this.backTrackingWord = next;
             console.log("COUNTER : " + this.backTrackCounter);
-            if (this.backTrackCounter > MAX_TRIES_TO_BACKTRACK) {
+            if (this.backTrackCounter >= MAX_TRIES_TO_BACKTRACK) {
                 this.backTrackCounter = 0;
 
                 return Token.BackTrack;
