@@ -24,7 +24,7 @@ export class TrackService {
         );
     }
 
-    public getTrackFromId(id: Number): Observable<Track> {
+    public getTrackFromId(id: string): Observable<Track> {
         return this.http.get<Track>(this.BASE_URL + "/" + id).pipe(
             catchError(this.handleError<Track>("getPisteParID"))
         );
@@ -36,14 +36,14 @@ export class TrackService {
         );
     }
 
-    public deleteTrack(trackId: number): Observable<Track[]> {
+    public deleteTrack(trackId: string): Observable<Track[]> {
         return this.http.delete<Track[]>(this.BASE_URL + "/delete/" + trackId, this.httpOptions).pipe(
             catchError(this.handleError<Track[]>("deleteTrack"))
         );
     }
 
     public putTrack(track: Track): Observable<Track> {
-        return this.http.put<Track>(this.BASE_URL + "/put/" + track.$id, track, this.httpOptions).pipe(
+        return this.http.put<Track>(this.BASE_URL + "/put/" + track.id, track, this.httpOptions).pipe(
             catchError(this.handleError<Track>("putTrack"))
         );
     }

@@ -1,8 +1,8 @@
 <h2>Track list</h2>
 <ul class="tracks">
-  <li class="track" *ngFor="let track of tracks">
-    <a routerLink="/admin/{{track.id}}">
-      <span class="badge">{{track.id}}</span> {{track.name}}
+  <li class="track" *ngFor="let track of tracks; let i = index">
+    <a routerLink="/admin/{{track._id}}">
+      <span class="badge">{{i+1}}</span> {{track.name}}
     </a>
     <button (click)="deleteTrack(track.id)">Delete</button>
   </li>

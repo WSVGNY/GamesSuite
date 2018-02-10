@@ -1,22 +1,22 @@
 export class Track {
     public constructor(
-        private id: number,
-        private name: string) {
+        private _id: string,
+        private _name: string) {
     };
 
-    public get $id(): number {
-        return this.id;
+    public get id(): string {
+        return this._id;
     }
 
-    public set $id(value: number) {
-        this.id = value;
+    public set id(value: string) {
+        this._id = value;
     }
 
-    public get $name(): string {
-        return this.name;
+    public get name(): string {
+        return this._name;
     }
 
-    public set $name(value: string) {
-        this.name = value;
+    public set name(value: string) {
+        this._name = value;
     }
 }

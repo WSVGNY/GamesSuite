@@ -64,16 +64,16 @@ export class EditorComponent implements AfterViewInit, OnInit {
     }
 
     public getTrack(): void {
-        const id: number = +this.route.snapshot.paramMap.get("id");
+        const id: string = this.route.snapshot.paramMap.get("id");
         this.trackService.getTrackFromId(id)
             .subscribe((track: Track) => {
                 this.trackChosenFromAdmin = new Track(track["id"], track["name"]);
-                this.currentTrackName = this.trackChosenFromAdmin.$name;
+                this.currentTrackName = this.trackChosenFromAdmin.name;
             });
     }
 
     public saveTrack(): void {
-        this.trackChosenFromAdmin.$name = this.currentTrackName;
+        this.trackChosenFromAdmin.name = this.currentTrackName;
         this.trackService.putTrack(this.trackChosenFromAdmin)
             .subscribe((track: Track) => {
                 this.trackChosenFromAdmin = new Track(track["id"], track["name"]);
