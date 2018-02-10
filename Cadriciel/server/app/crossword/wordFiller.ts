@@ -11,12 +11,12 @@ import { WordConstraint } from "./wordConstraint";
 const VERTICAL: boolean = false;
 const HORIZONTAL: boolean = true;
 const MAX_REQUEST_TRIES: number = 2;
-const MAX_TRIES_TO_BACKTRACK: number = 5;
+const MAX_TRIES_TO_BACKTRACK: number = 4;
 
 enum Token {
-    Exit = 1,
+    Pass = 1,
     BackTrack,
-    Pass
+    Exit
 }
 
 @injectable()
@@ -37,23 +37,30 @@ export class WordFiller {
     }
 
     public async wordFillControler(): Promise<boolean> {
+        let state: Token;
         let isFull: boolean = false;
+        this.createCharGrid();
+        this.generateConstraints();
+        this.filledWords = new Array<Word>();
+        console.log("=======================================================");
+        console.log("FRESH START WITH NEW GRID");
+        console.log("=======================================================");
         do {
-            this.createCharGrid();
-            this.generateConstraints();
-            this.filledWords = new Array<Word>();
-            console.log("RESTART");
-            do {
-                console.log("START PACKET");
-                await this.fillWord(this.longestWord).then(
-                    (result: Token) => {
+            console.log("START PACKET");
+            await this.fillWord(this.longestWord).then(
+                (result: Token) => {
+                    state = result;
+                    if (state !== Token.Exit) {
                         this.longestWord = this.gridContainsIncompleteWord();
                         if (this.longestWord === undefined) {
                             isFull = true;
                         }
-                    }).catch((e: Error) => console.error(e));
-            } while (!isFull);
-        } while (!isFull);
+                    }
+                }).catch((e: Error) => console.error(e));
+        } while (!isFull && state !== Token.Exit);
+        if (state === Token.Exit) {
+            return false;
+        }
 
         return true;
     }
@@ -103,31 +110,27 @@ export class WordFiller {
         if (sameWordExists === Token.BackTrack) {
             return Token.BackTrack;
         }
-        process.stdout.write("List of ID's : ");
-        for (const word2 of this.filledWords) {
-            process.stdout.write(word2.$id + ", ");
-        }
-        console.log();
-        let state: Token;
-        process.stdout.write("List of Constraints ID's : ");
-        for (const next of currentWord.$constraints) {
-            process.stdout.write(next.$id + ", ");
-        }
-        console.log();
+        // process.stdout.write("List of ID's : ");
+        // for (const word2 of this.filledWords) {
+        //     process.stdout.write(word2.$id + ", ");
+        // }
+        // console.log();
+        // process.stdout.write("List of Constraints ID's : ");
         // for (const next of currentWord.$constraints) {
-        for (let i: number = 0; i < currentWord.$constraints.length; ++i) {
-            const next: Word = currentWord.$constraints[i];
+        //     process.stdout.write(next.$id + ", ");
+        // }
+        // console.log();
+        let state: Token;
+        for (const next of currentWord.$constraints) {
             if (this.filledWords.findIndex((wordIteration: Word) => next.$id === wordIteration.$id) === -1) {
                 next.parentCaller = currentWord;
                 await this.manageBackTrack(next, currentWord, wordConstraint).then(
                     (result: Token) => {
                         state = result;
-                        if (state === Token.BackTrack) {
-                            console.log("ALLO");
-                            i--;
-                            this.manageBackTrack(currentWord, undefined, wordConstraint);
-                        }
                     }).catch((e: Error) => console.error(e));
+                if (state === Token.Exit) {
+                    break;
+                }
             }
         }
 
@@ -154,7 +157,6 @@ export class WordFiller {
                         this.updateCharGrid(word);
                         this.filledWords.push(word);
                     }
-                    console.log("Resulted ID : " + word.$id);
                 }
             ).catch((e: Error) => console.error(e));
             if (state === Token.Pass) {
@@ -182,7 +184,7 @@ export class WordFiller {
             if (this.backTrackCounter >= MAX_TRIES_TO_BACKTRACK) {
                 this.backTrackCounter = 0;
 
-                return Token.BackTrack;
+                return Token.Exit;
             }
             await this.fillWord(currentWord).then(
                 (result: Token) => {

@@ -27,19 +27,29 @@ export class Grid {
     }
 
     private async newGrid(): Promise<void> {
-        const isValidGrid: boolean = false;
-        while (!isValidGrid) {
-            this.createEmptyArray();
+        let restart: boolean;
+        do {
+            restart = false;
+            const isValidGrid: boolean = false;
+            while (!isValidGrid) {
+                this.createEmptyArray();
 
-            const blackTiledGrid: BlackTiledGrid = new BlackTiledGrid(this.SIZE_GRID_X, this.SIZE_GRID_Y, this.grid);
+                const blackTiledGrid: BlackTiledGrid = new BlackTiledGrid(this.SIZE_GRID_X, this.SIZE_GRID_Y, this.grid);
 
-            if (blackTiledGrid.$words !== undefined) {
-                this.words = blackTiledGrid.$words;
-                break;
+                if (blackTiledGrid.$words !== undefined) {
+                    this.words = blackTiledGrid.$words;
+                    break;
+                }
             }
-        }
-        const wordFiller: WordFiller = new WordFiller(this.SIZE_GRID_X, this.SIZE_GRID_Y, this.grid, this.words);
-        await wordFiller.wordFillControler();
+            const wordFiller: WordFiller = new WordFiller(this.SIZE_GRID_X, this.SIZE_GRID_Y, this.grid, this.words);
+            await wordFiller.wordFillControler().then(
+                (passed: boolean) => {
+                    if (!passed) {
+                        restart = true;
+                    }
+                }).catch((e: Error) => console.error(e));
+        } while (restart);
+
     }
 
     private createEmptyArray(): void {
