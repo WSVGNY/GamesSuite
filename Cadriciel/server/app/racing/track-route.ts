@@ -3,23 +3,18 @@ import "reflect-metadata";
 import { injectable, } from "inversify";
 import { Track } from "../../../common/racing/track";
 import { tracks } from "../mock-track";
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 
 @injectable()
 export class TrackRoute {
 
     private readonly DATABASE_URL: string = "mongodb://team:consoeurie@ds125048.mlab.com:25048/log2990";
+    private readonly DATABASE: string = "log2990";
     private readonly COLLECTION: string = "tracks";
 
     public getTrackList(req: Request, res: Response): void {
         MongoClient.connect(this.DATABASE_URL).then((dbConnection: MongoClient) => {
-            // console.log("Connected successfully to database");
-            dbConnection.db("log2990").collection(this.COLLECTION).find().toArray().then((tracksFromDb: Track[]) => {
-                // const tracks: Track[] = [];
-                // for (const track of tracksFromDb) {
-                //     tracks.push(new Track(track["_id"], track["name"]));
-                //     console.log(tracks[0]["_id"] + " " + tracks[0]["name"]);
-                // }
+            dbConnection.db(this.DATABASE).collection(this.COLLECTION).find().toArray().then((tracksFromDb: Track[]) => {
                 res.send(tracksFromDb);
                 dbConnection.close();
             }).catch((e: Error) => console.error(e));
@@ -28,12 +23,12 @@ export class TrackRoute {
 
     public getTrackFromID(req: Request, res: Response): void {
         MongoClient.connect(this.DATABASE_URL).then((dbConnection: MongoClient) => {
-            // console.log("Connected successfully to database");
-            const trackFromDB: Track = dbConnection.db("log2990").collection(this.COLLECTION)
-                .find((track: Track) => track.id === req.params.id);
-            res.send(trackFromDB);
-            dbConnection.close();
-        }).catch((e: Error) => console.error(e));
+            dbConnection.db("log2990").collection(this.COLLECTION)
+                .findOne({ "_id": new ObjectId(req.params.id) }).then((document: Track) => {
+                    res.send(document);
+                    dbConnection.close();
+                }).catch((e: Error) => res.send(e));
+        }).catch((e: Error) => res.send(e));
     }
 
     public newTrack(req: Request, res: Response): void {
