@@ -116,6 +116,7 @@ export class WordFiller {
         console.log();
         for (const next of currentWord.$constraints) {
             if (this.filledWords.findIndex((wordIteration: Word) => next.$id === wordIteration.$id) === -1) {
+                next.parentCaller = currentWord;
                 await this.manageBackTrack(next, currentWord, wordConstraint).then(
                     (result: Token) => {
                         state = result;

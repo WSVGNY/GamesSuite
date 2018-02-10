@@ -6,6 +6,7 @@ export class Word {
 	private definition: string;
 	private constraints: Word[] = new Array<Word>();
 	private difficulty: number = 0;
+	private _parentCaller: Word;
 
 	public get $id(): number {
 		return this.id;
@@ -82,5 +83,13 @@ export class Word {
 		for (let i: number = 0; i < this.length; i++) {
 			this.value += "?";
 		}
+	}
+
+	public get parentCaller(): Word{
+		return this._parentCaller;
+	}
+
+	public set parentCaller(parent: Word) {
+		this._parentCaller = parent;
 	}
 }
