@@ -151,7 +151,8 @@ export class EditorScene {
                     / ((vertex2 * vertex1) + (vertex2 * vertex1)));
                 console.log(angle);
                 if (angle < PI_OVER_4 ) {
-                    
+                    this.connections[i].material = UNAUTHORIZED_LINE_MATERIAL;
+                    this.connections[i + 1].material = UNAUTHORIZED_LINE_MATERIAL;
                 }
             }
         }
