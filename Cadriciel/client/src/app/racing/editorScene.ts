@@ -6,11 +6,13 @@ import {
 const WHITE: number = 0xFFFFFF;
 const PINK: number = 0xFF00BF;
 const BLUE: number = 0x0066FF;
+const RED: number = 0xFF0000;
 const RADIUS: number = 12;
 const OUTLINE_TO_VERTEX_RATIO: number = 1.25;
 
 const VERTEX_GEOMETRY: SphereGeometry = new SphereGeometry(RADIUS, RADIUS, RADIUS);
 const SIMPLE_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: WHITE });
+const UNAUTHORIZED_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: RED });
 const START_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: PINK });
 const SIMPLE_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: BLUE });
 
@@ -129,10 +131,33 @@ export class EditorScene {
         return connection;
     }
 
+    private checkAngle(): void {
+        if (this.connections.length > 0) {
+            for (let i: number = 1; i < this.connections.length; i++) {
+                const previous: Line = this.connections[i - 1];
+                let geo: Geometry = (previous.geometry) as Geometry;
+                const previousVec: Vector3[] = geo.vertices;
+                const current: Line = this.connections[i];
+                geo = (current.geometry) as Geometry;
+                const currentVec: Vector3[] = geo.vertices;
+                const point1: number = Math.sqrt((currentVec[0].x - previousVec[0].x) * (currentVec[0].x - previousVec[0].x)
+                    + (currentVec[0].y - previousVec[0].y) * (currentVec[0].y - previousVec[0].y));
+                const point2: number = Math.sqrt((currentVec[0].x - currentVec[1].x) * (currentVec[0].x - currentVec[1].x)
+                    + (currentVec[0].y - currentVec[1].y) * (currentVec[0].y - currentVec[1].y));
+                const point3: number = Math.sqrt((currentVec[1].x - previousVec[0].x) * (currentVec[1].x - previousVec[0].x)
+                    + (currentVec[1].y - previousVec[0].y) * (currentVec[1].y - previousVec[0].y));
+                const res: number = Math.acos((point2 * point2 + point1 * point1 - point3 * point3)
+                    / ((point2 * point1) + (point2 * point1)));
+                console.log(res);
+            }
+        }
+    }
+
     public addConnection(firstVertex: Mesh, secondVertex: Mesh): void {
         const connection: Line = this.createConnection(firstVertex, secondVertex);
         this.connections.push(connection);
         this.scene.add(connection);
+        this.checkAngle();
     }
 
     public removeLastVertex(): void {
@@ -164,6 +189,7 @@ export class EditorScene {
         this.scene.remove(this.connections[this.vertices.indexOf(vertex1)]);
         this.connections[this.vertices.indexOf(vertex1)] = new Line(LINE_GEOMETRY, SIMPLE_LINE_MATERIAL);
         this.scene.add(this.connections[this.vertices.indexOf(vertex1)]);
+        this.checkAngle();
     }
 
     public updateFollowingConnection(entry: Mesh): void {
