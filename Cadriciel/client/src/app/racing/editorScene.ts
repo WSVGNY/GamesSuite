@@ -4,14 +4,12 @@ import {
 } from "three";
 
 const WHITE: number = 0xFFFFFF;
-// const ORANGE: number = 0xFF6600;
-// const GREEN: number = 0x26FF00;
 const PINK: number = 0xFF00BF;
 const BLUE: number = 0x0066FF;
 const RADIUS: number = 12;
+const OUTLINE_TO_VERTEX_RATIO: number = 1.25;
 
 const VERTEX_GEOMETRY: SphereGeometry = new SphereGeometry(RADIUS, RADIUS, RADIUS);
-// const START_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: GREEN });
 const SIMPLE_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: WHITE });
 const START_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: PINK });
 const SIMPLE_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: BLUE });
@@ -28,7 +26,6 @@ export class EditorScene {
     private firstVertex: Mesh;
     private lastVertex: Mesh;
     private selectedVertex: Mesh;
-
     private nbVertices: number = 0;
     private isComplete: boolean = false;
 
@@ -100,9 +97,7 @@ export class EditorScene {
 
         const outlineMaterial: MeshBasicMaterial = new MeshBasicMaterial({ color: WHITE, side: BackSide });
         const outlineMesh: Mesh = new Mesh(VERTEX_GEOMETRY, outlineMaterial);
-        // outlineMesh.position.set(position.x, position.y, 0);
-        outlineMesh.scale.multiplyScalar(1.25);
-
+        outlineMesh.scale.multiplyScalar(OUTLINE_TO_VERTEX_RATIO);
         vertex.add(outlineMesh);
 
         return vertex;
@@ -187,7 +182,7 @@ export class EditorScene {
     public updatePreviousConnection(entry: Mesh): void {
         if (this.isComplete && entry === this.firstVertex) {
             this.updateConnection(this.lastVertex, entry);
-        } else {
+        } else if (this.vertices.indexOf(entry) - 1 >= 0) {
             const previousVertex: Mesh = this.vertices[this.vertices.indexOf(entry) - 1];
             this.updateConnection(previousVertex, entry);
         }
