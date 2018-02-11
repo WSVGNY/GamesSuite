@@ -2,6 +2,7 @@ import {
     Vector3, Scene, AmbientLight, Mesh, Line, SphereGeometry,
     MeshBasicMaterial, LineBasicMaterial, Geometry, BackSide
 } from "three";
+import { PI_OVER_4 } from "./constants";
 
 const WHITE: number = 0xFFFFFF;
 const PINK: number = 0xFF00BF;
@@ -140,15 +141,18 @@ export class EditorScene {
                 const current: Line = this.connections[i];
                 geo = (current.geometry) as Geometry;
                 const currentVec: Vector3[] = geo.vertices;
-                const point1: number = Math.sqrt((currentVec[0].x - previousVec[0].x) * (currentVec[0].x - previousVec[0].x)
+                const vertex1: number = Math.sqrt((currentVec[0].x - previousVec[0].x) * (currentVec[0].x - previousVec[0].x)
                     + (currentVec[0].y - previousVec[0].y) * (currentVec[0].y - previousVec[0].y));
-                const point2: number = Math.sqrt((currentVec[0].x - currentVec[1].x) * (currentVec[0].x - currentVec[1].x)
+                const vertex2: number = Math.sqrt((currentVec[0].x - currentVec[1].x) * (currentVec[0].x - currentVec[1].x)
                     + (currentVec[0].y - currentVec[1].y) * (currentVec[0].y - currentVec[1].y));
-                const point3: number = Math.sqrt((currentVec[1].x - previousVec[0].x) * (currentVec[1].x - previousVec[0].x)
+                const vertex3: number = Math.sqrt((currentVec[1].x - previousVec[0].x) * (currentVec[1].x - previousVec[0].x)
                     + (currentVec[1].y - previousVec[0].y) * (currentVec[1].y - previousVec[0].y));
-                const res: number = Math.acos((point2 * point2 + point1 * point1 - point3 * point3)
-                    / ((point2 * point1) + (point2 * point1)));
-                console.log(res);
+                const angle: number = Math.acos((vertex2 * vertex2 + vertex1 * vertex1 - vertex3 * vertex3)
+                    / ((vertex2 * vertex1) + (vertex2 * vertex1)));
+                console.log(angle);
+                if (angle < PI_OVER_4 ) {
+                    
+                }
             }
         }
     }
