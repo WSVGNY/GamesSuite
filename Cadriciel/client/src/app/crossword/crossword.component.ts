@@ -1,8 +1,10 @@
 import { Component } from "@angular/core";
 import { } from "@angular/";
 import { GridBox } from "../../../../common/crossword/gridBox";
+import { Word } from "../../../../common/crossword/word";
 import { GridService } from "./grid.service";
 import { Difficulty } from "../../../../common/crossword/difficulty";
+// import { WordFiller } from "../../../../server/app/crossword/wordFiller";
 
 @Component({
     selector: "app-crossword",
@@ -12,8 +14,10 @@ import { Difficulty } from "../../../../common/crossword/difficulty";
 export class CrosswordComponent {
 
     public selectedGridBox: GridBox;
+    public defs: Word;
     private grid: GridBox[][];
     private difficulty: Difficulty;
+   // private wordFiller: WordFiller;
 
     public constructor(private gridService: GridService) {
     }
@@ -28,16 +32,34 @@ export class CrosswordComponent {
 
     public makeEasyGrid(): void {
         this.difficulty = Difficulty.Easy;
+        this.show();
         this.createGrid();
+
+        // while (!this.wordFiller.isGenerated) {
+        //     this.show();
+        // }
     }
 
     public makeMediumGrid(): void {
         this.difficulty = Difficulty.Medium;
         this.createGrid();
+        this.show();
     }
 
     public makeHardGrid(): void {
         this.difficulty = Difficulty.Hard;
         this.createGrid();
+        this.show();
     }
+
+    public show(): void {
+        document.getElementById("loader").style.display = "block";
+        const loader: HTMLElement = document.getElementById("loader");
+        loader.addEventListener("animationend", (event: Event) => { loader.style.display = "none"; }, false);
+    }
+
+    public hide(): void {
+        document.getElementById("loader").style.display = "none";
+    }
+
 }
