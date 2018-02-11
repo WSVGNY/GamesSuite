@@ -2,6 +2,7 @@ import { Component } from "@angular/core";
 import { } from "@angular/";
 import { GridBox } from "../../../../common/crossword/gridBox";
 import { GridService } from "./grid.service";
+import { Difficulty } from "../../../../common/crossword/difficulty";
 
 @Component({
     selector: "app-crossword",
@@ -12,16 +13,31 @@ export class CrosswordComponent {
 
     public selectedGridBox: GridBox;
     private grid: GridBox[][];
+    private difficulty: Difficulty;
 
     public constructor(private gridService: GridService) {
-        this.createGrid();
     }
 
     public createGrid(): void {
-        this.gridService.gridGet().subscribe((grid: GridBox[][]) => this.grid = grid);
+        this.gridService.gridGet(this.difficulty).subscribe((grid: GridBox[][]) => this.grid = grid);
     }
 
     public onSelect(gridBox: GridBox): void {
         this.selectedGridBox = gridBox;
+    }
+
+    public makeEasyGrid(): void {
+        this.difficulty = Difficulty.Easy;
+        this.createGrid();
+    }
+
+    public makeMediumGrid(): void {
+        this.difficulty = Difficulty.Medium;
+        this.createGrid();
+    }
+
+    public makeHardGrid(): void {
+        this.difficulty = Difficulty.Hard;
+        this.createGrid();
     }
 }

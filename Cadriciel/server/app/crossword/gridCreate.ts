@@ -6,6 +6,7 @@ import { Word } from "../../../common/crossword/word";
 import { Vec2 } from "../../../common/crossword/vec2";
 import { WordFiller } from "./wordFiller";
 import { BlackTiledGrid } from "./blackTiledGrid";
+import {Difficulty} from "../../../common/crossword/difficulty";
 
 @injectable()
 export class Grid {
@@ -13,9 +14,11 @@ export class Grid {
     public readonly SIZE_GRID_X: number = 10;
     public readonly SIZE_GRID_Y: number = 10;
     private words: Word[];
+    private difficulty: Difficulty;
     private grid: GridBox[][];
 
     public gridCreate(req: Request, res: Response, next: NextFunction): void {
+        this.difficulty = req.params.difficulty;
         this.newGrid().then(() => {
             for (const row of this.grid) {
                 for (const box of row) {
@@ -41,7 +44,7 @@ export class Grid {
                     break;
                 }
             }
-            const wordFiller: WordFiller = new WordFiller(this.SIZE_GRID_X, this.SIZE_GRID_Y, this.grid, this.words);
+            const wordFiller: WordFiller = new WordFiller(this.SIZE_GRID_X, this.SIZE_GRID_Y,  this.difficulty, this.grid, this.words);
             await wordFiller.wordFillControler().then(
                 (passed: boolean) => {
                     if (!passed) {
@@ -50,7 +53,7 @@ export class Grid {
                 }).catch((e: Error) => console.error(e));
         } while (restart);
 
-    }
+        }
 
     private createEmptyArray(): void {
         this.grid = new Array<Array<GridBox>>();
