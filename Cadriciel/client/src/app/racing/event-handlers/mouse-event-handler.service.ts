@@ -2,7 +2,13 @@ import { Injectable } from "@angular/core";
 import { Vector3, Raycaster } from "three";
 import { EditorScene } from "../editorScene";
 import { EditorCamera } from "../editorCamera";
-import { Action } from "../action";
+import { EditorControl } from "../editorControl";
+import { SelectVertex } from "../commands/selectVertex";
+import { CloseLoop } from "../commands/closeLoop";
+import { PlaceVertex } from "../commands/placeVertex";
+import { RemoveVertex } from "../commands/removeVertex";
+import { MoveVertex } from "../commands/moveVertex";
+import { DeselectVertex } from "../commands/deselectVertex";
 
 const LEFT_CLICK_KEYCODE: number = 1;
 const RIGHT_CLICK_KEYCODE: number = 3;
@@ -11,6 +17,7 @@ const HALF: number = 0.5;
 @Injectable()
 export class MouseEventHandlerService {
 
+  private editorControl: EditorControl;
   private containerEditor: HTMLDivElement;
   private raycaster: Raycaster;
   private viewSize: number;
@@ -34,6 +41,7 @@ export class MouseEventHandlerService {
 
   private async initialiseValues(): Promise<void> {
     this.raycaster = new Raycaster();
+    this.editorControl = new EditorControl();
     this.mouseWorldCoordinates = new Vector3(0, 0, 0);
     this.divOffset = new Vector3(0, 0, 0);
     this.centerOffset = new Vector3(0, 0, 0);
@@ -85,29 +93,43 @@ export class MouseEventHandlerService {
     this.raycaster.set(editorCamera.$camera.position, direction);
 }
 
-  private computeWhichLeftClickAction(editorScene: EditorScene): Action {
+  // tslint:disable-next-line:max-func-body-length
+  private computeWhichLeftClickAction(editorScene: EditorScene): void {
     if (!editorScene.$isEmpty) {
         if (this.raycaster.intersectObject(editorScene.$firstVertex, true).length) {
-            if (editorScene.$nbVertices < 3) {
-                return Action.NONE;
-            } else if (editorScene.$isComplete) {
-                return Action.SET_SELECTED_VERTEX;
-            } else {
-                return Action.COMPLETE_TRACK;
+            if (editorScene.$nbVertices >= 3) {
+                if (editorScene.$isComplete) {
+                    this.editorControl.setCommand(
+                        new SelectVertex(
+                            editorScene,
+                            this.mouseWorldCoordinates,
+                            this.raycaster.intersectObjects(editorScene.$vertices, true)[0].object.name
+                        ));
+                    this.editorControl.execute();
+                } else {
+                    this.editorControl.setCommand(new CloseLoop(editorScene, this.mouseWorldCoordinates));
+                    this.editorControl.execute();
+                }
             }
         } else if (this.raycaster.intersectObjects(editorScene.$vertices, true).length) {
-            return Action.SET_SELECTED_VERTEX;
+            this.editorControl.setCommand(
+                new SelectVertex(
+                    editorScene,
+                    this.mouseWorldCoordinates,
+                    this.raycaster.intersectObjects(editorScene.$vertices, true)[0].object.name
+                ));
+            this.editorControl.execute();
         } else  if (!editorScene.$isComplete) {
-            return Action.ADD_VERTEX;
+            this.editorControl.setCommand(new PlaceVertex(editorScene, this.mouseWorldCoordinates));
+            this.editorControl.execute();
         }
     } else {
-        return Action.ADD_VERTEX;
+        this.editorControl.setCommand(new PlaceVertex(editorScene, this.mouseWorldCoordinates));
+        this.editorControl.execute();
     }
-
-    return Action.NONE;
 }
 
-  public handleMouseDown(event: MouseEvent, editorCamera: EditorCamera, editorScene: EditorScene ): Action {
+  public handleMouseDown(event: MouseEvent, editorCamera: EditorCamera, editorScene: EditorScene ): void {
       const mouseScreenCoordinates: Vector3 = new Vector3(event.clientX, event.clientY, 0);
       if (this.isMouseOnScene(mouseScreenCoordinates)) {
             this.convertToWorldCoordinates(mouseScreenCoordinates);
@@ -115,35 +137,40 @@ export class MouseEventHandlerService {
             switch (event.which) {
                 case LEFT_CLICK_KEYCODE:
                     this.setRaycaster(editorCamera);
-
-                    return this.computeWhichLeftClickAction(editorScene);
+                    this.computeWhichLeftClickAction(editorScene);
+                    break;
                 case RIGHT_CLICK_KEYCODE:
-                    return (editorScene.$isEmpty) ? Action.NONE :  Action.REMOVE_VERTEX;
+                    if (!editorScene.$isEmpty) {
+                        this.editorControl.setCommand(new RemoveVertex(editorScene, this.mouseWorldCoordinates));
+                        this.editorControl.execute();
+                    }
+                    break;
                 default:
-                    return Action.NONE;
             }
       }
-
-      return Action.NONE;
 }
 
-  public handleMouseMove(event: MouseEvent): Action {
+  public handleMouseMove(event: MouseEvent, editorScene: EditorScene): void {
     const mouseScreenCoordinates: Vector3 = new Vector3(event.clientX, event.clientY, 0);
     if (this.isMouseOnScene(mouseScreenCoordinates)) {
         this.convertToWorldCoordinates(mouseScreenCoordinates);
-        if (this.isMouseDown && this.selectedVertexName !== "none") {
-            return Action.MOVE_VERTEX;
+        if (this.isMouseDown && editorScene.$selectedVertex !== undefined) {
+            this.editorControl.setCommand(new MoveVertex(editorScene, this.mouseWorldCoordinates));
+            this.editorControl.execute();
         }
     }
-
-    return Action.NONE;
 }
 
-  public handleMouseUp(event: MouseEvent): void {
+  public handleMouseUp(event: MouseEvent, editorScene: EditorScene): void {
     const mouseScreenCoordinates: Vector3 = new Vector3(event.clientX, event.clientY, 0);
     if (this.isMouseOnScene(mouseScreenCoordinates)) {
+        this.editorControl.setCommand(
+            new DeselectVertex(
+                editorScene,
+                this.mouseWorldCoordinates,
+            ));
+        this.editorControl.execute();
         this.isMouseDown = false;
-        this.selectedVertexName = "none";
     }
 }
 
