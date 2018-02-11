@@ -23,7 +23,7 @@ describe("LEXICON TESTS", () => {
     describe("word should be a noun or a verb", () => {
         it("word is a verb", (done: MochaDone) => {
             let word: ResponseWordFromAPI = new ResponseWordFromAPI();
-            requestPromise(SERVICE_BASE_URL + "ask/" + Difficulty.easy).then((response: string) => {
+            requestPromise(SERVICE_BASE_URL + "ask/" + Difficulty.Easy).then((response: string) => {
                 word = JSON.parse(response);
                 assert(word["definition"][0] === "v");
                 done();
@@ -36,7 +36,7 @@ describe("LEXICON TESTS", () => {
 
         it("word is a noun", (done: MochaDone) => {
             let word: ResponseWordFromAPI;
-            requestPromise(SERVICE_BASE_URL + "test/" + Difficulty.easy).then((response: string) => {
+            requestPromise(SERVICE_BASE_URL + "test/" + Difficulty.Easy).then((response: string) => {
                 word = JSON.parse(response);
                 assert(word["definition"][0] === "n");
                 done();
@@ -50,7 +50,7 @@ describe("LEXICON TESTS", () => {
 
         it("if word is an adj or adv, return empty word", (done: MochaDone) => {
             let word: ResponseWordFromAPI;
-            requestPromise(SERVICE_BASE_URL + "beautiful/" + Difficulty.easy).then((response: string) => {
+            requestPromise(SERVICE_BASE_URL + "beautiful/" + Difficulty.Easy).then((response: string) => {
                 word = JSON.parse(response);
                 assert(word["word"] === "" && word["definition"] === "");
                 done();
@@ -64,7 +64,7 @@ describe("LEXICON TESTS", () => {
 
     it("if there is no definitions, it should return empty word", (done: MochaDone) => {
         let word: ResponseWordFromAPI;
-        requestPromise(SERVICE_BASE_URL + "zent/" + Difficulty.easy).then((response: string) => {
+        requestPromise(SERVICE_BASE_URL + "zent/" + Difficulty.Easy).then((response: string) => {
             word = JSON.parse(response);
             assert(word["word"] === "" && word["definition"] === "");
             done();
@@ -85,7 +85,7 @@ describe("LEXICON TESTS", () => {
 
         it("Special characters should be ignored when sent to the api", (done: MochaDone) => {
             let word: ResponseWordFromAPI;
-            requestPromise(SERVICE_BASE_URL + "aréa/" + Difficulty.easy).then((response: string) => {
+            requestPromise(SERVICE_BASE_URL + "aréa/" + Difficulty.Easy).then((response: string) => {
                 word = JSON.parse(response);
                 assert(word["word"] === "AREA");
                 done();
@@ -98,7 +98,7 @@ describe("LEXICON TESTS", () => {
 
         it("Accents should be ignored even when sent in url encoding", (done: MochaDone) => {
             let word: ResponseWordFromAPI;
-            requestPromise(SERVICE_BASE_URL + "ar%c3%a9a/" + Difficulty.easy).then((response: string) => {
+            requestPromise(SERVICE_BASE_URL + "ar%c3%a9a/" + Difficulty.Easy).then((response: string) => {
                 word = JSON.parse(response);
                 assert(word["word"] === "AREA");
                 done();
@@ -114,7 +114,7 @@ describe("LEXICON TESTS", () => {
         it("the returned word matches constraints", (done: MochaDone) => {
             let word: ResponseWordFromAPI;
             const TEST_LETTER_POSITION: number = 3;
-            requestPromise(SERVICE_BASE_URL + "t%3f%3ft/" + Difficulty.easy).then((response: string) => {
+            requestPromise(SERVICE_BASE_URL + "t%3f%3ft/" + Difficulty.Easy).then((response: string) => {
                 word = JSON.parse(response);
                 assert(word["word"][0] === "T" && word["word"][TEST_LETTER_POSITION] === "T");
                 done();
@@ -127,7 +127,7 @@ describe("LEXICON TESTS", () => {
 
         it("if there is no word matching the constraint, returns an empty word", (done: MochaDone) => {
             let word: ResponseWordFromAPI;
-            requestPromise(SERVICE_BASE_URL + "ttttt/" + Difficulty.easy).then((response: string) => {
+            requestPromise(SERVICE_BASE_URL + "ttttt/" + Difficulty.Easy).then((response: string) => {
                 word = JSON.parse(response);
                 assert(word["word"] === "" && word["definition"] === "");
                 done();
@@ -140,7 +140,7 @@ describe("LEXICON TESTS", () => {
 
         it("if is no word returned from the api, returns an empty word", (done: MochaDone) => {
             let word: ResponseWordFromAPI;
-            requestPromise(SERVICE_BASE_URL + "tttttt/" + Difficulty.easy).then((response: string) => {
+            requestPromise(SERVICE_BASE_URL + "tttttt/" + Difficulty.Easy).then((response: string) => {
                 word = JSON.parse(response);
                 assert(word["word"] === "" && word["definition"] === "");
                 done();
@@ -156,7 +156,7 @@ describe("LEXICON TESTS", () => {
         it("if difficulty is EASY, returns the first definition", (done: MochaDone) => {
             let wordFromService: ResponseWordFromAPI;
             let wordFromDataMuse: string[];
-            requestPromise(SERVICE_BASE_URL + "test/" + Difficulty.easy).then((responseFromService: string) => {
+            requestPromise(SERVICE_BASE_URL + "test/" + Difficulty.Easy).then((responseFromService: string) => {
                 wordFromService = JSON.parse(responseFromService);
                 requestPromise(DATAMUSE_BASE_URL + "test").then((responseFromDataMuse: string) => {
                     wordFromDataMuse = JSON.parse(responseFromDataMuse);
@@ -177,7 +177,7 @@ describe("LEXICON TESTS", () => {
         it("if difficulty is MEDIUM, returns the second definition", (done: MochaDone) => {
             let wordFromService: ResponseWordFromAPI;
             let wordFromDataMuse: string[];
-            requestPromise(SERVICE_BASE_URL + "test/" + Difficulty.medium).then((responseFromService: string) => {
+            requestPromise(SERVICE_BASE_URL + "test/" + Difficulty.Medium).then((responseFromService: string) => {
                 wordFromService = JSON.parse(responseFromService);
                 requestPromise(DATAMUSE_BASE_URL + "test").then((responseFromDataMuse: string) => {
                     wordFromDataMuse = JSON.parse(responseFromDataMuse);
@@ -198,7 +198,7 @@ describe("LEXICON TESTS", () => {
         it("if difficulty is HARD, returns the second definition", (done: MochaDone) => {
             let wordFromService: ResponseWordFromAPI;
             let wordFromDataMuse: string[];
-            requestPromise(SERVICE_BASE_URL + "bust/" + Difficulty.hard).then((responseFromService: string) => {
+            requestPromise(SERVICE_BASE_URL + "bust/" + Difficulty.Hard).then((responseFromService: string) => {
                 wordFromService = JSON.parse(responseFromService);
                 requestPromise(DATAMUSE_BASE_URL + "bust").then((responseFromDataMuse: string) => {
                     wordFromDataMuse = JSON.parse(responseFromDataMuse);
@@ -219,7 +219,7 @@ describe("LEXICON TESTS", () => {
         it("if difficulty is EASY, frequency­ > 10", (done: MochaDone) => {
             let wordFromService: ResponseWordFromAPI;
             let wordFromDataMuse: string[];
-            requestPromise(SERVICE_BASE_URL + "test/" + Difficulty.easy).then((responseFromService: string) => {
+            requestPromise(SERVICE_BASE_URL + "test/" + Difficulty.Easy).then((responseFromService: string) => {
                 wordFromService = JSON.parse(responseFromService);
                 requestPromise(DATAMUSE_BASE_URL + "test").then((responseFromDataMuse: string) => {
                     wordFromDataMuse = JSON.parse(responseFromDataMuse);
@@ -244,7 +244,7 @@ describe("LEXICON TESTS", () => {
         it("if difficulty is MEDIUM, frequency­ > 10", (done: MochaDone) => {
             let wordFromService: ResponseWordFromAPI;
             let wordFromDataMuse: string[];
-            requestPromise(SERVICE_BASE_URL + "test/" + Difficulty.medium).then((responseFromService: string) => {
+            requestPromise(SERVICE_BASE_URL + "test/" + Difficulty.Medium).then((responseFromService: string) => {
                 wordFromService = JSON.parse(responseFromService);
                 requestPromise(DATAMUSE_BASE_URL + "test").then((responseFromDataMuse: string) => {
                     wordFromDataMuse = JSON.parse(responseFromDataMuse);
@@ -269,7 +269,7 @@ describe("LEXICON TESTS", () => {
         it("if difficulty is HARD, frequency­ < 10", (done: MochaDone) => {
             let wordFromService: ResponseWordFromAPI;
             let wordFromDataMuse: string[];
-            requestPromise(SERVICE_BASE_URL + "bust/" + Difficulty.hard).then((responseFromService: string) => {
+            requestPromise(SERVICE_BASE_URL + "bust/" + Difficulty.Hard).then((responseFromService: string) => {
                 wordFromService = JSON.parse(responseFromService);
                 requestPromise(DATAMUSE_BASE_URL + "bust").then((responseFromDataMuse: string) => {
                     wordFromDataMuse = JSON.parse(responseFromDataMuse);
