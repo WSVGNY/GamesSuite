@@ -190,7 +190,6 @@ export class EditorScene {
         this.connections[this.vertices.indexOf(vertex1)] = new Line(LINE_GEOMETRY, SIMPLE_LINE_MATERIAL);
         this.scene.add(this.connections[this.vertices.indexOf(vertex1)]);
         this.checkAngle();
-
     }
 
     public updateFollowingConnection(entry: Mesh): void {
