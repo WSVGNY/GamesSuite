@@ -84,10 +84,6 @@ export class EditorScene {
         return this.isComplete;
     }
 
-    public setIsComplete(isComplete: boolean): void {
-       this.isComplete = isComplete;
-    }
-
     private createVertex(position: Vector3): Mesh {
         const vertex: Mesh = (this.nbVertices === 0) ?
             new Mesh(VERTEX_GEOMETRY, START_VERTEX_MATERIAL) :
