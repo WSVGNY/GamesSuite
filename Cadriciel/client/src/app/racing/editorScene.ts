@@ -5,7 +5,7 @@ import {
 
 const WHITE: number = 0xFFFFFF;
 // const ORANGE: number = 0xFF6600;
-const GREEN: number = 0x26FF00;
+// const GREEN: number = 0x26FF00;
 const PINK: number = 0xFF00BF;
 const BLUE: number = 0x0066FF;
 const RADIUS: number = 12;
@@ -24,8 +24,10 @@ export class EditorScene {
     // private editedTrack: TrackVertices;
     private vertices: Array<Mesh>;
     private connections: Array<Line>;
+
     private firstVertex: Mesh;
     private lastVertex: Mesh;
+    private selectedVertex: Mesh;
 
     private nbVertices: number = 0;
     private isComplete: boolean = false;
@@ -35,6 +37,18 @@ export class EditorScene {
         this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
         this.vertices = new Array();
         this.connections = new Array();
+    }
+
+    public setSelectedVertex(vertexName: string): void {
+        for (const entry of this.vertices) {
+            if (entry.name === vertexName) {
+                this.selectedVertex = entry;
+            }
+        }
+    }
+
+    public deselectVertex(): void {
+        this.selectedVertex = undefined;
     }
 
     public get $scene(): Scene {
@@ -53,8 +67,16 @@ export class EditorScene {
         return this.lastVertex;
     }
 
+    public get $selectedVertex(): Mesh {
+        return this.selectedVertex;
+    }
+
     public get $vertices(): Array<Mesh> {
         return this.vertices;
+    }
+
+    public get $connections(): Array<Line> {
+        return this.connections;
     }
 
     public get $nbVertices(): number {
@@ -63,6 +85,10 @@ export class EditorScene {
 
     public get $isComplete(): boolean {
         return this.isComplete;
+    }
+
+    public setIsComplete(isComplete: boolean): void {
+       this.isComplete = isComplete;
     }
 
     private createVertex(position: Vector3): Mesh {
@@ -129,6 +155,17 @@ export class EditorScene {
         }
     }
 
+    public moveSelectedVertex(newPosition: Vector3): void {
+        this.setVertexPosition(this.selectedVertex, newPosition);
+        this.updatePreviousConnection(this.selectedVertex);
+        this.updateFollowingConnection(this.selectedVertex);
+    }
+
+    public setVertexPosition(vertex: Mesh, newPosition: Vector3): void {
+        vertex.position.x = newPosition.x;
+        vertex.position.y = newPosition.y;
+    }
+
     public updateConnection(vertex1: Mesh, vertex2: Mesh): void {
         const LINE_GEOMETRY: Geometry = new Geometry();
         LINE_GEOMETRY.vertices.push(new Vector3(vertex1.position.x, vertex1.position.y, 0));
@@ -154,20 +191,5 @@ export class EditorScene {
             const previousVertex: Mesh = this.vertices[this.vertices.indexOf(entry) - 1];
             this.updateConnection(previousVertex, entry);
         }
-    }
-
-    public moveVertex(vertexName: String, newPosition: Vector3): void {
-        for (const entry of this.vertices) {
-            if (entry.name === vertexName) {
-                this.setVertexPosition(entry, newPosition);
-                this.updatePreviousConnection(entry);
-                this.updateFollowingConnection(entry);
-            }
-        }
-    }
-
-    public setVertexPosition(vertex: Mesh, newPosition: Vector3): void {
-        vertex.position.x = newPosition.x;
-        vertex.position.y = newPosition.y;
     }
 }
