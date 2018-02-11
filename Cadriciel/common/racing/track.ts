@@ -1,5 +1,7 @@
-export class Track {
+// export type TrackMap = [{ "key": string, "value": Track }];
+export type TrackMap = Array<{ "key": string, "value": Track }>;
 
+export class Track {
     private _id: string;
     private _name: string;
 
