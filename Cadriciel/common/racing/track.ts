@@ -1,12 +1,14 @@
-import { ObjectId } from "../../server/node_modules/@types/bson";
-
 export class Track {
-    public constructor(
-        private _id: ObjectId,
-        private _name: string) {
+
+    private _id: string;
+    private _name: string;
+
+    public constructor(track: string) {
+        this._id = track["_id"];
+        this._name = track["_name"];
     };
 
-    public get id(): ObjectId {
+    public get id(): string {
         return this._id;
     }
 

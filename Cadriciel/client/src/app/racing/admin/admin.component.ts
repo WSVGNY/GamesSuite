@@ -19,10 +19,7 @@ export class AdminComponent implements OnInit {
 
     private getTracksFromServer(): void {
         this.trackService.getTrackList()
-            .subscribe((tracks: Track[]) => {
-                console.log(tracks[0]["_id"] + " " + tracks[0]["name"]);
-                this.tracks = tracks;
-            });
+            .subscribe((tracks: Track[]) => this.tracks = tracks);
     }
 
     public newTrack(trackName: string): void {
