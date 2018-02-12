@@ -134,25 +134,31 @@ export class EditorScene {
 
     private checkAngle(): void {
         if (this.connections.length > 0) {
-            for (let i: number = 1; i < this.connections.length; i++) {
-                const previous: Line = this.connections[i - 1];
-                let geo: Geometry = (previous.geometry) as Geometry;
-                const previousVec: Vector3[] = geo.vertices;
+            for (let i: number = 0; i < this.connections.length - 1; i++) {
+                let indexPlusOne: number;
+                i === this.connections.length - 1 ?
+                    indexPlusOne = 0 :
+                    indexPlusOne = i + 1;
                 const current: Line = this.connections[i];
-                geo = (current.geometry) as Geometry;
+                let geo: Geometry = (current.geometry) as Geometry;
                 const currentVec: Vector3[] = geo.vertices;
-                const vertex1: number = Math.sqrt((currentVec[0].x - previousVec[0].x) * (currentVec[0].x - previousVec[0].x)
-                    + (currentVec[0].y - previousVec[0].y) * (currentVec[0].y - previousVec[0].y));
-                const vertex2: number = Math.sqrt((currentVec[0].x - currentVec[1].x) * (currentVec[0].x - currentVec[1].x)
-                    + (currentVec[0].y - currentVec[1].y) * (currentVec[0].y - currentVec[1].y));
-                const vertex3: number = Math.sqrt((currentVec[1].x - previousVec[0].x) * (currentVec[1].x - previousVec[0].x)
-                    + (currentVec[1].y - previousVec[0].y) * (currentVec[1].y - previousVec[0].y));
+                const next: Line = this.connections[indexPlusOne];
+                geo = (next.geometry) as Geometry;
+                const nextVec: Vector3[] = geo.vertices;
+                const vertex1: number = Math.sqrt((nextVec[0].x - currentVec[0].x) * (nextVec[0].x - currentVec[0].x)
+                    + (nextVec[0].y - currentVec[0].y) * (nextVec[0].y - currentVec[0].y));
+                const vertex2: number = Math.sqrt((nextVec[0].x - nextVec[1].x) * (nextVec[0].x - nextVec[1].x)
+                    + (nextVec[0].y - nextVec[1].y) * (nextVec[0].y - nextVec[1].y));
+                const vertex3: number = Math.sqrt((nextVec[1].x - currentVec[0].x) * (nextVec[1].x - currentVec[0].x)
+                    + (nextVec[1].y - currentVec[0].y) * (nextVec[1].y - currentVec[0].y));
                 const angle: number = Math.acos((vertex2 * vertex2 + vertex1 * vertex1 - vertex3 * vertex3)
                     / ((vertex2 * vertex1) + (vertex2 * vertex1)));
-                console.log(angle);
-                if (angle < PI_OVER_4 ) {
+                console.log(i + ") " + angle);
+                if (angle > PI_OVER_4) {
+                    this.connections[indexPlusOne].material = SIMPLE_LINE_MATERIAL;
+                } else {
                     this.connections[i].material = UNAUTHORIZED_LINE_MATERIAL;
-                    this.connections[i - 1].material = UNAUTHORIZED_LINE_MATERIAL;
+                    this.connections[indexPlusOne].material = UNAUTHORIZED_LINE_MATERIAL;
                 }
             }
         }
