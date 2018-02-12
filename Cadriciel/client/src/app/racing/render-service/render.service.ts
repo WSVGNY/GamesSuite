@@ -1,8 +1,13 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
-import { PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, /*Matrix4, Vector3,*/
-         MeshBasicMaterial, Mesh, PlaneGeometry} from "three";
+import {
+    PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, /*Matrix4,*/
+    MeshBasicMaterial, Mesh, PlaneGeometry, Color, TextureLoader,
+    MeshLambertMaterial, VertexColors, Texture, FogExp2, Geometry, Vector3
+} from "three";
 import { Car } from "../car/car";
+// import { Track } from "../../../../../common/racing/track";
+// import { TrackService } from "../track-service/track.service";
 import { DEG_TO_RAD, /*RAD_TO_DEG*/ } from "../constants";
 
 const FAR_CLIPPING_PLANE: number = 1000;
@@ -20,6 +25,7 @@ const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
 const TEMP_GRID_SIZE: number = 100;
 const TEMP_GRID_ORIENTATION: number = 90;
+const TABLEAU: Array<Vector3> = new Array<Vector3>();
 
 const PLAYER_CAMERA: string = "PLAYER_CAMERA";
 
@@ -29,9 +35,11 @@ export class RenderService {
     private container: HTMLDivElement;
     private _car: Car;
     private renderer: WebGLRenderer;
-    private scene: THREE.Scene;
+    private scene: Scene;
     private stats: Stats;
     private lastDate: number;
+    /*private tracks: Track[];
+    private trackService: TrackService;*/
 
     public get car(): Car {
         return this._car;
@@ -74,17 +82,20 @@ export class RenderService {
             NEAR_CLIPPING_PLANE,
             FAR_CLIPPING_PLANE
         );
+
         this.camera.name = PLAYER_CAMERA;
         this.camera.position.z = INITIAL_CAMERA_POSITION_Z;
         this.camera.position.y = INITIAL_CAMERA_POSITION_Y;
         this._car.attachCamera(this.camera);
 
-        const groundGeometry: PlaneGeometry = new PlaneGeometry( TEMP_GRID_SIZE, TEMP_GRID_SIZE, TEMP_GRID_SIZE, TEMP_GRID_SIZE );
+        const groundGeometry: PlaneGeometry = new PlaneGeometry(TEMP_GRID_SIZE, TEMP_GRID_SIZE, TEMP_GRID_SIZE, TEMP_GRID_SIZE);
         const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ wireframe: true, color: 0x00FF00 });
-        const ground: Mesh = new Mesh( groundGeometry, groundMaterial );
-        ground.rotateX( DEG_TO_RAD * TEMP_GRID_ORIENTATION );
-        this.scene.add( ground );
+        const ground: Mesh = new Mesh(groundGeometry, groundMaterial);
+        ground.rotateX(DEG_TO_RAD * TEMP_GRID_ORIENTATION);
+        // ground.position = new Vector3(0, 0 , -1); marche po !! better use ground.translate()
+        this.scene.add(ground);
         this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
+        await this.renderTrack();
     }
 
     private getAspectRatio(): number {
@@ -148,5 +159,66 @@ export class RenderService {
             default:
                 break;
         }
+    }
+
+    /*private getTracksFromServer(): void {
+        this.trackService.getTrackList()
+            .subscribe((tracks: Track[]) => this.tracks = tracks);
+    }*/
+
+    private async renderTrack(): Promise<void> {
+        // this.getTracksFromServer();
+        this.scene.background = new Color(0xFFFFFF);
+        this.scene.fog = new FogExp2(0xFFFFFF, 0.00015);
+        const ambientLight: AmbientLight = new AmbientLight(0xCCCCCC);
+        this.scene.add(ambientLight);
+        // const image = new Image();
+        const texture1: Texture = await this.load1();
+        const texture2: Texture = await this.load2();
+        const trackWall: Mesh = new Mesh(this.createGeometry(), new MeshLambertMaterial({ map: texture1, vertexColors: VertexColors }));
+        // trackWall.position = new Vector3(0 , 1 , 0);
+        const trackWall2: Mesh = new Mesh(this.createGeometry(), new MeshLambertMaterial({ map: texture2, vertexColors: VertexColors }));
+        trackWall.translate(5, new Vector3(-1, 1, -1));
+        trackWall.rotateY(3.14 / 2);
+        trackWall2.translate(5, new Vector3(1, 1, 1));
+        trackWall2.rotateY(3.14 / 2);
+        this.scene.add(trackWall);
+        this.scene.add(trackWall2);
+    }
+
+    private createGeometry(): Geometry {
+        // const matrix: Matrix4 = new Matrix4();
+        // const light: Color = new Color(0xFFFFFF);
+        // const shadow: Color = new Color(0x505050);
+        const wallGeometry: PlaneGeometry = new PlaneGeometry(50, 10);
+        // wallGeometry.rotateY(Math.PI / 2);
+
+        return wallGeometry;
+    }
+
+    private async load1(): Promise<Texture> {
+        return new Promise<Texture>((resolve, reject) => {
+            const loader: TextureLoader = new TextureLoader();
+            loader.load("assets/textures/world.png", (object) => {
+                resolve(object);
+            });
+        });
+    }
+
+    private async load2(): Promise<Texture> {
+        return new Promise<Texture>((resolve, reject) => {
+            const loader: TextureLoader = new TextureLoader();
+            loader.load("assets/textures/world3.jpg", (object) => {
+                resolve(object);
+            });
+        });
+    }
+
+    public remplirTableau(): void {
+        TABLEAU.push(new Vector3(0, 1, 0));
+        TABLEAU.push(new Vector3(0, 5, 0));
+        TABLEAU.push(new Vector3(2, 8, 0));
+        TABLEAU.push(new Vector3(4, 8, 0));
+
     }
 }

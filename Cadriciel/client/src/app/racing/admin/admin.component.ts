@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { Track } from "../../../../../common/racing/track";
+import { TrackMap } from "../../../../../common/racing/track";
 import { TrackService } from "../track-service/track.service";
 
 @Component({
@@ -9,7 +9,7 @@ import { TrackService } from "../track-service/track.service";
 })
 export class AdminComponent implements OnInit {
 
-    private tracks: Track[];
+    private tracks: TrackMap = new Array();
 
     public constructor(private trackService: TrackService) { }
 
@@ -19,16 +19,16 @@ export class AdminComponent implements OnInit {
 
     private getTracksFromServer(): void {
         this.trackService.getTrackList()
-            .subscribe((tracks: Track[]) => this.tracks = tracks);
+            .subscribe((tracks: TrackMap) => this.tracks = tracks);
     }
 
     public newTrack(trackName: string): void {
         this.trackService.newTrack(trackName)
-            .subscribe((tracks: Track[]) => this.tracks = tracks);
+            .subscribe((tracks: TrackMap) => this.tracks = tracks);
     }
 
-    public deleteTrack(id: number): void {
+    public deleteTrack(id: string): void {
         this.trackService.deleteTrack(id)
-            .subscribe((tracks: Track[]) => this.tracks = tracks);
+            .subscribe((tracks: TrackMap) => this.tracks = tracks);
     }
 }
