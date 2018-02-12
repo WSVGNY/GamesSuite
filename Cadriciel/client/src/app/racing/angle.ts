@@ -1,6 +1,5 @@
 import {
-    Vector3, Scene, AmbientLight, Mesh, Line, SphereGeometry,
-    MeshBasicMaterial, LineBasicMaterial, Geometry, BackSide
+    Vector3, Line, Geometry
 } from "three";
 
 export class Angle {

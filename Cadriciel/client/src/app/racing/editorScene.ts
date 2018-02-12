@@ -133,6 +133,14 @@ export class EditorScene {
         return connection;
     }
 
+    private checkConstraints(): void {
+        for (const connection of this.connections) {
+            connection.material = SIMPLE_LINE_MATERIAL;
+        }
+        this.checkAngle();
+        this.checkIntersection();
+    }
+
     private checkAngle(): void {
         const angles: Angle[] = new Array<Angle>();
         if (this.connections.length > 0) {
@@ -149,8 +157,6 @@ export class EditorScene {
                 const next: Line = this.connections[indexPlusOne];
                 const angle: Angle = new Angle(current, next);
                 angles.push(angle);
-                this.connections[i].material = SIMPLE_LINE_MATERIAL;
-                this.connections[indexPlusOne].material = SIMPLE_LINE_MATERIAL;
             }
             for (const angle of angles) {
                 if (angle.value < PI_OVER_4) {
@@ -161,11 +167,39 @@ export class EditorScene {
         }
     }
 
+    private checkIntersection(): void {
+        for (const line1 of this.$connections) {
+            let geo: Geometry = (line1.geometry) as Geometry;
+            const vector1: Vector3[] = geo.vertices;
+            for (const line2 of this.$connections) {
+                let intersection: boolean;
+                geo = (line2.geometry) as Geometry;
+                const vector2: Vector3[] = geo.vertices;
+                let det: number, gamma: number, lambda: number;
+                det = (vector1[1].x - vector1[0].x) * (vector2[1].y - vector2[0].y)
+                    - (vector2[1].x - vector2[0].x) * (vector1[1].y - vector1[0].y);
+                if (det === 0) {
+                    intersection = false;
+                } else {
+                    lambda = ((vector2[1].y - vector2[0].y) * (vector2[1].x - vector1[0].x)
+                        + (vector2[0].x - vector2[1].x) * (vector2[1].y - vector1[0].y)) / det;
+                    gamma = ((vector1[0].y - vector1[1].y) * (vector2[1].x - vector1[0].x)
+                        + (vector1[1].x - vector1[0].x) * (vector2[1].y - vector1[0].y)) / det;
+                    intersection = (lambda > 0 && lambda < 1) && (gamma > 0 && gamma < 1);
+                }
+                if (intersection) {
+                    line1.material = UNAUTHORIZED_LINE_MATERIAL;
+                    line2.material = UNAUTHORIZED_LINE_MATERIAL;
+                }
+            }
+        }
+    }
+
     public addConnection(firstVertex: Mesh, secondVertex: Mesh): void {
         const connection: Line = this.createConnection(firstVertex, secondVertex);
         this.connections.push(connection);
         this.scene.add(connection);
-        this.checkAngle();
+        this.checkConstraints();
     }
 
     public removeLastVertex(): void {
@@ -177,6 +211,7 @@ export class EditorScene {
             this.isComplete = false;
             this.scene.remove(this.connections.pop());
         }
+        this.checkConstraints();
     }
 
     public moveSelectedVertex(newPosition: Vector3): void {
@@ -197,7 +232,7 @@ export class EditorScene {
         this.scene.remove(this.connections[this.vertices.indexOf(vertex1)]);
         this.connections[this.vertices.indexOf(vertex1)] = new Line(LINE_GEOMETRY, SIMPLE_LINE_MATERIAL);
         this.scene.add(this.connections[this.vertices.indexOf(vertex1)]);
-        this.checkAngle();
+        this.checkConstraints();
     }
 
     public updateFollowingConnection(entry: Mesh): void {
