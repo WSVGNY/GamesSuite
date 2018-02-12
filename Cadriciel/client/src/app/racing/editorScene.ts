@@ -6,13 +6,13 @@ import {
 const WHITE: number = 0xFFFFFF;
 const PINK: number = 0xFF00BF;
 const BLUE: number = 0x0066FF;
-const RED: number = 0xFF0000;
+// const RED: number = 0xFF0000;
 const RADIUS: number = 12;
 const OUTLINE_TO_VERTEX_RATIO: number = 1.25;
 
 const VERTEX_GEOMETRY: SphereGeometry = new SphereGeometry(RADIUS, RADIUS, RADIUS);
 const SIMPLE_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: WHITE });
-const UNAUTHORIZED_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: RED });
+// const UNAUTHORIZED_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: RED });
 const START_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: PINK });
 const SIMPLE_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: BLUE });
 
