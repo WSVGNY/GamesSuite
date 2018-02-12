@@ -8,7 +8,6 @@ import { EditorScene } from "../editorScene";
 import { EditorRenderService } from "../editor-render-service/editor-render.service";
 import { MouseEventHandlerService } from "../event-handlers/mouse-event-handler.service";
 import { Vector3 } from "three";
-import { Action } from "../action";
 
 const CAMERA_Z_POSITION: number = 480;
 const CAMERA_POSITION: Vector3 = new Vector3(0, 0, CAMERA_Z_POSITION);
@@ -29,7 +28,6 @@ export class EditorComponent implements AfterViewInit {
     private currentTrackId: string = "";
     private trackChosenFromAdmin: Track;
 
-    private action: Action = Action.NONE;
     private editorCamera: EditorCamera;
     private editorScene: EditorScene;
 
@@ -89,49 +87,23 @@ export class EditorComponent implements AfterViewInit {
         this.location.back();
     }
 
-    private computeAction(): void {
-        switch (this.action) {
-            case Action.ADD_VERTEX:
-                this.editorScene.addVertex(this.mouseEventHandlerService.$mouseWorldCoordinates);
-                break;
-            case Action.REMOVE_VERTEX:
-                this.editorScene.removeLastVertex();
-                break;
-            case Action.MOVE_VERTEX:
-                this.editorScene.moveVertex(
-                    this.mouseEventHandlerService.$selectedVertexName,
-                    this.mouseEventHandlerService.$mouseWorldCoordinates
-                );
-                break;
-            case Action.SET_SELECTED_VERTEX:
-                this.mouseEventHandlerService.setSelectedVertexName(this.editorScene);
-                break;
-            case Action.COMPLETE_TRACK:
-                this.editorScene.completeTrack();
-                break;
-            default:
-        }
-    }
-
     @HostListener("window:mousedown", ["$event"])
     public onMouseDown(event: MouseEvent): void {
-        this.action = this.mouseEventHandlerService.handleMouseDown(
+       this.mouseEventHandlerService.handleMouseDown(
             event,
             this.editorCamera,
             this.editorScene
         );
-        this.computeAction();
     }
 
     @HostListener("window:mousemove", ["$event"])
     public onMouseMove(event: MouseEvent): void {
-        this.action = this.mouseEventHandlerService.handleMouseMove(event);
-        this.computeAction();
+        this.mouseEventHandlerService.handleMouseMove(event, this.editorScene);
     }
 
     @HostListener("window:mouseup", ["$event"])
     public onMouseUp(event: MouseEvent): void {
-        this.mouseEventHandlerService.handleMouseUp(event);
+        this.mouseEventHandlerService.handleMouseUp(event, this.editorScene);
     }
 
     @HostListener("window:contextmenu", ["$event"])
