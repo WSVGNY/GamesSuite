@@ -75,7 +75,6 @@ export class EditorComponent implements AfterViewInit {
         this.trackChosenFromAdmin.name = this.currentTrackName;
         this.trackService.putTrack(this.currentTrackId, this.trackChosenFromAdmin)
             .subscribe((trackFromServer: Track) => {
-                console.log(trackFromServer);
                 this.trackChosenFromAdmin = new Track(
                     trackFromServer["_name"]
                 );

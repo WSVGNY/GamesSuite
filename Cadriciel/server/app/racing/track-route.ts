@@ -34,8 +34,6 @@ export class TrackRoute {
         MongoClient.connect(this.DATABASE_URL).then((dbConnection: MongoClient) => {
             dbConnection.db("log2990").collection(this.COLLECTION)
                 .findOne({ "_id": new ObjectId(req.params.id) }).then((document: string) => {
-                    console.log(document);
-
                     res.send(new Track(
                         document["track"]["_name"]
                     ));
@@ -58,7 +56,6 @@ export class TrackRoute {
 
     public editTrack(req: Request, res: Response): void {
         MongoClient.connect(this.DATABASE_URL).then((dbConnection: MongoClient) => {
-            console.log(req.body);
             dbConnection.db("log2990").collection(this.COLLECTION)
                 .updateOne({ "_id": new ObjectId(req.params.id) }, { $set: { ["track"]: req.body } }).then(() => {
                     dbConnection.close().then(() => this.getTrackFromID(req, res));
