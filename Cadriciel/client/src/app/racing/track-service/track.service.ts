@@ -36,8 +36,8 @@ export class TrackService {
         );
     }
 
-    public putTrack(track: Track): Observable<Track> {
-        return this.http.put<Track>(this.BASE_URL + "/put/" + track.id, track, this.httpOptions).pipe(
+    public putTrack(trackId: string, track: Track): Observable<Track> {
+        return this.http.put<Track>(this.BASE_URL + "/put/" + trackId, track, this.httpOptions).pipe(
             catchError(this.handleError<Track>("putTrack"))
         );
     }

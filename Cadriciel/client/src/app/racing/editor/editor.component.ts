@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, HostListener, ElementRef, ViewChild, OnInit, Input } from "@angular/core";
+import { Component, AfterViewInit, HostListener, ElementRef, ViewChild, Input } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
 import { Track } from "../../../../../common/racing/track";
@@ -20,12 +20,13 @@ const VIEW_SIZE: number = 1000;
     styleUrls: ["./editor.component.css"]
 })
 
-export class EditorComponent implements AfterViewInit, OnInit {
+export class EditorComponent implements AfterViewInit {
 
     @ViewChild("containerEditor")
     private containerRef: ElementRef;
     @Input()
     private currentTrackName: string = "New Track";
+    private currentTrackId: string = "";
     private trackChosenFromAdmin: Track;
 
     private action: Action = Action.NONE;
@@ -39,10 +40,6 @@ export class EditorComponent implements AfterViewInit, OnInit {
         private editorRenderService: EditorRenderService,
         private mouseEventHandlerService: MouseEventHandlerService,
     ) { }
-
-    public async ngOnInit(): Promise<void> {
-        await this.getTrack();
-    }
 
     public ngAfterViewInit(): void {
         this.getTrack();
@@ -64,19 +61,24 @@ export class EditorComponent implements AfterViewInit, OnInit {
     }
 
     public getTrack(): void {
-        const id: string = this.route.snapshot.paramMap.get("id");
-        this.trackService.getTrackFromId(id)
-            .subscribe((track: Track) => {
-                this.trackChosenFromAdmin = new Track(track["id"], track["name"]);
+        this.currentTrackId = this.route.snapshot.paramMap.get("id");
+        this.trackService.getTrackFromId(this.currentTrackId)
+            .subscribe((trackFromServer: Track) => {
+                this.trackChosenFromAdmin = new Track(
+                    trackFromServer["_name"]
+                );
                 this.currentTrackName = this.trackChosenFromAdmin.name;
             });
     }
 
     public saveTrack(): void {
         this.trackChosenFromAdmin.name = this.currentTrackName;
-        this.trackService.putTrack(this.trackChosenFromAdmin)
-            .subscribe((track: Track) => {
-                this.trackChosenFromAdmin = new Track(track["id"], track["name"]);
+        this.trackService.putTrack(this.currentTrackId, this.trackChosenFromAdmin)
+            .subscribe((trackFromServer: Track) => {
+                console.log(trackFromServer);
+                this.trackChosenFromAdmin = new Track(
+                    trackFromServer["_name"]
+                );
             });
     }
 

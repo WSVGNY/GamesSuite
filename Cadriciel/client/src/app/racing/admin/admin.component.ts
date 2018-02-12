@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { Track, TrackMap } from "../../../../../common/racing/track";
+import { TrackMap } from "../../../../../common/racing/track";
 import { TrackService } from "../track-service/track.service";
 
 @Component({
