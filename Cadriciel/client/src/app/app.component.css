@@ -4,20 +4,39 @@ h1 {
     color: rgb(58, 107, 106);
 }
 
+img {
+    width:300px;
+    height:200px;
+    overflow:hidden;
+    padding-top: 30px;
+    margin-left:290px;
+    display:inline-block;
+}
+
+img + img {
+    margin-left: 200px;
+}
+
 nav a {
     padding: 5px 10px;
     text-decoration: none;
     margin-top: 10px;
+    margin-left: 380px;
     display: inline-block;
-    background-color: #eee;
+    background-color: rgba(36, 46, 44, 0.938);
+    color:rgb(174, 211, 208);
     border-radius: 4px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    transition-duration: 0.7s;
+    text-align: center;
+    width:100px;
+    font-size: 18px;
 }
-nav a:visited, a:link {
-    color: #607D8B;
-}
+
 nav a:hover {
-    color: #039be5;
-    background-color: #CFD8DC;
+    color: #0b4941;
+    background-color: rgb(186, 209, 207);
+    box-shadow: none;
 }
 nav a.active {
     color: #039be5;
@@ -25,4 +44,8 @@ nav a.active {
 
 .fa-home {
     font-size:50px;color:rgb(58, 107, 106);
+}
+
+body {
+    background-color:palevioletred;
 }
