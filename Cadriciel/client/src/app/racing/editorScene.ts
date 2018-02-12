@@ -3,6 +3,7 @@ import {
     MeshBasicMaterial, LineBasicMaterial, Geometry, BackSide
 } from "three";
 import { PI_OVER_4 } from "./constants";
+import { Angle } from "./angle";
 
 const WHITE: number = 0xFFFFFF;
 const PINK: number = 0xFF00BF;
@@ -116,8 +117,8 @@ export class EditorScene {
     }
 
     public completeTrack(): void {
-        this.addConnection(this.lastVertex, this.firstVertex);
         this.isComplete = true;
+        this.addConnection(this.lastVertex, this.firstVertex);
     }
 
     private createConnection(start: Mesh, end: Mesh): Line {
@@ -133,32 +134,28 @@ export class EditorScene {
     }
 
     private checkAngle(): void {
+        const angles: Angle[] = new Array<Angle>();
         if (this.connections.length > 0) {
-            for (let i: number = 0; i < this.connections.length - 1; i++) {
+            let limit: number;
+            this.isComplete ?
+                limit = this.connections.length :
+                limit = this.connections.length - 1;
+            for (let i: number = 0; i < limit; i++) {
                 let indexPlusOne: number;
                 i === this.connections.length - 1 ?
                     indexPlusOne = 0 :
                     indexPlusOne = i + 1;
                 const current: Line = this.connections[i];
-                let geo: Geometry = (current.geometry) as Geometry;
-                const currentVec: Vector3[] = geo.vertices;
                 const next: Line = this.connections[indexPlusOne];
-                geo = (next.geometry) as Geometry;
-                const nextVec: Vector3[] = geo.vertices;
-                const vertex1: number = Math.sqrt((nextVec[0].x - currentVec[0].x) * (nextVec[0].x - currentVec[0].x)
-                    + (nextVec[0].y - currentVec[0].y) * (nextVec[0].y - currentVec[0].y));
-                const vertex2: number = Math.sqrt((nextVec[0].x - nextVec[1].x) * (nextVec[0].x - nextVec[1].x)
-                    + (nextVec[0].y - nextVec[1].y) * (nextVec[0].y - nextVec[1].y));
-                const vertex3: number = Math.sqrt((nextVec[1].x - currentVec[0].x) * (nextVec[1].x - currentVec[0].x)
-                    + (nextVec[1].y - currentVec[0].y) * (nextVec[1].y - currentVec[0].y));
-                const angle: number = Math.acos((vertex2 * vertex2 + vertex1 * vertex1 - vertex3 * vertex3)
-                    / ((vertex2 * vertex1) + (vertex2 * vertex1)));
-                console.log(i + ") " + angle);
-                if (angle > PI_OVER_4) {
-                    this.connections[indexPlusOne].material = SIMPLE_LINE_MATERIAL;
-                } else {
-                    this.connections[i].material = UNAUTHORIZED_LINE_MATERIAL;
-                    this.connections[indexPlusOne].material = UNAUTHORIZED_LINE_MATERIAL;
+                const angle: Angle = new Angle(current, next);
+                angles.push(angle);
+                this.connections[i].material = SIMPLE_LINE_MATERIAL;
+                this.connections[indexPlusOne].material = SIMPLE_LINE_MATERIAL;
+            }
+            for (const angle of angles) {
+                if (angle.value < PI_OVER_4) {
+                    angle.line1.material = UNAUTHORIZED_LINE_MATERIAL;
+                    angle.line2.material = UNAUTHORIZED_LINE_MATERIAL;
                 }
             }
         }
