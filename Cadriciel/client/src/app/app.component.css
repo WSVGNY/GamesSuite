@@ -1,5 +1,7 @@
 h1 {
     text-align: center;
+    margin-top: -40px;
+    color: rgb(58, 107, 106);
 }
 
 nav a {
@@ -19,4 +21,8 @@ nav a:hover {
 }
 nav a.active {
     color: #039be5;
+}
+
+.fa-home {
+    font-size:50px;color:rgb(58, 107, 106);
 }
