@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import {
-    PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, /*Matrix4, Vector3,*/
+    PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, /*Matrix4,*/
     MeshBasicMaterial, Mesh, PlaneGeometry, Color, TextureLoader,
     MeshLambertMaterial, VertexColors, Texture, FogExp2, Geometry, Vector3
 } from "three";
@@ -82,6 +82,7 @@ export class RenderService {
             NEAR_CLIPPING_PLANE,
             FAR_CLIPPING_PLANE
         );
+
         this.camera.name = PLAYER_CAMERA;
         this.camera.position.z = INITIAL_CAMERA_POSITION_Z;
         this.camera.position.y = INITIAL_CAMERA_POSITION_Y;

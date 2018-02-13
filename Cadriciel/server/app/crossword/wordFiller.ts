@@ -7,6 +7,7 @@ import * as requestPromise from "request-promise-native";
 import { Difficulty } from "../../../common/crossword/difficulty";
 import { ResponseWordFromAPI } from "../../../common/communication/responseWordFromAPI";
 import { WordConstraint } from "./wordConstraint";
+// import { CrosswordComponent } from "../../../client/src/app/crossword/crossword.component";
 
 const VERTICAL: boolean = false;
 const HORIZONTAL: boolean = true;
@@ -27,6 +28,8 @@ export class WordFiller {
     private filledWords: Word[];
     private backTrackCounter: number = 0;
     private backTrackingWord: Word;
+    public isGenerated: boolean = false;
+   // public crossword: CrosswordComponent;
 
     public constructor(
         private SIZE_GRID_X: number,
@@ -61,6 +64,8 @@ export class WordFiller {
         if (state === Token.Exit) {
             return false;
         }
+        this.isGenerated = true;
+       // this.crossword.hide();
 
         return true;
     }
