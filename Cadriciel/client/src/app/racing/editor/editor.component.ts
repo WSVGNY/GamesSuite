@@ -1,7 +1,7 @@
 import { Component, AfterViewInit, HostListener, ElementRef, ViewChild, Input } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
-import { Track } from "../../../../../common/racing/track";
+import { Track, ITrack } from "../../../../../common/racing/track";
 import { TrackService } from "../track-service/track.service";
 import { EditorCamera } from "../editorCamera";
 import { EditorScene } from "../editorScene";
@@ -61,10 +61,9 @@ export class EditorComponent implements AfterViewInit {
     public getTrack(): void {
         this.currentTrackId = this.route.snapshot.paramMap.get("id");
         this.trackService.getTrackFromId(this.currentTrackId)
-            .subscribe((trackFromServer: Track) => {
-                this.trackChosenFromAdmin = new Track(
-                    trackFromServer["_name"]
-                );
+            .subscribe((trackFromServer: string) => {
+                const iTrack: ITrack = JSON.parse(JSON.stringify(trackFromServer));
+                this.trackChosenFromAdmin = new Track(iTrack);
                 this.currentTrackName = this.trackChosenFromAdmin.name;
             });
     }
@@ -72,10 +71,9 @@ export class EditorComponent implements AfterViewInit {
     public saveTrack(): void {
         this.trackChosenFromAdmin.name = this.currentTrackName;
         this.trackService.putTrack(this.currentTrackId, this.trackChosenFromAdmin)
-            .subscribe((trackFromServer: Track) => {
-                this.trackChosenFromAdmin = new Track(
-                    trackFromServer["_name"]
-                );
+            .subscribe((trackFromServer: string) => {
+                const iTrack: ITrack = JSON.parse(JSON.stringify(trackFromServer));
+                this.trackChosenFromAdmin = new Track(iTrack);
             });
     }
 
@@ -89,7 +87,7 @@ export class EditorComponent implements AfterViewInit {
 
     @HostListener("window:mousedown", ["$event"])
     public onMouseDown(event: MouseEvent): void {
-       this.mouseEventHandlerService.handleMouseDown(
+        this.mouseEventHandlerService.handleMouseDown(
             event,
             this.editorCamera,
             this.editorScene
