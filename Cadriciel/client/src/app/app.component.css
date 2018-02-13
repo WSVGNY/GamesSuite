@@ -4,16 +4,22 @@ h1 {
     color: rgb(58, 107, 106);
 }
 
-img {
+#logo{
+    width: 300px;
+    margin-left: 550px;
+    padding-bottom:15px;
+
+}
+
+#image1, #image2 {
     width:300px;
     height:200px;
-    overflow:hidden;
     padding-top: 30px;
     margin-left:290px;
     display:inline-block;
 }
 
-img + img {
+#image2 {
     margin-left: 200px;
 }
 
@@ -43,9 +49,9 @@ nav a.active {
 }
 
 .fa-home {
-    font-size:50px;color:rgb(58, 107, 106);
+    font-size:40px;color:rgb(58, 107, 106);
+    position: absolute;
+    top:20px;
 }
 
-body {
-    background-color:palevioletred;
-}
+
