@@ -39,8 +39,8 @@ export class Grid {
 
                 const blackTiledGrid: BlackTiledGrid = new BlackTiledGrid(this.SIZE_GRID_X, this.SIZE_GRID_Y, this.grid);
 
-                if (blackTiledGrid.$words !== undefined) {
-                    this.words = blackTiledGrid.$words;
+                if (blackTiledGrid.words !== undefined) {
+                    this.words = blackTiledGrid.words;
                     break;
                 }
             }

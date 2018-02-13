@@ -4,29 +4,29 @@ import { Word } from "./word";
 
 export class GridBox {
 
-    private char: Char;
-    private constraints: Word[] = new Array<Word>();
-    private difficulty: number = 0;
+    private _char: Char;
+    private _constraints: Word[] = new Array<Word>();
+    private _difficulty: number = 0;
 
-    public constructor(private id: Coordinate, private black: boolean) {
+    public constructor(private _id: Coordinate, private _black: boolean) {
     };
 
-    public get $char(): Char {
-        return this.char;
+    public get char(): Char {
+        return this._char;
     }
 
-    public set $char(value: Char) {
-        this.char = value;
+    public set char(value: Char) {
+        this._char = value;
     }
 
     public addConstraint(word: Word) {
-        this.constraints[this.difficulty] = word;
-        this.difficulty++;
+        this._constraints[this._difficulty] = word;
+        this._difficulty++;
     }
 
     public getConstraint(isHorizontal: boolean): Word {
-        for (const constraint of this.constraints) {
-            if (constraint.$horizontal === isHorizontal) {
+        for (const constraint of this._constraints) {
+            if (constraint.horizontal === isHorizontal) {
                 return constraint;
             }
         }
@@ -34,26 +34,26 @@ export class GridBox {
     }
 
     public eliminateConstraints(): void {
-        this.constraints = undefined;
+        this._constraints = undefined;
     }
 
     public getWord(): Word {
-        return this.constraints[0];
+        return this._constraints[0];
     }
-    public get $difficulty(): number {
-        return this.difficulty;
-    }
-
-    public get $id(): Coordinate {
-        return this.id;
+    public get difficulty(): number {
+        return this._difficulty;
     }
 
-    public get $black(): boolean {
-        return this.black;
+    public get id(): Coordinate {
+        return this._id;
     }
 
-    public set $black(black: boolean) {
-        this.black = black;
+    public get black(): boolean {
+        return this._black;
+    }
+
+    public set black(black: boolean) {
+        this._black = black;
     }
 
 
