@@ -2,7 +2,7 @@ import {
     Vector3, Scene, AmbientLight, Mesh, Line, SphereGeometry,
     MeshBasicMaterial, LineBasicMaterial, Geometry, BackSide
 } from "three";
-import { PI_OVER_4, WHITE, RED, PINK, BLUE } from "./constants";
+import { PI_OVER_4, WHITE, RED, PINK, BLUE, PI_OVER_2 } from "./constants";
 import { Angle } from "./angle";
 
 const RADIUS: number = 12;
@@ -16,7 +16,6 @@ const TRACK_WIDTH: number = 150;
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
 
 export class EditorScene {
-
     private scene: Scene;
     private vertices: Array<Mesh>;
     private connections: Array<Line>;
@@ -235,26 +234,44 @@ export class EditorScene {
             let geo: Geometry = (line1.geometry) as Geometry;
             const vector1: Vector3[] = geo.vertices;
             for (const line2 of this.$connections) {
-                let intersection: boolean;
-                geo = (line2.geometry) as Geometry;
-                const vector2: Vector3[] = geo.vertices;
-                let det: number, gamma: number, lambda: number;
-                det = (vector1[1].x - vector1[0].x) * (vector2[1].y - vector2[0].y)
-                    - (vector2[1].x - vector2[0].x) * (vector1[1].y - vector1[0].y);
-                if (det === 0) {
-                    intersection = false;
-                } else {
-                    lambda = ((vector2[1].y - vector2[0].y) * (vector2[1].x - vector1[0].x)
-                        + (vector2[0].x - vector2[1].x) * (vector2[1].y - vector1[0].y)) / det;
-                    gamma = ((vector1[0].y - vector1[1].y) * (vector2[1].x - vector1[0].x)
-                        + (vector1[1].x - vector1[0].x) * (vector2[1].y - vector1[0].y)) / det;
-                    intersection = (lambda > 0 && lambda < 1) && (gamma > 0 && gamma < 1);
-                }
+                const intersection: boolean = this.checkIntersectionWithOffset(vector1, line1, line2, 0);
                 if (intersection) {
                     line1.material = UNAUTHORIZED_LINE_MATERIAL;
                     line2.material = UNAUTHORIZED_LINE_MATERIAL;
                 }
             }
         }
+    }
+
+    private checkIntersectionWithOffset(vector1: Vector3[], line1: Line, line2: Line, offset: number): boolean {
+        const vector3 = this.translateVector(vector1, offset);
+        let intersects: boolean;
+        let geo = (line2.geometry) as Geometry;
+        const vector2: Vector3[] = geo.vertices;
+        const vector4 = this.translateVector(vector2, offset);
+        let det: number, gamma: number, lambda: number;
+        det = (vector3[1].x - vector3[0].x) * (vector4[1].y - vector4[0].y)
+            - (vector4[1].x - vector4[0].x) * (vector3[1].y - vector3[0].y);
+        if (det === 0) {
+            intersects = false;
+        } else {
+            lambda = ((vector4[1].y - vector4[0].y) * (vector4[1].x - vector3[0].x)
+                + (vector4[0].x - vector4[1].x) * (vector4[1].y - vector3[0].y)) / det;
+            gamma = ((vector3[0].y - vector3[1].y) * (vector4[1].x - vector3[0].x)
+                + (vector3[1].x - vector3[0].x) * (vector4[1].y - vector3[0].y)) / det;
+            intersects = (lambda > 0 && lambda < 1) && (gamma > 0 && gamma < 1);
+        }
+        return intersects;
+    }
+
+    private translateVector(vector: Vector3, offset: number): Vector3[]{
+        const perpendicularVector: Vector3 = new Vector3(vector[1].x-vector[0].x, vector[1].y-vector[0].y, 0);
+        perpendicularVector.applyAxisAngle(perpendicularVector.normalize(), PI_OVER_2*(offset/Math.abs(offset)));
+        perpendicularVector.normalize();
+        const vector3: Vector3[] = new Array<Vector3>(vector.length);
+        vector3[0] = new Vector3(vector[0].x+perpendicularVector.x, vector[0].y+perpendicularVector.y);
+        vector3[1] = new Vector3(vector[1].x+perpendicularVector.x, vector[1].y+perpendicularVector.y);
+
+        return vector3;
     }
 }
