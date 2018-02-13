@@ -6,17 +6,18 @@ h1 {
 
 #logo{
     width: 300px;
-    margin-left: 550px;
-    padding-bottom:15px;
-
+    position: absolute;
+    left:40%;
+    margin: 0 auto;
 }
 
 #image1, #image2 {
     width:300px;
     height:200px;
-    padding-top: 30px;
-    margin-left:290px;
+    padding-top: 2%;
+    margin-left:19%;
     display:inline-block;
+    size:80%;
 }
 
 #image2 {
@@ -26,8 +27,8 @@ h1 {
 nav a {
     padding: 5px 10px;
     text-decoration: none;
-    margin-top: 10px;
-    margin-left: 380px;
+    margin-top: 120px;;
+    margin-left: 26%;
     display: inline-block;
     background-color: rgba(36, 46, 44, 0.938);
     color:rgb(174, 211, 208);
