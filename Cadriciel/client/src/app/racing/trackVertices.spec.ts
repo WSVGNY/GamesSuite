@@ -28,7 +28,7 @@ describe("TrackVertices", () => {
     it("should remove the last point added to the scene", ()  => {
         const vertex: Mesh = new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
         vertex.position.set(0, 0, 0 );
-        trackVertices["vertices"].push(vertex);
+        trackVertices["_vertices"].push(vertex);
         scene.add(vertex);
         trackVertices.removeLastVertex();
         expect(scene.children.length).toBeFalsy();
@@ -39,7 +39,7 @@ describe("TrackVertices", () => {
         LINE_GEOMETRY.vertices.push(new Vector3(0, 0, 0));
         LINE_GEOMETRY.vertices.push(new Vector3(1, 1, 0));
         const connection: Line = new Line(LINE_GEOMETRY, LINE_MATERIAL);
-        trackVertices["connections"].push(connection);
+        trackVertices["_connections"].push(connection);
         scene.add(connection);
         trackVertices.removeLastVertex();
         expect(scene.children.length).toBeFalsy();
@@ -49,7 +49,7 @@ describe("TrackVertices", () => {
         const vertex: Mesh = new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
         vertex.position.set(0, 0, 0 );
         vertex.name = "vertex0";
-        trackVertices["vertices"].push(vertex);
+        trackVertices["_vertices"].push(vertex);
         scene.add(vertex);
         const VXY: number = 2;
         trackVertices.setVertexPosition(scene.getObjectByName("vertex0") as Mesh, new Vector3(VXY, VXY, 0));

@@ -45,7 +45,7 @@ export class EditorComponent implements AfterViewInit {
         this.editorCamera.setPosition(CAMERA_POSITION);
         this.editorScene = new EditorScene();
         this.editorRenderService
-            .initialize(this.containerRef.nativeElement, this.editorScene.$scene, this.editorCamera.$camera)
+            .initialize(this.containerRef.nativeElement, this.editorScene.scene, this.editorCamera.camera)
             .then(/* do nothing */)
             .catch((err) => console.error(err));
         this.mouseEventHandlerService

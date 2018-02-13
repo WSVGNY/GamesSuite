@@ -6,7 +6,7 @@ const NEAR_CLIPPING_PLANE: number = 1;
 
 export class EditorCamera {
 
-    private camera: OrthographicCamera;
+    private _camera: OrthographicCamera;
     private aspectRatio: number = 0;
     private viewSize: number = 0;
 
@@ -17,7 +17,7 @@ export class EditorCamera {
     }
 
     private initialise(): void {
-        this.camera = new OrthographicCamera(
+        this._camera = new OrthographicCamera(
             -this.aspectRatio * this.viewSize * HALF,
             this.aspectRatio * this.viewSize * HALF,
             this.viewSize * HALF,
@@ -27,10 +27,10 @@ export class EditorCamera {
     }
 
     public setPosition(position: Vector3): void {
-        this.camera.position.set(position.x, position.y, position.z);
+        this._camera.position.set(position.x, position.y, position.z);
     }
 
-    public get $camera(): OrthographicCamera {
-        return this.camera;
+    public get camera(): OrthographicCamera {
+        return this._camera;
     }
 }
