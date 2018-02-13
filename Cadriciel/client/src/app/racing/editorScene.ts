@@ -26,6 +26,7 @@ export class EditorScene {
     private selectedVertex: Mesh;
     private nbVertices: number = 0;
     private isComplete: boolean = false;
+    private angles: Array<Angle>;
 
     public constructor() {
         this.scene = new Scene();
@@ -203,7 +204,7 @@ export class EditorScene {
 
     // https://stackoverflow.com/questions/17763392/how-to-calculate-in-javascript-angle-between-3-points
     private checkAngle(): void {
-        const angles: Angle[] = new Array<Angle>();
+        this.angles = new Array<Angle>();
         if (this.connections.length > 0) {
             let limit: number;
             this.isComplete ?
@@ -217,9 +218,9 @@ export class EditorScene {
                 const current: Line = this.connections[i];
                 const next: Line = this.connections[indexPlusOne];
                 const angle: Angle = new Angle(current, next);
-                angles.push(angle);
+                this.angles.push(angle);
             }
-            for (const angle of angles) {
+            for (const angle of this.angles) {
                 if (angle.value < PI_OVER_4) {
                     angle.line1.material = UNAUTHORIZED_LINE_MATERIAL;
                     angle.line2.material = UNAUTHORIZED_LINE_MATERIAL;
