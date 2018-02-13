@@ -1,25 +1,25 @@
 export class ResponseWordFromAPI {
-    private word: string;
-    private definition: string;
+    private _word: string;
+    private _definition: string;
 
-	public get $word(): string {
-		return this.word;
+	public get word(): string {
+		return this._word;
 	}
 
-	public set $word(value: string) {
-		this.word = value;
+	public set word(value: string) {
+		this._word = value;
 	}
 
-	public get $definition(): string {
-		return this.definition;
+	public get definition(): string {
+		return this._definition;
 	}
 
-	public set $definition(value: string) {
-		this.definition = value;
+	public set definition(value: string) {
+		this._definition = value;
     }
     
     public constructor() {
-        this.word = "";
-        this.definition = "";
+        this._word = "";
+        this._definition = "";
     }
 }
