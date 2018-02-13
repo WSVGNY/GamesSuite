@@ -198,9 +198,9 @@ describe("LEXICON TESTS", () => {
         it("if difficulty is HARD, returns the second definition", (done: MochaDone) => {
             let wordFromService: ResponseWordFromAPI;
             let wordFromDataMuse: string[];
-            requestPromise(SERVICE_BASE_URL + "bust/" + Difficulty.Hard).then((responseFromService: string) => {
+            requestPromise(SERVICE_BASE_URL + "bail/" + Difficulty.Hard).then((responseFromService: string) => {
                 wordFromService = JSON.parse(responseFromService);
-                requestPromise(DATAMUSE_BASE_URL + "bust").then((responseFromDataMuse: string) => {
+                requestPromise(DATAMUSE_BASE_URL + "bail").then((responseFromDataMuse: string) => {
                     wordFromDataMuse = JSON.parse(responseFromDataMuse);
                     assert(wordFromDataMuse[0]["defs"][1] === wordFromService["definition"]);
                     done();
@@ -269,9 +269,9 @@ describe("LEXICON TESTS", () => {
         it("if difficulty is HARD, frequency­ < 10", (done: MochaDone) => {
             let wordFromService: ResponseWordFromAPI;
             let wordFromDataMuse: string[];
-            requestPromise(SERVICE_BASE_URL + "bust/" + Difficulty.Hard).then((responseFromService: string) => {
+            requestPromise(SERVICE_BASE_URL + "bail/" + Difficulty.Hard).then((responseFromService: string) => {
                 wordFromService = JSON.parse(responseFromService);
-                requestPromise(DATAMUSE_BASE_URL + "bust").then((responseFromDataMuse: string) => {
+                requestPromise(DATAMUSE_BASE_URL + "bail").then((responseFromDataMuse: string) => {
                     wordFromDataMuse = JSON.parse(responseFromDataMuse);
                     const frequency: number = wordFromDataMuse[0]["tags"][0].substring(UNWANTED_CHARACTERS_LENGTH);
                     assert(
