@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { TrackMap } from "../../../../../common/racing/track";
+import { Track, ITrack, TrackMapElement } from "../../../../../common/racing/track";
 import { TrackService } from "../track-service/track.service";
 
 @Component({
@@ -9,7 +9,7 @@ import { TrackService } from "../track-service/track.service";
 })
 export class AdminComponent implements OnInit {
 
-    private tracks: TrackMap = new Array();
+    private tracks: TrackMapElement[] = new Array();
 
     public constructor(private trackService: TrackService) { }
 
@@ -19,16 +19,43 @@ export class AdminComponent implements OnInit {
 
     private getTracksFromServer(): void {
         this.trackService.getTrackList()
-            .subscribe((tracks: TrackMap) => this.tracks = tracks);
+            .subscribe((tracksFromServer: string) => {
+                this.tracks = [];
+                JSON.parse(tracksFromServer).forEach((document: string) => {
+                    const iTrack: ITrack = JSON.parse(JSON.stringify(document));
+                    this.tracks.push({
+                        "key": iTrack._id,
+                        "value": new Track(iTrack)
+                    });
+                });
+            });
     }
 
     public newTrack(trackName: string): void {
         this.trackService.newTrack(trackName)
-            .subscribe((tracks: TrackMap) => this.tracks = tracks);
+            .subscribe((tracksFromServer: string) => {
+                this.tracks = [];
+                JSON.parse(tracksFromServer).forEach((document: string) => {
+                    const iTrack: ITrack = JSON.parse(JSON.stringify(document));
+                    this.tracks.push({
+                        "key": iTrack._id,
+                        "value": new Track(iTrack)
+                    });
+                });
+            });
     }
 
     public deleteTrack(id: string): void {
         this.trackService.deleteTrack(id)
-            .subscribe((tracks: TrackMap) => this.tracks = tracks);
+            .subscribe((tracksFromServer: string) => {
+                this.tracks = [];
+                JSON.parse(tracksFromServer).forEach((document: string) => {
+                    const iTrack: ITrack = JSON.parse(JSON.stringify(document));
+                    this.tracks.push({
+                        "key": iTrack._id,
+                        "value": new Track(iTrack)
+                    });
+                });
+            });
     }
 }
