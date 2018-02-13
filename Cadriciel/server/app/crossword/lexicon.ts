@@ -20,6 +20,7 @@ export class Lexicon {
         if (definitions === undefined || definitions === "") {
             return "";
         }
+
         for (let i: number = word["defs"].length - 1; i >= 0; i--) {
             let counter: number = word["defs"].length;
             // s'assurer que le mot ne soit ni un adverbe ni un adjectif
@@ -31,6 +32,7 @@ export class Lexicon {
                 }
             }
         }
+
         if (this.difficulty === Difficulty.Easy) {
             return definitions[0];
         } else {
@@ -114,7 +116,7 @@ export class Lexicon {
     }
 
     public getWordFromConstraint(req: Request, res: Response): void {
-        this.difficulty = req.params.difficulty;
+        this.difficulty = req.params.difficulty.toUpperCase();
         requestPromise(this.BASE_URL + "sp=" + this.removeAccent(req.params.constraints) + "&md=fd").then(
             (result: string) => {
                 const words: string[] = JSON.parse(result.toString());

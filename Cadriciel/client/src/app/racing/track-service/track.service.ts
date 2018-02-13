@@ -5,7 +5,7 @@ import { Observable } from "rxjs/Observable";
 import { catchError } from "rxjs/operators";
 import { of } from "rxjs/observable/of";
 
-import { Track, TrackMap } from "../../../../../common/racing/track";
+import { Track } from "../../../../../common/racing/track";
 
 @Injectable()
 export class TrackService {
@@ -18,33 +18,33 @@ export class TrackService {
 
     public constructor(private http: HttpClient) { }
 
-    public getTrackList(): Observable<TrackMap> {
-        return this.http.get<TrackMap>(this.BASE_URL).pipe(
-            catchError(this.handleError<TrackMap>("getTrackList"))
+    public getTrackList(): Observable<string> {
+        return this.http.get<string>(this.BASE_URL).pipe(
+            catchError(this.handleError<string>("getTrackList"))
         );
     }
 
-    public getTrackFromId(id: string): Observable<Track> {
-        return this.http.get<Track>(this.BASE_URL + "/" + id).pipe(
-            catchError(this.handleError<Track>("getTrackFromId"))
+    public getTrackFromId(id: string): Observable<string> {
+        return this.http.get<string>(this.BASE_URL + "/" + id).pipe(
+            catchError(this.handleError<string>("getTrackFromId"))
         );
     }
 
-    public newTrack(trackName: string): Observable<TrackMap> {
-        return this.http.post<TrackMap>(this.BASE_URL + "/new/" + trackName, this.httpOptions).pipe(
-            catchError(this.handleError<TrackMap>("newTrack"))
+    public newTrack(trackName: string): Observable<string> {
+        return this.http.post<string>(this.BASE_URL + "/new/" + trackName, this.httpOptions).pipe(
+            catchError(this.handleError<string>("newTrack"))
         );
     }
 
-    public putTrack(trackId: string, track: Track): Observable<Track> {
-        return this.http.put<Track>(this.BASE_URL + "/put/" + trackId, track, this.httpOptions).pipe(
-            catchError(this.handleError<Track>("putTrack"))
+    public putTrack(trackId: string, track: Track): Observable<string> {
+        return this.http.put<string>(this.BASE_URL + "/put/" + trackId, track, this.httpOptions).pipe(
+            catchError(this.handleError<string>("putTrack"))
         );
     }
 
-    public deleteTrack(trackId: string): Observable<TrackMap> {
-        return this.http.delete<TrackMap>(this.BASE_URL + "/delete/" + trackId, this.httpOptions).pipe(
-            catchError(this.handleError<TrackMap>("deleteTrack"))
+    public deleteTrack(trackId: string): Observable<string> {
+        return this.http.delete<string>(this.BASE_URL + "/delete/" + trackId, this.httpOptions).pipe(
+            catchError(this.handleError<string>("deleteTrack"))
         );
     }
 
