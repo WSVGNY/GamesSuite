@@ -178,10 +178,14 @@ export class RenderService {
         const trackWall: Mesh = new Mesh(this.createGeometry(), new MeshLambertMaterial({ map: texture1, vertexColors: VertexColors }));
         // trackWall.position = new Vector3(0 , 1 , 0);
         const trackWall2: Mesh = new Mesh(this.createGeometry(), new MeshLambertMaterial({ map: texture2, vertexColors: VertexColors }));
-        trackWall.translate(5, new Vector3(-1, 1, -1));
-        trackWall.rotateY(3.14 / 2);
+        trackWall.translate(5, new Vector3(-1, 0, 0));
+        trackWall.rotateY(-3.14 / 2);
+        trackWall.rotateX(-3.14 / 2);
+        trackWall.rotateZ(3.14 / 2);
+
+        trackWall.translate(5, new Vector3(0, 1, 0));
         trackWall2.translate(5, new Vector3(1, 1, 1));
-        trackWall2.rotateY(3.14 / 2);
+        trackWall2.rotateY(-3.14 / 2);
         this.scene.add(trackWall);
         this.scene.add(trackWall2);
     }
@@ -190,7 +194,7 @@ export class RenderService {
         // const matrix: Matrix4 = new Matrix4();
         // const light: Color = new Color(0xFFFFFF);
         // const shadow: Color = new Color(0x505050);
-        const wallGeometry: PlaneGeometry = new PlaneGeometry(50, 10);
+        const wallGeometry: PlaneGeometry = new PlaneGeometry(100, 10);
         // wallGeometry.rotateY(Math.PI / 2);
 
         return wallGeometry;
@@ -199,7 +203,7 @@ export class RenderService {
     private async load1(): Promise<Texture> {
         return new Promise<Texture>((resolve, reject) => {
             const loader: TextureLoader = new TextureLoader();
-            loader.load("assets/textures/world.png", (object) => {
+            loader.load("assets/textures/green.png", (object) => {
                 resolve(object);
             });
         });

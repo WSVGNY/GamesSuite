@@ -2,26 +2,22 @@ import {
     Vector3, Scene, AmbientLight, Mesh, Line, SphereGeometry,
     MeshBasicMaterial, LineBasicMaterial, Geometry, BackSide
 } from "three";
+import { PI_OVER_4, WHITE, RED, PINK, BLUE } from "./constants";
+import { Angle } from "./angle";
 
-const WHITE: number = 0xFFFFFF;
-const PINK: number = 0xFF00BF;
-const BLUE: number = 0x0066FF;
-// const RED: number = 0xFF0000;
 const RADIUS: number = 12;
 const OUTLINE_TO_VERTEX_RATIO: number = 1.25;
-
 const VERTEX_GEOMETRY: SphereGeometry = new SphereGeometry(RADIUS, RADIUS, RADIUS);
 const SIMPLE_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: WHITE });
-// const UNAUTHORIZED_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: RED });
+const UNAUTHORIZED_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: RED });
 const START_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: PINK });
 const SIMPLE_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: BLUE });
-
+const TRACK_WIDTH: number = 150;
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
 
 export class EditorScene {
 
     private scene: Scene;
-    // private editedTrack: TrackVertices;
     private vertices: Array<Mesh>;
     private connections: Array<Line>;
 
@@ -60,10 +56,6 @@ export class EditorScene {
 
     public get $firstVertex(): Mesh {
         return this.firstVertex;
-    }
-
-    public get $lastVertex(): Mesh {
-        return this.lastVertex;
     }
 
     public get $selectedVertex(): Mesh {
@@ -114,11 +106,6 @@ export class EditorScene {
         this.lastVertex = vertex;
     }
 
-    public completeTrack(): void {
-        this.addConnection(this.lastVertex, this.firstVertex);
-        this.isComplete = true;
-    }
-
     private createConnection(start: Mesh, end: Mesh): Line {
         const LINE_GEOMETRY: Geometry = new Geometry();
         LINE_GEOMETRY.vertices.push(new Vector3(start.position.x, start.position.y, 0));
@@ -131,33 +118,16 @@ export class EditorScene {
         return connection;
     }
 
-    private checkAngle(): void {
-        if (this.connections.length > 0) {
-            for (let i: number = 1; i < this.connections.length; i++) {
-                const previous: Line = this.connections[i - 1];
-                let geo: Geometry = (previous.geometry) as Geometry;
-                const previousVec: Vector3[] = geo.vertices;
-                const current: Line = this.connections[i];
-                geo = (current.geometry) as Geometry;
-                const currentVec: Vector3[] = geo.vertices;
-                const point1: number = Math.sqrt((currentVec[0].x - previousVec[0].x) * (currentVec[0].x - previousVec[0].x)
-                    + (currentVec[0].y - previousVec[0].y) * (currentVec[0].y - previousVec[0].y));
-                const point2: number = Math.sqrt((currentVec[0].x - currentVec[1].x) * (currentVec[0].x - currentVec[1].x)
-                    + (currentVec[0].y - currentVec[1].y) * (currentVec[0].y - currentVec[1].y));
-                const point3: number = Math.sqrt((currentVec[1].x - previousVec[0].x) * (currentVec[1].x - previousVec[0].x)
-                    + (currentVec[1].y - previousVec[0].y) * (currentVec[1].y - previousVec[0].y));
-                const res: number = Math.acos((point2 * point2 + point1 * point1 - point3 * point3)
-                    / ((point2 * point1) + (point2 * point1)));
-                console.log(res);
-            }
-        }
+    public completeTrack(): void {
+        this.isComplete = true;
+        this.addConnection(this.lastVertex, this.firstVertex);
     }
 
     public addConnection(firstVertex: Mesh, secondVertex: Mesh): void {
         const connection: Line = this.createConnection(firstVertex, secondVertex);
         this.connections.push(connection);
         this.scene.add(connection);
-        this.checkAngle();
+        this.checkConstraints();
     }
 
     public removeLastVertex(): void {
@@ -169,6 +139,7 @@ export class EditorScene {
             this.isComplete = false;
             this.scene.remove(this.connections.pop());
         }
+        this.checkConstraints();
     }
 
     public moveSelectedVertex(newPosition: Vector3): void {
@@ -189,8 +160,7 @@ export class EditorScene {
         this.scene.remove(this.connections[this.vertices.indexOf(vertex1)]);
         this.connections[this.vertices.indexOf(vertex1)] = new Line(LINE_GEOMETRY, SIMPLE_LINE_MATERIAL);
         this.scene.add(this.connections[this.vertices.indexOf(vertex1)]);
-        this.checkAngle();
-
+        this.checkConstraints();
     }
 
     public updateFollowingConnection(entry: Mesh): void {
@@ -208,6 +178,82 @@ export class EditorScene {
         } else if (this.vertices.indexOf(entry) - 1 >= 0) {
             const previousVertex: Mesh = this.vertices[this.vertices.indexOf(entry) - 1];
             this.updateConnection(previousVertex, entry);
+        }
+    }
+    private checkConstraints(): void {
+        for (const connection of this.connections) {
+            connection.material = SIMPLE_LINE_MATERIAL;
+        }
+        this.checkLength();
+        this.checkAngle();
+        this.checkIntersection();
+    }
+
+    private checkLength(): void {
+        for (const connection of this.connections) {
+            const geometry: Geometry = (connection.geometry) as Geometry;
+            const vector1: Vector3[] = geometry.vertices;
+            const length: number = Math.sqrt((vector1[1].x - vector1[0].x) * (vector1[1].x - vector1[0].x)
+                + (vector1[1].y - vector1[0].y) * (vector1[1].y - vector1[0].y));
+            if (length < TRACK_WIDTH) {
+                connection.material = UNAUTHORIZED_LINE_MATERIAL;
+            }
+        }
+    }
+
+    // https://stackoverflow.com/questions/17763392/how-to-calculate-in-javascript-angle-between-3-points
+    private checkAngle(): void {
+        const angles: Angle[] = new Array<Angle>();
+        if (this.connections.length > 0) {
+            let limit: number;
+            this.isComplete ?
+                limit = this.connections.length :
+                limit = this.connections.length - 1;
+            for (let i: number = 0; i < limit; i++) {
+                let indexPlusOne: number;
+                i === this.connections.length - 1 ?
+                    indexPlusOne = 0 :
+                    indexPlusOne = i + 1;
+                const current: Line = this.connections[i];
+                const next: Line = this.connections[indexPlusOne];
+                const angle: Angle = new Angle(current, next);
+                angles.push(angle);
+            }
+            for (const angle of angles) {
+                if (angle.value < PI_OVER_4) {
+                    angle.line1.material = UNAUTHORIZED_LINE_MATERIAL;
+                    angle.line2.material = UNAUTHORIZED_LINE_MATERIAL;
+                }
+            }
+        }
+    }
+
+    // https://stackoverflow.com/questions/9043805/test-if-two-lines-intersect-javascript-function
+    private checkIntersection(): void {
+        for (const line1 of this.$connections) {
+            let geo: Geometry = (line1.geometry) as Geometry;
+            const vector1: Vector3[] = geo.vertices;
+            for (const line2 of this.$connections) {
+                let intersection: boolean;
+                geo = (line2.geometry) as Geometry;
+                const vector2: Vector3[] = geo.vertices;
+                let det: number, gamma: number, lambda: number;
+                det = (vector1[1].x - vector1[0].x) * (vector2[1].y - vector2[0].y)
+                    - (vector2[1].x - vector2[0].x) * (vector1[1].y - vector1[0].y);
+                if (det === 0) {
+                    intersection = false;
+                } else {
+                    lambda = ((vector2[1].y - vector2[0].y) * (vector2[1].x - vector1[0].x)
+                        + (vector2[0].x - vector2[1].x) * (vector2[1].y - vector1[0].y)) / det;
+                    gamma = ((vector1[0].y - vector1[1].y) * (vector2[1].x - vector1[0].x)
+                        + (vector1[1].x - vector1[0].x) * (vector2[1].y - vector1[0].y)) / det;
+                    intersection = (lambda > 0 && lambda < 1) && (gamma > 0 && gamma < 1);
+                }
+                if (intersection) {
+                    line1.material = UNAUTHORIZED_LINE_MATERIAL;
+                    line2.material = UNAUTHORIZED_LINE_MATERIAL;
+                }
+            }
         }
     }
 }
