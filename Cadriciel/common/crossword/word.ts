@@ -1,4 +1,4 @@
-import { Vec2 } from "./vec2";
+import { Coordinate } from "./coordinate";
 
 export class Word {
 
@@ -44,11 +44,11 @@ export class Word {
 		this.value = value;
 	}
 
-	public get $startPosition(): Vec2 {
+	public get $startPosition(): Coordinate {
 		return this.startPosition;
 	}
 
-	public set $startPosition(value: Vec2) {
+	public set $startPosition(value: Coordinate) {
 		this.startPosition.$x = value.$x;
 		this.startPosition.$y = value.$x;
 	}
@@ -66,7 +66,7 @@ export class Word {
 		private definitionID: number,
 		private horizontal: boolean,
 		private length: number,
-		private startPosition: Vec2) {
+		private startPosition: Coordinate) {
 	};
 
 	public addConstraint(word: Word) {

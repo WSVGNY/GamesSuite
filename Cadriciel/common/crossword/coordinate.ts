@@ -1,4 +1,4 @@
-export class Vec2 {
+export class Coordinate {
 
 
 	public get $x(): number {
@@ -21,7 +21,7 @@ export class Vec2 {
 
 	}
 
-	public equals(vec2: Vec2): boolean {
-		return (this.x === vec2.$x && this.y === vec2.$y)
+	public equals(coordinate: Coordinate): boolean {
+		return (this.x === coordinate.$x && this.y === coordinate.$y)
 	}
 }

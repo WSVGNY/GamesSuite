@@ -1,4 +1,4 @@
-import { Vec2 } from "./vec2";
+import { Coordinate } from "./coordinate";
 import { Char } from "./char";
 import { Word } from "./word";
 
@@ -8,7 +8,7 @@ export class GridBox {
     private constraints: Word[] = new Array<Word>();
     private difficulty: number = 0;
 
-    public constructor(private id: Vec2, private black: boolean) {
+    public constructor(private id: Coordinate, private black: boolean) {
     };
 
     public get $char(): Char {
@@ -44,7 +44,7 @@ export class GridBox {
         return this.difficulty;
     }
 
-    public get $id(): Vec2 {
+    public get $id(): Coordinate {
         return this.id;
     }
 
