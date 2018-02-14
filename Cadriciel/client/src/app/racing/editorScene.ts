@@ -231,7 +231,7 @@ export class EditorScene {
     // https://stackoverflow.com/questions/9043805/test-if-two-lines-intersect-javascript-function
     private checkIntersection(): void {
         for (const line1 of this.$connections) {
-            let geo: Geometry = (line1.geometry) as Geometry;
+            const geo: Geometry = (line1.geometry) as Geometry;
             const vector1: Vector3[] = geo.vertices;
             for (const line2 of this.$connections) {
                 const intersection: boolean = this.checkIntersectionWithOffset(vector1, line1, line2, 0);
@@ -244,11 +244,11 @@ export class EditorScene {
     }
 
     private checkIntersectionWithOffset(vector1: Vector3[], line1: Line, line2: Line, offset: number): boolean {
-        const vector3 = this.translateVector(vector1, offset);
+        const vector3: Vector3[] = this.translateVector(vector1, offset);
         let intersects: boolean;
-        let geo = (line2.geometry) as Geometry;
+        const geo: Geometry = (line2.geometry) as Geometry;
         const vector2: Vector3[] = geo.vertices;
-        const vector4 = this.translateVector(vector2, offset);
+        const vector4: Vector3[] = this.translateVector(vector2, offset);
         let det: number, gamma: number, lambda: number;
         det = (vector3[1].x - vector3[0].x) * (vector4[1].y - vector4[0].y)
             - (vector4[1].x - vector4[0].x) * (vector3[1].y - vector3[0].y);
@@ -261,16 +261,17 @@ export class EditorScene {
                 + (vector3[1].x - vector3[0].x) * (vector4[1].y - vector3[0].y)) / det;
             intersects = (lambda > 0 && lambda < 1) && (gamma > 0 && gamma < 1);
         }
+
         return intersects;
     }
 
-    private translateVector(vector: Vector3, offset: number): Vector3[]{
-        const perpendicularVector: Vector3 = new Vector3(vector[1].x-vector[0].x, vector[1].y-vector[0].y, 0);
-        perpendicularVector.applyAxisAngle(perpendicularVector.normalize(), PI_OVER_2*(offset/Math.abs(offset)));
+    private translateVector(vector: Vector3[], offset: number): Vector3[] {
+        const perpendicularVector: Vector3 = new Vector3(vector[1].x - vector[0].x, vector[1].y - vector[0].y, 0);
+        perpendicularVector.applyAxisAngle(perpendicularVector.normalize(), PI_OVER_2 * (offset / Math.abs(offset)));
         perpendicularVector.normalize();
         const vector3: Vector3[] = new Array<Vector3>(vector.length);
-        vector3[0] = new Vector3(vector[0].x+perpendicularVector.x, vector[0].y+perpendicularVector.y);
-        vector3[1] = new Vector3(vector[1].x+perpendicularVector.x, vector[1].y+perpendicularVector.y);
+        vector3[0] = new Vector3(vector[0].x + perpendicularVector.x, vector[0].y + perpendicularVector.y);
+        vector3[1] = new Vector3(vector[1].x + perpendicularVector.x, vector[1].y + perpendicularVector.y);
 
         return vector3;
     }
