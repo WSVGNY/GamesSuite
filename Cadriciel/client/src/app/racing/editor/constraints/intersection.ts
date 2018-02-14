@@ -1,7 +1,7 @@
 import {
     Vector3, Line, Geometry
 } from "three";
-import { PI_OVER_2 } from "./constants";
+import { PI_OVER_2 } from "../../constants";
 
 export class Intersection {
 

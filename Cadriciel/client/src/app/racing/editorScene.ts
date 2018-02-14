@@ -3,8 +3,8 @@ import {
     MeshBasicMaterial, LineBasicMaterial, Geometry, BackSide
 } from "three";
 import { PI_OVER_4, WHITE, RED, PINK, BLUE, HALF } from "./constants";
-import { Angle } from "./angle";
-import { Intersection } from "./intersection";
+import { Angle } from "./editor/constraints/angle";
+import { Intersection } from "./editor/constraints/intersection";
 
 const RADIUS: number = 12;
 const OUTLINE_TO_VERTEX_RATIO: number = 1.25;
