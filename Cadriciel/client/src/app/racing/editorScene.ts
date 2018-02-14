@@ -12,7 +12,7 @@ const SIMPLE_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: W
 const UNAUTHORIZED_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: RED });
 const START_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: PINK });
 const SIMPLE_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: BLUE });
-const TRACK_WIDTH: number = 150;
+const TRACK_WIDTH: number = 100;
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
 
 export class EditorScene {
@@ -234,7 +234,8 @@ export class EditorScene {
             const line1: Line = this.connections[i];
             const geo: Geometry = (line1.geometry) as Geometry;
             const vector1: Vector3[] = geo.vertices;
-            for (let j: number = 0; j < this.connections.length; j++) {
+            const limit: number = this.isComplete && i === 0 ? this.connections.length - 1 : this.connections.length;
+            for (let j: number = 0; j < limit; j++) {
                 if (j > i + 1) {
                     const line2: Line = this.connections[j];
                     const intersection: boolean = this.checkIntersectionWithOffset(vector1, line2, TRACK_WIDTH / 2);
