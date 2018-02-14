@@ -9,7 +9,7 @@ export class GridBox {
     private _difficulty: number = 0;
 
     public constructor(private _id: Coordinate, private _black: boolean) {
-    };
+    }
 
     public get char(): Char {
         return this._char;
@@ -19,7 +19,7 @@ export class GridBox {
         this._char = value;
     }
 
-    public addConstraint(word: Word) {
+    public addConstraint(word: Word): void {
         this._constraints[this._difficulty] = word;
         this._difficulty++;
     }
