@@ -2,7 +2,7 @@ import {
     Vector3, Scene, AmbientLight, Mesh, Line, SphereGeometry,
     MeshBasicMaterial, LineBasicMaterial, Geometry, BackSide
 } from "three";
-import { PI_OVER_4, WHITE, RED, PINK, BLUE } from "./constants";
+import { PI_OVER_4, WHITE, RED, PINK, BLUE, PI_OVER_2 } from "./constants";
 import { Angle } from "./angle";
 
 const RADIUS: number = 12;
@@ -16,7 +16,6 @@ const TRACK_WIDTH: number = 150;
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
 
 export class EditorScene {
-
     private _scene: Scene;
     private _vertices: Array<Mesh>;
     private _connections: Array<Line>;
@@ -231,30 +230,86 @@ export class EditorScene {
 
     // https://stackoverflow.com/questions/9043805/test-if-two-lines-intersect-javascript-function
     private checkIntersection(): void {
-        for (const line1 of this.connections) {
-            let geo: Geometry = (line1.geometry) as Geometry;
+        for (let i: number = 0; i < this.connections.length; i++) {
+            const line1: Line = this.connections[i];
+            const geo: Geometry = (line1.geometry) as Geometry;
             const vector1: Vector3[] = geo.vertices;
-            for (const line2 of this.connections) {
-                let intersection: boolean;
-                geo = (line2.geometry) as Geometry;
-                const vector2: Vector3[] = geo.vertices;
-                let det: number, gamma: number, lambda: number;
-                det = (vector1[1].x - vector1[0].x) * (vector2[1].y - vector2[0].y)
-                    - (vector2[1].x - vector2[0].x) * (vector1[1].y - vector1[0].y);
-                if (det === 0) {
-                    intersection = false;
-                } else {
-                    lambda = ((vector2[1].y - vector2[0].y) * (vector2[1].x - vector1[0].x)
-                        + (vector2[0].x - vector2[1].x) * (vector2[1].y - vector1[0].y)) / det;
-                    gamma = ((vector1[0].y - vector1[1].y) * (vector2[1].x - vector1[0].x)
-                        + (vector1[1].x - vector1[0].x) * (vector2[1].y - vector1[0].y)) / det;
-                    intersection = (lambda > 0 && lambda < 1) && (gamma > 0 && gamma < 1);
-                }
-                if (intersection) {
-                    line1.material = UNAUTHORIZED_LINE_MATERIAL;
-                    line2.material = UNAUTHORIZED_LINE_MATERIAL;
+            for (let j: number = 0; j < this.connections.length; j++) {
+                if (j > i + 1) {
+                    const line2: Line = this.connections[j];
+                    const intersection: boolean = this.checkIntersectionWithOffset(vector1, line2, TRACK_WIDTH / 2);
+                    if (intersection) {
+                        line1.material = UNAUTHORIZED_LINE_MATERIAL;
+                        line2.material = UNAUTHORIZED_LINE_MATERIAL;
+                    }
                 }
             }
         }
+    }
+
+    // tslint:disable-next-line:max-func-body-length
+    private checkIntersectionWithOffset(vector1: Vector3[], line2: Line, offset: number): boolean {
+        let intersects: boolean;
+        const geo: Geometry = (line2.geometry) as Geometry;
+        const vector2: Vector3[] = geo.vertices;
+        const vector3: Vector3[] = this.translateVector(vector1, offset);
+        const vector4: Vector3[] = this.translateVector(vector2, offset);
+        const vector5: Vector3[] = this.translateVector(vector1, -offset);
+        const vector6: Vector3[] = this.translateVector(vector2, -offset);
+        const vector7: Vector3[] = this.perpendicularVector(vector1, offset);
+        const vector8: Vector3[] = this.perpendicularVector(vector2, offset);
+        const vector9: Vector3[] = this.perpendicularVector(vector1, -offset);
+        const vector10: Vector3[] = this.perpendicularVector(vector2, -offset);
+        const vectors1: Array<Vector3[]> = [vector1, vector3, vector5, vector7, vector9];
+        const vectors2: Array<Vector3[]> = [vector2, vector4, vector6, vector8, vector10];
+
+        for (const vectorToCheck1 of vectors1) {
+            for (const vectorToCheck2 of vectors2) {
+                let det: number, gamma: number, lambda: number;
+                det = (vectorToCheck1[1].x - vectorToCheck1[0].x) * (vectorToCheck2[1].y - vectorToCheck2[0].y)
+                    - (vectorToCheck2[1].x - vectorToCheck2[0].x) * (vectorToCheck1[1].y - vectorToCheck1[0].y);
+                if (det === 0) {
+                    intersects = false;
+                } else {
+                    lambda = ((vectorToCheck2[1].y - vectorToCheck2[0].y) * (vectorToCheck2[1].x - vectorToCheck1[0].x)
+                        + (vectorToCheck2[0].x - vectorToCheck2[1].x) * (vectorToCheck2[1].y - vectorToCheck1[0].y)) / det;
+                    gamma = ((vectorToCheck1[0].y - vectorToCheck1[1].y) * (vectorToCheck2[1].x - vectorToCheck1[0].x)
+                        + (vectorToCheck1[1].x - vectorToCheck1[0].x) * (vectorToCheck2[1].y - vectorToCheck1[0].y)) / det;
+                    intersects = (lambda > 0 && lambda < 1) && (gamma > 0 && gamma < 1);
+                }
+                if (intersects) {
+                    break;
+                }
+            }
+            if (intersects) {
+                break;
+            }
+        }
+
+        return intersects;
+    }
+
+    private translateVector(vector: Vector3[], offset: number): Vector3[] {
+        const normalVector: Vector3 = new Vector3(vector[1].x - vector[0].x, vector[1].y - vector[0].y, 0);
+        const perpendicularVector: Vector3 = normalVector.applyAxisAngle(new Vector3(0, 0, 1), PI_OVER_2);
+        perpendicularVector.normalize();
+        const vector3: Vector3[] = new Array<Vector3>(vector.length);
+        vector3[0] = new Vector3(vector[0].x + perpendicularVector.x * offset, vector[0].y + perpendicularVector.y * offset);
+        vector3[1] = new Vector3(vector[1].x + perpendicularVector.x * offset, vector[1].y + perpendicularVector.y * offset);
+
+        return vector3;
+    }
+
+    private perpendicularVector(vector: Vector3[], offset: number): Vector3[] {
+        const normalVector: Vector3 = new Vector3(vector[1].x - vector[0].x, vector[1].y - vector[0].y, 0);
+        const perpendicularVector: Vector3 = normalVector.applyAxisAngle(new Vector3(0, 0, 1), PI_OVER_2);
+        perpendicularVector.normalize();
+        const vector3: Vector3[] = new Array<Vector3>(vector.length);
+        vector3[0] =
+            new Vector3(vector[0].x, vector[0].y, 0);
+        vector3[1] =
+            new Vector3(vector[0].x + perpendicularVector.x * offset, vector[0].y + perpendicularVector.y * offset, 0);
+
+        return vector3;
     }
 }
