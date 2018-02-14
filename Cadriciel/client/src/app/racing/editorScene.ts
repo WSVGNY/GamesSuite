@@ -237,10 +237,10 @@ export class EditorScene {
             for (let j: number = 0; j < this.connections.length; j++) {
                 if (j > i + 1) {
                     const line2: Line = this.connections[j];
-                    const intersectionCenter: boolean = this.checkIntersectionWithOffset(vector1, line1, line2, 0);
-                    const intersectionLeft: boolean = this.checkIntersectionWithOffset(vector1, line1, line2, TRACK_WIDTH / 2);
-                    const intersectionRight: boolean = this.checkIntersectionWithOffset(vector1, line1, line2, -TRACK_WIDTH / 2);
-                    if (intersectionCenter || intersectionLeft || intersectionRight) {
+                    // const intersectionCenter: boolean = this.checkIntersectionWithOffset(vector1, line2, 0);
+                    const intersection: boolean = this.checkIntersectionWithOffset(vector1, line2, TRACK_WIDTH / 2);
+                    // const intersectionRight: boolean = this.checkIntersectionWithOffset(vector1, line2, -TRACK_WIDTH / 2);
+                    if (intersection) {
                         line1.material = UNAUTHORIZED_LINE_MATERIAL;
                         line2.material = UNAUTHORIZED_LINE_MATERIAL;
                     }
@@ -250,16 +250,20 @@ export class EditorScene {
     }
 
     // tslint:disable-next-line:max-func-body-length
-    private checkIntersectionWithOffset(vector1: Vector3[], line1: Line, line2: Line, offset: number): boolean {
-        const vector3: Vector3[] = offset === 0 ? vector1 : this.translateVector(vector1, offset);
-        const vector5: Vector3[] = offset === 0 ? vector1 : this.perpendicularVector(vector1, offset);
-        const vectors1: Array<Vector3[]> = [vector1, vector3, vector5];
+    private checkIntersectionWithOffset(vector1: Vector3[], line2: Line, offset: number): boolean {
         let intersects: boolean;
         const geo: Geometry = (line2.geometry) as Geometry;
         const vector2: Vector3[] = geo.vertices;
-        const vector4: Vector3[] = offset === 0 ? vector2 : this.translateVector(vector2, offset);
-        const vector6: Vector3[] = offset === 0 ? vector2 : this.perpendicularVector(vector2, offset);
-        const vectors2: Array<Vector3[]> = [vector2, vector4, vector6];
+        const vector3: Vector3[] = this.translateVector(vector1, offset);
+        const vector4: Vector3[] = this.translateVector(vector2, offset);
+        const vector5: Vector3[] = this.translateVector(vector1, -offset);
+        const vector6: Vector3[] = this.translateVector(vector2, -offset);
+        const vector7: Vector3[] = this.perpendicularVector(vector1, offset);
+        const vector8: Vector3[] = this.perpendicularVector(vector2, offset);
+        const vector9: Vector3[] = this.perpendicularVector(vector1, -offset);
+        const vector10: Vector3[] = this.perpendicularVector(vector2, -offset);
+        const vectors1: Array<Vector3[]> = [vector1, vector3, vector5, vector7, vector9];
+        const vectors2: Array<Vector3[]> = [vector2, vector4, vector6, vector8, vector10];
 
         for (const vectorToCheck1 of vectors1) {
             for (const vectorToCheck2 of vectors2) {
