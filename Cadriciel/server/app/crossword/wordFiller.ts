@@ -97,7 +97,6 @@ export class WordFiller {
         }
     }
 
-    // tslint:disable-next-line:max-func-body-length
     private async fillWord(currentWord: Word): Promise<Token> {
         let sameWordExists: Token;
         const wordConstraint: WordConstraint = new WordConstraint(currentWord, this.grid);
