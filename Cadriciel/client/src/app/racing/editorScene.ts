@@ -230,48 +230,98 @@ export class EditorScene {
 
     // https://stackoverflow.com/questions/9043805/test-if-two-lines-intersect-javascript-function
     private checkIntersection(): void {
-        for (const line1 of this.$connections) {
+        for (let i: number = 0; i < this.connections.length; i++) {
+            const line1: Line = this.connections[i];
             const geo: Geometry = (line1.geometry) as Geometry;
             const vector1: Vector3[] = geo.vertices;
-            for (const line2 of this.$connections) {
-                const intersection: boolean = this.checkIntersectionWithOffset(vector1, line1, line2, 0);
-                if (intersection) {
-                    line1.material = UNAUTHORIZED_LINE_MATERIAL;
-                    line2.material = UNAUTHORIZED_LINE_MATERIAL;
+            for (let j: number = 0; j < this.connections.length; j++) {
+                if (j > i + 1) {
+                    const line2: Line = this.connections[j];
+                    const intersectionCenter: boolean = this.checkIntersectionWithOffset(vector1, line1, line2, 0);
+                    const intersectionLeft: boolean = this.checkIntersectionWithOffset(vector1, line1, line2, TRACK_WIDTH / 2);
+                    const intersectionRight: boolean = this.checkIntersectionWithOffset(vector1, line1, line2, -TRACK_WIDTH / 2);
+                    if (intersectionCenter || intersectionLeft || intersectionRight) {
+                        line1.material = UNAUTHORIZED_LINE_MATERIAL;
+                        line2.material = UNAUTHORIZED_LINE_MATERIAL;
+                    }
                 }
             }
         }
     }
 
+    // tslint:disable-next-line:max-func-body-length
     private checkIntersectionWithOffset(vector1: Vector3[], line1: Line, line2: Line, offset: number): boolean {
-        const vector3: Vector3[] = this.translateVector(vector1, offset);
+        const vector3: Vector3[] = offset === 0 ? vector1 : this.translateVector(vector1, offset);
+        const vector5: Vector3[] = offset === 0 ? vector1 : this.perpendicularVector(vector1, offset);
+        const vectors1: Array<Vector3[]> = [vector1, vector3, vector5];
         let intersects: boolean;
         const geo: Geometry = (line2.geometry) as Geometry;
         const vector2: Vector3[] = geo.vertices;
-        const vector4: Vector3[] = this.translateVector(vector2, offset);
-        let det: number, gamma: number, lambda: number;
-        det = (vector3[1].x - vector3[0].x) * (vector4[1].y - vector4[0].y)
-            - (vector4[1].x - vector4[0].x) * (vector3[1].y - vector3[0].y);
-        if (det === 0) {
-            intersects = false;
-        } else {
-            lambda = ((vector4[1].y - vector4[0].y) * (vector4[1].x - vector3[0].x)
-                + (vector4[0].x - vector4[1].x) * (vector4[1].y - vector3[0].y)) / det;
-            gamma = ((vector3[0].y - vector3[1].y) * (vector4[1].x - vector3[0].x)
-                + (vector3[1].x - vector3[0].x) * (vector4[1].y - vector3[0].y)) / det;
-            intersects = (lambda > 0 && lambda < 1) && (gamma > 0 && gamma < 1);
+        const vector4: Vector3[] = offset === 0 ? vector2 : this.translateVector(vector2, offset);
+        const vector6: Vector3[] = offset === 0 ? vector2 : this.perpendicularVector(vector2, offset);
+        const vectors2: Array<Vector3[]> = [vector2, vector4, vector6];
+
+        for (const vectorToCheck1 of vectors1) {
+            for (const vectorToCheck2 of vectors2) {
+                let det: number, gamma: number, lambda: number;
+                det = (vectorToCheck1[1].x - vectorToCheck1[0].x) * (vectorToCheck2[1].y - vectorToCheck2[0].y)
+                    - (vectorToCheck2[1].x - vectorToCheck2[0].x) * (vectorToCheck1[1].y - vectorToCheck1[0].y);
+                if (det === 0) {
+                    intersects = false;
+                } else {
+                    lambda = ((vectorToCheck2[1].y - vectorToCheck2[0].y) * (vectorToCheck2[1].x - vectorToCheck1[0].x)
+                        + (vectorToCheck2[0].x - vectorToCheck2[1].x) * (vectorToCheck2[1].y - vectorToCheck1[0].y)) / det;
+                    gamma = ((vectorToCheck1[0].y - vectorToCheck1[1].y) * (vectorToCheck2[1].x - vectorToCheck1[0].x)
+                        + (vectorToCheck1[1].x - vectorToCheck1[0].x) * (vectorToCheck2[1].y - vectorToCheck1[0].y)) / det;
+                    intersects = (lambda > 0 && lambda < 1) && (gamma > 0 && gamma < 1);
+                }
+                if (intersects) {
+                    break;
+                }
+            }
+            if (intersects) {
+                break;
+            }
         }
 
         return intersects;
     }
 
     private translateVector(vector: Vector3[], offset: number): Vector3[] {
-        const perpendicularVector: Vector3 = new Vector3(vector[1].x - vector[0].x, vector[1].y - vector[0].y, 0);
-        perpendicularVector.applyAxisAngle(perpendicularVector.normalize(), PI_OVER_2 * (offset / Math.abs(offset)));
+        const normalVector: Vector3 = new Vector3(vector[1].x - vector[0].x, vector[1].y - vector[0].y, 0);
+        const perpendicularVector: Vector3 = normalVector.applyAxisAngle(new Vector3(0, 0, 1), PI_OVER_2);
         perpendicularVector.normalize();
         const vector3: Vector3[] = new Array<Vector3>(vector.length);
-        vector3[0] = new Vector3(vector[0].x + perpendicularVector.x, vector[0].y + perpendicularVector.y);
-        vector3[1] = new Vector3(vector[1].x + perpendicularVector.x, vector[1].y + perpendicularVector.y);
+        vector3[0] = new Vector3(vector[0].x + perpendicularVector.x * offset, vector[0].y + perpendicularVector.y * offset);
+        vector3[1] = new Vector3(vector[1].x + perpendicularVector.x * offset, vector[1].y + perpendicularVector.y * offset);
+        const LINE_GEOMETRY: Geometry = new Geometry();
+        LINE_GEOMETRY.vertices.push(vector3[0]);
+        LINE_GEOMETRY.vertices.push(vector3[1]);
+        const connection: Line = (this.connections.length) ?
+            new Line(LINE_GEOMETRY, SIMPLE_LINE_MATERIAL) :
+            new Line(LINE_GEOMETRY, SIMPLE_LINE_MATERIAL);
+        this.scene.add(connection);
+
+        return vector3;
+    }
+
+    private perpendicularVector(vector: Vector3[], offset: number): Vector3[] {
+        const normalVector: Vector3 = new Vector3(vector[1].x - vector[0].x, vector[1].y - vector[0].y, 0);
+        const perpendicularVector: Vector3 = normalVector.applyAxisAngle(new Vector3(0, 0, 1), PI_OVER_2);
+        perpendicularVector.normalize();
+        const vector3: Vector3[] = new Array<Vector3>(vector.length);
+        vector3[0] =
+            new Vector3(vector[0].x, vector[0].y, 0);
+        vector3[1] =
+            new Vector3(vector[0].x + perpendicularVector.x * offset, vector[0].y + perpendicularVector.y * offset, 0);
+
+        const LINE_GEOMETRY: Geometry = new Geometry();
+        LINE_GEOMETRY.vertices.push(vector3[0]);
+        LINE_GEOMETRY.vertices.push(vector3[1]);
+        const connection: Line = (this.connections.length) ?
+            new Line(LINE_GEOMETRY, SIMPLE_LINE_MATERIAL) :
+            new Line(LINE_GEOMETRY, SIMPLE_LINE_MATERIAL);
+        this.scene.add(connection);
 
         return vector3;
     }
