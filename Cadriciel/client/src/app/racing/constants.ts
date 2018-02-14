@@ -5,6 +5,8 @@ export const MS_TO_SECONDS: number = 1000;
 export const GRAVITY: number = -9.81;
 export const RAD_TO_DEG: number = STRAIGHT_ANGLE_DEG / Math.PI;
 // tslint:disable-next-line:no-magic-numbers
+export const HALF: number = 1 / 2;
+// tslint:disable-next-line:no-magic-numbers
 export const PI_OVER_2: number = Math.PI / 2;
 // tslint:disable-next-line:no-magic-numbers
 export const PI_OVER_4: number = Math.PI / 4;
