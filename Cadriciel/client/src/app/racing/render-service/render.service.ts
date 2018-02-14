@@ -39,6 +39,7 @@ export class RenderService {
     private scene: Scene;
     private stats: Stats;
     private lastDate: number;
+    private dayTime: boolean = true;
     /*private tracks: Track[];
     private trackService: TrackService;*/
 
@@ -227,7 +228,12 @@ export class RenderService {
     }
 
     private async renderSkyBox(): Promise<void> {
-        const textureSky: Texture = await this.load2();
+        let textureSky: Texture;
+        if (this.dayTime) {
+            textureSky = await this.load3();
+        } else {
+            textureSky = await this.load2();
+        }
         const boxbox: BoxGeometry = new BoxGeometry(SKYBOX_SIZE, SKYBOX_SIZE, SKYBOX_SIZE);
         const skyBox: Mesh = new Mesh(boxbox, new MeshLambertMaterial({ map: textureSky, vertexColors: VertexColors, side: BackSide }));
         this.scene.add(skyBox);
@@ -246,6 +252,14 @@ export class RenderService {
         return new Promise<Texture>((resolve, reject) => {
             const loader: TextureLoader = new TextureLoader();
             loader.load("assets/textures/space.jpg", (object) => {
+                resolve(object);
+            });
+        });
+    }
+    private async load3(): Promise<Texture> {
+        return new Promise<Texture>((resolve, reject) => {
+            const loader: TextureLoader = new TextureLoader();
+            loader.load("assets/textures/sky.jpg", (object) => {
                 resolve(object);
             });
         });
