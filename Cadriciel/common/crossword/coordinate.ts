@@ -22,6 +22,6 @@ export class Coordinate {
     }
 
     public equals(coordinate: Coordinate): boolean {
-        return (this.x === coordinate.x && this.y === coordinate.y)
+        return (this.x === coordinate.x && this.y === coordinate.y);
     }
 }

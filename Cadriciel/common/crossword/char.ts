@@ -11,10 +11,9 @@ export class Char {
     }
 
     public set value(char: string) {
-        if (char.length != 1) {
+        if (char.length !== 1) {
             throw new Error("Wrong length for char")
-        }
-        else {
+        } else {
             this._value = char;
         }
     }

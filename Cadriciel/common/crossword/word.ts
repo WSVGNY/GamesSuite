@@ -20,12 +20,12 @@ export class Word {
         this._definitionID = value;
     }
 
-    public get horizontal(): boolean {
-        return this._horizontal;
+    public get isHorizontal(): boolean {
+        return this._isHorizontal;
     }
 
-    public set horizontal(value: boolean) {
-        this._horizontal = value;
+    public set isHorizontal(value: boolean) {
+        this._isHorizontal = value;
     }
 
     public get length(): number {
@@ -64,7 +64,7 @@ export class Word {
     public constructor(
         private _id: number,
         private _definitionID: number,
-        private _horizontal: boolean,
+        private _isHorizontal: boolean,
         private _length: number,
         private _startPosition: Coordinate) {
     }

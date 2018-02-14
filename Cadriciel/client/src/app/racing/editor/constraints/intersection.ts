@@ -5,16 +5,16 @@ import { PI_OVER_2 } from "../../constants";
 
 export class Intersection {
 
-    private _intersects: boolean;
+    private _isIntersecting: boolean;
 
     public constructor(line1: Line, line2: Line, offset: number) {
         const vectors1: Array<Vector3[]> = this.generateTrackWidth(line1, offset);
         const vectors2: Array<Vector3[]> = this.generateTrackWidth(line2, offset);
-        this._intersects = this.checkIntersectionWithOffset(vectors1, vectors2);
+        this._isIntersecting = this.checkIntersectionWithOffset(vectors1, vectors2);
     }
 
-    public get intersects(): boolean {
-        return this._intersects;
+    public get isIntersecting(): boolean {
+        return this._isIntersecting;
     }
 
     private generateTrackWidth(line: Line, offset: number): Array<Vector3[]> {
@@ -31,31 +31,31 @@ export class Intersection {
     }
 
     private checkIntersectionWithOffset(vectors1: Vector3[][], vectors2: Vector3[][]): boolean {
-        let intersects: boolean;
+        let isIntersecting: boolean;
         for (const vectorToCheck1 of vectors1) {
             for (const vectorToCheck2 of vectors2) {
                 let det: number, gamma: number, lambda: number;
                 det = (vectorToCheck1[1].x - vectorToCheck1[0].x) * (vectorToCheck2[1].y - vectorToCheck2[0].y)
                     - (vectorToCheck2[1].x - vectorToCheck2[0].x) * (vectorToCheck1[1].y - vectorToCheck1[0].y);
                 if (det === 0) {
-                    intersects = false;
+                    isIntersecting = false;
                 } else {
                     lambda = ((vectorToCheck2[1].y - vectorToCheck2[0].y) * (vectorToCheck2[1].x - vectorToCheck1[0].x)
                         + (vectorToCheck2[0].x - vectorToCheck2[1].x) * (vectorToCheck2[1].y - vectorToCheck1[0].y)) / det;
                     gamma = ((vectorToCheck1[0].y - vectorToCheck1[1].y) * (vectorToCheck2[1].x - vectorToCheck1[0].x)
                         + (vectorToCheck1[1].x - vectorToCheck1[0].x) * (vectorToCheck2[1].y - vectorToCheck1[0].y)) / det;
-                    intersects = (lambda > 0 && lambda < 1) && (gamma > 0 && gamma < 1);
+                    isIntersecting = (lambda > 0 && lambda < 1) && (gamma > 0 && gamma < 1);
                 }
-                if (intersects) {
+                if (isIntersecting) {
                     break;
                 }
             }
-            if (intersects) {
+            if (isIntersecting) {
                 break;
             }
         }
 
-        return intersects;
+        return isIntersecting;
     }
 
     private translateVector(vector: Vector3[], offset: number): Vector3[] {

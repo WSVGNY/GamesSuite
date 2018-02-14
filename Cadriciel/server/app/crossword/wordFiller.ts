@@ -9,8 +9,8 @@ import { ResponseWordFromAPI } from "../../../common/communication/responseWordF
 import { WordConstraint } from "./wordConstraint";
 // import { CrosswordComponent } from "../../../client/src/app/crossword/crossword.component";
 
-const VERTICAL: boolean = false;
-const HORIZONTAL: boolean = true;
+const IS_VERTICAL: boolean = false;
+const IS_HORIZONTAL: boolean = true;
 const MAX_REQUEST_TRIES: number = 2;
 const MAX_TRIES_TO_BACKTRACK: number = 4;
 
@@ -69,7 +69,7 @@ export class WordFiller {
     private createCharGrid(): void {
         for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
             for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                this.grid[i][j].black ? this.grid[i][j].char = new Char("#") : this.grid[i][j].char = new Char("?");
+                this.grid[i][j].isBlack ? this.grid[i][j].char = new Char("#") : this.grid[i][j].char = new Char("?");
             }
         }
     }
@@ -81,16 +81,16 @@ export class WordFiller {
                 maxWordLength = word.length;
                 this.longestWord = word;
             }
-            if (word.horizontal) {
+            if (word.isHorizontal) {
                 for (let i: number = word.startPosition.x; i < word.startPosition.x + word.length; i++) {
                     if (this.grid[word.startPosition.y][i].difficulty > 1) {
-                        word.addConstraint(this.grid[word.startPosition.y][i].getConstraint(VERTICAL));
+                        word.addConstraint(this.grid[word.startPosition.y][i].getConstraint(IS_VERTICAL));
                     }
                 }
             } else {
                 for (let i: number = word.startPosition.y; i < word.startPosition.y + word.length; i++) {
                     if (this.grid[i][word.startPosition.x].difficulty > 1) {
-                        word.addConstraint(this.grid[i][word.startPosition.x].getConstraint(HORIZONTAL));
+                        word.addConstraint(this.grid[i][word.startPosition.x].getConstraint(IS_HORIZONTAL));
                     }
                 }
             }
@@ -195,7 +195,7 @@ export class WordFiller {
     private updateCharGrid(word: Word): void {
         const splitWord: string[] = Array.from(word.value);
         for (let i: number = 0; i < splitWord.length; ++i) {
-            if (word.horizontal) {
+            if (word.isHorizontal) {
                 this.grid[word.startPosition.y][word.startPosition.x + i].char.value = splitWord[i];
             } else {
                 this.grid[word.startPosition.y + i][word.startPosition.x].char.value = splitWord[i];

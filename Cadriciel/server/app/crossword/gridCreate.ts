@@ -30,9 +30,9 @@ export class Grid {
     }
 
     private async newGrid(): Promise<void> {
-        let restart: boolean;
+        let isRestartNeeded: boolean;
         do {
-            restart = false;
+            isRestartNeeded = false;
             const isValidGrid: boolean = false;
             while (!isValidGrid) {
                 this.createEmptyArray();
@@ -46,12 +46,12 @@ export class Grid {
             }
             const wordFiller: WordFiller = new WordFiller(this.SIZE_GRID_X, this.SIZE_GRID_Y,  this.difficulty, this.grid, this.words);
             await wordFiller.wordFillControler().then(
-                (passed: boolean) => {
-                    if (!passed) {
-                        restart = true;
+                (hasPassed: boolean) => {
+                    if (!hasPassed) {
+                        isRestartNeeded = true;
                     }
                 }).catch((e: Error) => console.error(e));
-        } while (restart);
+        } while (isRestartNeeded);
 
         }
 

@@ -8,7 +8,7 @@ export class WordConstraint {
 
         for (let i: number = 0; i < word.length; ++i) {
             let charToAdd: string;
-            word.horizontal ?
+            word.isHorizontal ?
                 charToAdd = grid[word.startPosition.y][word.startPosition.x + i].char.value :
                 charToAdd = grid[word.startPosition.y + i][word.startPosition.x].char.value;
             this._originalValue += charToAdd;
