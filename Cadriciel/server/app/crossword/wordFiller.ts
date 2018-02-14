@@ -45,11 +45,7 @@ export class WordFiller {
         this.createCharGrid();
         this.generateConstraints();
         this.filledWords = new Array<Word>();
-        console.log("=======================================================");
-        console.log("FRESH START WITH NEW GRID");
-        console.log("=======================================================");
         do {
-            console.log("START PACKET");
             await this.fillWord(this.longestWord).then(
                 (result: Token) => {
                     state = result;
@@ -103,11 +99,9 @@ export class WordFiller {
 
     // tslint:disable-next-line:max-func-body-length
     private async fillWord(currentWord: Word): Promise<Token> {
-        console.log();
         let sameWordExists: Token;
         const wordConstraint: WordConstraint = new WordConstraint(currentWord, this.grid);
         const wordConstraints: string = wordConstraint.readyValue;
-        console.log("ID : " + currentWord.id);
         await this.tryWord(wordConstraints, currentWord).then(
             (result: Token) => {
                 sameWordExists = result;
@@ -115,16 +109,6 @@ export class WordFiller {
         if (sameWordExists === Token.BackTrack) {
             return Token.BackTrack;
         }
-        // process.stdout.write("List of ID's : ");
-        // for (const word2 of this.filledWords) {
-        //     process.stdout.write(word2.id + ", ");
-        // }
-        // console.log();
-        // process.stdout.write("List of Constraints ID's : ");
-        // for (const next of currentWord.constraints) {
-        //     process.stdout.write(next.id + ", ");
-        // }
-        // console.log();
         let state: Token;
         for (const next of currentWord.constraints) {
             if (this.filledWords.findIndex((wordIteration: Word) => next.id === wordIteration.id) === -1) {
@@ -148,7 +132,6 @@ export class WordFiller {
             state = Token.Pass;
             await this.getWordFromAPI(wordConstraints).then(
                 (result: ResponseWordFromAPI) => {
-                    console.log("Resulted Word : " + result.word);
                     if (this.verifyWordAlreadyThere(result.word) || result.word === "") {
                         state = Token.BackTrack;
                     }
@@ -185,7 +168,6 @@ export class WordFiller {
             this.filledWords.splice(index, 1);
             this.backTrackCounter++;
             this.backTrackingWord = next;
-            console.log("COUNTER : " + this.backTrackCounter);
             if (this.backTrackCounter >= MAX_TRIES_TO_BACKTRACK) {
                 this.backTrackCounter = 0;
 
@@ -226,10 +208,8 @@ export class WordFiller {
         await requestPromise(this.URL_WORD_API + constraints + "/" + this.gridDifficulty).then(
             (result: string) => {
                 result = JSON.parse(result);
-                //console.log(result);
                 responseWord.word = result["_word"];
                 responseWord.definition = result["_definition"];
-                //console.log(responseWord);
             }
         ).catch((e: Error) => {
             console.error(e);

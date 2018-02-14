@@ -67,7 +67,6 @@ export class BlackTiledGrid {
             }
         }
         totalDifficulty += this.SIZE_GRID_X - maxWordLength + minLengthWordQuantity;
-        // console.log(this.words.length);
 
         return totalDifficulty;
     }
