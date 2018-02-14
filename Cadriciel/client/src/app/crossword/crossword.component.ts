@@ -34,6 +34,7 @@ export class CrosswordComponent {
         this.difficulty = Difficulty.Easy;
         this.show();
         this.createGrid();
+        console.log("ALLO");
 
         // while (!this.wordFiller.isGenerated) {
         //     this.show();

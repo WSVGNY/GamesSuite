@@ -1,21 +1,21 @@
 export class Char {
 
-    private value: string;
+    private _value: string;
 
     public constructor(char: string) {
-        this.$value = char;
+        this._value = char;
     }
 
-    public get $value(): string {
-        return this.value;
+    public get value(): string {
+        return this._value;
     }
 
-    public set $value(char: string) {
+    public set value(char: string) {
         if (char.length != 1) {
             throw new Error("Wrong length for char")
         }
         else {
-            this.value = char;
+            this._value = char;
         }
     }
 }
