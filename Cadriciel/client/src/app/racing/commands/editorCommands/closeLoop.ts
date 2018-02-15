@@ -1,7 +1,7 @@
-import { AbstractCommand } from "./../abstractCommand";
+import { AbstractEditorCommand } from "./../abstractEditorCommand";
 import {EditorScene } from "../../editorScene";
 
-export class CloseLoop extends AbstractCommand {
+export class CloseLoop extends AbstractEditorCommand {
 
     public constructor(editorScene: EditorScene) {
         super(editorScene);

@@ -1,7 +1,7 @@
-import { AbstractCommand } from "./../abstractCommand";
+import { AbstractEditorCommand } from "./../abstractEditorCommand";
 import { EditorScene } from "../../editorScene";
 
-export class DeselectVertex extends AbstractCommand {
+export class DeselectVertex extends AbstractEditorCommand {
 
     public constructor(editorScene: EditorScene) {
         super(editorScene);
