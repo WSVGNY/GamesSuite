@@ -7,6 +7,10 @@
     left: 50%;
 }
 
+#title {
+    text-align: center;
+}
+
 .emptyGridBox {
     text-align: left;    
     width: 56px;

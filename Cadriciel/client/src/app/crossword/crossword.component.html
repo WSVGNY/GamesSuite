@@ -8,9 +8,12 @@
 
   <div id="defs">
     <button id="CheatButton"> Cheat mode </button>
-    <h3>Definitions</h3>
-    <h4> Horizontal : </h4>
-    <h4> Vertical : </h4>
+    <h2 id="title">Definitions</h2>
+    <h3> Horizontal : </h3>
+      <div *ngFor="let word of grid.words">
+        <div *ngIf="word._horizontal">{{word._definition}}</div>
+      </div>
+    <h3> Vertical : </h3>
   </div>
 
   <div id="grid">
