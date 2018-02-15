@@ -4,6 +4,7 @@ import {
 } from "three";
 import { PI_OVER_4, WHITE, RED, PINK, BLUE } from "./constants";
 import { Angle } from "./angle";
+import { Vec2 } from "../../../../common/crossword/vec2";
 
 const RADIUS: number = 12;
 const OUTLINE_TO_VERTEX_RATIO: number = 1.25;
@@ -20,7 +21,6 @@ export class EditorScene {
     private scene: Scene;
     private vertices: Array<Mesh>;
     private connections: Array<Line>;
-
     private firstVertex: Mesh;
     private lastVertex: Mesh;
     private selectedVertex: Mesh;
@@ -33,7 +33,14 @@ export class EditorScene {
         this.vertices = new Array();
         this.connections = new Array();
     }
-
+/*
+    public exportTrackVertices(): Array<Vec2> {
+        const trackVertices: Array<Vec2> = new Array();
+        for (const entry of this.vertices) {
+            trackVertices.push(new Vec2(entry.))
+        }
+    }
+*/
     public setSelectedVertex(vertexName: string): void {
         for (const entry of this.vertices) {
             if (entry.name === vertexName) {
