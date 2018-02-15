@@ -1,6 +1,6 @@
-import { AbstractCommand } from "./abstractCommand";
+import { AbstractCommand } from "./../abstractCommand";
 import { Vector3 } from "three";
-import {EditorScene } from "../editorScene";
+import {EditorScene } from "../../editorScene";
 
 export class MoveVertex extends AbstractCommand {
 

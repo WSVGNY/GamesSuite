@@ -3,12 +3,12 @@ import { Vector3, Raycaster} from "three";
 import { EditorScene } from "../editorScene";
 import { EditorCamera } from "../editorCamera";
 import { CommandController } from "../commandController";
-import { SelectVertex } from "../commands/selectVertex";
-import { CloseLoop } from "../commands/closeLoop";
-import { PlaceVertex } from "../commands/placeVertex";
-import { RemoveVertex } from "../commands/removeVertex";
-import { MoveVertex } from "../commands/moveVertex";
-import { DeselectVertex } from "../commands/deselectVertex";
+import { SelectVertex } from "../commands/editorCommands/selectVertex";
+import { CloseLoop } from "../commands/editorCommands/closeLoop";
+import { PlaceVertex } from "../commands/editorCommands/placeVertex";
+import { RemoveVertex } from "../commands/editorCommands/removeVertex";
+import { MoveVertex } from "../commands/editorCommands/moveVertex";
+import { DeselectVertex } from "../commands/editorCommands/deselectVertex";
 
 const LEFT_CLICK_KEYCODE: number = 1;
 const RIGHT_CLICK_KEYCODE: number = 3;
