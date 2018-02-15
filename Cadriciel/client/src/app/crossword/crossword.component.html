@@ -1,5 +1,5 @@
 <div (mouseenter)="hideLoader()">
-<h2> Crossword Game </h2>
+  <h2> Crossword Game </h2>
   <button id="buttonDifficulty" (click)="makeEasyGrid()">EASY</button>
   <button id="buttonDifficulty" (click)="makeMediumGrid()">MEDIUM</button>
   <button id="buttonDifficulty" (click)="makeHardGrid()">HARD</button>
@@ -9,25 +9,17 @@
   <div id="defs">
     <button id="CheatButton"> Cheat mode </button>
     <h3>Definitions</h3>
-      <h4> Horizontal : </h4>
-      <h4> Vertical : </h4>
+    <h4> Horizontal : </h4>
+    <h4> Vertical : </h4>
   </div>
 
   <div id="grid">
     <div *ngFor="let gridBoxLine of grid">
       <div *ngFor="let gridBox of gridBoxLine">
         <div [ngClass]="{filledGridBox : gridBox._black, emptyGridBox : !gridBox._black}">
-          <div *ngIf="isStartBox(gridBox)">
-            <div (mouseenter)="hide()">{{gridBox._char._value}}</div>
-          </div>
+          <div (mouseenter)="hide()">{{getGridBoxID(gridBox)}}</div>
         </div>
       </div>
     </div>
   </div>
 </div>
-
-
-
-
-
-

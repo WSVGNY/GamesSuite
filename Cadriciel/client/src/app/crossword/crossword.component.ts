@@ -62,12 +62,24 @@ export class CrosswordComponent {
         document.getElementById("image2").style.display = "none";
     }
 
-    public isStartBox(gridBox: GridBox): boolean {
+    public getGridBoxID(gridBox: GridBox): number {
         if (gridBox["_constraints"][0] !== undefined) {
-            return gridBox["_id"]["_x"] === gridBox["_constraints"][0]["_startPosition"]["_x"]
-                && gridBox["_id"]["_y"] === gridBox["_constraints"][0]["_startPosition"]["_y"];
+            if (gridBox["_constraints"][1] !== undefined) {
+                if (gridBox["_id"]["_x"] === gridBox["_constraints"][1]["_startPosition"]["_x"]
+                    && gridBox["_id"]["_y"] === gridBox["_constraints"][1]["_startPosition"]["_y"]) {
+                    return gridBox["_constraints"][1]["_definitionID"];
+                }
+                if (gridBox["_id"]["_x"] === gridBox["_constraints"][0]["_startPosition"]["_x"]
+                    && gridBox["_id"]["_y"] === gridBox["_constraints"][0]["_startPosition"]["_y"]) {
+                    return gridBox["_constraints"][0]["_definitionID"];
+                }
+            }
+            if (gridBox["_id"]["_x"] === gridBox["_constraints"][0]["_startPosition"]["_x"]
+                && gridBox["_id"]["_y"] === gridBox["_constraints"][0]["_startPosition"]["_y"]) {
+                return gridBox["_constraints"][0]["_definitionID"];
+            }
         }
 
-        return false;
+        return undefined;
     }
 }
