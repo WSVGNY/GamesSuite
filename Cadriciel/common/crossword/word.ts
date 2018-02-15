@@ -1,95 +1,95 @@
-import { Vec2 } from "./vec2";
+import { Coordinate } from "./coordinate";
 
 export class Word {
 
-	private value: string;
-	private definition: string;
-	private constraints: Word[] = new Array<Word>();
-	private difficulty: number = 0;
-	private _parentCaller: Word;
+    private _value: string;
+    private _definition: string;
+    private _constraints: Word[] = new Array<Word>();
+    private _difficulty: number = 0;
+    private _parentCaller: Word;
 
-	public get $id(): number {
-		return this.id;
-	}
+    public get id(): number {
+        return this._id;
+    }
 
-	public get $definitionID(): number {
-		return this.definitionID;
-	}
+    public get definitionID(): number {
+        return this._definitionID;
+    }
 
-	public set $definitionID(value: number) {
-		this.definitionID = value;
-	}
+    public set definitionID(value: number) {
+        this._definitionID = value;
+    }
 
-	public get $horizontal(): boolean {
-		return this.horizontal;
-	}
+    public get isHorizontal(): boolean {
+        return this._isHorizontal;
+    }
 
-	public set $horizontal(value: boolean) {
-		this.horizontal = value;
-	}
+    public set isHorizontal(value: boolean) {
+        this._isHorizontal = value;
+    }
 
-	public get $length(): number {
-		return this.length;
-	}
+    public get length(): number {
+        return this._length;
+    }
 
-	public set $length(value: number) {
-		this.length = value;
-	}
+    public set length(value: number) {
+        this._length = value;
+    }
 
-	public get $value(): string {
-		return this.value;
-	}
+    public get value(): string {
+        return this._value;
+    }
 
-	public set $value(value: string) {
-		this.value = value;
-	}
+    public set value(value: string) {
+        this._value = value;
+    }
 
-	public get $startPosition(): Vec2 {
-		return this.startPosition;
-	}
+    public get startPosition(): Coordinate {
+        return this._startPosition;
+    }
 
-	public set $startPosition(value: Vec2) {
-		this.startPosition.$x = value.$x;
-		this.startPosition.$y = value.$x;
-	}
+    public set startPosition(value: Coordinate) {
+        this._startPosition.x = value.x;
+        this._startPosition.y = value.x;
+    }
 
-	public get $definition(): string {
-		return this.definition;
-	}
+    public get definition(): string {
+        return this._definition;
+    }
 
-	public set $definition(value: string) {
-		this.definition = value;
-	}
+    public set definition(value: string) {
+        this._definition = value;
+    }
 
-	public constructor(
-		private id: number,
-		private definitionID: number,
-		private horizontal: boolean,
-		private length: number,
-		private startPosition: Vec2) {
-	};
+    public constructor(
+        private _id: number,
+        private _definitionID: number,
+        private _isHorizontal: boolean,
+        private _length: number,
+        private _startPosition: Coordinate) {
+    }
 
-	public addConstraint(word: Word) {
-		this.constraints[this.difficulty] = word;
-		this.difficulty++;
-	}
+    public addConstraint(word: Word): void {
+        this._constraints[this._difficulty] = word;
+        this._difficulty++;
+    }
 
-	public get $constraints(): Word[] {
-		return this.constraints;
-	}
+    public get constraints(): Word[] {
+        return this._constraints;
+    }
 
-	public resetValue(): void {
-		this.value = "";
-		for (let i: number = 0; i < this.length; i++) {
-			this.value += "?";
-		}
-	}
+    public resetValue(): void {
+        this._value = "";
+        for (let i: number = 0; i < this.length; i++) {
+            this._value += "?";
+        }
+    }
 
-	public get parentCaller(): Word{
-		return this._parentCaller;
-	}
+    public get parentCaller(): Word {
+        return this._parentCaller;
+    }
 
-	public set parentCaller(parent: Word) {
-		this._parentCaller = parent;
-	}
+    public set parentCaller(parent: Word) {
+        this._parentCaller = parent;
+    }
 }

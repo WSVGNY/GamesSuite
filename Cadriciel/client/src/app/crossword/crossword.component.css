@@ -2,6 +2,9 @@
     width: 600px;
     height: 600px;
     margin: 0 auto;
+    border: 2px solid rgba(44, 107, 97, 0.233);
+    position: absolute;
+    left: 50%;
 }
 
 .emptyGridBox {
@@ -26,13 +29,29 @@
     float: left;
 }
 
-#button {
+#buttonDifficulty {
     color:midnightblue;
+    margin-bottom: 10px;
+    cursor: pointer;
 }
 
-#word {
-    border: 1px solid pink;
+#CheatButton {
+    position: absolute;
+    left:82%;
+    top:2%;
+    cursor: pointer;
+    border-radius: 4px;
+}
 
+#defs {
+    width: 600px;
+    height: 600px;
+    margin: 0 auto;
+    border: 2px solid rgba(44, 107, 97, 0.233);
+    position: absolute;
+    left: 5%;
+    background: rgba(27, 92, 76, 0.068);
+    padding-left:20px;
 }
 
 #loader {
