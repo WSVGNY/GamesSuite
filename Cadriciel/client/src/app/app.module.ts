@@ -13,6 +13,7 @@ import { RacingComponent } from "./racing/racing.component";
 import { TrackService } from "./racing/track-service/track.service";
 import { EditorComponent } from "./racing/editor/editor.component";
 import { MouseEventHandlerService } from "./racing/event-handlers/mouse-event-handler.service";
+import { CarAiService } from "./racing/AI/car-ai.service";
 
 @NgModule({
     declarations: [
@@ -33,7 +34,8 @@ import { MouseEventHandlerService } from "./racing/event-handlers/mouse-event-ha
         GridService,
         TrackService,
         EditorRenderService,
-        MouseEventHandlerService
+        MouseEventHandlerService,
+        CarAiService
     ],
     bootstrap: [AppComponent]
 })
