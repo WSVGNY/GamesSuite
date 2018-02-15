@@ -2,6 +2,7 @@ import { Component, AfterViewInit, HostListener, ElementRef, ViewChild, Input } 
 import { ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
 import { Track, ITrack } from "../../../../../common/racing/track";
+import { Vec2 } from "../../../../../common/crossword/vec2";
 import { TrackService } from "../track-service/track.service";
 import { EditorCamera } from "../editorCamera";
 import { EditorScene } from "../editorScene";
@@ -26,6 +27,7 @@ export class EditorComponent implements AfterViewInit {
     @Input()
     private currentTrackName: string = "New Track";
     private currentTrackId: string = "";
+    private currentTrackVertices: Array<Vec2>;
     private trackChosenFromAdmin: Track;
 
     private editorCamera: EditorCamera;
@@ -40,6 +42,7 @@ export class EditorComponent implements AfterViewInit {
     ) { }
 
     public ngAfterViewInit(): void {
+        this.currentTrackVertices = new Array();
         this.getTrack();
         this.editorCamera = new EditorCamera(this.computeAspectRatio(), VIEW_SIZE);
         this.editorCamera.setPosition(CAMERA_POSITION);
@@ -70,6 +73,7 @@ export class EditorComponent implements AfterViewInit {
 
     public saveTrack(): void {
         this.trackChosenFromAdmin.name = this.currentTrackName;
+        this.trackChosenFromAdmin.vertices = this.currentTrackVertices;
         this.trackService.putTrack(this.currentTrackId, this.trackChosenFromAdmin)
             .subscribe((trackFromServer: string) => {
                 const iTrack: ITrack = JSON.parse(JSON.stringify(trackFromServer));
