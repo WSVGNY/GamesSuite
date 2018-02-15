@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { GridBox } from "../../../../common/crossword/gridBox";
+import { Grid } from "../../../../common/crossword/grid";
 import { Word } from "../../../../common/crossword/word";
 import { GridService } from "./grid.service";
 import { Difficulty } from "../../../../common/crossword/difficulty";
@@ -13,15 +14,17 @@ export class CrosswordComponent {
 
     public selectedGridBox: GridBox;
     public defs: Word;
-    private grid: GridBox[][];
+    private grid: Grid;
+    private boxes: GridBox[][];
     private difficulty: Difficulty;
 
     public constructor(private gridService: GridService) {
     }
 
     public createGrid(): void {
-        this.gridService.gridGet(this.difficulty).subscribe((grid: GridBox[][]) => {
+        this.gridService.gridGet(this.difficulty).subscribe((grid: Grid) => {
             this.grid = grid;
+            this.boxes = this.grid.boxes;
         });
     }
 

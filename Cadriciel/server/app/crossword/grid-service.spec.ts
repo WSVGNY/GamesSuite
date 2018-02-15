@@ -1,5 +1,5 @@
 import assert = require("assert");
-import { Grid } from "./gridCreate";
+import { Grid } from "../../../common/crossword/grid";
 import { BlackTiledGrid } from "./blackTiledGrid";
 
 let grid: Grid;
