@@ -78,6 +78,10 @@ export class Word {
 		return this._constraints;
 	}
 
+	public set constraints(constraints: Word[]){
+		this._constraints=constraints;
+	}
+
 	public resetValue(): void {
 		this._value = "";
 		for (let i: number = 0; i < this.length; i++) {

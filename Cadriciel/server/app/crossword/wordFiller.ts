@@ -242,7 +242,7 @@ export class WordFiller {
         for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
             for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
                 if (this.grid[i][j].char.value === "?") {
-                    return this.grid[i][j].getWord();
+                    return this.grid[i][j].word;
                 }
             }
         }

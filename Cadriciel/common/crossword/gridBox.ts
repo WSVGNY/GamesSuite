@@ -34,10 +34,12 @@ export class GridBox {
     }
 
     public eliminateConstraints(): void {
-        this._constraints = undefined;
+        for (const constraint of this._constraints) {
+            constraint.constraints = undefined;
+        }
     }
 
-    public getWord(): Word {
+    public get word(): Word {
         return this._constraints[0];
     }
     public get difficulty(): number {

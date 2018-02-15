@@ -17,7 +17,9 @@
     <div *ngFor="let gridBoxLine of grid">
       <div *ngFor="let gridBox of gridBoxLine">
         <div [ngClass]="{filledGridBox : gridBox._black, emptyGridBox : !gridBox._black}">
-          <div (mouseenter)="hide()">{{gridBox._char._value}}</div>
+          <div *ngIf="isStartBox(gridBox)">
+            <div (mouseenter)="hide()">{{gridBox._char._value}}</div>
+          </div>
         </div>
       </div>
     </div>
