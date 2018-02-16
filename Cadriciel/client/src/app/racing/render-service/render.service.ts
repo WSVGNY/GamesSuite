@@ -50,22 +50,22 @@ export class RenderService {
         return this._playerCar;
     }
 
-    public constructor(/*private trackService: TrackService, private route: ActivatedRoute*/) {
+    public constructor(private trackService: TrackService, private route: ActivatedRoute) {
         this._playerCar = new Car();
-        // this._carAiService = [];
-        // this._aiCars = [];
-        // for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
-        //     this._aiCars.push(new Car());
-        //     this._carAiService.push(new CarAiService(this._aiCars[i], this._track));
-        // }
+        this._carAiService = [];
+        this._aiCars = [];
+        for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
+            this._aiCars.push(new Car());
+            this._carAiService.push(new CarAiService(this._aiCars[i], this._track));
+        }
     }
-    // public getTrack(): void {
-    //     this.trackService.getTrackFromId(this.route.snapshot.paramMap.get("5a7fc1173cb1de3b7ce47a4a"))
-    //         .subscribe((trackFromServer: string) => {
-    //             const iTrack: ITrack = JSON.parse(JSON.stringify(trackFromServer));
-    //             this._track = new Track(iTrack);
-    //         });
-    // }
+    public getTrack(): void {
+        this.trackService.getTrackFromId(this.route.snapshot.paramMap.get("5a7fc1173cb1de3b7ce47a4a"))
+            .subscribe((trackFromServer: string) => {
+                const iTrack: ITrack = JSON.parse(JSON.stringify(trackFromServer));
+                this._track = new Track(iTrack);
+            });
+    }
 
     public async initialize(container: HTMLDivElement): Promise<void> {
         if (container) {
