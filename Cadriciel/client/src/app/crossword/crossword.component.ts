@@ -69,13 +69,9 @@ export class CrosswordComponent {
     }
 
     public changeMode(): void {
-        if (this.isInCheatMode === false) {
+        this.isInCheatMode ?
+            this.isInCheatMode = false :
             this.isInCheatMode = true;
-            document.getElementById("defs").style.background = "rgba(190, 84, 35, 0.253)";
-        } else {
-            this.isInCheatMode = false;
-            document.getElementById("defs").style.background = "rgba(27, 92, 76, 0.068)";
-        }
     }
 
     public highlightWord(word: Word): void {
