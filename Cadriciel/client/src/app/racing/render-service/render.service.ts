@@ -54,6 +54,7 @@ export class RenderService {
         this._playerCar = new Car();
         this._carAiService = [];
         this._aiCars = [];
+        //this._track = new Track();
         for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
             this._aiCars.push(new Car());
             this._carAiService.push(new CarAiService(this._aiCars[i], this._track));
@@ -86,6 +87,8 @@ export class RenderService {
     private update(): void {
         const timeSinceLastFrame: number = Date.now() - this._lastDate;
         this._playerCar.update(timeSinceLastFrame);
+        // TODO: Remove this instruction, only for testing
+        // this._carAiService[0].calculateNewPosition();
         this._lastDate = Date.now();
     }
 
@@ -93,6 +96,10 @@ export class RenderService {
         this._scene = new Scene();
         await this._playerCar.init();
         this._scene.add(this._playerCar);
+        for (const car of this._aiCars) {
+            await car.init();
+            this._scene.add(car);
+        }
 
         this._camera = new PerspectiveCamera(
             FIELD_OF_VIEW,
