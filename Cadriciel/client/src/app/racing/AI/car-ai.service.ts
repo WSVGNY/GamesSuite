@@ -30,6 +30,9 @@ export class CarAiService {
     }
 
     public update(): void {
+
+
+
         if (!this._isGoingForward) {
             this.goForward();
         }
@@ -37,4 +40,8 @@ export class CarAiService {
             this.goLeft();
         }
     }
+
+    // private projectInFrontOfCar(): void {
+        
+    // }
 }

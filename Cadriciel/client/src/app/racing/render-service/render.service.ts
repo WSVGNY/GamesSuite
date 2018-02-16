@@ -1,7 +1,8 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import {
-    PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, Vector3, Line, LineBasicMaterial, Geometry
+    PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, Vector3, Line, LineBasicMaterial, Geometry,
+    Mesh, CubeGeometry, MeshNormalMaterial
 } from "three";
 import { Car } from "../car/car";
 import { Track, ITrack } from "../../../../../common/racing/track";
@@ -37,6 +38,7 @@ export class RenderService {
     private _carAiService: CarAiService[];
     private _aiCars: Car[];
     private _track: Track;
+    private _cube: Mesh;
 
     private mockTrack: Vector3[] = [
         new Vector3(-488, -275, 0),
@@ -98,6 +100,13 @@ export class RenderService {
         //this._aiCars[0].isAcceleratorPressed = true;
         this._aiCars[0].update(timeSinceLastFrame);
         this._lastDate = Date.now();
+        const dir: Vector3 = this._playerCar.direction.normalize();
+        this._cube.position.x += this._playerCar.currentPosition.x + dir.x * 5 - this._cube.position.x;
+        this._cube.position.z += this._playerCar.currentPosition.z + dir.z * 5 - this._cube.position.z;
+        // console.log(this._playerCar.currentPosition.x + dir.x * 5, 0, this._playerCar.currentPosition.z + dir.z * 5);
+        // console.log(this._cube.position);
+        // console.log(this._playerCar.currentPosition);
+        // console.log();
     }
 
     private async createScene(): Promise<void> {
@@ -120,6 +129,11 @@ export class RenderService {
         this._camera.position.z = INITIAL_CAMERA_POSITION_Z;
         this._camera.position.y = INITIAL_CAMERA_POSITION_Y;
         this._playerCar.attachCamera(this._camera);
+
+        this._cube = new Mesh( new CubeGeometry( 20, 20, 20 ), new MeshNormalMaterial() );
+        this._cube.position.y = 0;
+        // this._aiCars[0].attachCube(this._cube);
+        this._scene.add( this._cube );
 
         this._scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
         await this.renderTrack();
