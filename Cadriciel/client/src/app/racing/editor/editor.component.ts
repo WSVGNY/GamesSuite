@@ -26,7 +26,6 @@ export class EditorComponent implements AfterViewInit {
     @Input()
     private currentTrackName: string = "New Track";
     private currentTrackId: string = "";
-    private currentTrackVertices: Array<Vec2>;
     private trackChosenFromAdmin: Track;
 
     private editorCamera: EditorCamera;
@@ -41,7 +40,6 @@ export class EditorComponent implements AfterViewInit {
     ) { }
 
     public ngAfterViewInit(): void {
-        this.currentTrackVertices = new Array();
         this.getTrack();
         this.editorCamera = new EditorCamera(this.computeAspectRatio(), VIEW_SIZE);
         this.editorCamera.setPosition(CAMERA_POSITION);
