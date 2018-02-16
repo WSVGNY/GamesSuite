@@ -2,7 +2,7 @@ import {
     Vector3, Scene, AmbientLight, Mesh, Line, SphereGeometry,
     MeshBasicMaterial, LineBasicMaterial, Geometry, BackSide
 } from "three";
-import { PI_OVER_4, WHITE, RED, PINK, BLUE, HALF } from "../constants";
+import { PI_OVER_4, WHITE, RED, PINK, BLUE, HALF, TRACK_WIDTH } from "../constants";
 import { Angle } from "./constraints/angle";
 import { Intersection } from "./constraints/intersection";
 import { Coordinate } from "../../../../../common/crossword/coordinate";
@@ -14,7 +14,6 @@ const SIMPLE_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: W
 const UNAUTHORIZED_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: RED });
 const START_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: PINK });
 const SIMPLE_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: BLUE });
-const TRACK_WIDTH: number = 100;
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
 
 export class EditorScene {

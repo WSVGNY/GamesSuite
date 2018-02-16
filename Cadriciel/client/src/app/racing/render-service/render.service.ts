@@ -2,14 +2,14 @@ import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import {
     PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, Mesh, PlaneGeometry, TextureLoader, Shape,
-    MeshLambertMaterial, VertexColors, Texture, MeshBasicMaterial, BoxGeometry, ShapeGeometry, Path, BackSide, Vector3
+    MeshLambertMaterial, VertexColors, Texture, MeshBasicMaterial, BoxGeometry, ShapeGeometry, Path, BackSide, Vector3, Geometry, LineBasicMaterial, Line
 } from "three";
 import { Car } from "../car/car";
 import { Track, ITrack } from "../../../../../common/racing/track";
 import { TrackService } from "../track-service/track.service";
 import { CarAiService } from "../ai/car-ai.service";
 import { ActivatedRoute } from "@angular/router";
-import { DEG_TO_RAD } from "../constants";
+import { DEG_TO_RAD, TRACK_WIDTH } from "../constants";
 
 const FAR_CLIPPING_PLANE: number = 1000;
 const NEAR_CLIPPING_PLANE: number = 1;
@@ -46,13 +46,17 @@ export class RenderService {
     private _aiCars: Car[];
     private _track: Track;
 
-    private mockTrack: Vector3[] = [
-        new Vector3(-488, -275, 0),
-        new Vector3(-550, 170, 0),
-        new Vector3(96, 342, 0),
-        new Vector3(748, 70, 0),
-        new Vector3(704, -263, 0)
+    private trackCenterPoints: Vector3[] = [
+        new Vector3(-488, 0, -275),
+        new Vector3(-550, 0, 170),
+        new Vector3(96, 0, 342),
+        new Vector3(748, 0, 70),
+        new Vector3(704, 0, -263)
     ];
+
+    private trackExteriorPoints: Vector3[] = [];
+
+    private trackInteriorPoints: Vector3[] = [];
 
     public get playerCar(): Car {
         return this._playerCar;
@@ -60,7 +64,7 @@ export class RenderService {
 
     public constructor(private trackService: TrackService, private route: ActivatedRoute) {
         this._playerCar = new Car();
-        this._playerCar.position.add(new Vector3(this.mockTrack[0].x, 0, this.mockTrack[0].y));
+        this._playerCar.position.add(new Vector3(this.trackCenterPoints[0].x, 0, this.trackCenterPoints[0].z));
         this._playerCar.rotateY(Math.PI)
         this._carAiService = [];
         this._aiCars = [];
@@ -125,13 +129,9 @@ export class RenderService {
         this._playerCar.attachCamera(this._camera);
 
         this._scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
-<<<<<<< HEAD
-        await this.renderGround();
-        await this.renderSkyBox();
+        this.renderGround();
         this.renderTrack();
-=======
-        await this.renderTrack();
->>>>>>> origin/Dev
+        // await this.renderSkyBox();
     }
 
     private getAspectRatio(): number {
@@ -197,47 +197,88 @@ export class RenderService {
         }
     }
 
-    poly = [[-488, -275], [-550, 170], [96, 342], [748, 70], [704, -263]];
-    poly2 = [[-245, -63], [-159, 127], [78, 149], [66, -64]];
+    private renderTrack(): void {
+        this.renderTrackShape();
+        this.renderCenterLine();
+    }
 
-    private async renderTrack(): Promise<void> {
-
+    private renderCenterLine(): void {
         const geometryPoints: Geometry = new Geometry();
-        this.mockTrack.forEach((vertex: Vector3) => geometryPoints.vertices.push(vertex));
-        geometryPoints.vertices.push(this.mockTrack[0]);
-        let line = new Line(geometryPoints, new LineBasicMaterial({ color: 0x00ffff, linewidth: 3 }));
-        line.rotateX(Math.PI / 2);
+        this.trackCenterPoints.forEach((vertex: Vector3) => geometryPoints.vertices.push(vertex));
+        geometryPoints.vertices.push(this.trackCenterPoints[0]);
+        let line = new Line(geometryPoints, new LineBasicMaterial({ color: 0x00ff00, linewidth: 3 }));
         this._scene.add(line);
+    }
+
+    private renderTrackShape(): void {
+        this.createExteriorInteriorTrackPoints();
 
         const shape: Shape = new Shape();
-        shape.moveTo(this.poly[0][0], this.poly[0][1]);
-        for (let i: number = 1; i < this.poly.length; ++i) {
-            shape.lineTo(this.poly[i][0], this.poly[i][1]);
+        shape.moveTo(this.trackExteriorPoints[this.trackExteriorPoints.length - 1].x, this.trackExteriorPoints[this.trackExteriorPoints.length - 1].z);
+        for (let i: number = this.trackExteriorPoints.length - 2; i >= 0; --i) {
+            shape.lineTo(this.trackExteriorPoints[i].x, this.trackExteriorPoints[i].z);
         }
-        shape.lineTo(this.poly[0][0], this.poly[0][1]);
+        shape.lineTo(this.trackExteriorPoints[0].x, this.trackExteriorPoints[0].z);
 
         const holePath: Path = new Path();
 
-        holePath.moveTo(this.poly2[this.poly2.length - 1][0], this.poly2[this.poly2.length - 1][1]);
-        for (let i: number = this.poly2.length - 2; i >= 0; --i) {
-            holePath.lineTo(this.poly2[i][0], this.poly2[i][1]);
+        holePath.moveTo(this.trackInteriorPoints[this.trackInteriorPoints.length - 1].x, this.trackInteriorPoints[this.trackInteriorPoints.length - 1].z);
+        for (let i: number = this.trackInteriorPoints.length - 2; i >= 0; --i) {
+            holePath.lineTo(this.trackInteriorPoints[i].x, this.trackInteriorPoints[i].z);
         }
-        holePath.lineTo(this.poly2[this.poly2.length - 1][0], this.poly2[this.poly2.length - 1][1]);
+        holePath.lineTo(this.trackInteriorPoints[this.trackInteriorPoints.length - 1].x, this.trackInteriorPoints[this.trackInteriorPoints.length - 1].z);
         shape.holes.push(holePath);
         const geometry: ShapeGeometry = new ShapeGeometry(shape);
-        const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ color: 0x00FFFF });
+        const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ side: BackSide, color: 0x0000FF });
         const ground: Mesh = new Mesh(geometry, groundMaterial);
-        ground.rotateX(-Math.PI / 2);
-        // ground.position = new Vector3(0, 0 , -1); marche po !! better use ground.translate()
+        ground.rotateX(Math.PI / 2);
         this._scene.add(ground);
     }
 
-    private async renderGround(): Promise<void> {
-        const groundGeometry: PlaneGeometry = new PlaneGeometry(TEMP_GRID_SIZE, TEMP_GRID_SIZE, TEMP_GRID_SIZE, TEMP_GRID_SIZE);
-        const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ color: 0x00FFFF });
+    private createExteriorInteriorTrackPoints(): void {
+        this.trackCenterPoints.forEach((currentPoint: Vector3, index: number) => {
+            const nextPoint: Vector3 = (index + 1) == this.trackCenterPoints.length ?
+                this.trackCenterPoints[0] : this.trackCenterPoints[index + 1];
+
+            const previousPoint: Vector3 = index == 0 ?
+                this.trackCenterPoints[this.trackCenterPoints.length - 1] : this.trackCenterPoints[index - 1];
+
+            const nextLineLength: number = Math.sqrt(Math.pow(nextPoint.x - currentPoint.x, 2) + Math.pow(nextPoint.z - currentPoint.z, 2));
+            const previousLineLength: number = Math.sqrt(Math.pow(previousPoint.x - currentPoint.x, 2) + Math.pow(previousPoint.z - currentPoint.z, 2));
+
+            this.trackInteriorPoints.push(new Vector3(
+                currentPoint.x +
+                TRACK_WIDTH * (nextPoint.x - currentPoint.x) / nextLineLength +
+                TRACK_WIDTH * (previousPoint.x - currentPoint.x) / previousLineLength,
+
+                0,
+
+                currentPoint.z +
+                TRACK_WIDTH * (nextPoint.z - currentPoint.z) / nextLineLength +
+                TRACK_WIDTH * (previousPoint.z - currentPoint.z) / previousLineLength
+            ));
+
+            this.trackExteriorPoints.push(new Vector3(
+                currentPoint.x -
+                TRACK_WIDTH * (nextPoint.x - currentPoint.x) / nextLineLength -
+                TRACK_WIDTH * (previousPoint.x - currentPoint.x) / previousLineLength,
+
+                0,
+
+                currentPoint.z -
+                TRACK_WIDTH * (nextPoint.z - currentPoint.z) / nextLineLength -
+                TRACK_WIDTH * (previousPoint.z - currentPoint.z) / previousLineLength
+            ));
+        });
+    }
+
+    private renderGround(): void {
+        const groundGeometry: PlaneGeometry = new PlaneGeometry(TEMP_GRID_SIZE, TEMP_GRID_SIZE, 1, 1);
+        const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ wireframe: true, color: 0x00FFFF });
         const ground: Mesh = new Mesh(groundGeometry, groundMaterial);
+        // ground.translate(Math.sqrt(Math.pow(this.trackCenterPoints[0].x, 2) + Math.pow(this.trackCenterPoints[0].z, 2)), this.trackCenterPoints[0]);
+        ground.translateOnAxis(this.trackCenterPoints[0], Math.sqrt(Math.pow(this.trackCenterPoints[0].x, 2) + Math.pow(this.trackCenterPoints[0].z, 2)));
         ground.rotateX(DEG_TO_RAD * TEMP_GRID_ORIENTATION);
-        // ground.position = new Vector3(0, 0 , -1); marche po !! better use ground.translate()
         this._scene.add(ground);
     }
 

@@ -79,22 +79,22 @@ export class CrosswordComponent {
     }
 
     public getGridBoxID(gridBox: GridBox): number {
-        if (gridBox["_constraints"][0] !== undefined) {
-            if (gridBox["_constraints"][1] !== undefined) {
-                if (gridBox["_id"]["_x"] === gridBox["_constraints"][1]["_startPosition"]["_x"]
-                    && gridBox["_id"]["_y"] === gridBox["_constraints"][1]["_startPosition"]["_y"]) {
-                    return gridBox["_constraints"][1]["_definitionID"];
-                }
-                if (gridBox["_id"]["_x"] === gridBox["_constraints"][0]["_startPosition"]["_x"]
-                    && gridBox["_id"]["_y"] === gridBox["_constraints"][0]["_startPosition"]["_y"]) {
-                    return gridBox["_constraints"][0]["_definitionID"];
-                }
-            }
-            if (gridBox["_id"]["_x"] === gridBox["_constraints"][0]["_startPosition"]["_x"]
-                && gridBox["_id"]["_y"] === gridBox["_constraints"][0]["_startPosition"]["_y"]) {
-                return gridBox["_constraints"][0]["_definitionID"];
-            }
-        }
+        // if (gridBox["_constraints"][0] !== undefined) {
+        //     if (gridBox["_constraints"][1] !== undefined) {
+        //         if (gridBox["_id"]["_x"] === gridBox["_constraints"][1]["_startPosition"]["_x"]
+        //             && gridBox["_id"]["_y"] === gridBox["_constraints"][1]["_startPosition"]["_y"]) {
+        //             return gridBox["_constraints"][1]["_definitionID"];
+        //         }
+        //         if (gridBox["_id"]["_x"] === gridBox["_constraints"][0]["_startPosition"]["_x"]
+        //             && gridBox["_id"]["_y"] === gridBox["_constraints"][0]["_startPosition"]["_y"]) {
+        //             return gridBox["_constraints"][0]["_definitionID"];
+        //         }
+        //     }
+        //     if (gridBox["_id"]["_x"] === gridBox["_constraints"][0]["_startPosition"]["_x"]
+        //         && gridBox["_id"]["_y"] === gridBox["_constraints"][0]["_startPosition"]["_y"]) {
+        //         return gridBox["_constraints"][0]["_definitionID"];
+        //     }
+        // }
 
         return undefined;
     }
