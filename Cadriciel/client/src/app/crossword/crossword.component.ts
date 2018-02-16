@@ -15,6 +15,7 @@ export class CrosswordComponent {
     public defs: Word;
     private grid: GridBox[][];
     private difficulty: Difficulty;
+    // private isInCheatMode: boolean = true;
 
     public constructor(private gridService: GridService) {
     }
@@ -60,6 +61,18 @@ export class CrosswordComponent {
     public hideLoader(): void {
         document.getElementById("image1").style.display = "none";
         document.getElementById("image2").style.display = "none";
+    }
+
+    public changeMode(): boolean {
+        if (this.isInCheatMode = false) {
+            this.isInCheatMode = true;
+            document.getElementById("defs").style.background = "rgba(190, 84, 35, 0.253)";
+        } else if (this.isInCheatMode = true) {
+            this.isInCheatMode = false;
+            document.getElementById("defs").style.background = "rgba(27, 92, 76, 0.068)";
+        }
+
+        return this.isInCheatMode;
     }
 
     public getGridBoxID(gridBox: GridBox): number {
