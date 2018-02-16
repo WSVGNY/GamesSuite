@@ -3,9 +3,9 @@ import { ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
 import { Track, ITrack } from "../../../../../common/racing/track";
 import { TrackService } from "../track-service/track.service";
-import { EditorCamera } from "../editorCamera";
-import { EditorScene } from "../editorScene";
-import { EditorRenderService } from "../editor-render-service/editor-render.service";
+import { EditorCamera } from "./editorCamera";
+import { EditorScene } from "./editorScene";
+import { EditorRenderService } from "./editor-render-service/editor-render.service";
 import { MouseEventHandlerService } from "../event-handlers/mouse-event-handler.service";
 import { Vector3 } from "three";
 

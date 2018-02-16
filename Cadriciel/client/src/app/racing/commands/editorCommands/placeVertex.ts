@@ -1,6 +1,6 @@
 import { AbstractEditorCommand } from "./../abstractEditorCommand";
 import { Vector3 } from "three";
-import { EditorScene } from "../../editorScene";
+import { EditorScene } from "../../editor/editorScene";
 
 export class PlaceVertex extends AbstractEditorCommand {
 

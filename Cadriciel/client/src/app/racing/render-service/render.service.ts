@@ -1,16 +1,15 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import {
-    PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, /*Matrix4,*/
-    Mesh, PlaneGeometry, TextureLoader, Shape,
-    MeshLambertMaterial, VertexColors, Texture, MeshBasicMaterial, BoxGeometry, ShapeGeometry, Path, BackSide
+    PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, Mesh, PlaneGeometry, TextureLoader, Shape,
+    MeshLambertMaterial, VertexColors, Texture, MeshBasicMaterial, BoxGeometry, ShapeGeometry, Path, BackSide, Vector3
 } from "three";
 import { Car } from "../car/car";
 import { Track, ITrack } from "../../../../../common/racing/track";
 import { TrackService } from "../track-service/track.service";
-import { DEG_TO_RAD, /*RAD_TO_DEG*/ } from "../constants";
 import { CarAiService } from "../ai/car-ai.service";
 import { ActivatedRoute } from "@angular/router";
+import { DEG_TO_RAD } from "../constants";
 
 const FAR_CLIPPING_PLANE: number = 1000;
 const NEAR_CLIPPING_PLANE: number = 1;
@@ -33,6 +32,7 @@ const AI_CARS_NUMBER: number = 1;
 
 @Injectable()
 export class RenderService {
+    private _dayTime: any;
     /*private tracks: Track[];
     private trackService: TrackService;*/
     private _camera: PerspectiveCamera;
@@ -42,10 +42,17 @@ export class RenderService {
     private _scene: Scene;
     private _stats: Stats;
     private _lastDate: number;
-    private _dayTime: boolean = true;
     private _carAiService: CarAiService[];
     private _aiCars: Car[];
     private _track: Track;
+
+    private mockTrack: Vector3[] = [
+        new Vector3(-488, -275, 0),
+        new Vector3(-550, 170, 0),
+        new Vector3(96, 342, 0),
+        new Vector3(748, 70, 0),
+        new Vector3(704, -263, 0)
+    ];
 
     public get playerCar(): Car {
         return this._playerCar;
@@ -53,13 +60,17 @@ export class RenderService {
 
     public constructor(private trackService: TrackService, private route: ActivatedRoute) {
         this._playerCar = new Car();
+        this._playerCar.position.add(new Vector3(this.mockTrack[0].x, 0, this.mockTrack[0].y));
+        this._playerCar.rotateY(Math.PI)
         this._carAiService = [];
         this._aiCars = [];
+        //this._track = new Track();
         for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
             this._aiCars.push(new Car());
             this._carAiService.push(new CarAiService(this._aiCars[i], this._track));
         }
     }
+
     public getTrack(): void {
         this.trackService.getTrackFromId(this.route.snapshot.paramMap.get("5a7fc1173cb1de3b7ce47a4a"))
             .subscribe((trackFromServer: string) => {
@@ -87,6 +98,8 @@ export class RenderService {
     private update(): void {
         const timeSinceLastFrame: number = Date.now() - this._lastDate;
         this._playerCar.update(timeSinceLastFrame);
+        // TODO: Remove this instruction, only for testing
+        // this._carAiService[0].calculateNewPosition();
         this._lastDate = Date.now();
     }
 
@@ -94,6 +107,10 @@ export class RenderService {
         this._scene = new Scene();
         await this._playerCar.init();
         this._scene.add(this._playerCar);
+        for (const car of this._aiCars) {
+            await car.init();
+            this._scene.add(car);
+        }
 
         this._camera = new PerspectiveCamera(
             FIELD_OF_VIEW,
@@ -108,9 +125,13 @@ export class RenderService {
         this._playerCar.attachCamera(this._camera);
 
         this._scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
+<<<<<<< HEAD
         await this.renderGround();
         await this.renderSkyBox();
         this.renderTrack();
+=======
+        await this.renderTrack();
+>>>>>>> origin/Dev
     }
 
     private getAspectRatio(): number {
@@ -176,9 +197,18 @@ export class RenderService {
         }
     }
 
-    poly= [[-488, -275], [-550, 170], [96, 342], [748, 70], [704, -263]];
+    poly = [[-488, -275], [-550, 170], [96, 342], [748, 70], [704, -263]];
     poly2 = [[-245, -63], [-159, 127], [78, 149], [66, -64]];
+
     private async renderTrack(): Promise<void> {
+
+        const geometryPoints: Geometry = new Geometry();
+        this.mockTrack.forEach((vertex: Vector3) => geometryPoints.vertices.push(vertex));
+        geometryPoints.vertices.push(this.mockTrack[0]);
+        let line = new Line(geometryPoints, new LineBasicMaterial({ color: 0x00ffff, linewidth: 3 }));
+        line.rotateX(Math.PI / 2);
+        this._scene.add(line);
+
         const shape: Shape = new Shape();
         shape.moveTo(this.poly[0][0], this.poly[0][1]);
         for (let i: number = 1; i < this.poly.length; ++i) {
@@ -189,7 +219,7 @@ export class RenderService {
         const holePath: Path = new Path();
 
         holePath.moveTo(this.poly2[this.poly2.length - 1][0], this.poly2[this.poly2.length - 1][1]);
-        for (let i: number = this.poly2.length - 2; i >= 0; --i){
+        for (let i: number = this.poly2.length - 2; i >= 0; --i) {
             holePath.lineTo(this.poly2[i][0], this.poly2[i][1]);
         }
         holePath.lineTo(this.poly2[this.poly2.length - 1][0], this.poly2[this.poly2.length - 1][1]);

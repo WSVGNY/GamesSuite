@@ -8,6 +8,6 @@ export class GoFoward extends AbstractCarAICommand {
     }
 
     public execute(): void {
-        this._car.releaseSteering();
+        this._car.isAcceleratorPressed = true;
     }
 }
