@@ -19,11 +19,11 @@
       </div> -->
   </div>
 
-  <div id="grid">
+  <div id="grid" (mouseenter)="hide()">
     <div *ngFor="let line of boxes">
       <div *ngFor="let gridBox of line">
         <div [ngClass]="{filledGridBox : gridBox._isBlack, emptyGridBox : !gridBox._isBlack}">
-          <div (mouseenter)="hide()">{{getGridBoxID(gridBox)}}</div>
+          <div>{{getGridBoxID(gridBox)}}</div>
         </div>
       </div>
     </div>
