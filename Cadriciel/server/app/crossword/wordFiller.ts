@@ -138,6 +138,7 @@ export class WordFiller {
                         }
 
                         word.value = result.word;
+                        word.definition = result.definition;
                         this.updateCharGrid(word);
                         this.filledWords.push(word);
                     }

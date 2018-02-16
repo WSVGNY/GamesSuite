@@ -1,10 +1,10 @@
 #grid {
     width: 600px;
-    height: 600px;
+    min-height: 600px;
     margin: 0 auto;
     border: 2px solid rgba(44, 107, 97, 0.233);
-    position: absolute;
-    left: 50%;
+    position: relative;
+    right: -25%;
 }
 
 #title {
