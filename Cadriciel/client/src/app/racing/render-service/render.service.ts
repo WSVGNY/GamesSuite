@@ -88,7 +88,7 @@ export class RenderService {
         const timeSinceLastFrame: number = Date.now() - this._lastDate;
         this._playerCar.update(timeSinceLastFrame);
         // TODO: Remove this instruction, only for testing
-        this._carAiService[0].calculateNewPosition();
+        this._carAiService[0].update();
         //this._aiCars[0].isAcceleratorPressed = true;
         this._aiCars[0].update(timeSinceLastFrame);
         this._lastDate = Date.now();
