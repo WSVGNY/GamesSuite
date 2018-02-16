@@ -1,18 +1,19 @@
+import { Coordinate } from "../crossword/coordinate";
 export type TrackMapElement = { "key": string, "value": Track };
 export interface ITrack {
     _id: string;
     track: {
         _name: string;
-        vertices: Array<Vector3>;
+        _vertices: Array<Coordinate>;
     };
 }
 export class Track {
     private _name: string;
-    private _vertices: Array<Vector3>;
+    private _vertices: Array<Coordinate>;
 
     public constructor(rawTrack: ITrack) {
         this._name = rawTrack.track._name;
-        this._vertices = rawTrack.track.vertices;
+        this._vertices = rawTrack.track._vertices;
     };
 
     public get name(): string {
@@ -23,11 +24,11 @@ export class Track {
         this._name = value;
     }
 
-    public get vertices(): Array<Vector3> {
+    public get vertices(): Array<Coordinate> {
         return this._vertices;
     }
 
-    public set vertices(value: Array<Vector3>) {
+    public set vertices(value: Array<Coordinate>) {
         this._vertices = value;
     }
 
