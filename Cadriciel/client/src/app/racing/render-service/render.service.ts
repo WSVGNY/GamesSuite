@@ -2,8 +2,8 @@ import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import {
     PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, /*Matrix4,*/
-    Mesh, PlaneGeometry, Color, TextureLoader, Geometry,
-    MeshLambertMaterial, VertexColors, Texture, FogExp2, Vector3, MeshBasicMaterial, Vector2, BoxGeometry, BackSide
+    Mesh, PlaneGeometry, Color, TextureLoader, Geometry, LineBasicMaterial, Line, Shape,
+    MeshLambertMaterial, VertexColors, Texture, FogExp2, Vector3, MeshBasicMaterial, Vector2, BoxGeometry, BackSide, ShapeGeometry
 } from "three";
 import { Car } from "../car/car";
 // import { Track } from "../../../../../common/racing/track";
@@ -93,7 +93,9 @@ export class RenderService {
         this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
         await this.renderTrack();
         await this.renderSkyBox();
-        await this.initTrack();
+        // await this.initTrack();
+        this.createShape();
+        this.renderGround();
     }
 
     private getAspectRatio(): number {
@@ -171,7 +173,7 @@ export class RenderService {
         const ambientLight: AmbientLight = new AmbientLight(0xCCCCCC);
         this.scene.add(ambientLight);
         // const image = new Image();
-        this.renderGround();
+
         /*this.initTrack();
         const trackWall: Mesh = new Mesh(piste, new MeshLambertMaterial({ map: texture, vertexColors: VertexColors }));
         this.scene.add(trackWall);*/
@@ -220,7 +222,7 @@ export class RenderService {
     }
     private async renderGround(): Promise<void> {
         const groundGeometry: PlaneGeometry = new PlaneGeometry(TEMP_GRID_SIZE, TEMP_GRID_SIZE, TEMP_GRID_SIZE, TEMP_GRID_SIZE);
-        const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ wireframe: true, color: 0x00FFFF });
+        const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ color: 0x00FFFF });
         const ground: Mesh = new Mesh(groundGeometry, groundMaterial);
         ground.rotateX(DEG_TO_RAD * TEMP_GRID_ORIENTATION);
         // ground.position = new Vector3(0, 0 , -1); marche po !! better use ground.translate()
@@ -272,8 +274,57 @@ export class RenderService {
         TABLEAU.push(new Vector2(4, 8));
 
     }
+    /* tslint:disable */
+    private createShape(): void {
+        // Méthode 1 qui pue :(((
+        const geo: Geometry = new Geometry();
+        geo.vertices.push(new Vector3(0, 5, 0));
+        geo.vertices.push(new Vector3(5, -5, -2));
+        geo.vertices.push(new Vector3(-5, -5, 2));
+        geo.vertices.push(new Vector3(0, 5, 0)); // close the loop
 
-    private async addPlane(dist: number, angle: number): Promise<void> {
+        // material
+        const material: LineBasicMaterial = new LineBasicMaterial({ color: 0xff00ff, linewidth: 1 });
+        // line
+        const line: Line = new Line(geo, material);
+        this.scene.add(line);
+        // Méthode 2 qui à l air d'être la BONNE !!! Let s gooooooooo !!!
+        let poly = [[-400, -200], [-450, 70], [-5, 242], [640, -30], [604, -363]];
+        let shape: Shape = new Shape();
+        shape.moveTo(poly[0][0], poly[0][1]);
+        let i: number;
+        for (i = 1; i < poly.length; ++i) {
+            shape.lineTo(poly[i][0], poly[i][1]);
+        }
+        shape.lineTo(poly[0][0], poly[0][1]);
+
+        const geometry: ShapeGeometry = new ShapeGeometry(shape);
+        const material2: MeshBasicMaterial = new MeshBasicMaterial({
+            color: 0x800000
+        });
+        const shapeOfYou: Mesh = new Mesh(geometry, material2);
+        shapeOfYou.rotateX(- Math.PI / 2);
+        this.scene.add(shapeOfYou);
+
+        let poly2 = [[-300, -100], [-200, 150], [100, 200], [100, -98]];
+        let shape2: Shape = new Shape();
+        shape2.moveTo(poly2[0][0], poly2[0][1]);
+        let j: number;
+        for (j = 1; j < poly2.length; ++j) {
+            shape2.lineTo(poly2[j][0], poly2[j][1]);
+        }
+        shape.lineTo(poly2[0][0], poly2[0][1]);
+        const geometry2: ShapeGeometry = new ShapeGeometry(shape2);
+        const material3: MeshBasicMaterial = new MeshBasicMaterial({
+            color: 0x8000ff
+        });
+        const shapeOfYou2: Mesh = new Mesh(geometry2, material3);
+        shapeOfYou2.rotateX(- Math.PI / 2);
+        shapeOfYou2.translateZ(0.005);
+        this.scene.add(shapeOfYou2);
+    }
+
+    /*private async addPlane(dist: number, angle: number): Promise<void> {
         const texture: Texture = await this.load1();
         const trackPlane: Mesh = new Mesh(this.createGeometry(), new MeshLambertMaterial({ map: texture, vertexColors: VertexColors }));
         trackPlane.translate(5, new Vector3(0, 0, 1));
@@ -320,5 +371,5 @@ export class RenderService {
         // wallGeometry.rotateY(Math.PI / 2);
 
         return wallGeometry;
-    }
+    }*/
 }
