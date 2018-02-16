@@ -8,7 +8,7 @@ export class GridBox {
     private _constraints: Word[] = new Array<Word>();
     private _difficulty: number = 0;
 
-    public constructor(private _id: Coordinate, private _isBlack: boolean) {
+    public constructor(private _id: Coordinate, public _isBlack: boolean) {
     }
 
     public get char(): Char {
@@ -34,10 +34,12 @@ export class GridBox {
     }
 
     public eliminateConstraints(): void {
-        this._constraints = undefined;
+        for (const constraint of this._constraints) {
+            constraint._constraints = undefined;
+        }
     }
 
-    public getWord(): Word {
+    public get word(): Word {
         return this._constraints[0];
     }
     public get difficulty(): number {
@@ -47,14 +49,5 @@ export class GridBox {
     public get id(): Coordinate {
         return this._id;
     }
-
-    public get isBlack(): boolean {
-        return this._isBlack;
-    }
-
-    public set isBlack(black: boolean) {
-        this._isBlack = black;
-    }
-
 
 }

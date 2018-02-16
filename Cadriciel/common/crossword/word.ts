@@ -4,20 +4,12 @@ export class Word {
 
     private _value: string;
     private _definition: string;
-    private _constraints: Word[] = new Array<Word>();
+    public _constraints: Word[] = new Array<Word>();
     private _difficulty: number = 0;
     private _parentCaller: Word;
 
     public get id(): number {
         return this._id;
-    }
-
-    public get definitionID(): number {
-        return this._definitionID;
-    }
-
-    public set definitionID(value: number) {
-        this._definitionID = value;
     }
 
     public get isHorizontal(): boolean {
@@ -63,7 +55,7 @@ export class Word {
 
     public constructor(
         private _id: number,
-        private _definitionID: number,
+        public _definitionID: number,
         private _isHorizontal: boolean,
         private _length: number,
         private _startPosition: Coordinate) {
@@ -72,17 +64,6 @@ export class Word {
     public addConstraint(word: Word): void {
         this._constraints[this._difficulty] = word;
         this._difficulty++;
-    }
-
-    public get constraints(): Word[] {
-        return this._constraints;
-    }
-
-    public resetValue(): void {
-        this._value = "";
-        for (let i: number = 0; i < this.length; i++) {
-            this._value += "?";
-        }
     }
 
     public get parentCaller(): Word {

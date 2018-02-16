@@ -1,10 +1,9 @@
 import { Component } from "@angular/core";
-import { } from "@angular/";
 import { GridBox } from "../../../../common/crossword/gridBox";
+import { Grid } from "../../../../common/crossword/grid";
 import { Word } from "../../../../common/crossword/word";
 import { GridService } from "./grid.service";
 import { Difficulty } from "../../../../common/crossword/difficulty";
-// import { WordFiller } from "../../../../server/app/crossword/wordFiller";
 
 @Component({
     selector: "app-crossword",
@@ -15,15 +14,18 @@ export class CrosswordComponent {
 
     public selectedGridBox: GridBox;
     public defs: Word;
-    private grid: GridBox[][];
+    private grid: Grid;
+    private boxes: GridBox[][];
     private difficulty: Difficulty;
-   // private wordFiller: WordFiller;
 
     public constructor(private gridService: GridService) {
     }
 
     public createGrid(): void {
-        this.gridService.gridGet(this.difficulty).subscribe((grid: GridBox[][]) => this.grid = grid);
+        this.gridService.gridGet(this.difficulty).subscribe((grid: Grid) => {
+            this.grid = grid;
+            this.boxes = this.grid.boxes;
+        });
     }
 
     public onSelect(gridBox: GridBox): void {
@@ -34,10 +36,6 @@ export class CrosswordComponent {
         this.difficulty = Difficulty.Easy;
         this.show();
         this.createGrid();
-
-        // while (!this.wordFiller.isGenerated) {
-        //     this.show();
-        // }
     }
 
     public makeMediumGrid(): void {
@@ -67,4 +65,24 @@ export class CrosswordComponent {
         document.getElementById("image2").style.display = "none";
     }
 
+    public getGridBoxID(gridBox: GridBox): number {
+        if (gridBox["_constraints"][0] !== undefined) {
+            if (gridBox["_constraints"][1] !== undefined) {
+                if (gridBox["_id"]["_x"] === gridBox["_constraints"][1]["_startPosition"]["_x"]
+                    && gridBox["_id"]["_y"] === gridBox["_constraints"][1]["_startPosition"]["_y"]) {
+                    return gridBox["_constraints"][1]["_definitionID"];
+                }
+                if (gridBox["_id"]["_x"] === gridBox["_constraints"][0]["_startPosition"]["_x"]
+                    && gridBox["_id"]["_y"] === gridBox["_constraints"][0]["_startPosition"]["_y"]) {
+                    return gridBox["_constraints"][0]["_definitionID"];
+                }
+            }
+            if (gridBox["_id"]["_x"] === gridBox["_constraints"][0]["_startPosition"]["_x"]
+                && gridBox["_id"]["_y"] === gridBox["_constraints"][0]["_startPosition"]["_y"]) {
+                return gridBox["_constraints"][0]["_definitionID"];
+            }
+        }
+
+        return undefined;
+    }
 }

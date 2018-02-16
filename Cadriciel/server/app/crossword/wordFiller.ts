@@ -7,7 +7,6 @@ import * as requestPromise from "request-promise-native";
 import { Difficulty } from "../../../common/crossword/difficulty";
 import { ResponseWordFromAPI } from "../../../common/communication/responseWordFromAPI";
 import { WordConstraint } from "./wordConstraint";
-// import { CrosswordComponent } from "../../../client/src/app/crossword/crossword.component";
 
 const IS_VERTICAL: boolean = false;
 const IS_HORIZONTAL: boolean = true;
@@ -29,7 +28,6 @@ export class WordFiller {
     private backTrackCounter: number = 0;
     private backTrackingWord: Word;
     public isGenerated: boolean = false;
-   // public crossword: CrosswordComponent;
 
     public constructor(
         private SIZE_GRID_X: number,
@@ -61,7 +59,6 @@ export class WordFiller {
             return false;
         }
         this.isGenerated = true;
-       // this.crossword.hide();
 
         return true;
     }
@@ -69,7 +66,7 @@ export class WordFiller {
     private createCharGrid(): void {
         for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
             for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                this.grid[i][j].isBlack ? this.grid[i][j].char = new Char("#") : this.grid[i][j].char = new Char("?");
+                this.grid[i][j]._isBlack ? this.grid[i][j].char = new Char("#") : this.grid[i][j].char = new Char("?");
             }
         }
     }
@@ -109,7 +106,7 @@ export class WordFiller {
             return Token.BackTrack;
         }
         let state: Token;
-        for (const next of currentWord.constraints) {
+        for (const next of currentWord._constraints) {
             if (this.filledWords.findIndex((wordIteration: Word) => next.id === wordIteration.id) === -1) {
                 next.parentCaller = currentWord;
                 await this.manageBackTrack(next, currentWord, wordConstraint).then(
@@ -221,7 +218,7 @@ export class WordFiller {
         for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
             for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
                 if (this.grid[i][j].char.value === "?") {
-                    return this.grid[i][j].getWord();
+                    return this.grid[i][j].word;
                 }
             }
         }
