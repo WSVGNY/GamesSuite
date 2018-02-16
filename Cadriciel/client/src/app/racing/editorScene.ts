@@ -122,6 +122,7 @@ export class EditorScene {
     public completeTrack(): void {
         this._isComplete = true;
         this.addConnection(this._lastVertex, this._firstVertex);
+        this.vertices.forEach((mesh: Mesh) => console.log(mesh.position));
     }
 
     public addConnection(firstVertex: Mesh, secondVertex: Mesh): void {

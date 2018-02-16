@@ -2,8 +2,7 @@ import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import {
     PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, /*Matrix4,*/
-    Mesh, PlaneGeometry, Color, TextureLoader, Geometry,
-    MeshLambertMaterial, VertexColors, Texture, FogExp2, Vector3, MeshBasicMaterial, Vector2, BoxGeometry, BackSide
+    Mesh, MeshBasicMaterial, Shape, ShapeGeometry, Path
 } from "three";
 import { Car } from "../car/car";
 // import { Track } from "../../../../../common/racing/track";
@@ -23,10 +22,7 @@ const INITIAL_CAMERA_POSITION_Z: number = 10;
 const INITIAL_CAMERA_POSITION_Y: number = 5;
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
-const TEMP_GRID_SIZE: number = 300;
 const TEMP_GRID_ORIENTATION: number = 90;
-const TABLEAU: Array<Vector2> = new Array<Vector2>();
-const SKYBOX_SIZE: number = 1000;
 
 const PLAYER_CAMERA: string = "PLAYER_CAMERA";
 
@@ -39,7 +35,6 @@ export class RenderService {
     private scene: Scene;
     private stats: Stats;
     private lastDate: number;
-    private dayTime: boolean = true;
     /*private tracks: Track[];
     private trackService: TrackService;*/
 
@@ -91,9 +86,7 @@ export class RenderService {
         this._car.attachCamera(this.camera);
 
         this.scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
-        await this.renderTrack();
-        await this.renderSkyBox();
-        await this.initTrack();
+        await this.renderGround();
     }
 
     private getAspectRatio(): number {
@@ -159,166 +152,30 @@ export class RenderService {
         }
     }
 
-    /*private getTracksFromServer(): void {
-        this.trackService.getTrackList()
-            .subscribe((tracks: Track[]) => this.tracks = tracks);
-    }*/
+    poly = [[-488, -275], [-550, 170], [96, 342], [748, 70], [704, -263]];
+    poly2 = [[-245, -63], [-159, 127], [78, 149], [66, -64]];
 
-    private async renderTrack(): Promise<void> {
-        // this.getTracksFromServer();
-        this.scene.background = new Color(0xB3F0FF);
-        this.scene.fog = new FogExp2(0xFFFFFF, 0.00015);
-        const ambientLight: AmbientLight = new AmbientLight(0xCCCCCC);
-        this.scene.add(ambientLight);
-        // const image = new Image();
-        this.renderGround();
-        /*this.initTrack();
-        const trackWall: Mesh = new Mesh(piste, new MeshLambertMaterial({ map: texture, vertexColors: VertexColors }));
-        this.scene.add(trackWall);*/
-        /*const piste: Geometry = new Geometry();
-        piste.vertices.push(
-            new Vector3(-10, 10, 0),
-            new Vector3(-8, 12, 0),
-            new Vector3(-2, 12, 0),
-            new Vector3(4, 10, 0),
-            new Vector3(10, 0, 0),
-            new Vector3(8, -2, 0),
-            new Vector3(2, -8, 0),
-            new Vector3(-1, -10, 0),
-            new Vector3(-1, -10, 0),
-            new Vector3(-8, -4, 0),
-        );
-        piste.faces.push(new Face3(-10, 10, 0),
-            new Face3(-8, 12, 0),
-            new Face3(-2, 12, 0),
-            new Face3(4, 10, 0),
-            new Face3(10, 0, 0),
-            new Face3(8, -2, 0),
-            new Face3(2, -8, 0),
-            new Face3(-1, -10, 0),
-            new Face3(-1, -10, 0),
-            new Face3(-8, -4, 0));
-        const texture: Texture = await this.load2();
-        const track: Mesh = new Mesh(piste, new MeshLambertMaterial({ map: texture, vertexColors: VertexColors }));
-        track.translate(10, new Vector3(0, 1, 1));
-        track.drawMode = TriangleStripDrawMode;
-        this.scene.add(track);*/
-
-        /*const heartShape: Shape = new Shape(TABLEAU);
-        const extrudeSettings = { amount: 8, bevelEnabled: true, bevelSegments: 2, steps: 2, bevelSize: 1, bevelThickness: 1 };
-
-        const geometry = new ExtrudeGeometry(heartShape, extrudeSettings);
-
-        const shapeOfYou = new Mesh(geometry, new MeshPhongMaterial());
-        this.scene.add(shapeOfYou);*/
-
-        const wallGeometry: PlaneGeometry = new PlaneGeometry(50, 10);
-        const texture2: Texture = await this.load1();
-        const trackPlane: Mesh = new Mesh(wallGeometry, new MeshLambertMaterial({ map: texture2, vertexColors: VertexColors }));
-        trackPlane.translate(5, new Vector3(0, 0, 1));
-        this.scene.add(trackPlane);
-    }
     private async renderGround(): Promise<void> {
-        const groundGeometry: PlaneGeometry = new PlaneGeometry(TEMP_GRID_SIZE, TEMP_GRID_SIZE, TEMP_GRID_SIZE, TEMP_GRID_SIZE);
-        const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ wireframe: true, color: 0x00FFFF });
-        const ground: Mesh = new Mesh(groundGeometry, groundMaterial);
-        ground.rotateX(DEG_TO_RAD * TEMP_GRID_ORIENTATION);
+        let shape: Shape = new Shape();
+        shape.moveTo(this.poly[0][0], this.poly[0][1]);
+        for (let i = 1; i < this.poly.length; ++i)
+            shape.lineTo(this.poly[i][0], this.poly[i][1]);
+        shape.lineTo(this.poly[0][0], this.poly[0][1]);
+
+        let holePath = new Path();
+
+        holePath.moveTo(this.poly2[this.poly2.length - 1][0], this.poly2[this.poly2.length - 1][1]);
+        for (let i = this.poly2.length - 2; i >= 0; --i)
+            holePath.lineTo(this.poly2[i][0], this.poly2[i][1]);
+
+        holePath.lineTo(this.poly2[this.poly2.length - 1][0], this.poly2[this.poly2.length - 1][1]);
+        shape.holes.push(holePath);
+
+        let geometry = new ShapeGeometry(shape);
+        const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ color: 0x00FFFF });
+        const ground: Mesh = new Mesh(geometry, groundMaterial);
+        ground.rotateX(-Math.PI / 2);
         // ground.position = new Vector3(0, 0 , -1); marche po !! better use ground.translate()
         this.scene.add(ground);
-    }
-
-    private async renderSkyBox(): Promise<void> {
-        let textureSky: Texture;
-        if (this.dayTime) {
-            textureSky = await this.load3();
-        } else {
-            textureSky = await this.load2();
-        }
-        const boxbox: BoxGeometry = new BoxGeometry(SKYBOX_SIZE, SKYBOX_SIZE, SKYBOX_SIZE);
-        const skyBox: Mesh = new Mesh(boxbox, new MeshLambertMaterial({ map: textureSky, vertexColors: VertexColors, side: BackSide }));
-        this.scene.add(skyBox);
-    }
-
-    private async load1(): Promise<Texture> {
-        return new Promise<Texture>((resolve, reject) => {
-            const loader: TextureLoader = new TextureLoader();
-            loader.load("assets/textures/green.png", (object) => {
-                resolve(object);
-            });
-        });
-    }
-
-    private async load2(): Promise<Texture> {
-        return new Promise<Texture>((resolve, reject) => {
-            const loader: TextureLoader = new TextureLoader();
-            loader.load("assets/textures/space.jpg", (object) => {
-                resolve(object);
-            });
-        });
-    }
-    private async load3(): Promise<Texture> {
-        return new Promise<Texture>((resolve, reject) => {
-            const loader: TextureLoader = new TextureLoader();
-            loader.load("assets/textures/sky.jpg", (object) => {
-                resolve(object);
-            });
-        });
-    }
-
-    public remplirTableau(): void {
-        TABLEAU.push(new Vector2(0, 1));
-        TABLEAU.push(new Vector2(1, 5));
-        TABLEAU.push(new Vector2(2, 8));
-        TABLEAU.push(new Vector2(4, 8));
-
-    }
-
-    private async addPlane(dist: number, angle: number): Promise<void> {
-        const texture: Texture = await this.load1();
-        const trackPlane: Mesh = new Mesh(this.createGeometry(), new MeshLambertMaterial({ map: texture, vertexColors: VertexColors }));
-        trackPlane.translate(5, new Vector3(0, 0, 1));
-        trackPlane.rotateY(-3.14 / 2);
-        trackPlane.rotateX(-3.14 / 2);
-        trackPlane.rotateZ(3.14 / 2);
-        trackPlane.translate(5, new Vector3(0, 1, 0));
-        trackPlane.translate(dist, new Vector3(1, 0, 0));
-        trackPlane.rotateZ(angle);
-        trackPlane.translate(4, new Vector3(-1, 0, 0));
-        trackPlane.translate(20, new Vector3(0, -1, 0));
-        this.scene.add(trackPlane);
-    }
-    private async initTrack(): Promise<void> {
-        const texture1: Texture = await this.load1();
-        const texture2: Texture = await this.load2();
-        const trackWall: Mesh = new Mesh(this.createGeometry(), new MeshLambertMaterial({ map: texture1, vertexColors: VertexColors }));
-        const trackWall2: Mesh = new Mesh(this.createGeometry(), new MeshLambertMaterial({ map: texture2, vertexColors: VertexColors }));
-        trackWall.translate(5, new Vector3(0, 0, 1));
-        trackWall.rotateY(-3.14 / 2);
-        trackWall.rotateX(-3.14 / 2);
-        trackWall.rotateZ(3.14 / 2);
-        trackWall.translate(5, new Vector3(0, 1, 0));
-        trackWall.translate(120, new Vector3(1, 0, 0));
-
-        trackWall2.translate(5, new Vector3(1, 1, 1));
-        trackWall2.translate(150, new Vector3(1, 0, 0));
-        trackWall2.rotateY(-3.14 / 2);
-        this.scene.add(trackWall);
-        this.scene.add(trackWall2);
-        // this._car.position = new Vector3(-100, 0, 0 );  !!! Modifier la position de l appel pour que ça marche
-        this.addPlane(70, 3.14 / 4);
-        this.addPlane(50, 0);
-        this.addPlane(20, -3.14 / 4);
-        this.addPlane(-20, 3.14 / 4);
-        this.addPlane(-50, 0);
-    }
-
-    private createGeometry(): Geometry {
-        // const matrix: Matrix4 = new Matrix4();
-        // const light: Color = new Color(0xFFFFFF);
-        // const shadow: Color = new Color(0x505050);
-        const wallGeometry: PlaneGeometry = new PlaneGeometry(50, 10);
-        // wallGeometry.rotateY(Math.PI / 2);
-
-        return wallGeometry;
     }
 }
