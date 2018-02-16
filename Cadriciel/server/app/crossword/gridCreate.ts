@@ -4,15 +4,16 @@ import { injectable, } from "inversify";
 import { Grid } from "../../../common/crossword/grid";
 import { WordFiller } from "./wordFiller";
 import { BlackTiledGrid } from "./blackTiledGrid";
+import { Difficulty } from "../../../common/crossword/difficulty";
 
 @injectable()
 export class GridCreate {
 
     private grid: Grid;
+    private difficulty: Difficulty;
 
     public gridCreate(req: Request, res: Response, next: NextFunction): void {
-        this.grid = new Grid();
-        this.grid.difficulty = req.params.difficulty;
+        this.difficulty = req.params.difficulty;
         this.newGrid().then(() => {
             for (const row of this.grid.boxes) {
                 for (const box of row) {
@@ -24,13 +25,13 @@ export class GridCreate {
     }
 
     private async newGrid(): Promise<void> {
-        let restart: boolean;
+        let isRestartNeeded: boolean;
         do {
-            restart = false;
+            isRestartNeeded = false;
             const isValidGrid: boolean = false;
             while (!isValidGrid) {
                 this.grid = new Grid();
-
+                this.grid.difficulty = this.difficulty;
                 const blackTiledGrid: BlackTiledGrid = new BlackTiledGrid(this.grid.SIZE_GRID_X, this.grid.SIZE_GRID_Y, this.grid.boxes);
 
                 if (blackTiledGrid.words !== undefined) {
@@ -41,12 +42,12 @@ export class GridCreate {
             const wordFiller: WordFiller =
                 new WordFiller(this.grid.SIZE_GRID_X, this.grid.SIZE_GRID_Y, this.grid.difficulty, this.grid.boxes, this.grid.words);
             await wordFiller.wordFillControler().then(
-                (passed: boolean) => {
-                    if (!passed) {
-                        restart = true;
+                (hasPassed: boolean) => {
+                    if (!hasPassed) {
+                        isRestartNeeded = true;
                     }
                 }).catch((e: Error) => console.error(e));
-        } while (restart);
+        } while (isRestartNeeded);
 
     }
 }

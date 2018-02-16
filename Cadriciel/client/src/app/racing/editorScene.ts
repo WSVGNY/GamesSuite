@@ -238,7 +238,7 @@ export class EditorScene {
                 if (j > i + 1) {
                     const line2: Line = this.connections[j];
                     const intersection: Intersection = new Intersection(line1, line2, TRACK_WIDTH * HALF);
-                    if (intersection.intersects) {
+                    if (intersection.isIntersecting) {
                         line1.material = UNAUTHORIZED_LINE_MATERIAL;
                         line2.material = UNAUTHORIZED_LINE_MATERIAL;
                     }

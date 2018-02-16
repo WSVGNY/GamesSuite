@@ -2,11 +2,11 @@ import { Injectable } from "@angular/core";
 import { Camera, WebGLRenderer, Scene } from "three";
 
 export enum Action {
-    ADD_POINT = 1,
-    SET_SELECTED_VERTEX,
-    COMPLETE_LOOP,
-    NONE,
-    REMOVE
+    AddPoint = 1,
+    SetSelectedVertex,
+    CompleteLoop,
+    None,
+    Remove
 }
 
 @Injectable()

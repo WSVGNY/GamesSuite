@@ -4,8 +4,8 @@ import { GridBox } from "../../../common/crossword/gridBox";
 import { Word } from "../../../common/crossword/word";
 import { Coordinate } from "../../../common/crossword/coordinate";
 
-const HORIZONTAL: boolean = true;
-const VERTICAL: boolean = false;
+const IS_HORIZONTAL: boolean = true;
+const IS_VERTICAL: boolean = false;
 const MAX_DIFFICULTY: number = 100;
 const BLACK_TILES_RATIO: number = 0.45;
 const MIN_WORD_LENGTH: number = 2;
@@ -35,7 +35,7 @@ export class BlackTiledGrid {
         const array: Coordinate[] = this.createShuffledArray();
         for (let i: number = 0; i < this.NUM_BLACK_TILES; i++) {
             const randomTileId: Coordinate = array[i];
-            this.findMatchingTileById(randomTileId).black = true;
+            this.findMatchingTileById(randomTileId)._isBlack = true;
         }
         if (this.verifyBlackGridValidity()) {
             const totalDifficulty: number = this.calculateGridDifficulty();
@@ -67,7 +67,6 @@ export class BlackTiledGrid {
             }
         }
         totalDifficulty += this.SIZE_GRID_X - maxWordLength + minLengthWordQuantity;
-        // console.log(this.words.length);
 
         return totalDifficulty;
     }
@@ -119,17 +118,17 @@ export class BlackTiledGrid {
         let wordCount: number = 0;
         for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
             for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                if (this.grid[i][j].black) {
+                if (this.grid[i][j]._isBlack) {
                     continue;
                 }
-                const wordLength: number = this.calculateWordLength(HORIZONTAL, i, j);
+                const wordLength: number = this.calculateWordLength(IS_HORIZONTAL, i, j);
                 if (wordLength < MIN_WORD_LENGTH) {
                     if (!this.verifyVertically(i, j)) {
                         return false;
                     }
                 } else {
                     this.words[this.wordId - 1] =
-                        new Word(this.wordId, this.wordDefinitionID++, HORIZONTAL, wordLength, this.grid[i][j].id);
+                        new Word(this.wordId, this.wordDefinitionID++, IS_HORIZONTAL, wordLength, this.grid[i][j].id);
                     for (let k: number = j; k < j + wordLength; k++) {
                         this.grid[i][k].addConstraint(this.words[this.wordId - 1]);
                     }
@@ -147,10 +146,10 @@ export class BlackTiledGrid {
 
     private verifyVertically(i: number, j: number): boolean {
         if (i + 1 < this.SIZE_GRID_Y) {
-            return !this.grid[i + 1][j].black;
+            return !this.grid[i + 1][j]._isBlack;
         }
         if (i - 1 > 0) {
-            return !this.grid[i - 1][j].black;
+            return !this.grid[i - 1][j]._isBlack;
         }
 
         return false;
@@ -160,14 +159,14 @@ export class BlackTiledGrid {
         let wordCount: number = 0;
         for (let i: number = 0; i < this.SIZE_GRID_X; i++) {
             for (let j: number = 0; j < this.SIZE_GRID_Y; j++) {
-                if (this.grid[j][i].black) {
+                if (this.grid[j][i]._isBlack) {
                     continue;
                 }
-                const wordLength: number = this.calculateWordLength(VERTICAL, i, j);
+                const wordLength: number = this.calculateWordLength(IS_VERTICAL, i, j);
 
                 if (wordLength >= MIN_WORD_LENGTH) {
                     this.words[this.wordId - 1] =
-                        new Word(this.wordId, this.findHorizontalWordDefID(i, j), VERTICAL, wordLength, this.grid[j][i].id);
+                        new Word(this.wordId, this.findHorizontalWordDefID(i, j), IS_VERTICAL, wordLength, this.grid[j][i].id);
                     for (let k: number = j; k < j + wordLength; k++) {
                         this.grid[k][i].addConstraint(this.words[this.wordId - 1]);
                     }
@@ -186,11 +185,11 @@ export class BlackTiledGrid {
     private calculateWordLength(isHorizontal: boolean, i: number, j: number): number {
         let wordLength: number = 1;
         if (isHorizontal) {
-            while (j + wordLength < this.SIZE_GRID_X && !this.grid[i][j + wordLength].black) {
+            while (j + wordLength < this.SIZE_GRID_X && !this.grid[i][j + wordLength]._isBlack) {
                 wordLength++;
             }
         } else {
-            while (j + wordLength < this.SIZE_GRID_Y && !this.grid[j + wordLength][i].black) {
+            while (j + wordLength < this.SIZE_GRID_Y && !this.grid[j + wordLength][i]._isBlack) {
                 wordLength++;
             }
         }
@@ -201,7 +200,7 @@ export class BlackTiledGrid {
     private findHorizontalWordDefID(i: number, j: number): number {
         for (const word of this.words) {
             if (word.startPosition.x === i && word.startPosition.y === j) {
-                return word.definitionID;
+                return word._definitionID;
             }
         }
 

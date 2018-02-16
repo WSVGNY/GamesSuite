@@ -1,6 +1,6 @@
 import { AbstractCommand } from "./commands/abstractCommand";
 
-export class EditorControl {
+export class CommandController {
 
     private command: AbstractCommand;
 
