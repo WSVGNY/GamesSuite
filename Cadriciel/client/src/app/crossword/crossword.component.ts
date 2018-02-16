@@ -16,7 +16,9 @@ export class CrosswordComponent {
     public defs: Word;
     private grid: Grid;
     private boxes: GridBox[][];
+    private words: Word[];
     private difficulty: Difficulty;
+    private isInCheatMode: boolean = false;
 
     public constructor(private gridService: GridService) {
     }
@@ -25,6 +27,7 @@ export class CrosswordComponent {
         this.gridService.gridGet(this.difficulty).subscribe((grid: Grid) => {
             this.grid = grid;
             this.boxes = this.grid.boxes;
+            this.words = this.grid.words;
         });
     }
 
@@ -65,6 +68,16 @@ export class CrosswordComponent {
         document.getElementById("image2").style.display = "none";
     }
 
+    public changeMode(): void {
+        if (this.isInCheatMode === false) {
+            this.isInCheatMode = true;
+            document.getElementById("defs").style.background = "rgba(190, 84, 35, 0.253)";
+        } else {
+            this.isInCheatMode = false;
+            document.getElementById("defs").style.background = "rgba(27, 92, 76, 0.068)";
+        }
+    }
+
     public getGridBoxID(gridBox: GridBox): number {
         if (gridBox["_constraints"][0] !== undefined) {
             if (gridBox["_constraints"][1] !== undefined) {
@@ -85,4 +98,5 @@ export class CrosswordComponent {
 
         return undefined;
     }
+
 }

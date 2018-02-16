@@ -41,7 +41,7 @@ export class EditorScene {
         for (const entry of trackVertices) {
             this.addVertex(new Vector3(entry._x, entry._y, 0));
         }
-        this.completeTrack();
+        // this.completeTrack();
     }
 
     private clear(): void {

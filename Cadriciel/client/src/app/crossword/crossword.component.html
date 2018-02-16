@@ -7,20 +7,23 @@
   <div id="loader"></div>
 
   <div id="defs">
-    <button id="CheatButton"> Cheat mode </button>
+    <button id="CheatButton" (click)="changeMode()"> Cheat mode </button>
     <h2 id="title">Definitions</h2>
     <h3> Horizontal : </h3>
-      <!-- <div *ngFor="let word of grid.words">
-        <div *ngIf="word._horizontal">{{word._definition}}</div>
-      </div> -->
+      <div *ngFor="let word of words">
+        <div *ngIf="word._isHorizontal">{{word._definitionID}}) {{word._definition}}</div>
+      </div>
     <h3> Vertical : </h3>
+    <div *ngFor="let word of words">
+      <div *ngIf="!word._isHorizontal">{{word._definitionID}}) {{word._definition}}</div>
+    </div>
   </div>
 
-  <div id="grid">
+  <div id="grid" (mouseenter)="hide()">
     <div *ngFor="let line of boxes">
       <div *ngFor="let gridBox of line">
         <div [ngClass]="{filledGridBox : gridBox._isBlack, emptyGridBox : !gridBox._isBlack}">
-          <div (mouseenter)="hide()">{{getGridBoxID(gridBox)}}</div>
+          <div>{{getGridBoxID(gridBox)}}</div>
         </div>
       </div>
     </div>
