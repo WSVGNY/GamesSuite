@@ -212,12 +212,7 @@ export class RenderService {
     }
 
     private async renderSkyBox(): Promise<void> {
-        let textureSky: Texture;
-        if (this._dayTime) {
-            textureSky = await this.loadTexture("sky");
-        } else {
-            textureSky = await this.loadTexture("space");
-        }
+        const textureSky: Texture = this._dayTime ? await this.loadTexture("sky") : await this.loadTexture("space");
         const boxbox: BoxGeometry = new BoxGeometry(SKYBOX_SIZE, SKYBOX_SIZE, SKYBOX_SIZE);
         const skyBox: Mesh = new Mesh(boxbox, new MeshLambertMaterial({ map: textureSky, vertexColors: VertexColors, side: BackSide }));
         this._scene.add(skyBox);
