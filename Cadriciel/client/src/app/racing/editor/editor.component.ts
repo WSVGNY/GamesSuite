@@ -2,7 +2,6 @@ import { Component, AfterViewInit, HostListener, ElementRef, ViewChild, Input } 
 import { ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
 import { Track, ITrack } from "../../../../../common/racing/track";
-import { Vec2 } from "../../../../../common/crossword/vec2";
 import { TrackService } from "../track-service/track.service";
 import { EditorCamera } from "../editorCamera";
 import { EditorScene } from "../editorScene";
@@ -68,12 +67,13 @@ export class EditorComponent implements AfterViewInit {
                 const iTrack: ITrack = JSON.parse(JSON.stringify(trackFromServer));
                 this.trackChosenFromAdmin = new Track(iTrack);
                 this.currentTrackName = this.trackChosenFromAdmin.name;
+                this.editorScene.importTrackVertices(this.trackChosenFromAdmin.vertices);
             });
     }
 
     public saveTrack(): void {
         this.trackChosenFromAdmin.name = this.currentTrackName;
-        this.trackChosenFromAdmin.vertices = this.currentTrackVertices;
+        this.trackChosenFromAdmin.vertices = this.editorScene.exportTrackVertices();
         this.trackService.putTrack(this.currentTrackId, this.trackChosenFromAdmin)
             .subscribe((trackFromServer: string) => {
                 const iTrack: ITrack = JSON.parse(JSON.stringify(trackFromServer));
