@@ -36,15 +36,6 @@ export class Word {
         this._value = value;
     }
 
-    public get startPosition(): Coordinate {
-        return this._startPosition;
-    }
-
-    public set startPosition(value: Coordinate) {
-        this._startPosition.x = value.x;
-        this._startPosition.y = value.x;
-    }
-
     public get definition(): string {
         return this._definition;
     }
@@ -56,9 +47,9 @@ export class Word {
     public constructor(
         private _id: number,
         public _definitionID: number,
-        private _isHorizontal: boolean,
+        public _isHorizontal: boolean,
         private _length: number,
-        private _startPosition: Coordinate) {
+        public _startPosition: Coordinate) {
     }
 
     public addConstraint(word: Word): void {

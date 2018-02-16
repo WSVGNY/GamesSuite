@@ -78,6 +78,28 @@ export class CrosswordComponent {
         }
     }
 
+    public highlightWord(word: Word): void {
+        this.deselectWords();
+        if (word._isHorizontal) {
+            for (let i: number = 0; i < word["_length"]; i++) {
+                this.grid.boxes[word._startPosition._y][i + word._startPosition._x]._isColored = true;
+            }
+        } else {
+            for (let i: number = 0; i < word["_length"]; i++) {
+                this.grid.boxes[word._startPosition._y + i][word._startPosition._x]._isColored = true;
+            }
+        }
+
+    }
+
+    public deselectWords(): void {
+        for (const line of this.grid.boxes) {
+            for (const box of line) {
+                box._isColored = false;
+            }
+        }
+    }
+
     public getGridBoxID(gridBox: GridBox): number {
         if (gridBox["_constraints"][0] !== undefined) {
             if (gridBox["_constraints"][1] !== undefined) {

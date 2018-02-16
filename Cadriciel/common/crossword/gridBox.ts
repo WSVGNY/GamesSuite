@@ -7,7 +7,8 @@ export class GridBox {
     private _char: Char;
     private _constraints: Word[] = new Array<Word>();
     private _difficulty: number = 0;
-
+    public _isColored: boolean = false;
+    
     public constructor(private _id: Coordinate, public _isBlack: boolean) {
     }
 

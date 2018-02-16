@@ -79,15 +79,15 @@ export class WordFiller {
                 this.longestWord = word;
             }
             if (word.isHorizontal) {
-                for (let i: number = word.startPosition.x; i < word.startPosition.x + word.length; i++) {
-                    if (this.grid[word.startPosition.y][i].difficulty > 1) {
-                        word.addConstraint(this.grid[word.startPosition.y][i].getConstraint(IS_VERTICAL));
+                for (let i: number = word._startPosition._x; i < word._startPosition._x + word.length; i++) {
+                    if (this.grid[word._startPosition._y][i].difficulty > 1) {
+                        word.addConstraint(this.grid[word._startPosition._y][i].getConstraint(IS_VERTICAL));
                     }
                 }
             } else {
-                for (let i: number = word.startPosition.y; i < word.startPosition.y + word.length; i++) {
-                    if (this.grid[i][word.startPosition.x].difficulty > 1) {
-                        word.addConstraint(this.grid[i][word.startPosition.x].getConstraint(IS_HORIZONTAL));
+                for (let i: number = word._startPosition._y; i < word._startPosition._y + word.length; i++) {
+                    if (this.grid[i][word._startPosition._x].difficulty > 1) {
+                        word.addConstraint(this.grid[i][word._startPosition._x].getConstraint(IS_HORIZONTAL));
                     }
                 }
             }
@@ -193,9 +193,9 @@ export class WordFiller {
         const splitWord: string[] = Array.from(word.value);
         for (let i: number = 0; i < splitWord.length; ++i) {
             if (word.isHorizontal) {
-                this.grid[word.startPosition.y][word.startPosition.x + i].char.value = splitWord[i];
+                this.grid[word._startPosition._y][word._startPosition._x + i].char.value = splitWord[i];
             } else {
-                this.grid[word.startPosition.y + i][word.startPosition.x].char.value = splitWord[i];
+                this.grid[word._startPosition._y + i][word._startPosition._x].char.value = splitWord[i];
             }
         }
     }
