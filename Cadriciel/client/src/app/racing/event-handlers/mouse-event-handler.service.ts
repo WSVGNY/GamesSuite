@@ -2,13 +2,13 @@ import { Injectable } from "@angular/core";
 import { Vector3, Raycaster} from "three";
 import { EditorScene } from "../editorScene";
 import { EditorCamera } from "../editorCamera";
-import { EditorControl } from "../editorControl";
-import { SelectVertex } from "../commands/selectVertex";
-import { CloseLoop } from "../commands/closeLoop";
-import { PlaceVertex } from "../commands/placeVertex";
-import { RemoveVertex } from "../commands/removeVertex";
-import { MoveVertex } from "../commands/moveVertex";
-import { DeselectVertex } from "../commands/deselectVertex";
+import { CommandController } from "../commandController";
+import { SelectVertex } from "../commands/editorCommands/selectVertex";
+import { CloseLoop } from "../commands/editorCommands/closeLoop";
+import { PlaceVertex } from "../commands/editorCommands/placeVertex";
+import { RemoveVertex } from "../commands/editorCommands/removeVertex";
+import { MoveVertex } from "../commands/editorCommands/moveVertex";
+import { DeselectVertex } from "../commands/editorCommands/deselectVertex";
 
 const LEFT_CLICK_KEYCODE: number = 1;
 const RIGHT_CLICK_KEYCODE: number = 3;
@@ -18,7 +18,7 @@ const HALF: number = 0.5;
 @Injectable()
 export class MouseEventHandlerService {
 
-  private _editorControl: EditorControl;
+  private _editorControl: CommandController;
   private _containerEditor: HTMLDivElement;
   private _raycaster: Raycaster;
   private _viewSize: number;
@@ -42,7 +42,7 @@ export class MouseEventHandlerService {
 
   private async initialiseValues(): Promise<void> {
     this._raycaster = new Raycaster();
-    this._editorControl = new EditorControl();
+    this._editorControl = new CommandController();
     this._mouseWorldCoordinates = new Vector3(0, 0, 0);
     this._divOffset = new Vector3(0, 0, 0);
     this._centerOffset = new Vector3(0, 0, 0);

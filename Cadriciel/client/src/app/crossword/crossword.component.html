@@ -1,5 +1,5 @@
 <div (mouseenter)="hideLoader()">
-<h2> Crossword Game </h2>
+  <h2> Crossword Game </h2>
   <button id="buttonDifficulty" (click)="makeEasyGrid()">EASY</button>
   <button id="buttonDifficulty" (click)="makeMediumGrid()">MEDIUM</button>
   <button id="buttonDifficulty" (click)="makeHardGrid()">HARD</button>
@@ -7,25 +7,25 @@
   <div id="loader"></div>
 
   <div id="defs">
-    <button id="CheatButton"> Cheat mode </button>
-    <h3>Definitions</h3>
-      <h4> Horizontal : </h4>
-      <h4> Vertical : </h4>
+    <button id="CheatButton" (click)="changeMode()"> Cheat mode </button>
+    <h2 id="title">Definitions</h2>
+    <h3> Horizontal : </h3>
+      <div *ngFor="let word of words">
+        <div *ngIf="word._isHorizontal">{{word._definitionID}}) {{word._definition}}</div>
+      </div>
+    <h3> Vertical : </h3>
+    <div *ngFor="let word of words">
+      <div *ngIf="!word._isHorizontal">{{word._definitionID}}) {{word._definition}}</div>
+    </div>
   </div>
 
-  <div id="grid">
-    <div *ngFor="let gridBoxLine of grid">
-      <div *ngFor="let gridBox of gridBoxLine">
-        <div [ngClass]="{filledGridBox : gridBox._black, emptyGridBox : !gridBox._black}">
-          <div (mouseenter)="hide()">{{gridBox._char._value}}</div>
+  <div id="grid" (mouseenter)="hide()">
+    <div *ngFor="let line of boxes">
+      <div *ngFor="let gridBox of line">
+        <div [ngClass]="{filledGridBox : gridBox._isBlack, emptyGridBox : !gridBox._isBlack}">
+          <div>{{getGridBoxID(gridBox)}}</div>
         </div>
       </div>
     </div>
   </div>
 </div>
-
-
-
-
-
-

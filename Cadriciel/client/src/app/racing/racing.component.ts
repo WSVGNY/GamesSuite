@@ -39,7 +39,7 @@ export class RacingComponent implements AfterViewInit {
     }
 
     public get car(): Car {
-        return this.renderService.car;
+        return this.renderService.playerCar;
     }
 
     public hider(): void {

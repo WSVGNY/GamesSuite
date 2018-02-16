@@ -1,20 +1,24 @@
 #grid {
     width: 600px;
-    height: 600px;
+    min-height: 600px;
     margin: 0 auto;
     border: 2px solid rgba(44, 107, 97, 0.233);
-    position: absolute;
-    left: 50%;
+    position: relative;
+    right: -25%;
+}
+
+#title {
+    text-align: center;
 }
 
 .emptyGridBox {
+    text-align: left;    
     width: 56px;
     height: 56px;
     border: 2px solid black;
     padding: 0;
     margin: 0;
     float: left;
-    text-align: center;
     text-transform: uppercase;
     background: white;
 }

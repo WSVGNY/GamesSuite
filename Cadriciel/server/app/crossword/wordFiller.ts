@@ -7,10 +7,9 @@ import * as requestPromise from "request-promise-native";
 import { Difficulty } from "../../../common/crossword/difficulty";
 import { ResponseWordFromAPI } from "../../../common/communication/responseWordFromAPI";
 import { WordConstraint } from "./wordConstraint";
-// import { CrosswordComponent } from "../../../client/src/app/crossword/crossword.component";
 
-const VERTICAL: boolean = false;
-const HORIZONTAL: boolean = true;
+const IS_VERTICAL: boolean = false;
+const IS_HORIZONTAL: boolean = true;
 const MAX_REQUEST_TRIES: number = 2;
 const MAX_TRIES_TO_BACKTRACK: number = 4;
 
@@ -29,7 +28,6 @@ export class WordFiller {
     private backTrackCounter: number = 0;
     private backTrackingWord: Word;
     public isGenerated: boolean = false;
-   // public crossword: CrosswordComponent;
 
     public constructor(
         private SIZE_GRID_X: number,
@@ -45,11 +43,7 @@ export class WordFiller {
         this.createCharGrid();
         this.generateConstraints();
         this.filledWords = new Array<Word>();
-        console.log("=======================================================");
-        console.log("FRESH START WITH NEW GRID");
-        console.log("=======================================================");
         do {
-            console.log("START PACKET");
             await this.fillWord(this.longestWord).then(
                 (result: Token) => {
                     state = result;
@@ -65,7 +59,6 @@ export class WordFiller {
             return false;
         }
         this.isGenerated = true;
-       // this.crossword.hide();
 
         return true;
     }
@@ -73,7 +66,7 @@ export class WordFiller {
     private createCharGrid(): void {
         for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
             for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                this.grid[i][j].black ? this.grid[i][j].char = new Char("#") : this.grid[i][j].char = new Char("?");
+                this.grid[i][j]._isBlack ? this.grid[i][j].char = new Char("#") : this.grid[i][j].char = new Char("?");
             }
         }
     }
@@ -85,29 +78,26 @@ export class WordFiller {
                 maxWordLength = word.length;
                 this.longestWord = word;
             }
-            if (word.horizontal) {
+            if (word.isHorizontal) {
                 for (let i: number = word.startPosition.x; i < word.startPosition.x + word.length; i++) {
                     if (this.grid[word.startPosition.y][i].difficulty > 1) {
-                        word.addConstraint(this.grid[word.startPosition.y][i].getConstraint(VERTICAL));
+                        word.addConstraint(this.grid[word.startPosition.y][i].getConstraint(IS_VERTICAL));
                     }
                 }
             } else {
                 for (let i: number = word.startPosition.y; i < word.startPosition.y + word.length; i++) {
                     if (this.grid[i][word.startPosition.x].difficulty > 1) {
-                        word.addConstraint(this.grid[i][word.startPosition.x].getConstraint(HORIZONTAL));
+                        word.addConstraint(this.grid[i][word.startPosition.x].getConstraint(IS_HORIZONTAL));
                     }
                 }
             }
         }
     }
 
-    // tslint:disable-next-line:max-func-body-length
     private async fillWord(currentWord: Word): Promise<Token> {
-        console.log();
         let sameWordExists: Token;
         const wordConstraint: WordConstraint = new WordConstraint(currentWord, this.grid);
         const wordConstraints: string = wordConstraint.readyValue;
-        console.log("ID : " + currentWord.id);
         await this.tryWord(wordConstraints, currentWord).then(
             (result: Token) => {
                 sameWordExists = result;
@@ -115,18 +105,8 @@ export class WordFiller {
         if (sameWordExists === Token.BackTrack) {
             return Token.BackTrack;
         }
-        // process.stdout.write("List of ID's : ");
-        // for (const word2 of this.filledWords) {
-        //     process.stdout.write(word2.id + ", ");
-        // }
-        // console.log();
-        // process.stdout.write("List of Constraints ID's : ");
-        // for (const next of currentWord.constraints) {
-        //     process.stdout.write(next.id + ", ");
-        // }
-        // console.log();
         let state: Token;
-        for (const next of currentWord.constraints) {
+        for (const next of currentWord._constraints) {
             if (this.filledWords.findIndex((wordIteration: Word) => next.id === wordIteration.id) === -1) {
                 next.parentCaller = currentWord;
                 await this.manageBackTrack(next, currentWord, wordConstraint).then(
@@ -148,7 +128,6 @@ export class WordFiller {
             state = Token.Pass;
             await this.getWordFromAPI(wordConstraints).then(
                 (result: ResponseWordFromAPI) => {
-                    console.log("Resulted Word : " + result.word);
                     if (this.verifyWordAlreadyThere(result.word) || result.word === "") {
                         state = Token.BackTrack;
                     }
@@ -159,6 +138,7 @@ export class WordFiller {
                         }
 
                         word.value = result.word;
+                        word.definition = result.definition;
                         this.updateCharGrid(word);
                         this.filledWords.push(word);
                     }
@@ -185,7 +165,6 @@ export class WordFiller {
             this.filledWords.splice(index, 1);
             this.backTrackCounter++;
             this.backTrackingWord = next;
-            console.log("COUNTER : " + this.backTrackCounter);
             if (this.backTrackCounter >= MAX_TRIES_TO_BACKTRACK) {
                 this.backTrackCounter = 0;
 
@@ -213,7 +192,7 @@ export class WordFiller {
     private updateCharGrid(word: Word): void {
         const splitWord: string[] = Array.from(word.value);
         for (let i: number = 0; i < splitWord.length; ++i) {
-            if (word.horizontal) {
+            if (word.isHorizontal) {
                 this.grid[word.startPosition.y][word.startPosition.x + i].char.value = splitWord[i];
             } else {
                 this.grid[word.startPosition.y + i][word.startPosition.x].char.value = splitWord[i];
@@ -226,10 +205,8 @@ export class WordFiller {
         await requestPromise(this.URL_WORD_API + constraints + "/" + this.gridDifficulty).then(
             (result: string) => {
                 result = JSON.parse(result);
-                //console.log(result);
                 responseWord.word = result["_word"];
                 responseWord.definition = result["_definition"];
-                //console.log(responseWord);
             }
         ).catch((e: Error) => {
             console.error(e);
@@ -242,7 +219,7 @@ export class WordFiller {
         for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
             for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
                 if (this.grid[i][j].char.value === "?") {
-                    return this.grid[i][j].getWord();
+                    return this.grid[i][j].word;
                 }
             }
         }

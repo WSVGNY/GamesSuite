@@ -1,5 +1,5 @@
 import assert = require("assert");
-import { Grid } from "./gridCreate";
+import { Grid } from "../../../common/crossword/grid";
 import { BlackTiledGrid } from "./blackTiledGrid";
 
 let grid: Grid;
@@ -29,7 +29,7 @@ describe("GRID CREATE TESTS", () => {
         let numBlackTiles: number = 0;
         for (let i: number = 0; i < grid["SIZE_GRID_X"]; i++) {
             for (let j: number = 0; j < grid["SIZE_GRID_Y"]; j++) {
-                if (blackGrid["grid"][i][j].black) {
+                if (blackGrid["grid"][i][j]._isBlack) {
                     numBlackTiles++;
                 }
             }

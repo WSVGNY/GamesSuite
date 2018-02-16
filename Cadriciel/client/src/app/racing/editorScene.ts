@@ -5,6 +5,7 @@ import {
 import { PI_OVER_4, WHITE, RED, PINK, BLUE, HALF } from "./constants";
 import { Angle } from "./editor/constraints/angle";
 import { Intersection } from "./editor/constraints/intersection";
+import { Coordinate } from "../../../../common/crossword/coordinate";
 
 const RADIUS: number = 12;
 const OUTLINE_TO_VERTEX_RATIO: number = 1.25;
@@ -33,6 +34,34 @@ export class EditorScene {
         this._scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
         this._vertices = new Array();
         this._connections = new Array();
+    }
+
+    public importTrackVertices(trackVertices: Array<Coordinate>): void {
+        this.clear();
+        for (const entry of trackVertices) {
+            this.addVertex(new Vector3(entry._x, entry._y, 0));
+        }
+        // this.completeTrack();
+    }
+
+    private clear(): void {
+        for (const entry of this._vertices) {
+            this._scene.remove(entry);
+        }
+        for (const entry of this._connections) {
+            this._scene.remove(entry);
+        }
+        this._vertices = [];
+        this._connections = [];
+    }
+
+    public exportTrackVertices(): Array<Coordinate> {
+        const trackVertices: Array<Coordinate> = new Array();
+        for (const entry of this.vertices) {
+            trackVertices.push(new Coordinate(entry.position.x, entry.position.y));
+        }
+
+        return trackVertices;
     }
 
     public setSelectedVertex(vertexName: string): void {
@@ -239,7 +268,7 @@ export class EditorScene {
                 if (j > i + 1) {
                     const line2: Line = this.connections[j];
                     const intersection: Intersection = new Intersection(line1, line2, TRACK_WIDTH * HALF);
-                    if (intersection.intersects) {
+                    if (intersection.isIntersecting) {
                         line1.material = UNAUTHORIZED_LINE_MATERIAL;
                         line2.material = UNAUTHORIZED_LINE_MATERIAL;
                     }

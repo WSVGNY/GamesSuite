@@ -65,11 +65,13 @@ export class EditorComponent implements AfterViewInit {
                 const iTrack: ITrack = JSON.parse(JSON.stringify(trackFromServer));
                 this.trackChosenFromAdmin = new Track(iTrack);
                 this.currentTrackName = this.trackChosenFromAdmin.name;
+                this.editorScene.importTrackVertices(this.trackChosenFromAdmin.vertices);
             });
     }
 
     public saveTrack(): void {
         this.trackChosenFromAdmin.name = this.currentTrackName;
+        this.trackChosenFromAdmin.vertices = this.editorScene.exportTrackVertices();
         this.trackService.putTrack(this.currentTrackId, this.trackChosenFromAdmin)
             .subscribe((trackFromServer: string) => {
                 const iTrack: ITrack = JSON.parse(JSON.stringify(trackFromServer));

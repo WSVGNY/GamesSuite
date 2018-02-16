@@ -1,7 +1,7 @@
-import { AbstractCommand } from "./abstractCommand";
-import { EditorScene } from "../editorScene";
+import { AbstractEditorCommand } from "./../abstractEditorCommand";
+import { EditorScene } from "../../editorScene";
 
-export class SelectVertex extends AbstractCommand {
+export class SelectVertex extends AbstractEditorCommand {
 
     private vertexName: string;
 

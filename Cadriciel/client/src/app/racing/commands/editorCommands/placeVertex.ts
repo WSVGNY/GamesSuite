@@ -1,8 +1,8 @@
-import { AbstractCommand } from "./abstractCommand";
+import { AbstractEditorCommand } from "./../abstractEditorCommand";
 import { Vector3 } from "three";
-import { EditorScene } from "../editorScene";
+import { EditorScene } from "../../editorScene";
 
-export class PlaceVertex extends AbstractCommand {
+export class PlaceVertex extends AbstractEditorCommand {
 
     private position: Vector3;
 
