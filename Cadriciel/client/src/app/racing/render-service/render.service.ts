@@ -54,7 +54,7 @@ export class RenderService {
         this._playerCar = new Car();
         this._carAiService = [];
         this._aiCars = [];
-        //this._track = new Track();
+        // this._track = new Track;
         for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
             this._aiCars.push(new Car());
             this._carAiService.push(new CarAiService(this._aiCars[i], this._track));
@@ -88,7 +88,9 @@ export class RenderService {
         const timeSinceLastFrame: number = Date.now() - this._lastDate;
         this._playerCar.update(timeSinceLastFrame);
         // TODO: Remove this instruction, only for testing
-        // this._carAiService[0].calculateNewPosition();
+        this._carAiService[0].calculateNewPosition();
+        //this._aiCars[0].isAcceleratorPressed = true;
+        this._aiCars[0].update(timeSinceLastFrame);
         this._lastDate = Date.now();
     }
 

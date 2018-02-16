@@ -14,8 +14,9 @@ export class CarAiService {
 
     public calculateNewPosition(): void {
         //TODO: remove if
-        if (this._track.name !== undefined) {
+        if (this._track === undefined) {
             this._aiControl.setCommand(new GoFoward(this._car));
+            this._aiControl.execute();
         }
     }
 }
