@@ -7,14 +7,18 @@
     left: 50%;
 }
 
+#title {
+    text-align: center;
+}
+
 .emptyGridBox {
+    text-align: left;    
     width: 56px;
     height: 56px;
     border: 2px solid black;
     padding: 0;
     margin: 0;
     float: left;
-    text-align: center;
     text-transform: uppercase;
     background: white;
 }
