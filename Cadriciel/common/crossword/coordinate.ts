@@ -17,7 +17,7 @@ export class Coordinate {
         this._y = value;
     }
 
-    public constructor(private _x: number, private _y: number) {
+    public constructor(public _x: number, public _y: number) {
 
     }
 
