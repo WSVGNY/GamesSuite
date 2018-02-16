@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Vector3, Raycaster} from "three";
-import { EditorScene } from "../editorScene";
-import { EditorCamera } from "../editorCamera";
+import { EditorScene } from "../editor/editorScene";
+import { EditorCamera } from "../editor/editorCamera";
 import { CommandController } from "../commandController";
 import { SelectVertex } from "../commands/editorCommands/selectVertex";
 import { CloseLoop } from "../commands/editorCommands/closeLoop";

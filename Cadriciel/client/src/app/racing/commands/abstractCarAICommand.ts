@@ -1,6 +1,6 @@
 import { AbstractCommand } from "./abstractCommand";
 
-export abstract class AbstractCarAICommand extends AbstractCommand{
+export abstract class AbstractCarAICommand extends AbstractCommand {
 
     public constructor() {
         super();
