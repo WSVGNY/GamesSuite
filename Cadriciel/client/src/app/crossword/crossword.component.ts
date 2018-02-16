@@ -59,11 +59,11 @@ export class CrosswordComponent {
         loader.addEventListener("animationend", (event: Event) => { loader.style.display = "none"; }, false);
     }
 
-    public hide(): void {
+    public hideLoader(): void {
         document.getElementById("loader").style.display = "none";
     }
 
-    public hideLoader(): void {
+    public hide(): void {
         document.getElementById("image1").style.display = "none";
         document.getElementById("image2").style.display = "none";
     }
