@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import "reflect-metadata";
 import { injectable, } from "inversify";
-import { GridBox } from "../../../common/crossword/gridBox";
-import { Coordinate } from "../../../common/crossword/coordinate";
 import { Grid } from "../../../common/crossword/grid";
 import { WordFiller } from "./wordFiller";
 import { BlackTiledGrid } from "./blackTiledGrid";
