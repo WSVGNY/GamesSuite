@@ -16,6 +16,7 @@ export class CrosswordComponent {
     public defs: Word;
     private grid: Grid;
     private boxes: GridBox[][];
+    private words: Word[];
     private difficulty: Difficulty;
     private isInCheatMode: boolean = false;
 
@@ -26,6 +27,7 @@ export class CrosswordComponent {
         this.gridService.gridGet(this.difficulty).subscribe((grid: Grid) => {
             this.grid = grid;
             this.boxes = this.grid.boxes;
+            this.words = this.grid.words;
         });
     }
 
@@ -96,4 +98,5 @@ export class CrosswordComponent {
 
         return undefined;
     }
+
 }
