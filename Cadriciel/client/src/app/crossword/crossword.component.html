@@ -11,12 +11,12 @@
     <h2 id="title">Definitions</h2>
     <h3> Horizontal : </h3>
       <div *ngFor="let word of words">
-        <div *ngIf="word._isHorizontal">{{word._definition}}</div>
+        <div *ngIf="word._isHorizontal">{{word._definitionID}}) {{word._definition}}</div>
       </div>
     <h3> Vertical : </h3>
-      <!-- <div *ngFor="let word of words">
-        <div>{{word._definition}}</div>
-      </div> -->
+    <div *ngFor="let word of words">
+      <div *ngIf="!word._isHorizontal">{{word._definitionID}}) {{word._definition}}</div>
+    </div>
   </div>
 
   <div id="grid" (mouseenter)="hide()">
