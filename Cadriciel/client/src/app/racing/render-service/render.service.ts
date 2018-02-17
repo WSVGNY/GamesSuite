@@ -1,8 +1,7 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import {
-    PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, Vector3, Line, LineBasicMaterial, Geometry,
-    Mesh, SphereGeometry, MeshNormalMaterial
+    PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, Vector3, Line, LineBasicMaterial, Geometry
 } from "three";
 import { Car } from "../car/car";
 import { Track, ITrack } from "../../../../../common/racing/track";
@@ -38,7 +37,6 @@ export class RenderService {
     private _carAiService: CarAiService[];
     private _aiCars: Car[];
     private _track: Track;
-    private _cube: Mesh;
 
     private mockTrack: Vector3[] = [
         new Vector3(-488, -275, 0),
