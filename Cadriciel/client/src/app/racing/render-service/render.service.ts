@@ -3,11 +3,11 @@ import Stats = require("stats.js");
 import {
     PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, Vector3, Line, LineBasicMaterial, Geometry
 } from "three";
-import { Car } from "../car/car";
-import { Track, ITrack } from "../../../../../common/racing/track";
-import { TrackService } from "../track-service/track.service";
 import { CarAiService } from "../ai/car-ai.service";
-import { ActivatedRoute } from "@angular/router";
+import { Car } from "../car/car";
+// import { Track, ITrack } from "../../../../../common/racing/track";
+// import { TrackService } from "../track-service/track.service";
+// import { ActivatedRoute } from "@angular/router";
 
 const FAR_CLIPPING_PLANE: number = 1000;
 const NEAR_CLIPPING_PLANE: number = 1;
@@ -36,7 +36,7 @@ export class RenderService {
     private _lastDate: number;
     private _carAiService: CarAiService[];
     private _aiCars: Car[];
-    private _track: Track;
+    // private _track: Track;
 
     private mockTrack: Vector3[] = [
         new Vector3(-488, -275, 0),
@@ -50,7 +50,7 @@ export class RenderService {
         return this._playerCar;
     }
 
-    public constructor(private trackService: TrackService, private route: ActivatedRoute) {
+    public constructor(/*private trackService: TrackService, private route: ActivatedRoute*/) {
         // this.getTrack();
         this._playerCar = new Car();
         this._playerCar.position.add(new Vector3(this.mockTrack[0].x, 0, this.mockTrack[0].y));
@@ -66,13 +66,13 @@ export class RenderService {
         }
     }
 
-    public getTrack(): void {
-        this.trackService.getTrackFromId(this.route.snapshot.paramMap.get("5a7fc1173cb1de3b7ce47a4a"))
-            .subscribe((trackFromServer: string) => {
-                const iTrack: ITrack = JSON.parse(JSON.stringify(trackFromServer));
-                this._track = new Track(iTrack);
-            });
-    }
+    // public getTrack(): void {
+    //     this.trackService.getTrackFromId(this.route.snapshot.paramMap.get("5a7fc1173cb1de3b7ce47a4a"))
+    //         .subscribe((trackFromServer: string) => {
+    //             const iTrack: ITrack = JSON.parse(JSON.stringify(trackFromServer));
+    //             this._track = new Track(iTrack);
+    //         });
+    // }
 
     public async initialize(container: HTMLDivElement): Promise<void> {
         if (container) {

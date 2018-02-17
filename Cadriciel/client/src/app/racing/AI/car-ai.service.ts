@@ -16,12 +16,13 @@ export class CarAiService {
     // private _isSteeringRight: boolean = false;
     // private _isBraking: boolean = false;
     public _scene: Scene;
-    private _vectorTrack: Vector3[];
+    private _vectorTrack: {a: number, b: number, c: number}[];
 
     // public constructor(private _car: Car, private _track: Track) {
     public constructor(private _car: Car, track: Vector3[]) {
         this._aiControl = new CommandController();
         this.createVectorTrackFromPoints(track);
+        this.getPointDistanceFromTrack(0, new Vector3(-550,0,170));
     }
 
     public update(): void {
@@ -62,11 +63,11 @@ export class CarAiService {
 
         const raycaster: Raycaster = new Raycaster(posRaycaster, new Vector3(0, -1, 0), 0, this.DISTANCE_RAYCASTER_FROM_VEHICULE + 1);
         const intersects: Intersection[] = raycaster.intersectObjects(this._scene.children);
-        if (intersects.length !== 0) {
-            console.log(intersects);
-        } else {
-            console.log("NOTHING");
-        }
+        // if (intersects.length !== 0) {
+        //     console.log(intersects);
+        // } else {
+        //     console.log("NOTHING");
+        // }
 
         return intersects;
     }
@@ -74,9 +75,24 @@ export class CarAiService {
     private createVectorTrackFromPoints(track: Vector3[]): void {
         this._vectorTrack = [];
         for (let i: number = 0; i < track.length - 1; ++i) {
-            const vec: Vector3 = new Vector3(track[i + 1].x - track[i].x, track[i + 1].y - track[i].y, track[i + 1].z - track[i].z);
-            this._vectorTrack.push(vec);
+            const vec: Vector3 = new Vector3(track[i + 1].x - track[i].x, 0 , track[i + 1].y - track[i].y);
+            const a: number = vec.x;
+            const b: number = vec.z;
+            const c: number = track[i].y - ((b / a) * track[i].x);
+            this._vectorTrack.push({a, b, c});
+            // console.log(this._vectorTrack[i]);
         }
+    }
+
+    private getPointDistanceFromTrack(trackPortionIndex: number, point: Vector3): number {
+        // console.log(this._vectorTrack[trackPortionIndex]);
+        const line: {a: number, b: number, c: number} = this._vectorTrack[trackPortionIndex];
+        const top: number = Math.abs(line.a * point.x + line.b * point.z + line.c);
+        const bottom: number = Math.sqrt(line.a * line.a + line.b * line.b);
+
+        // console.log(top / bottom);
+
+        return top / bottom;
     }
 
 }
