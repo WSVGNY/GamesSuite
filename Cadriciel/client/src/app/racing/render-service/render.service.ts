@@ -122,13 +122,6 @@ export class RenderService {
         this._camera.position.y = INITIAL_CAMERA_POSITION_Y;
         this._playerCar.attachCamera(this._camera);
 
-        this._cube = new Mesh( new SphereGeometry( 1, 32, 32 ), new MeshNormalMaterial() );
-        this._cube.position.y = 0;
-        this._cube.position.x = this._aiCars[0].position.x;
-        this._cube.position.z = this._aiCars[0].position.z;
-        // this._aiCars[0].attachCube(this._cube);
-        this._scene.add( this._cube );
-
         this._scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
         await this.renderTrack();
     }
