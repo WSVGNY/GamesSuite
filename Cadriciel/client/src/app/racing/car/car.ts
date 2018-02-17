@@ -15,7 +15,6 @@ const NUMBER_REAR_WHEELS: number = 2;
 const NUMBER_WHEELS: number = 4;
 
 export class Car extends Object3D {
-    public _isAcceleratorPressed: boolean;
 
     private readonly _engine: Engine;
     private readonly _mass: number;
@@ -23,6 +22,7 @@ export class Car extends Object3D {
     private readonly _wheelbase: number;
     private readonly _dragCoefficient: number;
 
+    private _isAcceleratorPressed: boolean;
     private _speed: Vector3;
     private _isBraking: boolean;
     private _mesh: Object3D;
@@ -140,6 +140,14 @@ export class Car extends Object3D {
 
     public brake(): void {
         this._isBraking = true;
+    }
+
+    public accelerate(): void {
+        this._isAcceleratorPressed = true;
+    }
+
+    public releaseAccelerator(): void {
+        this._isAcceleratorPressed = false;
     }
 
     public update(deltaTime: number): void {

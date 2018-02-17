@@ -9,6 +9,6 @@ export class GoFoward extends AbstractCarAICommand {
 
     public execute(): void {
         this._car.releaseBrakes();
-        this._car._isAcceleratorPressed = true;
+        this._car.accelerate();
     }
 }

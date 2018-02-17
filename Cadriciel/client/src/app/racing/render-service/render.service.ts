@@ -169,7 +169,7 @@ export class RenderService {
     public handleKeyDown(event: KeyboardEvent): void {
         switch (event.keyCode) {
             case ACCELERATE_KEYCODE:
-                this._playerCar._isAcceleratorPressed = true;
+                this._playerCar.accelerate();
                 break;
             case LEFT_KEYCODE:
                 this._playerCar.steerLeft();
@@ -188,7 +188,7 @@ export class RenderService {
     public handleKeyUp(event: KeyboardEvent): void {
         switch (event.keyCode) {
             case ACCELERATE_KEYCODE:
-                this._playerCar._isAcceleratorPressed = false;
+                this._playerCar.releaseAccelerator();
                 break;
             case LEFT_KEYCODE:
             case RIGHT_KEYCODE:
