@@ -16,10 +16,12 @@ export class CarAiService {
     // private _isSteeringRight: boolean = false;
     // private _isBraking: boolean = false;
     public _scene: Scene;
+    private _vectorTrack: Vector3[];
 
     // public constructor(private _car: Car, private _track: Track) {
-    public constructor(private _car: Car, private _track: Vector3[]) {
+    public constructor(private _car: Car, track: Vector3[]) {
         this._aiControl = new CommandController();
+        this.createVectorTrackFromPoints(track);
     }
 
     public update(): void {
@@ -69,5 +71,12 @@ export class CarAiService {
         return intersects;
     }
 
+    private createVectorTrackFromPoints(track: Vector3[]): void {
+        this._vectorTrack = [];
+        for (let i: number = 0; i < track.length - 1; ++i) {
+            const vec: Vector3 = new Vector3(track[i + 1].x - track[i].x, track[i + 1].y - track[i].y, track[i + 1].z - track[i].z);
+            this._vectorTrack.push(vec);
+        }
+    }
 
 }
