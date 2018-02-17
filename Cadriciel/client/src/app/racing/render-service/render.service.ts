@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import {
     PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, Vector3, Line, LineBasicMaterial, Geometry,
-    Mesh, SphereGeometry, MeshNormalMaterial
+    Mesh, SphereGeometry, MeshNormalMaterial, Raycaster
 } from "three";
 import { Car } from "../car/car";
 import { Track, ITrack } from "../../../../../common/racing/track";
@@ -97,14 +97,18 @@ export class RenderService {
         this._playerCar.update(timeSinceLastFrame);
         // TODO: Remove this instruction, only for testing
         this._carAiService[0].update();
-        //this._aiCars[0].isAcceleratorPressed = true;
         this._aiCars[0].update(timeSinceLastFrame);
         this._lastDate = Date.now();
-        const dir: Vector3 = this._aiCars[0].direction.normalize();
+        const dir: Vector3 = this._playerCar.direction.normalize();
         // tslint:disable-next-line:max-line-length
-        const posCubeTemp: Vector3 = new Vector3(this._aiCars[0].position.x - this._aiCars[0].currentPosition.x, 0, this._aiCars[0].position.z - this._aiCars[0].currentPosition.z);
+        const posCubeTemp: Vector3 = new Vector3(this._playerCar.position.x - this._playerCar.currentPosition.x, 0, this._playerCar.position.z - this._playerCar.currentPosition.z);
         this._cube.position.x = posCubeTemp.x - dir.x * 5;
         this._cube.position.z = posCubeTemp.z - dir.z * 5;
+
+        let raycaster: Raycaster = new Raycaster(new Vector3(this._cube.position.x, 10, this._cube.position.z), new Vector3(0, -1, 0), 0, 100);
+        const intersects = raycaster.intersectObjects(this._scene.children);
+        if(intersects.length !== 0)
+            console.log(intersects);
     }
 
     private async createScene(): Promise<void> {
