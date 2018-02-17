@@ -53,7 +53,7 @@ export class CarAiService {
         posRaycaster.y = this.DISTANCE_RAYCASTER_FROM_VEHICULE;
         posRaycaster.z -= dir.z * this.DISTANCE_RAYCASTER_FROM_VEHICULE;
 
-        const raycaster: Raycaster = new Raycaster(posRaycaster, new Vector3(0, -1, 0), 0, 100);
+        const raycaster: Raycaster = new Raycaster(posRaycaster, new Vector3(0, -1, 0), 0, this.DISTANCE_RAYCASTER_FROM_VEHICULE + 1);
         const intersects: Intersection[] = raycaster.intersectObjects(this._scene.children);
         if (intersects.length !== 0) {
             console.log(intersects);
