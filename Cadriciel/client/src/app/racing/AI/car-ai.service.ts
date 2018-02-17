@@ -9,13 +9,30 @@ import { Vector3, Raycaster, Scene, Intersection } from "three";
 @Injectable()
 export class CarAiService {
     private readonly DISTANCE_RAYCASTER_FROM_VEHICULE: number = 5;
+
     private _aiControl: CommandController;
     private _isGoingForward: boolean = false;
     private _isSteeringLeft: boolean = false;
+    // private _isSteeringRight: boolean = false;
+    // private _isBraking: boolean = false;
     public _scene: Scene;
 
     public constructor(private _car: Car, private _track: Track) {
         this._aiControl = new CommandController();
+    }
+
+    public update(): void {
+        if (this._scene === undefined) {
+            return;
+        }
+        this.projectInFrontOfCar();
+
+        if (!this._isGoingForward) {
+            this.goForward();
+        }
+        if (!this._isSteeringLeft) {
+            this.goLeft();
+        }
     }
 
     private goForward(): void {
@@ -30,18 +47,6 @@ export class CarAiService {
     private goLeft(): void {
         this._aiControl.setCommand(new TurnLeft(this._car));
         this._aiControl.execute();
-    }
-
-    public update(): void {
-        if (this._scene !== undefined) {
-            this.projectInFrontOfCar();
-        }
-        if (!this._isGoingForward) {
-            this.goForward();
-        }
-        if (!this._isSteeringLeft) {
-            this.goLeft();
-        }
     }
 
     private projectInFrontOfCar(): void {
