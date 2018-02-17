@@ -1,14 +1,13 @@
 import { AbstractCarAICommand } from "./../abstractCarAICommand";
 import { Car } from "../../car/car";
 
-export class GoFoward extends AbstractCarAICommand {
+export class TurnLeft extends AbstractCarAICommand {
 
     public constructor(private _car: Car) {
         super();
     }
 
     public execute(): void {
-        this._car.releaseBrakes();
-        this._car.isAcceleratorPressed = true;
+        this._car.steerRight();
     }
 }
