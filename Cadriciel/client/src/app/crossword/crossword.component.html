@@ -13,7 +13,7 @@
     <div *ngFor="let word of words">
       <li *ngIf="word._isHorizontal">{{word._definitionID}})
         <span *ngIf="isInCheatMode">
-          <div id="word" (mouseup)="highlightWord(word)">{{word._value}}</div>
+          <div id="word" (mouseup)="highlightWord(word)">{{getWordValue(word)}}</div>
         </span>
         <span *ngIf="!isInCheatMode">
           <div id="word" (mouseup)="highlightWord(word)">{{word._definition}}</div>
@@ -24,7 +24,7 @@
     <div *ngFor="let word of words">
       <li *ngIf="!word._isHorizontal">{{word._definitionID}})
         <span *ngIf="isInCheatMode">
-          <div id="word" (mouseup)="highlightWord(word)">{{word._value}}</div>
+          <div id="word" (mouseup)="highlightWord(word)">{{getWordValue(word)}}</div>
         </span>
         <span *ngIf="!isInCheatMode">
           <div id="word" (mouseup)="highlightWord(word)">{{word._definition}}</div>
@@ -37,7 +37,7 @@
   <div *ngFor="let line of boxes">
     <div *ngFor="let gridBox of line" (mouseenter)="hideLoader()">
       <div [ngClass]="{filledGridBox : gridBox._isBlack, selectedGridBox: gridBox._isColored, emptyGridBox : !gridBox._isBlack}">
-        <div>{{getGridBoxID(gridBox)}}</div> 
+        <div>{{gridBox._char._value}}</div> 
       </div>
     </div>
   </div>

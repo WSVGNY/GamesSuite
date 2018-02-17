@@ -66,7 +66,7 @@ export class WordFiller {
     private createCharGrid(): void {
         for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
             for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                this.grid[i][j]._isBlack ? this.grid[i][j].char = new Char("#") : this.grid[i][j].char = new Char("?");
+                this.grid[i][j]._isBlack ? this.grid[i][j]._char = new Char("#") : this.grid[i][j]._char = new Char("?");
             }
         }
     }
@@ -193,9 +193,9 @@ export class WordFiller {
         const splitWord: string[] = Array.from(word.value);
         for (let i: number = 0; i < splitWord.length; ++i) {
             if (word.isHorizontal) {
-                this.grid[word._startPosition._y][word._startPosition._x + i].char.value = splitWord[i];
+                this.grid[word._startPosition._y][word._startPosition._x + i]._char.value = splitWord[i];
             } else {
-                this.grid[word._startPosition._y + i][word._startPosition._x].char.value = splitWord[i];
+                this.grid[word._startPosition._y + i][word._startPosition._x]._char.value = splitWord[i];
             }
         }
     }
@@ -218,7 +218,7 @@ export class WordFiller {
     private gridContainsIncompleteWord(): Word {
         for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
             for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                if (this.grid[i][j].char.value === "?") {
+                if (this.grid[i][j]._char._value === "?") {
                     return this.grid[i][j].word;
                 }
             }

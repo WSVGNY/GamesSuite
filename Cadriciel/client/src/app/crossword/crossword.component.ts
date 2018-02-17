@@ -89,11 +89,28 @@ export class CrosswordComponent {
     }
 
     public deselectWords(): void {
-        for (const line of this.grid.boxes) {
-            for (const box of line) {
-                box._isColored = false;
+        if (this.grid !== undefined) {
+            for (const line of this.grid.boxes) {
+                for (const box of line) {
+                    box._isColored = false;
+                }
             }
         }
+    }
+
+    public getWordValue(word: Word): string {
+        let value: string = "";
+        if (word._isHorizontal) {
+            for (let i: number = 0; i < word["_length"]; i++) {
+                value += this.grid.boxes[word._startPosition._y][i + word._startPosition._x]._char._value;
+            }
+        } else {
+            for (let i: number = 0; i < word["_length"]; i++) {
+                value += this.grid.boxes[word._startPosition._y + i][word._startPosition._x]._char._value;
+            }
+        }
+
+        return value;
     }
 
     public getGridBoxID(gridBox: GridBox): number {
