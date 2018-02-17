@@ -8,6 +8,6 @@ export class DeselectVertex extends AbstractEditorCommand {
     }
 
     public execute(): void {
-        this.editorScene.deselectVertex();
+        this._editorScene.deselectVertex();
     }
 }

@@ -2,11 +2,11 @@ import { EditorScene } from "../editorScene";
 import { AbstractCommand } from "./abstractCommand";
 
 export abstract class AbstractEditorCommand extends AbstractCommand {
-    protected editorScene: EditorScene;
+    protected _editorScene: EditorScene;
 
     public constructor(editorScene: EditorScene) {
         super();
-        this.editorScene = editorScene;
+        this._editorScene = editorScene;
     }
 
     public abstract execute(): void;

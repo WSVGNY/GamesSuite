@@ -8,6 +8,6 @@ export class RemoveVertex extends AbstractEditorCommand {
     }
 
     public execute(): void {
-       this.editorScene.removeLastVertex();
+       this._editorScene.removeLastVertex();
     }
 }

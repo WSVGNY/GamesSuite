@@ -11,6 +11,6 @@ export class SelectVertex extends AbstractEditorCommand {
     }
 
     public execute(): void {
-        this.editorScene.setSelectedVertex(this.vertexName);
+        this._editorScene.setSelectedVertex(this.vertexName);
     }
 }

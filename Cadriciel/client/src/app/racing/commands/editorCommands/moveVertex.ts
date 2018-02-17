@@ -12,6 +12,6 @@ export class MoveVertex extends AbstractEditorCommand {
     }
 
     public execute(): void {
-        this.editorScene.moveSelectedVertex(this.position);
+        this._editorScene.moveSelectedVertex(this.position);
     }
 }

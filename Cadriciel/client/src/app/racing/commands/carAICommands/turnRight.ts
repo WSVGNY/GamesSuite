@@ -3,8 +3,8 @@ import { Car } from "../../car/car";
 
 export class TurnLeft extends AbstractCarAICommand {
 
-    public constructor(private _car: Car) {
-        super();
+    public constructor(car: Car) {
+        super(car);
     }
 
     public execute(): void {

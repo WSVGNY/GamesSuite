@@ -8,6 +8,6 @@ export class CloseLoop extends AbstractEditorCommand {
     }
 
     public execute(): void {
-        this.editorScene.completeTrack();
+        this._editorScene.completeTrack();
     }
 }
