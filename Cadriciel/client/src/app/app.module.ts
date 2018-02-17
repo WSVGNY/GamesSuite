@@ -4,7 +4,7 @@ import { HttpClientModule } from "@angular/common/http";
 import { FormsModule } from "@angular/forms";
 import { AppComponent } from "./app.component";
 import { RenderService } from "./racing/render-service/render.service";
-import { EditorRenderService } from "./racing/editor-render-service/editor-render.service";
+import { EditorRenderService } from "./racing/editor/editor-render-service/editor-render.service";
 import { AppRoutingModule } from "./app-routing/app-routing.module";
 import { CrosswordComponent } from "./crossword/crossword.component";
 import { GridService } from "./crossword/grid.service";

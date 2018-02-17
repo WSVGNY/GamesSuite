@@ -1,4 +1,4 @@
-import { EditorScene } from "../editorScene";
+import { EditorScene } from "../editor/editorScene";
 import { AbstractCommand } from "./abstractCommand";
 
 export abstract class AbstractEditorCommand extends AbstractCommand {

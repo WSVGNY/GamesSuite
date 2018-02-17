@@ -2,10 +2,10 @@ import {
     Vector3, Scene, AmbientLight, Mesh, Line, SphereGeometry,
     MeshBasicMaterial, LineBasicMaterial, Geometry, BackSide
 } from "three";
-import { PI_OVER_4, WHITE, RED, PINK, BLUE, HALF } from "./constants";
-import { Angle } from "./editor/constraints/angle";
-import { Intersection } from "./editor/constraints/intersection";
-import { Coordinate } from "../../../../common/crossword/coordinate";
+import { PI_OVER_4, WHITE, RED, PINK, BLUE, HALF } from "../constants";
+import { Angle } from "./constraints/angle";
+import { Intersection } from "./constraints/intersection";
+import { Coordinate } from "../../../../../common/crossword/coordinate";
 
 const RADIUS: number = 12;
 const OUTLINE_TO_VERTEX_RATIO: number = 1.25;
