@@ -59,23 +59,58 @@ export class CrosswordComponent {
         loader.addEventListener("animationend", (event: Event) => { loader.style.display = "none"; }, false);
     }
 
-    public hide(): void {
+    public hideLoader(): void {
         document.getElementById("loader").style.display = "none";
     }
 
-    public hideLoader(): void {
+    public hide(): void {
         document.getElementById("image1").style.display = "none";
         document.getElementById("image2").style.display = "none";
     }
 
     public changeMode(): void {
-        if (this.isInCheatMode === false) {
+        this.isInCheatMode ?
+            this.isInCheatMode = false :
             this.isInCheatMode = true;
-            document.getElementById("defs").style.background = "rgba(190, 84, 35, 0.253)";
+    }
+
+    public highlightWord(word: Word): void {
+        this.deselectWords();
+        if (word._isHorizontal) {
+            for (let i: number = 0; i < word["_length"]; i++) {
+                this.grid.boxes[word._startPosition._y][i + word._startPosition._x]._isColored = true;
+            }
         } else {
-            this.isInCheatMode = false;
-            document.getElementById("defs").style.background = "rgba(27, 92, 76, 0.068)";
+            for (let i: number = 0; i < word["_length"]; i++) {
+                this.grid.boxes[word._startPosition._y + i][word._startPosition._x]._isColored = true;
+            }
         }
+
+    }
+
+    public deselectWords(): void {
+        if (this.grid !== undefined) {
+            for (const line of this.grid.boxes) {
+                for (const box of line) {
+                    box._isColored = false;
+                }
+            }
+        }
+    }
+
+    public getWordValue(word: Word): string {
+        let value: string = "";
+        if (word._isHorizontal) {
+            for (let i: number = 0; i < word["_length"]; i++) {
+                value += this.grid.boxes[word._startPosition._y][i + word._startPosition._x]._char._value;
+            }
+        } else {
+            for (let i: number = 0; i < word["_length"]; i++) {
+                value += this.grid.boxes[word._startPosition._y + i][word._startPosition._x]._char._value;
+            }
+        }
+
+        return value;
     }
 
     public getGridBoxID(gridBox: GridBox): number {

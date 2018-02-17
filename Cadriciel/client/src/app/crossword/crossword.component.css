@@ -6,6 +6,9 @@
     position: relative;
     right: -25%;
 }
+li {
+    list-style-type: none;
+}
 
 #title {
     text-align: center;
@@ -23,6 +26,18 @@
     background: white;
 }
 
+.selectedGridBox {
+    text-align: left;    
+    width: 56px;
+    height: 56px;
+    background:  rgb(44, 107, 97);
+    border: 2px solid black;
+    padding: 0;
+    margin: 0;
+    float: left;
+    text-transform: uppercase;
+}
+
 .filledGridBox {
     width: 56px;
     height: 56px;
@@ -32,6 +47,7 @@
     margin: 0;
     float: left;
 }
+
 
 #buttonDifficulty {
     color:midnightblue;
@@ -56,6 +72,7 @@
     left: 5%;
     background: rgba(27, 92, 76, 0.068);
     padding-left:20px;
+    overflow:auto;
 }
 
 #loader {
@@ -69,7 +86,19 @@
     display: none;
 }
 
+#word{
+    display: inline-block;
+    max-width: 530px;
+    vertical-align:top;
+}
+
+
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+[placeholder]:focus::-webkit-input-placeholder {
+    transition: opacity 0.5s 0.5s ease; 
+    opacity: 0;
+  }
