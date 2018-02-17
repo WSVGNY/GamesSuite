@@ -51,6 +51,7 @@ export class RenderService {
     }
 
     public constructor(private trackService: TrackService, private route: ActivatedRoute) {
+        // this.getTrack();
         this._playerCar = new Car();
         this._playerCar.position.add(new Vector3(this.mockTrack[0].x, 0, this.mockTrack[0].y));
         this._playerCar.rotateY(Math.PI);
@@ -61,7 +62,7 @@ export class RenderService {
             this._aiCars.push(new Car());
             this._aiCars[i].position.add(new Vector3(this.mockTrack[0].x, 0, this.mockTrack[0].y));
             this._aiCars[i].rotateY(Math.PI);
-            this._carAiService.push(new CarAiService(this._aiCars[i], this._track));
+            this._carAiService.push(new CarAiService(this._aiCars[i], this.mockTrack));
         }
     }
 

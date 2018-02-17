@@ -3,7 +3,7 @@ import { Car } from "../car/car";
 import { CommandController } from "../commandController";
 import { GoFoward } from "../commands/carAICommands/goFoward";
 import { TurnLeft } from "../commands/carAICommands/turnLeft";
-import { Track } from "../../../../../common/racing/track";
+// import { Track } from "../../../../../common/racing/track";
 import { Vector3, Raycaster, Scene, Intersection } from "three";
 
 @Injectable()
@@ -17,7 +17,8 @@ export class CarAiService {
     // private _isBraking: boolean = false;
     public _scene: Scene;
 
-    public constructor(private _car: Car, private _track: Track) {
+    // public constructor(private _car: Car, private _track: Track) {
+    public constructor(private _car: Car, private _track: Vector3[]) {
         this._aiControl = new CommandController();
     }
 
@@ -25,23 +26,22 @@ export class CarAiService {
         if (this._scene === undefined) {
             return;
         }
+
         this.projectInFrontOfCar();
 
         if (!this._isGoingForward) {
             this.goForward();
         }
+
         if (!this._isSteeringLeft) {
             this.goLeft();
         }
     }
 
     private goForward(): void {
-        //TODO: remove if
-        if (this._track === undefined) {
-            this._aiControl.setCommand(new GoFoward(this._car));
-            this._aiControl.execute();
-            this._isGoingForward = true;
-        }
+        this._aiControl.setCommand(new GoFoward(this._car));
+        this._aiControl.execute();
+        this._isGoingForward = true;
     }
 
     private goLeft(): void {
@@ -49,7 +49,7 @@ export class CarAiService {
         this._aiControl.execute();
     }
 
-    private projectInFrontOfCar(): void {
+    private projectInFrontOfCar(): Intersection[] {
         const dir: Vector3 = this._car.direction.normalize();
         const posRaycaster: Vector3 = new Vector3(this._car.position.x - this._car.currentPosition.x, 0,
                                                   this._car.position.z - this._car.currentPosition.z);
@@ -66,5 +66,8 @@ export class CarAiService {
             console.log("NOTHING");
         }
 
+        return intersects;
     }
+
+
 }
