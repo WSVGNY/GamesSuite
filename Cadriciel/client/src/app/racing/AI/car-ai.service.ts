@@ -16,7 +16,7 @@ export class CarAiService {
     private _isGoingForward: boolean = false;
     private _isSteeringLeft: boolean = false;
     private _isSteeringRight: boolean = false;
-    private _isBraking: boolean = false;
+    // private _isBraking: boolean = false;
     private _isReleasingSteering: boolean = false;
     public _scene: Scene;
     private _vectorTrack: {a: number, b: number, c: number}[];
@@ -35,9 +35,9 @@ export class CarAiService {
         }
 
         const projection: Intersection[] = this.projectInFrontOfCar();
-        const lineDistance: number;
+        let lineDistance: number;
         if (projection.length !== 0) {
-            const pointToVerify: vector3 = projection[0].point;
+            const pointToVerify: Vector3 = projection[0].point;
             lineDistance = this.getPointDistanceFromTrack(0, pointToVerify);
         }
         //console.log(lineDistance);
