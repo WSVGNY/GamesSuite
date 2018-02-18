@@ -4,7 +4,7 @@ import { CommandController } from "../commandController";
 import { GoFoward } from "../commands/carAICommands/goFoward";
 import { TurnLeft } from "../commands/carAICommands/turnLeft";
 // import { Track } from "../../../../../common/racing/track";
-import { Vector3, Raycaster, Scene, Intersection } from "three";
+import { Vector3, Raycaster, Scene, Intersection, LineBasicMaterial, Geometry, Line } from "three";
 
 @Injectable()
 export class CarAiService {
@@ -17,12 +17,13 @@ export class CarAiService {
     // private _isBraking: boolean = false;
     public _scene: Scene;
     private _vectorTrack: {a: number, b: number, c: number}[];
+    private _visibleRay: Line;
 
     // public constructor(private _car: Car, private _track: Track) {
     public constructor(private _car: Car, track: Vector3[]) {
         this._aiControl = new CommandController();
         this.createVectorTrackFromPoints(track);
-        this.getPointDistanceFromTrack(0, new Vector3(-550,0,170));
+        this.getPointDistanceFromTrack(0, new Vector3(-550, 0, 170));
     }
 
     public update(): void {
@@ -62,12 +63,24 @@ export class CarAiService {
         posRaycaster.z -= dir.z * this.DISTANCE_RAYCASTER_FROM_VEHICULE;
 
         const raycaster: Raycaster = new Raycaster(posRaycaster, new Vector3(0, -1, 0), 0, this.DISTANCE_RAYCASTER_FROM_VEHICULE + 1);
+
+        // TODO: Remove following code, purely for troubleshooting means
+        const material: LineBasicMaterial = new LineBasicMaterial({ color: 0xFFFFFF });
+        const material2: LineBasicMaterial = new LineBasicMaterial({ color: 0xFF0000 });
+        const geometry: Geometry = new Geometry();
+        geometry.vertices.push(posRaycaster);
+        geometry.vertices.push(posRaycaster.clone().add(new Vector3(0, -10, 0)));
+        this._scene.remove(this._visibleRay);
+
         const intersects: Intersection[] = raycaster.intersectObjects(this._scene.children);
-        // if (intersects.length !== 0) {
-        //     console.log(intersects);
-        // } else {
-        //     console.log("NOTHING");
-        // }
+
+        if (intersects.length !== 0) {
+          this._visibleRay = new Line(geometry, material2);
+        } else {
+          this._visibleRay = new Line(geometry, material);
+        }
+
+        this._scene.add(this._visibleRay);
 
         return intersects;
     }
