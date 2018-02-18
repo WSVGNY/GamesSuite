@@ -88,22 +88,17 @@ export class CarAiService {
     private createVectorTrackFromPoints(track: Vector3[]): void {
         this._vectorTrack = [];
         for (let i: number = 0; i < track.length - 1; ++i) {
-            const vec: Vector3 = new Vector3(track[i + 1].x - track[i].x, 0 , track[i + 1].y - track[i].y);
-            const a: number = vec.x;
-            const b: number = vec.z;
-            const c: number = track[i].y - ((b / a) * track[i].x);
+            const a: number = track[i].y - track[i + 1].y;
+            const b: number = track[i + 1].x - track[i].x;
+            const c: number = track[i].x * track[i + 1].y - track[i + 1].x * track[i].y;
             this._vectorTrack.push({a, b, c});
-            // console.log(this._vectorTrack[i]);
         }
     }
 
     private getPointDistanceFromTrack(trackPortionIndex: number, point: Vector3): number {
-        // console.log(this._vectorTrack[trackPortionIndex]);
         const line: {a: number, b: number, c: number} = this._vectorTrack[trackPortionIndex];
         const top: number = Math.abs(line.a * point.x + line.b * point.z + line.c);
         const bottom: number = Math.sqrt(line.a * line.a + line.b * line.b);
-
-        // console.log(top / bottom);
 
         return top / bottom;
     }
