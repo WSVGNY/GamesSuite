@@ -6,7 +6,9 @@ import { TurnLeft } from "../commands/carAICommands/turnLeft";
 import { TurnRight} from "../commands/carAICommands/turnRight";
 import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";
 // import { Track } from "../../../../../common/racing/track";
-import { Vector3, Raycaster, Scene, Intersection, LineBasicMaterial, Geometry, Line, BoxHelper } from "three";
+import { Vector3, Raycaster, Scene, Intersection, LineBasicMaterial, Geometry, Line, BoxHelper, Color } from "three";
+
+const WHITE: Color = new Color( 0xFFFFFF );
 
 @Injectable()
 export class CarAiService {
@@ -18,28 +20,23 @@ export class CarAiService {
     private _isSteeringRight: boolean = false;
     // private _isBraking: boolean = false;
     private _isReleasingSteering: boolean = false;
-    public _scene: Scene;
     private _vectorTrack: {a: number, b: number, c: number}[];
     private _visibleRay: Line;
     private _isLeftOfLine: boolean = false;
     private _helper: BoxHelper;
-    private helperIsOnScene: boolean = false;
 
     // public constructor(private _car: Car, private _track: Track) {
-    public constructor(private _car: Car, track: Vector3[]) {
+    public constructor(private _car: Car, track: Vector3[], public _scene: Scene) {
         this._aiControl = new CommandController();
         this.createVectorTrackFromPoints(track);
-        this._helper = new BoxHelper(this._car, 0xff0000);
+        this._helper = new BoxHelper(this._car, WHITE);
+        this._scene.add(this._helper);
     }
 
     // tslint:disable-next-line:max-func-body-length
     public update(): void {
         if (this._scene === undefined) {
             return;
-        }
-        if (!this.helperIsOnScene) {
-            this._scene.add(this._helper);
-            this.helperIsOnScene = true;
         }
         this._helper.update(this._car);
         const projection: Intersection[] = this.projectInFrontOfCar();
@@ -125,13 +122,6 @@ export class CarAiService {
         this._scene.add(this._visibleRay);
 
         return intersects;
-    }
-
-    private scanForCars(): void {
-        // const helper: BoxHelper = new BoxHelper(this._car, 0xff0000);
-        // helper.update();
-        // If you want a visible bounding box
-        this._scene.add(helper);
     }
 
     private createVectorTrackFromPoints(track: Vector3[]): void {

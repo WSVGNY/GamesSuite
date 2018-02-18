@@ -57,12 +57,13 @@ export class RenderService {
         this._playerCar.rotateY(Math.PI);
         this._carAiService = [];
         this._aiCars = [];
+        this._scene = new Scene();
         // this._track = new Track;
         for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
             this._aiCars.push(new Car());
             this._aiCars[i].position.add(new Vector3(this.mockTrack[0].x, 0, this.mockTrack[0].y));
             this._aiCars[i].rotateY(Math.PI);
-            this._carAiService.push(new CarAiService(this._aiCars[i], this.mockTrack));
+            this._carAiService.push(new CarAiService(this._aiCars[i], this.mockTrack, this._scene));
         }
     }
 
@@ -80,7 +81,7 @@ export class RenderService {
         }
 
         await this.createScene();
-        this._carAiService[0]._scene = this._scene;
+        // this._carAiService[0]._scene = this._scene;
         this.initStats();
         this.startRenderingLoop();
     }
@@ -95,13 +96,12 @@ export class RenderService {
         const timeSinceLastFrame: number = Date.now() - this._lastDate;
         this._playerCar.update(timeSinceLastFrame);
         // TODO: Remove this instruction, only for testing
-        this._carAiService[0].update();
         this._aiCars[0].update(timeSinceLastFrame);
+        this._carAiService[0].update();
         this._lastDate = Date.now();
     }
 
     private async createScene(): Promise<void> {
-        this._scene = new Scene();
         await this._playerCar.init();
         this._scene.add(this._playerCar);
         for (const car of this._aiCars) {
