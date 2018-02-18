@@ -3,6 +3,7 @@ import { Car } from "../car/car";
 import { CommandController } from "../commandController";
 import { GoFoward } from "../commands/carAICommands/goFoward";
 import { TurnLeft } from "../commands/carAICommands/turnLeft";
+import { TurnRight} from "../commands/carAICommands/turnRight";
 // import { Track } from "../../../../../common/racing/track";
 import { Vector3, Raycaster, Scene, Intersection, LineBasicMaterial, Geometry, Line } from "three";
 
@@ -13,7 +14,7 @@ export class CarAiService {
     private _aiControl: CommandController;
     private _isGoingForward: boolean = false;
     private _isSteeringLeft: boolean = false;
-    // private _isSteeringRight: boolean = false;
+    private _isSteeringRight: boolean = false;
     // private _isBraking: boolean = false;
     public _scene: Scene;
     private _vectorTrack: {a: number, b: number, c: number}[];
@@ -23,7 +24,6 @@ export class CarAiService {
     public constructor(private _car: Car, track: Vector3[]) {
         this._aiControl = new CommandController();
         this.createVectorTrackFromPoints(track);
-        this.getPointDistanceFromTrack(0, new Vector3(-550, 0, 170));
     }
 
     public update(): void {
@@ -31,14 +31,22 @@ export class CarAiService {
             return;
         }
 
-        this.projectInFrontOfCar();
-
-        if (!this._isGoingForward) {
-            this.goForward();
+        const projection: Intersection[] = this.projectInFrontOfCar();
+        const lineDistance: number;
+        if (projection.length !== 0) {
+            const pointToVerify: vector3 = projection[0].point;
+            lineDistance = this.getPointDistanceFromTrack(0, pointToVerify);
         }
+        console.log(lineDistance);
+        if (lineDistance === undefined) {
+            if (!this._isSteeringRight) {
+                this.goRight();
+            }
 
-        if (!this._isSteeringLeft) {
-            this.goLeft();
+        } else {
+            if (!this._isGoingForward) {
+                this.goForward();
+            }
         }
     }
 
@@ -51,6 +59,13 @@ export class CarAiService {
     private goLeft(): void {
         this._aiControl.setCommand(new TurnLeft(this._car));
         this._aiControl.execute();
+        this._isSteeringLeft = true;
+    }
+
+    private goRight(): void {
+        this._aiControl.setCommand(new TurnRight(this._car));
+        //this._aiControl.execute();
+        this._isSteeringRight = true;
     }
 
     private projectInFrontOfCar(): Intersection[] {
