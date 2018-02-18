@@ -4,19 +4,12 @@ import { Word } from "./word";
 
 export class GridBox {
 
-    private _char: Char;
+    public _char: Char;
     private _constraints: Word[] = new Array<Word>();
     private _difficulty: number = 0;
-
+    public _isColored: boolean = false;
+    
     public constructor(private _id: Coordinate, public _isBlack: boolean) {
-    }
-
-    public get char(): Char {
-        return this._char;
-    }
-
-    public set char(value: Char) {
-        this._char = value;
     }
 
     public addConstraint(word: Word): void {

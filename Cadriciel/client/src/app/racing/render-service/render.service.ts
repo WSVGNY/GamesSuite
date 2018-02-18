@@ -9,7 +9,7 @@ import { Track, ITrack } from "../../../../../common/racing/track";
 import { TrackService } from "../track-service/track.service";
 import { CarAiService } from "../ai/car-ai.service";
 import { ActivatedRoute } from "@angular/router";
-import { DEG_TO_RAD, TRACK_WIDTH } from "../constants";
+import { DEG_TO_RAD, TRACK_WIDTH, SQUARED, LOWER_GROUND, PI_OVER_2 } from "../constants";
 import { MOCK_TRACK } from "./mock-track";
 
 const FAR_CLIPPING_PLANE: number = 1000;
@@ -48,9 +48,7 @@ export class RenderService {
     private _track: Track;
 
     private trackCenterPoints: Vector3[] = MOCK_TRACK;
-
     private trackExteriorPoints: Vector3[] = [];
-
     private trackInteriorPoints: Vector3[] = [];
 
     public get playerCar(): Car {
@@ -63,7 +61,7 @@ export class RenderService {
         this.rotateCarToFaceStart(this._playerCar);
         this._carAiService = [];
         this._aiCars = [];
-        // this._track = new Track();
+        // this._track = new Track;
         for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
             this._aiCars.push(new Car());
             this._carAiService.push(new CarAiService(this._aiCars[i], this._track));
@@ -81,9 +79,6 @@ export class RenderService {
         const angle: number = carfinalFacingVector.z < 0 ?
             - Math.acos(carfinalFacingVector.x) :
             Math.acos(carfinalFacingVector.x);
-        // console.log(carfinalFacingVector.x + " " + carfinalFacingVector.z);
-        // console.log(angle * 180 / Math.PI);
-
         car.rotateY(Math.PI + angle);
     }
 
@@ -101,6 +96,7 @@ export class RenderService {
         }
 
         await this.createScene();
+        this._carAiService[0]._scene = this._scene;
         this.initStats();
         this.startRenderingLoop();
     }
@@ -115,7 +111,8 @@ export class RenderService {
         const timeSinceLastFrame: number = Date.now() - this._lastDate;
         this._playerCar.update(timeSinceLastFrame);
         // TODO: Remove this instruction, only for testing
-        // this._carAiService[0].calculateNewPosition();
+        this._carAiService[0].update();
+        this._aiCars[0].update(timeSinceLastFrame);
         this._lastDate = Date.now();
     }
 
@@ -176,7 +173,7 @@ export class RenderService {
     public handleKeyDown(event: KeyboardEvent): void {
         switch (event.keyCode) {
             case ACCELERATE_KEYCODE:
-                this._playerCar.isAcceleratorPressed = true;
+                this._playerCar.accelerate();
                 break;
             case LEFT_KEYCODE:
                 this._playerCar.steerLeft();
@@ -195,7 +192,7 @@ export class RenderService {
     public handleKeyUp(event: KeyboardEvent): void {
         switch (event.keyCode) {
             case ACCELERATE_KEYCODE:
-                this._playerCar.isAcceleratorPressed = false;
+                this._playerCar.releaseAccelerator();
                 break;
             case LEFT_KEYCODE:
             case RIGHT_KEYCODE:
@@ -250,7 +247,7 @@ export class RenderService {
         const geometry: ShapeGeometry = new ShapeGeometry(shape);
         const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ color: 0x0000FF });
         const ground: Mesh = new Mesh(geometry, groundMaterial);
-        ground.rotateX(Math.PI / 2);
+        ground.rotateX(PI_OVER_2);
         this._scene.add(ground);
     }
 
@@ -260,9 +257,10 @@ export class RenderService {
                 this.trackCenterPoints[0] : this.trackCenterPoints[i + 1];
             const previousPoint: Vector3 = i === 0 ?
                 this.trackCenterPoints[this.trackCenterPoints.length - 1] : this.trackCenterPoints[i - 1];
-            const nextLineLength: number = Math.sqrt(Math.pow(nextPoint.x - currentPoint.x, 2) + Math.pow(nextPoint.z - currentPoint.z, 2));
+            const nextLineLength: number =
+                Math.sqrt(Math.pow(nextPoint.x - currentPoint.x, SQUARED) + Math.pow(nextPoint.z - currentPoint.z, SQUARED));
             const previousLineLength: number = Math.sqrt(
-                Math.pow(previousPoint.x - currentPoint.x, 2) + Math.pow(previousPoint.z - currentPoint.z, 2)
+                Math.pow(previousPoint.x - currentPoint.x, SQUARED) + Math.pow(previousPoint.z - currentPoint.z, SQUARED)
             );
             this.trackInteriorPoints.push(new Vector3(
                 currentPoint.x +
@@ -342,10 +340,10 @@ export class RenderService {
         // this.trackCenterPoints[0].x, 2) + Math.pow(this.trackCenterPoints[0].z, 2)), this.trackCenterPoints[0]);
         ground.translateOnAxis(
             this.trackCenterPoints[0],
-            Math.sqrt(Math.pow(this.trackCenterPoints[0].x, 2) + Math.pow(this.trackCenterPoints[0].z, 2))
+            Math.sqrt(Math.pow(this.trackCenterPoints[0].x, SQUARED) + Math.pow(this.trackCenterPoints[0].z, SQUARED))
         );
         ground.rotateX(DEG_TO_RAD * TEMP_GRID_ORIENTATION);
-        ground.translateZ(-0.001);
+        ground.translateZ(LOWER_GROUND);
         this._scene.add(ground);
     }
 

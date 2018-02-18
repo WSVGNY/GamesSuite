@@ -46,7 +46,7 @@ describe("GRID CREATE TESTS", () => {
     it("Grid contains a word or more per line", (done: MochaDone) => {
         let indexCounter: number = 0;
         for (let i: number = 0; i < grid["words"].length; i++) {
-            if (grid["words"][i].startPosition.x === indexCounter) {
+            if (grid["words"][i]._startPosition._x === indexCounter) {
                 indexCounter++;
                 i = -1;
             }

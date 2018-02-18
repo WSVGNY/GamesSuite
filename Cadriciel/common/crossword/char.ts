@@ -1,13 +1,9 @@
 export class Char {
 
-    private _value: string;
+    public _value: string;
 
     public constructor(char: string) {
         this._value = char;
-    }
-
-    public get value(): string {
-        return this._value;
     }
 
     public set value(char: string) {

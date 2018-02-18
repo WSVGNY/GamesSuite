@@ -199,7 +199,7 @@ export class BlackTiledGrid {
 
     private findHorizontalWordDefID(i: number, j: number): number {
         for (const word of this.words) {
-            if (word.startPosition.x === i && word.startPosition.y === j) {
+            if (word._startPosition._x === i && word._startPosition._y === j) {
                 return word._definitionID;
             }
         }

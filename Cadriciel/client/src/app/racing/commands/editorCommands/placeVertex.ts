@@ -12,6 +12,6 @@ export class PlaceVertex extends AbstractEditorCommand {
     }
 
     public execute(): void {
-        this.editorScene.addVertex(this.position);
+        this._editorScene.addVertex(this.position);
     }
 }

@@ -19,9 +19,9 @@ describe("Car", () => {
         car = new Car(new MockEngine());
         await car.init();
 
-        car.isAcceleratorPressed = true;
+        car.accelerate();
         car.update(MS_BETWEEN_FRAMES);
-        car.isAcceleratorPressed = false;
+        car.releaseAccelerator();
         done();
     });
 
@@ -33,7 +33,7 @@ describe("Car", () => {
 
     it("should accelerate when accelerator is pressed", () => {
         const initialSpeed: number = car.speed.length();
-        car.isAcceleratorPressed = true;
+        car.accelerate();
         car.update(MS_BETWEEN_FRAMES);
         expect(car.speed.length()).toBeGreaterThan(initialSpeed);
     });
@@ -48,9 +48,9 @@ describe("Car", () => {
             return new Vector3(0, 0, 0);
         };
 
-        car.isAcceleratorPressed = true;
+        car.accelerate();
         car.update(MS_BETWEEN_FRAMES);
-        car.isAcceleratorPressed = false;
+        car.releaseAccelerator();
 
         const initialSpeed: number = car.speed.length();
         car.brake();
@@ -68,7 +68,7 @@ describe("Car", () => {
 
     it("should turn left when left turn key is pressed", () => {
         const initialAngle: number = car.angle;
-        car.isAcceleratorPressed = true;
+        car.accelerate();
         car.steerLeft();
         car.update(MS_BETWEEN_FRAMES * 2);
         expect(car.angle).toBeLessThan(initialAngle);
@@ -76,14 +76,14 @@ describe("Car", () => {
 
     it("should turn right when right turn key is pressed", () => {
         const initialAngle: number = car.angle;
-        car.isAcceleratorPressed = true;
+        car.accelerate();
         car.steerRight();
         car.update(MS_BETWEEN_FRAMES * 2);
         expect(car.angle).toBeLessThan(initialAngle);
     });
 
     it("should not turn when steering keys are released", () => {
-        car.isAcceleratorPressed = true;
+        car.accelerate();
         car.steerRight();
         car.update(MS_BETWEEN_FRAMES);
 
@@ -95,26 +95,26 @@ describe("Car", () => {
 
     it("should use default engine parameter when none is provided", () => {
         car = new Car(undefined);
-        expect(car["engine"]).toBeDefined();
+        expect(car["_engine"]).toBeDefined();
     });
 
     it("should use default Wheel parameter when none is provided", () => {
         car = new Car(new MockEngine(), undefined);
-        expect(car["rearWheel"]).toBeDefined();
+        expect(car["_rearWheel"]).toBeDefined();
     });
 
     it("should check validity of wheelbase parameter", () => {
         car = new Car(new MockEngine(), new Wheel(), 0);
-        expect(car["wheelbase"]).toBe(DEFAULT_WHEELBASE);
+        expect(car["_wheelbase"]).toBe(DEFAULT_WHEELBASE);
     });
 
     it("should check validity of mass parameter", () => {
         car = new Car(new MockEngine(), new Wheel(), DEFAULT_WHEELBASE, 0);
-        expect(car["mass"]).toBe(DEFAULT_MASS);
+        expect(car["_mass"]).toBe(DEFAULT_MASS);
     });
 
     it("should check validity of dragCoefficient parameter", () => {
         car = new Car(new MockEngine(), new Wheel(), DEFAULT_WHEELBASE, DEFAULT_MASS, -10);
-        expect(car["dragCoefficient"]).toBe(DEFAULT_DRAG_COEFFICIENT);
+        expect(car["_dragCoefficient"]).toBe(DEFAULT_DRAG_COEFFICIENT);
     });
 });
