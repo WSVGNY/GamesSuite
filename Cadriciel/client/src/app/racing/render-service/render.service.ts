@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import {
-    PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, Mesh, PlaneGeometry, TextureLoader, Shape,
-    MeshLambertMaterial, VertexColors, Texture, MeshBasicMaterial, BoxGeometry, ShapeGeometry, Path, BackSide, Vector3, Geometry, LineBasicMaterial, Line
+    PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, Mesh, PlaneGeometry, Shape,
+    MeshBasicMaterial, ShapeGeometry, Path, Vector3, Geometry, LineBasicMaterial, Line, Raycaster
 } from "three";
 import { Car } from "../car/car";
 import { Track, ITrack } from "../../../../../common/racing/track";
@@ -10,6 +10,7 @@ import { TrackService } from "../track-service/track.service";
 import { CarAiService } from "../ai/car-ai.service";
 import { ActivatedRoute } from "@angular/router";
 import { DEG_TO_RAD, TRACK_WIDTH } from "../constants";
+import { MOCK_TRACK } from "./mock-track";
 
 const FAR_CLIPPING_PLANE: number = 1000;
 const NEAR_CLIPPING_PLANE: number = 1;
@@ -25,16 +26,16 @@ const INITIAL_CAMERA_POSITION_Y: number = 5;
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
 const TEMP_GRID_ORIENTATION: number = 90;
-const TEMP_GRID_SIZE: number = 100;
-const SKYBOX_SIZE: number = 1000;
+const TEMP_GRID_SIZE: number = 1000;
+// const SKYBOX_SIZE: number = 1000;
 const PLAYER_CAMERA: string = "PLAYER_CAMERA";
 const AI_CARS_NUMBER: number = 1;
 
 @Injectable()
 export class RenderService {
-    private _dayTime: any;
     /*private tracks: Track[];
     private trackService: TrackService;*/
+    // private _dayTime: any;
     private _camera: PerspectiveCamera;
     private _container: HTMLDivElement;
     private _playerCar: Car;
@@ -46,13 +47,7 @@ export class RenderService {
     private _aiCars: Car[];
     private _track: Track;
 
-    private trackCenterPoints: Vector3[] = [
-        new Vector3(-488, 0, -275),
-        new Vector3(-550, 0, 170),
-        new Vector3(96, 0, 342),
-        new Vector3(748, 0, 70),
-        new Vector3(704, 0, -263)
-    ];
+    private trackCenterPoints: Vector3[] = MOCK_TRACK;
 
     private trackExteriorPoints: Vector3[] = [];
 
@@ -65,14 +60,31 @@ export class RenderService {
     public constructor(private trackService: TrackService, private route: ActivatedRoute) {
         this._playerCar = new Car();
         this._playerCar.position.add(new Vector3(this.trackCenterPoints[0].x, 0, this.trackCenterPoints[0].z));
-        this._playerCar.rotateY(Math.PI)
+        this.rotateCarToFaceStart(this._playerCar);
         this._carAiService = [];
         this._aiCars = [];
-        //this._track = new Track();
+        // this._track = new Track();
         for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
             this._aiCars.push(new Car());
             this._carAiService.push(new CarAiService(this._aiCars[i], this._track));
+            this._aiCars[i].position.add(new Vector3(this.trackCenterPoints[0].x, 0, this.trackCenterPoints[0].z));
+            this.rotateCarToFaceStart(this._aiCars[i]);
         }
+    }
+
+    private rotateCarToFaceStart(car: Car): void {
+        const carfinalFacingVector: Vector3 = new Vector3(
+            this.trackCenterPoints[1].x - this.trackCenterPoints[0].x,
+            this.trackCenterPoints[1].y - this.trackCenterPoints[0].y,
+            this.trackCenterPoints[1].z - this.trackCenterPoints[0].z
+        ).normalize();
+        const angle: number = carfinalFacingVector.z < 0 ?
+            - Math.acos(carfinalFacingVector.x) :
+            Math.acos(carfinalFacingVector.x);
+        // console.log(carfinalFacingVector.x + " " + carfinalFacingVector.z);
+        // console.log(angle * 180 / Math.PI);
+
+        car.rotateY(Math.PI + angle);
     }
 
     public getTrack(): void {
@@ -206,65 +218,66 @@ export class RenderService {
         const geometryPoints: Geometry = new Geometry();
         this.trackCenterPoints.forEach((vertex: Vector3) => geometryPoints.vertices.push(vertex));
         geometryPoints.vertices.push(this.trackCenterPoints[0]);
-        let line = new Line(geometryPoints, new LineBasicMaterial({ color: 0x00ff00, linewidth: 3 }));
+        const line: Line = new Line(geometryPoints, new LineBasicMaterial({ color: 0x00FF00, linewidth: 3 }));
         this._scene.add(line);
     }
 
     private renderTrackShape(): void {
         this.createExteriorInteriorTrackPoints();
-
+        this.checkInteriorPointsValidity();
         const shape: Shape = new Shape();
-        shape.moveTo(this.trackExteriorPoints[this.trackExteriorPoints.length - 1].x, this.trackExteriorPoints[this.trackExteriorPoints.length - 1].z);
+        shape.moveTo(
+            this.trackExteriorPoints[this.trackExteriorPoints.length - 1].x,
+            this.trackExteriorPoints[this.trackExteriorPoints.length - 1].z
+        );
         for (let i: number = this.trackExteriorPoints.length - 2; i >= 0; --i) {
             shape.lineTo(this.trackExteriorPoints[i].x, this.trackExteriorPoints[i].z);
         }
         shape.lineTo(this.trackExteriorPoints[0].x, this.trackExteriorPoints[0].z);
-
         const holePath: Path = new Path();
-
-        holePath.moveTo(this.trackInteriorPoints[this.trackInteriorPoints.length - 1].x, this.trackInteriorPoints[this.trackInteriorPoints.length - 1].z);
+        holePath.moveTo(
+            this.trackInteriorPoints[this.trackInteriorPoints.length - 1].x,
+            this.trackInteriorPoints[this.trackInteriorPoints.length - 1].z
+        );
         for (let i: number = this.trackInteriorPoints.length - 2; i >= 0; --i) {
             holePath.lineTo(this.trackInteriorPoints[i].x, this.trackInteriorPoints[i].z);
         }
-        holePath.lineTo(this.trackInteriorPoints[this.trackInteriorPoints.length - 1].x, this.trackInteriorPoints[this.trackInteriorPoints.length - 1].z);
+        holePath.lineTo(
+            this.trackInteriorPoints[this.trackInteriorPoints.length - 1].x,
+            this.trackInteriorPoints[this.trackInteriorPoints.length - 1].z
+        );
         shape.holes.push(holePath);
         const geometry: ShapeGeometry = new ShapeGeometry(shape);
-        const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ side: BackSide, color: 0x0000FF });
+        const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ color: 0x0000FF });
         const ground: Mesh = new Mesh(geometry, groundMaterial);
         ground.rotateX(Math.PI / 2);
         this._scene.add(ground);
     }
 
     private createExteriorInteriorTrackPoints(): void {
-        this.trackCenterPoints.forEach((currentPoint: Vector3, index: number) => {
-            const nextPoint: Vector3 = (index + 1) == this.trackCenterPoints.length ?
-                this.trackCenterPoints[0] : this.trackCenterPoints[index + 1];
-
-            const previousPoint: Vector3 = index == 0 ?
-                this.trackCenterPoints[this.trackCenterPoints.length - 1] : this.trackCenterPoints[index - 1];
-
+        this.trackCenterPoints.forEach((currentPoint: Vector3, i: number) => {
+            const nextPoint: Vector3 = (i + 1) === this.trackCenterPoints.length ?
+                this.trackCenterPoints[0] : this.trackCenterPoints[i + 1];
+            const previousPoint: Vector3 = i === 0 ?
+                this.trackCenterPoints[this.trackCenterPoints.length - 1] : this.trackCenterPoints[i - 1];
             const nextLineLength: number = Math.sqrt(Math.pow(nextPoint.x - currentPoint.x, 2) + Math.pow(nextPoint.z - currentPoint.z, 2));
-            const previousLineLength: number = Math.sqrt(Math.pow(previousPoint.x - currentPoint.x, 2) + Math.pow(previousPoint.z - currentPoint.z, 2));
-
+            const previousLineLength: number = Math.sqrt(
+                Math.pow(previousPoint.x - currentPoint.x, 2) + Math.pow(previousPoint.z - currentPoint.z, 2)
+            );
             this.trackInteriorPoints.push(new Vector3(
                 currentPoint.x +
                 TRACK_WIDTH * (nextPoint.x - currentPoint.x) / nextLineLength +
                 TRACK_WIDTH * (previousPoint.x - currentPoint.x) / previousLineLength,
-
                 0,
-
                 currentPoint.z +
                 TRACK_WIDTH * (nextPoint.z - currentPoint.z) / nextLineLength +
                 TRACK_WIDTH * (previousPoint.z - currentPoint.z) / previousLineLength
             ));
-
             this.trackExteriorPoints.push(new Vector3(
                 currentPoint.x -
                 TRACK_WIDTH * (nextPoint.x - currentPoint.x) / nextLineLength -
                 TRACK_WIDTH * (previousPoint.x - currentPoint.x) / previousLineLength,
-
                 0,
-
                 currentPoint.z -
                 TRACK_WIDTH * (nextPoint.z - currentPoint.z) / nextLineLength -
                 TRACK_WIDTH * (previousPoint.z - currentPoint.z) / previousLineLength
@@ -272,29 +285,83 @@ export class RenderService {
         });
     }
 
+    private checkInteriorPointsValidity(): void {
+        this.trackCenterPoints.forEach((currentPoint: Vector3, i: number) => {
+            const previousPoint: Vector3 = i === 0 ?
+                this.trackCenterPoints[this.trackCenterPoints.length - 1] :
+                this.trackCenterPoints[i - 1];
+            const nextPoint: Vector3 = (i + 1) === this.trackCenterPoints.length ?
+                this.trackCenterPoints[0] :
+                this.trackCenterPoints[i + 1];
+
+            if (this.previousAndNextLineIntersection(currentPoint, previousPoint, nextPoint, i)) {
+                const tempPoint: Vector3 = this.trackInteriorPoints[i];
+                this.trackInteriorPoints[i] = this.trackExteriorPoints[i];
+                this.trackExteriorPoints[i] = tempPoint;
+            }
+        });
+    }
+
+    private previousAndNextLineIntersection(currentPoint: Vector3, previousPoint: Vector3, nextPoint: Vector3, i: number): boolean {
+        let geometryPoints: Geometry = new Geometry();
+        i === 0 ?
+            geometryPoints.vertices.push(this.trackInteriorPoints[this.trackInteriorPoints.length - 1]) :
+            geometryPoints.vertices.push(this.trackInteriorPoints[i - 1]);
+        geometryPoints.vertices.push(this.trackInteriorPoints[i]);
+        const previousLine: Line = new Line(geometryPoints, new LineBasicMaterial());
+        const normalizedVectorFromPreviousCenterPoint: Vector3 = new Vector3(
+            currentPoint.x - previousPoint.x, currentPoint.y - previousPoint.y, currentPoint.z - previousPoint.z
+        ).normalize();
+        const raycasterOnPreviousLine: Raycaster = new Raycaster(previousPoint, normalizedVectorFromPreviousCenterPoint);
+
+        geometryPoints = new Geometry();
+        i + 1 === this.trackCenterPoints.length ?
+            geometryPoints.vertices.push(this.trackInteriorPoints[0]) :
+            geometryPoints.vertices.push(this.trackInteriorPoints[i + 1]);
+        geometryPoints.vertices.push(this.trackInteriorPoints[i]);
+        const nextLine: Line = new Line(geometryPoints, new LineBasicMaterial());
+        const normalizedVectorToNextCenterPoint: Vector3 = new Vector3(
+            nextPoint.x - currentPoint.x, nextPoint.y - currentPoint.y, nextPoint.z - currentPoint.z
+        ).normalize();
+        const raycasterOnNextLine: Raycaster = new Raycaster(currentPoint, normalizedVectorToNextCenterPoint);
+
+        if (raycasterOnPreviousLine.intersectObject(previousLine).length !== 0 &&
+            raycasterOnNextLine.intersectObject(nextLine).length !== 0) {
+
+            return true;
+        }
+
+        return false;
+    }
+
     private renderGround(): void {
         const groundGeometry: PlaneGeometry = new PlaneGeometry(TEMP_GRID_SIZE, TEMP_GRID_SIZE, 1, 1);
-        const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ wireframe: true, color: 0x00FFFF });
+        const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ color: 0x00FFFF });
         const ground: Mesh = new Mesh(groundGeometry, groundMaterial);
-        // ground.translate(Math.sqrt(Math.pow(this.trackCenterPoints[0].x, 2) + Math.pow(this.trackCenterPoints[0].z, 2)), this.trackCenterPoints[0]);
-        ground.translateOnAxis(this.trackCenterPoints[0], Math.sqrt(Math.pow(this.trackCenterPoints[0].x, 2) + Math.pow(this.trackCenterPoints[0].z, 2)));
+        // ground.translate(Math.sqrt(Math.pow(
+        // this.trackCenterPoints[0].x, 2) + Math.pow(this.trackCenterPoints[0].z, 2)), this.trackCenterPoints[0]);
+        ground.translateOnAxis(
+            this.trackCenterPoints[0],
+            Math.sqrt(Math.pow(this.trackCenterPoints[0].x, 2) + Math.pow(this.trackCenterPoints[0].z, 2))
+        );
         ground.rotateX(DEG_TO_RAD * TEMP_GRID_ORIENTATION);
+        ground.translateZ(-0.001);
         this._scene.add(ground);
     }
 
-    private async renderSkyBox(): Promise<void> {
-        const textureSky: Texture = this._dayTime ? await this.loadTexture("sky") : await this.loadTexture("space");
-        const boxbox: BoxGeometry = new BoxGeometry(SKYBOX_SIZE, SKYBOX_SIZE, SKYBOX_SIZE);
-        const skyBox: Mesh = new Mesh(boxbox, new MeshLambertMaterial({ map: textureSky, vertexColors: VertexColors, side: BackSide }));
-        this._scene.add(skyBox);
-    }
+    // private async renderSkyBox(): Promise<void> {
+    //     const textureSky: Texture = this._dayTime ? await this.loadTexture("sky") : await this.loadTexture("space");
+    //     const boxbox: BoxGeometry = new BoxGeometry(SKYBOX_SIZE, SKYBOX_SIZE, SKYBOX_SIZE);
+    //     const skyBox: Mesh = new Mesh(boxbox, new MeshLambertMaterial({ map: textureSky, vertexColors: VertexColors, side: BackSide }));
+    //     this._scene.add(skyBox);
+    // }
 
-    private async loadTexture(textureName: String): Promise<Texture> {
-        return new Promise<Texture>((resolve, reject) => {
-            const loader: TextureLoader = new TextureLoader();
-            loader.load("assets/textures/" + textureName + ".jpg", (object) => {
-                resolve(object);
-            });
-        });
-    }
+    // private async loadTexture(textureName: String): Promise<Texture> {
+    //     return new Promise<Texture>((resolve, reject) => {
+    //         const loader: TextureLoader = new TextureLoader();
+    //         loader.load("assets/textures/" + textureName + ".jpg", (object) => {
+    //             resolve(object);
+    //         });
+    //     });
+    // }
 }
