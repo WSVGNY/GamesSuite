@@ -4,6 +4,7 @@ import { CommandController } from "../commandController";
 import { GoFoward } from "../commands/carAICommands/goFoward";
 import { TurnLeft } from "../commands/carAICommands/turnLeft";
 import { TurnRight} from "../commands/carAICommands/turnRight";
+import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";
 // import { Track } from "../../../../../common/racing/track";
 import { Vector3, Raycaster, Scene, Intersection, LineBasicMaterial, Geometry, Line } from "three";
 
@@ -15,10 +16,12 @@ export class CarAiService {
     private _isGoingForward: boolean = false;
     private _isSteeringLeft: boolean = false;
     private _isSteeringRight: boolean = false;
-    // private _isBraking: boolean = false;
+    private _isBraking: boolean = false;
+    private _isReleasingSteering: boolean = false;
     public _scene: Scene;
     private _vectorTrack: {a: number, b: number, c: number}[];
     private _visibleRay: Line;
+    private _isLeftOfLine: boolean = false;
 
     // public constructor(private _car: Car, private _track: Track) {
     public constructor(private _car: Car, track: Vector3[]) {
@@ -37,15 +40,22 @@ export class CarAiService {
             const pointToVerify: vector3 = projection[0].point;
             lineDistance = this.getPointDistanceFromTrack(0, pointToVerify);
         }
-        console.log(lineDistance);
+        //console.log(lineDistance);
         if (lineDistance === undefined) {
-            if (!this._isSteeringRight) {
+            if (!this._isSteeringRight && this._isLeftOfLine) {
+                this._isLeftOfLine = !this._isLeftOfLine;
                 this.goRight();
+            } else {
+                if (!this._isSteeringLeft && !this._isLeftOfLine) {
+                    this._isLeftOfLine = !this._isLeftOfLine;
+                    this.goLeft();
+                }
             }
 
         } else {
             if (!this._isGoingForward) {
                 this.goForward();
+                this.releaseSteering();
             }
         }
     }
@@ -64,8 +74,17 @@ export class CarAiService {
 
     private goRight(): void {
         this._aiControl.setCommand(new TurnRight(this._car));
-        //this._aiControl.execute();
+        this._aiControl.execute();
         this._isSteeringRight = true;
+    }
+
+    private releaseSteering(): void {
+        this._aiControl.setCommand(new ReleaseSteering(this._car));
+        this._aiControl.execute();
+        this._isReleasingSteering = true;
+        this._isSteeringRight = false;
+        this._isSteeringLeft = false;
+        this._isGoingForward = false;
     }
 
     private projectInFrontOfCar(): Intersection[] {
