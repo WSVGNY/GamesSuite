@@ -54,7 +54,7 @@ export class CrosswordComponent {
     }
 
     public show(): void {
-        document.getElementById("loader").style.display = "block";
+        document.getElementById("loader").style.visibility = "visible";
         const loader: HTMLElement = document.getElementById("loader");
         loader.addEventListener("animationend", (event: Event) => { loader.style.display = "none"; }, false);
     }
