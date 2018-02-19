@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
-import { GridBox } from "../../../../common/crossword/gridBox";
+import { CommonGridBox } from "../../../../common/crossword/commonGridBox";
 import { Grid } from "../../../../common/crossword/grid";
-import { Word } from "../../../../common/crossword/word";
+import { CommonWord } from "../../../../common/crossword/commonWord";
 import { GridService } from "./grid.service";
 import { Difficulty } from "../../../../common/crossword/difficulty";
 
@@ -12,11 +12,11 @@ import { Difficulty } from "../../../../common/crossword/difficulty";
 })
 export class CrosswordComponent {
 
-    public selectedGridBox: GridBox;
-    public defs: Word;
+    public selectedGridBox: CommonGridBox;
+    public defs: CommonWord;
     private grid: Grid;
-    private boxes: GridBox[][];
-    private words: Word[];
+    private boxes: CommonGridBox[][];
+    private words: CommonWord[];
     private difficulty: Difficulty;
     private isInCheatMode: boolean = false;
 
@@ -31,7 +31,7 @@ export class CrosswordComponent {
         });
     }
 
-    public onSelect(gridBox: GridBox): void {
+    public onSelect(gridBox: CommonGridBox): void {
         this.selectedGridBox = gridBox;
     }
 
@@ -74,7 +74,7 @@ export class CrosswordComponent {
             this.isInCheatMode = true;
     }
 
-    public highlightWord(word: Word): void {
+    public highlightWord(word: CommonWord): void {
         this.deselectWords();
         if (word._isHorizontal) {
             for (let i: number = 0; i < word["_length"]; i++) {
@@ -98,7 +98,7 @@ export class CrosswordComponent {
         }
     }
 
-    public getWordValue(word: Word): string {
+    public getWordValue(word: CommonWord): string {
         let value: string = "";
         if (word._isHorizontal) {
             for (let i: number = 0; i < word["_length"]; i++) {
@@ -113,7 +113,7 @@ export class CrosswordComponent {
         return value;
     }
 
-    public getGridBoxID(gridBox: GridBox): number {
+    public getGridBoxID(gridBox: CommonGridBox): number {
         if (gridBox["_constraints"][0] !== undefined) {
             if (gridBox["_constraints"][1] !== undefined) {
                 if (gridBox["_id"]["_x"] === gridBox["_constraints"][1]["_startPosition"]["_x"]

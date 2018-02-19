@@ -1,14 +1,14 @@
-import { Word } from "../../../common/crossword/word";
-import { GridBox } from "../../../common/crossword/gridBox";
+import { Word } from "./word";
+import { GridBox } from "./gridBox";
 
 export class WordConstraint {
     private _readyValue: string = "";
     private _originalValue: string = "";
     constructor(word: Word, grid: GridBox[][]) {
 
-        for (let i: number = 0; i < word.length; ++i) {
+        for (let i: number = 0; i < word._length; ++i) {
             let charToAdd: string;
-            word.isHorizontal ?
+            word._isHorizontal ?
                 charToAdd = grid[word._startPosition._y][word._startPosition._x + i]._char._value :
                 charToAdd = grid[word._startPosition._y + i][word._startPosition._x]._char._value;
             this._originalValue += charToAdd;

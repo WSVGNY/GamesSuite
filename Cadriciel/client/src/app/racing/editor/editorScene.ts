@@ -5,7 +5,7 @@ import {
 import { PI_OVER_4, WHITE, RED, PINK, BLUE, HALF } from "../constants";
 import { Angle } from "./constraints/angle";
 import { Intersection } from "./constraints/intersection";
-import { Coordinate } from "../../../../../common/crossword/coordinate";
+import { CommonCoordinate } from "../../../../../common/commonCoordinate";
 
 const RADIUS: number = 12;
 const OUTLINE_TO_VERTEX_RATIO: number = 1.25;
@@ -36,7 +36,7 @@ export class EditorScene {
         this._connections = new Array();
     }
 
-    public importTrackVertices(trackVertices: Array<Coordinate>): void {
+    public importTrackVertices(trackVertices: Array<CommonCoordinate>): void {
         this.clear();
         for (const entry of trackVertices) {
             this.addVertex(new Vector3(entry._x, entry._y, 0));
@@ -55,10 +55,10 @@ export class EditorScene {
         this._connections = [];
     }
 
-    public exportTrackVertices(): Array<Coordinate> {
-        const trackVertices: Array<Coordinate> = new Array();
+    public exportTrackVertices(): Array<CommonCoordinate> {
+        const trackVertices: Array<CommonCoordinate> = new Array();
         for (const entry of this.vertices) {
-            trackVertices.push(new Coordinate(entry.position.x, entry.position.y));
+            trackVertices.push(new CommonCoordinate(entry.position.x, entry.position.y));
         }
 
         return trackVertices;

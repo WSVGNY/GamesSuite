@@ -36,7 +36,6 @@ export class CarAiService {
     }
 
     private goForward(): void {
-        //TODO: remove if
         if (this._track === undefined) {
             this._aiControl.setCommand(new GoFoward(this._car));
             this._aiControl.execute();

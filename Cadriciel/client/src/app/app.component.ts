@@ -13,12 +13,5 @@ export class AppComponent {
         document.getElementById("image1").style.display = "inline-block";
         document.getElementById("image2").style.display = "inline-block";
     }
-/*
-    public removeImages(): void {
-        const elem: HTMLElement = document.getElementById("aa");
-        elem.parentNode.removeChild(elem);
-        const elemm: HTMLElement = document.getElementById("bb");
-        elemm.parentNode.removeChild(elemm);
-    }
-    */
+
 }

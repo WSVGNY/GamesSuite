@@ -36,10 +36,5 @@ export class EditorRenderService {
         requestAnimationFrame(() => this.render(scene, camera));
         this.renderer.render(scene, camera);
     }
-/*
-    public onResize(camera: Camera): void {
-        camera.updateProjectionMatrix();
-        this.renderer.setSize(this.containerEditor.clientWidth, this.containerEditor.clientHeight);
-    }
-    */
+
 }

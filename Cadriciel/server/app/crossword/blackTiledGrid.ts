@@ -1,8 +1,8 @@
 import "reflect-metadata";
 import { injectable, } from "inversify";
-import { GridBox } from "../../../common/crossword/gridBox";
-import { Word } from "../../../common/crossword/word";
-import { Coordinate } from "../../../common/crossword/coordinate";
+import { GridBox } from "./gridBox";
+import { Word } from "./word";
+import { Coordinate } from "./coordinate";
 
 const IS_HORIZONTAL: boolean = true;
 const IS_VERTICAL: boolean = false;
@@ -53,16 +53,16 @@ export class BlackTiledGrid {
         let totalDifficulty: number = 0;
         for (const row of this.grid) {
             for (const box of row) {
-                totalDifficulty += box.difficulty;
+                totalDifficulty += box._difficulty;
             }
         }
         let maxWordLength: number = 0;
         let minLengthWordQuantity: number = 0;
         for (const word of this.words) {
-            if (word.length > maxWordLength) {
-                maxWordLength = word.length;
+            if (word._length > maxWordLength) {
+                maxWordLength = word._length;
             }
-            if (word.length === MIN_WORD_LENGTH) {
+            if (word._length === MIN_WORD_LENGTH) {
                 minLengthWordQuantity++;
             }
         }
@@ -91,7 +91,7 @@ export class BlackTiledGrid {
     private findMatchingTileById(id: Coordinate): GridBox {
         for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
             for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                if (this.grid[i][j].id.equals(id)) {
+                if (this.grid[i][j]._id.equals(id)) {
                     return this.grid[i][j];
                 }
             }
@@ -99,9 +99,6 @@ export class BlackTiledGrid {
         throw new Error("GridTile not found");
     }
 
-    // returns false if there's a word of 1 letter
-    // Horizontal must be called first because it verifies that 1 letter word are at least of 2 letters vertically
-    // Vertical executes with the assumption that this verification has been made.
     private verifyBlackGridValidity(): boolean {
         this.wordId = 1;
         this.wordDefinitionID = 1;
@@ -128,7 +125,7 @@ export class BlackTiledGrid {
                     }
                 } else {
                     this.words[this.wordId - 1] =
-                        new Word(this.wordId, this.wordDefinitionID++, IS_HORIZONTAL, wordLength, this.grid[i][j].id);
+                        new Word(this.wordId, this.wordDefinitionID++, IS_HORIZONTAL, wordLength, this.grid[i][j]._id);
                     for (let k: number = j; k < j + wordLength; k++) {
                         this.grid[i][k].addConstraint(this.words[this.wordId - 1]);
                     }
@@ -166,7 +163,7 @@ export class BlackTiledGrid {
 
                 if (wordLength >= MIN_WORD_LENGTH) {
                     this.words[this.wordId - 1] =
-                        new Word(this.wordId, this.findHorizontalWordDefID(i, j), IS_VERTICAL, wordLength, this.grid[j][i].id);
+                        new Word(this.wordId, this.findHorizontalWordDefID(i, j), IS_VERTICAL, wordLength, this.grid[j][i]._id);
                     for (let k: number = j; k < j + wordLength; k++) {
                         this.grid[k][i].addConstraint(this.words[this.wordId - 1]);
                     }
