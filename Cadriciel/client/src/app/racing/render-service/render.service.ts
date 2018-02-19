@@ -2,14 +2,15 @@ import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import {
     PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, Mesh, PlaneGeometry, Shape,
-    MeshBasicMaterial, ShapeGeometry, Path, Vector3, Geometry, LineBasicMaterial, Line, Raycaster
+    MeshBasicMaterial, ShapeGeometry, Path, Vector3, Geometry, LineBasicMaterial, Line, Raycaster,
+    TextureLoader, Texture, BoxGeometry, MeshLambertMaterial, VertexColors, BackSide
 } from "three";
 import { Car } from "../car/car";
 import { Track, ITrack } from "../../../../../common/racing/track";
 import { TrackService } from "../track-service/track.service";
 import { CarAiService } from "../ai/car-ai.service";
 import { ActivatedRoute } from "@angular/router";
-import { DEG_TO_RAD, TRACK_WIDTH, SQUARED, LOWER_GROUND, PI_OVER_2 } from "../constants";
+import { DEG_TO_RAD, TRACK_WIDTH, SQUARED, LOWER_GROUND, PI_OVER_2, SKYBOX_SIZE } from "../constants";
 import { MOCK_TRACK } from "./mock-track";
 
 const FAR_CLIPPING_PLANE: number = 1000;
@@ -46,6 +47,7 @@ export class RenderService {
     private _carAiService: CarAiService[];
     private _aiCars: Car[];
     private _track: Track;
+    private _dayTime: boolean = true;
 
     private trackCenterPoints: Vector3[] = MOCK_TRACK;
     private trackExteriorPoints: Vector3[] = [];
@@ -140,7 +142,7 @@ export class RenderService {
         this._scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
         this.renderGround();
         this.renderTrack();
-        // await this.renderSkyBox();
+        await this.renderSkyBox();
     }
 
     private getAspectRatio(): number {
@@ -332,12 +334,12 @@ export class RenderService {
         return false;
     }
 
-    private renderGround(): void {
+    private async renderGround(): Promise<void> {
         const groundGeometry: PlaneGeometry = new PlaneGeometry(TEMP_GRID_SIZE, TEMP_GRID_SIZE, 1, 1);
         const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ color: 0x00FFFF });
-        const ground: Mesh = new Mesh(groundGeometry, groundMaterial);
-        // ground.translate(Math.sqrt(Math.pow(
-        // this.trackCenterPoints[0].x, 2) + Math.pow(this.trackCenterPoints[0].z, 2)), this.trackCenterPoints[0]);
+        const textureGround: Texture = await this.loadTexture("green2");
+        const material: MeshLambertMaterial = new MeshLambertMaterial({ map: textureGround, vertexColors: VertexColors });
+        const ground: Mesh = new Mesh(groundGeometry, material);
         ground.translateOnAxis(
             this.trackCenterPoints[0],
             Math.sqrt(Math.pow(this.trackCenterPoints[0].x, SQUARED) + Math.pow(this.trackCenterPoints[0].z, SQUARED))
@@ -347,19 +349,19 @@ export class RenderService {
         this._scene.add(ground);
     }
 
-    // private async renderSkyBox(): Promise<void> {
-    //     const textureSky: Texture = this._dayTime ? await this.loadTexture("sky") : await this.loadTexture("space");
-    //     const boxbox: BoxGeometry = new BoxGeometry(SKYBOX_SIZE, SKYBOX_SIZE, SKYBOX_SIZE);
-    //     const skyBox: Mesh = new Mesh(boxbox, new MeshLambertMaterial({ map: textureSky, vertexColors: VertexColors, side: BackSide }));
-    //     this._scene.add(skyBox);
-    // }
+    private async renderSkyBox(): Promise<void> {
+        const textureSky: Texture = this._dayTime ? await this.loadTexture("sky") : await this.loadTexture("space");
+        const boxbox: BoxGeometry = new BoxGeometry(SKYBOX_SIZE, SKYBOX_SIZE, SKYBOX_SIZE);
+        const skyBox: Mesh = new Mesh(boxbox, new MeshLambertMaterial({ map: textureSky, vertexColors: VertexColors, side: BackSide }));
+        this._scene.add(skyBox);
+    }
 
-    // private async loadTexture(textureName: String): Promise<Texture> {
-    //     return new Promise<Texture>((resolve, reject) => {
-    //         const loader: TextureLoader = new TextureLoader();
-    //         loader.load("assets/textures/" + textureName + ".jpg", (object) => {
-    //             resolve(object);
-    //         });
-    //     });
-    // }
+    private async loadTexture(textureName: String): Promise<Texture> {
+        return new Promise<Texture>((resolve, reject) => {
+            const loader: TextureLoader = new TextureLoader();
+            loader.load("assets/textures/" + textureName + ".jpg", (object) => {
+                resolve(object);
+            });
+        });
+    }
 }
