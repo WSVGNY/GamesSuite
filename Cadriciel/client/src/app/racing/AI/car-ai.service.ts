@@ -28,10 +28,9 @@ export class CarAiService {
     private _distanceVectorHelper: VectorHelper;
     private _trackPortionIndex: number;
 
-    // public constructor(private _car: Car, private _track: Track) {
-    public constructor(private _car: Car, track: Vector3[], public _scene: Scene) {
+    public constructor(private _car: Car, private _track: Vector3[], public _scene: Scene) {
         this._aiControl = new CommandController();
-        this.createVectorTrackFromPoints(track);
+        this.createVectorTrackFromPoints(_track);
         this._helper = new BoxHelper(this._car);
         this._scene.add(this._helper);
         this._carVectorHelper = new VectorHelper(PINK);
@@ -50,9 +49,18 @@ export class CarAiService {
         const carPosition: Vector3 = new Vector3(this._car.position.x - this._car.currentPosition.x, 0,
                                                  this._car.position.z - this._car.currentPosition.z);
         this._carVectorHelper.update(carPosition, projection, this._scene);
-        const projectionPositionOnLine: Vector3 = this.projectPointOnLine(projection);
-        console.log(projectionPositionOnLine);
-        this._distanceVectorHelper.update(projection, projectionPositionOnLine, this._scene);
+        const pointOnLine: Vector3 = this.projectPointOnLine(projection);
+        this._distanceVectorHelper.update(projection, pointOnLine, this._scene);
+        for (let i: number = 0; i < this._track.length; ++i) {
+            if (Math.abs(this._track[i].x - pointOnLine.x) < 1 && Math.abs(this._track[i].y - pointOnLine.z) < 1) {
+                if (this._trackPortionIndex - 1 < 0) {
+                    this._trackPortionIndex = this._vectorTrack.length - 1;
+                } else {
+                    this._trackPortionIndex--;
+                }
+            }
+        }
+
         // console.log(lineDistance);
 
         // if (lineDistance === undefined) {
@@ -114,10 +122,14 @@ export class CarAiService {
 
     private createVectorTrackFromPoints(track: Vector3[]): void {
         this._vectorTrack = [];
-        for (let i: number = 0; i < track.length - 1; ++i) {
-            const a: number = track[i].y - track[i + 1].y;
-            const b: number = track[i + 1].x - track[i].x;
-            const c: number = track[i].x * track[i + 1].y - track[i + 1].x * track[i].y;
+        for (let i: number = 0; i < track.length; ++i) {
+            let nextVertex: number = 1;
+            if (i === track.length - 1) {
+                nextVertex = -i;
+            }
+            const a: number = track[i].y - track[i + nextVertex].y;
+            const b: number = track[i + nextVertex].x - track[i].x;
+            const c: number = track[i].x * track[i + nextVertex].y - track[i + nextVertex].x * track[i].y;
             this._vectorTrack.push({a, b, c});
         }
     }
