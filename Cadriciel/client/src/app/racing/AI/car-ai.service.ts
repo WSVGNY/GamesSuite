@@ -12,7 +12,7 @@ const WHITE: Color = new Color( 0xFFFFFF );
 
 @Injectable()
 export class CarAiService {
-    private readonly DISTANCE_RAYCASTER_FROM_VEHICULE: number = 5;
+    private readonly DISTANCE_FROM_VEHICULE: number = 5;
 
     private _aiControl: CommandController;
     private _isGoingForward: boolean = false;
@@ -39,30 +39,27 @@ export class CarAiService {
             return;
         }
         this._helper.update(this._car);
-        const projection: Intersection[] = this.projectInFrontOfCar();
-        let lineDistance: number;
-        if (projection.length !== 0) {
-            const pointToVerify: Vector3 = projection[0].point;
-            lineDistance = this.getPointDistanceFromTrack(0, pointToVerify);
-        }
-        //console.log(lineDistance);
-        if (lineDistance === undefined) {
-            if (!this._isSteeringRight && this._isLeftOfLine) {
-                this._isLeftOfLine = !this._isLeftOfLine;
-                this.goRight();
-            } else {
-                if (!this._isSteeringLeft && !this._isLeftOfLine) {
-                    this._isLeftOfLine = !this._isLeftOfLine;
-                    this.goLeft();
-                }
-            }
+        const projection: Vector3 = this.projectInFrontOfCar();
+        const lineDistance: number = this.getPointDistanceFromTrack(0, projection);
+        console.log(lineDistance);
 
-        } else {
-            if (!this._isGoingForward) {
-                this.goForward();
-                this.releaseSteering();
-            }
-        }
+        // if (lineDistance === undefined) {
+        //     if (!this._isSteeringRight && this._isLeftOfLine) {
+        //         this._isLeftOfLine = !this._isLeftOfLine;
+        //         this.goRight();
+        //     } else {
+        //         if (!this._isSteeringLeft && !this._isLeftOfLine) {
+        //             this._isLeftOfLine = !this._isLeftOfLine;
+        //             this.goLeft();
+        //         }
+        //     }
+
+        // } else {
+        //     if (!this._isGoingForward) {
+        //         this.goForward();
+        //         this.releaseSteering();
+        //     }
+        // }
     }
 
     private goForward(): void {
@@ -92,36 +89,15 @@ export class CarAiService {
         this._isGoingForward = false;
     }
 
-    private projectInFrontOfCar(): Intersection[] {
+    private projectInFrontOfCar(): Vector3 {
         const dir: Vector3 = this._car.direction.normalize();
-        const posRaycaster: Vector3 = new Vector3(this._car.position.x - this._car.currentPosition.x, 0,
-                                                  this._car.position.z - this._car.currentPosition.z);
+        const positionInFront: Vector3 = new Vector3(this._car.position.x - this._car.currentPosition.x, 0,
+                                                     this._car.position.z - this._car.currentPosition.z);
 
-        posRaycaster.x -= dir.x * this.DISTANCE_RAYCASTER_FROM_VEHICULE;
-        posRaycaster.y = this.DISTANCE_RAYCASTER_FROM_VEHICULE;
-        posRaycaster.z -= dir.z * this.DISTANCE_RAYCASTER_FROM_VEHICULE;
+        positionInFront.x -= dir.x * this.DISTANCE_FROM_VEHICULE;
+        positionInFront.z -= dir.z * this.DISTANCE_FROM_VEHICULE;
 
-        const raycaster: Raycaster = new Raycaster(posRaycaster, new Vector3(0, -1, 0), 0, this.DISTANCE_RAYCASTER_FROM_VEHICULE + 1);
-
-        // TODO: Remove following code, purely for troubleshooting means
-        const material: LineBasicMaterial = new LineBasicMaterial({ color: 0xFFFFFF });
-        const material2: LineBasicMaterial = new LineBasicMaterial({ color: 0xFF0000 });
-        const geometry: Geometry = new Geometry();
-        geometry.vertices.push(posRaycaster);
-        geometry.vertices.push(posRaycaster.clone().add(new Vector3(0, -10, 0)));
-        this._scene.remove(this._visibleRay);
-
-        const intersects: Intersection[] = raycaster.intersectObjects(this._scene.children);
-
-        if (intersects.length !== 0) {
-          this._visibleRay = new Line(geometry, material2);
-        } else {
-          this._visibleRay = new Line(geometry, material);
-        }
-
-        this._scene.add(this._visibleRay);
-
-        return intersects;
+        return positionInFront;
     }
 
     private createVectorTrackFromPoints(track: Vector3[]): void {
