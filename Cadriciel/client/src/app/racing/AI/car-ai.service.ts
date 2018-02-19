@@ -8,7 +8,7 @@ import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";
 // import { Track } from "../../../../../common/racing/track";
 import { Vector3, Raycaster, Scene, Intersection, LineBasicMaterial, Geometry, Line, BoxHelper } from "three";
 import { VectorHelper } from "./vectorHelper";
-
+import { PINK, BLUE } from "../constants";
 
 @Injectable()
 export class CarAiService {
@@ -25,6 +25,8 @@ export class CarAiService {
     private _isLeftOfLine: boolean = false;
     private _helper: BoxHelper;
     private _carVectorHelper: VectorHelper;
+    private _distanceVectorHelper: VectorHelper;
+    private _trackPortionIndex: number;
 
     // public constructor(private _car: Car, private _track: Track) {
     public constructor(private _car: Car, track: Vector3[], public _scene: Scene) {
@@ -32,7 +34,9 @@ export class CarAiService {
         this.createVectorTrackFromPoints(track);
         this._helper = new BoxHelper(this._car);
         this._scene.add(this._helper);
-        this._carVectorHelper = new VectorHelper();
+        this._carVectorHelper = new VectorHelper(PINK);
+        this._distanceVectorHelper = new VectorHelper(BLUE);
+        this._trackPortionIndex = 0;
     }
 
     // tslint:disable-next-line:max-func-body-length
@@ -42,10 +46,13 @@ export class CarAiService {
         }
         this._helper.update(this._car);
         const projection: Vector3 = this.projectInFrontOfCar();
-        // const lineDistance: number = this.getPointDistanceFromTrack(0, projection);
+        const lineDistance: number = this.getPointDistanceFromTrack(projection);
         const carPosition: Vector3 = new Vector3(this._car.position.x - this._car.currentPosition.x, 0,
                                                  this._car.position.z - this._car.currentPosition.z);
         this._carVectorHelper.update(carPosition, projection, this._scene);
+        const projectionPositionOnLine: Vector3 = this.projectPointOnLine(projection);
+        console.log(projectionPositionOnLine);
+        this._distanceVectorHelper.update(projection, projectionPositionOnLine, this._scene);
         // console.log(lineDistance);
 
         // if (lineDistance === undefined) {
@@ -115,12 +122,26 @@ export class CarAiService {
         }
     }
 
-    private getPointDistanceFromTrack(trackPortionIndex: number, point: Vector3): number {
-        const line: {a: number, b: number, c: number} = this._vectorTrack[trackPortionIndex];
+    private getPointDistanceFromTrack(point: Vector3): number {
+        const line: {a: number, b: number, c: number} = this._vectorTrack[this._trackPortionIndex];
         const top: number = Math.abs(line.a * point.x + line.b * point.z + line.c);
         const bottom: number = Math.sqrt(line.a * line.a + line.b * line.b);
 
         return top / bottom;
+    }
+
+    private projectPointOnLine(point: Vector3): Vector3 {
+        const line: {a: number, b: number, c: number} = this._vectorTrack[this._trackPortionIndex];
+        const pointOnLine: Vector3 = new Vector3();
+
+        const a: number = -this._vectorTrack[this._trackPortionIndex].b;
+        const b: number = -this._vectorTrack[this._trackPortionIndex].a;
+        const c: number = -a * point.x - b * point.z;
+
+        pointOnLine.z = (line.c * a - line.a * c) / ( line.a * b - a * line.b );
+        pointOnLine.x = ( -c - b * pointOnLine.z ) / a;
+
+        return pointOnLine;
     }
 
 }
