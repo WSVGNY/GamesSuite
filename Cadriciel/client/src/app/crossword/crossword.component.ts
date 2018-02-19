@@ -85,7 +85,10 @@ export class CrosswordComponent {
                 this.grid.boxes[word._startPosition._y + i][word._startPosition._x]._isColored = true;
             }
         }
+    }
 
+    public choseMode(): void {
+        document.getElementById("modeSelection").style.display = "none";
     }
 
     public deselectWords(): void {

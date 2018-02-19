@@ -46,9 +46,7 @@ nav a:hover {
     background-color: rgb(186, 209, 207);
     box-shadow: none;
 }
-nav a.active {
-    color: #039be5;
-}
+
 
 .fa-home {
     font-size:40px;color:rgb(58, 107, 106);
