@@ -164,7 +164,7 @@ export class RenderService {
                 this._playerCar.steerRight();
                 break;
             case BRAKE_KEYCODE:
-                this._playerCar.brake();
+                this._playerCar.reverse();
                 break;
             default:
                 break;
@@ -181,7 +181,7 @@ export class RenderService {
                 this._playerCar.releaseSteering();
                 break;
             case BRAKE_KEYCODE:
-                this._playerCar.releaseBrakes();
+                this._playerCar.releaseReverse();
                 break;
             default:
                 break;
