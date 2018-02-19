@@ -39,11 +39,11 @@ export class RenderService {
     // private _track: Track;
 
     private mockTrack: Vector3[] = [
-        new Vector3(-488, -275, 0),
-        new Vector3(-550, 170, 0),
-        new Vector3(96, 342, 0),
-        new Vector3(748, 70, 0),
-        new Vector3(704, -263, 0)
+        new Vector3(-48, -27, 0),
+        new Vector3(-55, 17, 0),
+        new Vector3(9, 34, 0),
+        new Vector3(74, 7, 0),
+        new Vector3(70, -26, 0)
     ];
 
     public get playerCar(): Car {
