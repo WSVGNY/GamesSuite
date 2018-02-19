@@ -1,5 +1,5 @@
 import { Word } from "../../server/app/crossword/word";
-import { Difficulty } from "./Difficulty";
+import { Difficulty } from "./difficulty";
 import { GridBox } from "../../server/app/crossword/gridBox";
 import { Coordinate } from "../../server/app/crossword/coordinate";
 
