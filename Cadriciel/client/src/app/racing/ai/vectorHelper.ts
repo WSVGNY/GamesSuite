@@ -1,14 +1,13 @@
 import { Vector3, Scene, LineBasicMaterial, Geometry, Line } from "three";
-import { PINK } from "../constants";
-
-const SIMPLE_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: PINK });
 
 export class VectorHelper {
 
     private visual: Line;
+    private material: LineBasicMaterial;
 
-    public constructor() {
+    public constructor(lineColor: number) {
         this.visual = new Line();
+        this.material = new LineBasicMaterial({ color: lineColor });
     }
 
     public update(origin: Vector3, destination: Vector3, scene: Scene): void {
@@ -16,7 +15,7 @@ export class VectorHelper {
         const geometry: Geometry = new Geometry();
         geometry.vertices.push(origin);
         geometry.vertices.push(destination);
-        this.visual = new Line(geometry, SIMPLE_LINE_MATERIAL);
+        this.visual = new Line(geometry, this.material);
         scene.add(this.visual);
     }
 }
