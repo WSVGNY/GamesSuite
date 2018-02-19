@@ -6,9 +6,9 @@ import { TurnLeft } from "../commands/carAICommands/turnLeft";
 import { TurnRight} from "../commands/carAICommands/turnRight";
 import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";
 // import { Track } from "../../../../../common/racing/track";
-import { Vector3, Raycaster, Scene, Intersection, LineBasicMaterial, Geometry, Line, BoxHelper, Color } from "three";
+import { Vector3, Raycaster, Scene, Intersection, LineBasicMaterial, Geometry, Line, BoxHelper } from "three";
+import { VectorHelper } from "./vectorHelper";
 
-const WHITE: Color = new Color( 0xFFFFFF );
 
 @Injectable()
 export class CarAiService {
@@ -24,13 +24,15 @@ export class CarAiService {
     private _visibleRay: Line;
     private _isLeftOfLine: boolean = false;
     private _helper: BoxHelper;
+    private _carVectorHelper: VectorHelper;
 
     // public constructor(private _car: Car, private _track: Track) {
     public constructor(private _car: Car, track: Vector3[], public _scene: Scene) {
         this._aiControl = new CommandController();
         this.createVectorTrackFromPoints(track);
-        this._helper = new BoxHelper(this._car, WHITE);
+        this._helper = new BoxHelper(this._car);
         this._scene.add(this._helper);
+        this._carVectorHelper = new VectorHelper();
     }
 
     // tslint:disable-next-line:max-func-body-length
@@ -40,8 +42,11 @@ export class CarAiService {
         }
         this._helper.update(this._car);
         const projection: Vector3 = this.projectInFrontOfCar();
-        const lineDistance: number = this.getPointDistanceFromTrack(0, projection);
-        console.log(lineDistance);
+        // const lineDistance: number = this.getPointDistanceFromTrack(0, projection);
+        const carPosition: Vector3 = new Vector3(this._car.position.x - this._car.currentPosition.x, 0,
+                                                 this._car.position.z - this._car.currentPosition.z);
+        this._carVectorHelper.update(carPosition, projection, this._scene);
+        // console.log(lineDistance);
 
         // if (lineDistance === undefined) {
         //     if (!this._isSteeringRight && this._isLeftOfLine) {
