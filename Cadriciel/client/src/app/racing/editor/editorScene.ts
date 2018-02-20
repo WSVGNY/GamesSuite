@@ -2,26 +2,22 @@ import {
     Vector3, Scene, AmbientLight, Mesh, Line, SphereGeometry,
     MeshBasicMaterial, LineBasicMaterial, Geometry, BackSide
 } from "three";
-import { PI_OVER_4, WHITE, RED, PINK, BLUE, HALF } from "../constants";
-import { Angle } from "./constraints/angle";
-import { Intersection } from "./constraints/intersection";
+import { WHITE, PINK, BLUE } from "../constants";
 import { CommonCoordinate } from "../../../../../common/commonCoordinate";
+import { ConstraintValidator } from "./constraints/constraintValidator";
 
 const RADIUS: number = 12;
 const OUTLINE_TO_VERTEX_RATIO: number = 1.25;
 const VERTEX_GEOMETRY: SphereGeometry = new SphereGeometry(RADIUS, RADIUS, RADIUS);
 const SIMPLE_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: WHITE });
-const UNAUTHORIZED_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: RED });
 const START_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: PINK });
 const SIMPLE_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: BLUE });
-const TRACK_WIDTH: number = 100;
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
 
 export class EditorScene {
     private _scene: Scene;
     private _vertices: Array<Mesh>;
     private _connections: Array<Line>;
-    private _angles: Array<Angle>;
 
     private _firstVertex: Mesh;
     private _lastVertex: Mesh;
@@ -41,7 +37,9 @@ export class EditorScene {
         for (const entry of trackVertices) {
             this.addVertex(new Vector3(entry._x, entry._y, 0));
         }
-        // this.completeTrack();
+        if (trackVertices.length !== 0) {
+            this.completeTrack();
+        }
     }
 
     private clear(): void {
@@ -81,7 +79,7 @@ export class EditorScene {
     }
 
     public get isEmpty(): boolean {
-        return (this._vertices.length === 0) ? true : false;
+        return this._vertices.length === 0;
     }
 
     public get firstVertex(): Mesh {
@@ -210,70 +208,17 @@ export class EditorScene {
             this.updateConnection(previousVertex, entry);
         }
     }
-    private checkConstraints(): void {
+
+    private checkConstraints(): boolean {
+        let constraintsPass: boolean = true;
         for (const connection of this._connections) {
             connection.material = SIMPLE_LINE_MATERIAL;
         }
-        this.checkLength();
-        this.checkAngle();
-        this.checkIntersection();
-    }
+        constraintsPass = ConstraintValidator.checkLength(this._connections);
+        constraintsPass = ConstraintValidator.checkAngle(this._connections, this._isComplete);
+        constraintsPass = ConstraintValidator.checkIntersection(this._connections, this._isComplete);
 
-    private checkLength(): void {
-        for (const connection of this._connections) {
-            const geometry: Geometry = (connection.geometry) as Geometry;
-            const vector1: Vector3[] = geometry.vertices;
-            const length: number = Math.sqrt((vector1[1].x - vector1[0].x) * (vector1[1].x - vector1[0].x)
-                + (vector1[1].y - vector1[0].y) * (vector1[1].y - vector1[0].y));
-            if (length < TRACK_WIDTH) {
-                connection.material = UNAUTHORIZED_LINE_MATERIAL;
-            }
-        }
-    }
-
-    // https://stackoverflow.com/questions/17763392/how-to-calculate-in-javascript-angle-between-3-points
-    private checkAngle(): void {
-        this._angles = new Array<Angle>();
-        if (this.connections.length > 0) {
-            let limit: number;
-            this._isComplete ?
-                limit = this._connections.length :
-                limit = this._connections.length - 1;
-            for (let i: number = 0; i < limit; i++) {
-                let indexPlusOne: number;
-                i === this._connections.length - 1 ?
-                    indexPlusOne = 0 :
-                    indexPlusOne = i + 1;
-                const current: Line = this._connections[i];
-                const next: Line = this._connections[indexPlusOne];
-                const angle: Angle = new Angle(current, next);
-                this._angles.push(angle);
-            }
-            for (const angle of this._angles) {
-                if (angle.value < PI_OVER_4) {
-                    angle.line1.material = UNAUTHORIZED_LINE_MATERIAL;
-                    angle.line2.material = UNAUTHORIZED_LINE_MATERIAL;
-                }
-            }
-        }
-    }
-
-    // https://stackoverflow.com/questions/9043805/test-if-two-lines-intersect-javascript-function
-    private checkIntersection(): void {
-        for (let i: number = 0; i < this.connections.length; i++) {
-            const line1: Line = this.connections[i];
-            const limit: number = this.isComplete && i === 0 ? this.connections.length - 1 : this.connections.length;
-            for (let j: number = 0; j < limit; j++) {
-                if (j > i + 1) {
-                    const line2: Line = this.connections[j];
-                    const intersection: Intersection = new Intersection(line1, line2, TRACK_WIDTH * HALF);
-                    if (intersection.isIntersecting) {
-                        line1.material = UNAUTHORIZED_LINE_MATERIAL;
-                        line2.material = UNAUTHORIZED_LINE_MATERIAL;
-                    }
-                }
-            }
-        }
+        return constraintsPass;
     }
 
 }

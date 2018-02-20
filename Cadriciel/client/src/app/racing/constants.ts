@@ -14,3 +14,4 @@ export const WHITE: number = 0xFFFFFF;
 export const PINK: number = 0xFF00BF;
 export const BLUE: number = 0x0066FF;
 export const RED: number = 0xFF0000;
+export const TRACK_WIDTH: number = 100;
