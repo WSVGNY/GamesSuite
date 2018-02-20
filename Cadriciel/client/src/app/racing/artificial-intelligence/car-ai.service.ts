@@ -54,7 +54,7 @@ export class CarAiService {
         const pointOnLine: Vector3 = this.projectPointOnLine(projection);
         this._distanceVectorHelper.update(projection, pointOnLine, this._scene);
         const turningPoint: Vector3 = this.projectTurningPoint();
-        this._turningVectorHelper.update(new Vector3(this._track[4].x, 0, this._track[4].z), turningPoint, this._scene);
+        this._turningVectorHelper.update(new Vector3(this._track[this._trackPortionIndex].x, 0, this._track[this._trackPortionIndex].z), turningPoint, this._scene);
         for (let i: number = 0; i < this._track.length; ++i) {
             if (Math.abs(this._track[i].x - pointOnLine.x) < 1 && Math.abs(this._track[i].z - pointOnLine.z) < 1) {
                 if (this._trackPortionIndex - 1 < 0) {
@@ -162,13 +162,13 @@ export class CarAiService {
 
     private projectTurningPoint(): Vector3 {
         // const line: {a: number, b: number, c: number} = this._vectorTrack[this._trackPortionIndex];
-        let p2: Vector3;
+        let p1: Vector3;
         if (this._trackPortionIndex === this._track.length - 1) {
-            p2 = this._track[0];
+            p1 = this._track[0];
         } else {
-            p2 = this._track[this._trackPortionIndex + 1];
+            p1 = this._track[this._trackPortionIndex + 1];
         }
-        const p1: Vector3 = this._track[this._trackPortionIndex];
+        const p2: Vector3 = this._track[this._trackPortionIndex];
 
         const dx: number = p2.x - p1.x;
         const dz: number = p2.z - p1.z;
