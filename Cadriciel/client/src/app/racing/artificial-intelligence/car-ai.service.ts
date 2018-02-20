@@ -140,7 +140,7 @@ export class CarAiService {
 
     // private getPointDistanceFromTrack(point: Vector3): number {
     //     const line: {a: number, b: number, c: number} = this._vectorTrack[this._trackPortionIndex];
-    //     const top: number = Math.abs(line.a * point.x + line.b * point.z + line.c);
+    //     const top: number = line.a * point.x + line.b * point.z + line.c;
     //     const bottom: number = Math.sqrt(line.a * line.a + line.b * line.b);
 
     //     return top / bottom;
