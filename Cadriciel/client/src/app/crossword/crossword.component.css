@@ -1,11 +1,78 @@
+
+.push_button {
+	position: relative;
+	width:340px;
+	height:140px;
+	text-align:center;
+	color:#FFF;
+	line-height:43px;
+	display: inline-block;
+    margin: 30px;
+    text-decoration: none;
+	background: rgb(55, 170, 141);
+	border:1px solid rgb(55, 170, 141);
+	border-radius:5px;
+    box-shadow:0 1px 0 rgba(255, 255, 255, .5) inset, 0 -1px 0 rgba(255, 255, 255, .1) inset, 0 7px 0 rgb(34, 119, 101), 0 4px 2px rgba(0, 0, 0, .5);
+    font-family: 'Londrina Outline', cursive;
+    font-size: 80px;
+    padding-top:50px;
+}
+
+.push_button:active {
+	box-shadow:0 1px 0 rgba(255, 255, 255, .5) inset, 0 -1px 0 rgba(255, 255, 255, .1) inset;
+	top:5px;
+}
+
+.push_button:hover {
+	background: #F66C7B;
+	background:linear-gradient(rgb(90, 196, 169), rgb(39, 129, 107));
+}
+
 #grid {
-    width: 600px;
-    min-height: 600px;
+    width: 604px;
+    min-height: 602px;
+    border: 2px solid rgba(44, 107, 97, 0.233);
+    position: absolute;
+    margin-left: 750px;
+    margin-bottom: 10px;
+    z-index: -1;
+}
+
+#gridHider {
+    width: 604px;
+    min-height: 602px;
+    border: 2px solid rgba(44, 107, 97, 0.233);
+    position: absolute;
+    margin-left: 750px;
+    margin-bottom: 10px;
+    background:rgba(255, 255, 255, 0);
+}
+
+#defs {
+    width: 630px;
+    height: 400px;
+    border: 2px solid rgba(44, 107, 97, 0.233);
+    position: absolute;
+    left: 40px;
+    background: rgba(27, 92, 76, 0.068);
+    padding-left:20px;
+    overflow:auto;
+    margin-top:200px;
+}
+
+#gameInformations {
+    width: 630px;
+    height: 180px;
     margin: 0 auto;
     border: 2px solid rgba(44, 107, 97, 0.233);
-    position: relative;
-    right: -25%;
+    position: absolute;
+    left: 40px;
+    background: rgba(27, 92, 76, 0.068);
+    padding-left:20px;
+    
+    margin: 0 auto;
 }
+
 li {
     list-style-type: none;
 }
@@ -16,8 +83,8 @@ li {
 
 .emptyGridBox {
     text-align: left;    
-    width: 56px;
-    height: 56px;
+    width: 60px;
+    height: 60px;
     border: 2px solid black;
     padding: 0;
     margin: 0;
@@ -28,8 +95,8 @@ li {
 
 .selectedGridBox {
     text-align: left;    
-    width: 56px;
-    height: 56px;
+    width: 60px;
+    height: 60px;
     background:  rgb(44, 107, 97);
     border: 2px solid black;
     padding: 0;
@@ -39,8 +106,8 @@ li {
 }
 
 .filledGridBox {
-    width: 56px;
-    height: 56px;
+    width: 60px;
+    height: 60px;
     background: black;
     border: 2px solid black;
     padding: 0;
@@ -48,11 +115,27 @@ li {
     float: left;
 }
 
-
 #buttonDifficulty {
-    color:midnightblue;
-    margin-bottom: 10px;
-    cursor: pointer;
+    margin-bottom: 15px;
+    margin-right: 5px;
+    margin-left: 15px;
+    padding: 5px 8px;
+    display: inline-block;
+    background-color: rgba(59, 82, 77, 0.938);
+    color:rgb(174, 211, 208);
+    border-radius: 4px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    transition-duration: 0.7s;
+    text-align: center;
+    width:100px;
+    font-size: 14px;
+    border:black;
+}
+
+#buttonDifficulty:hover {
+    color: #0b4941;
+    background-color: rgb(186, 209, 207);
+    box-shadow: none;
 }
 
 #CheatButton {
@@ -61,44 +144,84 @@ li {
     top:2%;
     cursor: pointer;
     border-radius: 4px;
-}
-
-#defs {
-    width: 600px;
-    height: 600px;
-    margin: 0 auto;
-    border: 2px solid rgba(44, 107, 97, 0.233);
-    position: absolute;
-    left: 5%;
-    background: rgba(27, 92, 76, 0.068);
-    padding-left:20px;
-    overflow:auto;
+    background: rgb(141, 175, 165);
+    border: 1px solid rgba(25, 66, 59, 0.705);
+    color:rgb(20, 49, 42);
+    font-size:16px;
 }
 
 #loader {
-    border: 16px solid grey;
-    border-top: 16px solid #3498db; /* Blue */
+    border: 16px solid rgb(51, 77, 72);
+    border-top: 16px solid rgb(71, 143, 131);
     border-radius: 50%;
-    width: 30px;
-    height: 30px;
+    width: 70px;
+    height: 70px;
     animation: spin 2s infinite;
     animation-fill-mode: both;
-    display: none;
+    display: inline-block;
+    visibility: visible;
+    position: absolute;
+    margin-left: 1000px ;
+    margin-top:320px;
+    z-index: 1;
 }
 
-#word{
+#input {
+    visibility: hidden;
+    position: absolute;
+    top: 350px;
+    left: 50px;
+}
+
+.selectedDefinition {
     display: inline-block;
     max-width: 530px;
     vertical-align:top;
+    background: rgba(25, 66, 59, 0.705);
 }
 
+.clearDefinition {
+    display: inline-block;
+    max-width: 530px;
+    vertical-align:top;
+    enable-background: 0%;
+}
 
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
 
-[placeholder]:focus::-webkit-input-placeholder {
-    transition: opacity 0.5s 0.5s ease; 
-    opacity: 0;
-  }
+#modeSelection{
+    background: rgb(146, 192, 180);
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    position:absolute;
+    z-index: 2;
+}
+
+
+#buttongroup{
+    position: absolute;
+    left: 35px;
+    top:200px;
+    visibility: hidden;
+}
+
+#buttongroupp{
+    visibility: hidden;
+    position: absolute;
+    left: 35px;
+    top:270px;
+}
+
+#modeButton{
+    background : rgb(53, 83, 74);
+    color: rgb(190, 216, 210);
+}
+
+
+h4{
+    display:inline-block;
+}

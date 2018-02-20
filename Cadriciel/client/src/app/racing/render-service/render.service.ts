@@ -1,16 +1,15 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import {
-    PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, Mesh, PlaneGeometry, Shape,
+    PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, Mesh, Shape,
     MeshBasicMaterial, ShapeGeometry, Path, Vector3, Geometry, LineBasicMaterial, Line,
-    TextureLoader, Texture, BoxGeometry, MeshLambertMaterial, VertexColors, BackSide
+    BackSide,
+    TextureLoader,
+    Texture
 } from "three";
+import { CarAiService } from "../artificial-intelligence/car-ai.service";
 import { Car } from "../car/car";
-import { Track, ITrack } from "../../../../../common/racing/track";
-import { TrackService } from "../track-service/track.service";
-import { CarAiService } from "../ai/car-ai.service";
-import { ActivatedRoute } from "@angular/router";
-import { SQUARED, LOWER_GROUND, PI_OVER_2, SKYBOX_SIZE } from "../constants";
+import { PI_OVER_2 } from "../constants";
 import { MOCK_TRACK } from "./mock-track";
 import { TrackPoint, TrackPointList } from "./trackPoint";
 
@@ -44,30 +43,35 @@ export class RenderService {
     private _lastDate: number;
     private _carAiService: CarAiService[];
     private _aiCars: Car[];
-    private _track: Track;
-    private _dayTime: boolean = true;
+    // private _dayTime: boolean = true;
     private _trackPoints: TrackPointList;
 
     public get playerCar(): Car {
         return this._playerCar;
     }
 
-    public constructor(private trackService: TrackService, private route: ActivatedRoute) {
+    public constructor() {
+        this._trackPoints = new TrackPointList(MOCK_TRACK);
         this._playerCar = new Car();
+        this._scene = new Scene();
         this._carAiService = [];
         this._aiCars = [];
+
+        const points: Vector3[] = new Array();
+
+        this._trackPoints.points.forEach((currentPoint: TrackPoint) => {
+            points.push(new Vector3(
+                currentPoint.coordinates.x,
+                currentPoint.coordinates.y,
+                currentPoint.coordinates.z,
+            ));
+        });
+
         for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
             this._aiCars.push(new Car());
-            this._carAiService.push(new CarAiService(this._aiCars[i], this._track));
+            this._carAiService.push(new CarAiService(this._playerCar, points, this._scene));
+            this.rotateCarToFaceStart(this._aiCars[i]);
         }
-    }
-
-    public getTrack(): void {
-        this.trackService.getTrackFromId(this.route.snapshot.paramMap.get("5a7fc1173cb1de3b7ce47a4a"))
-            .subscribe((trackFromServer: string) => {
-                const iTrack: ITrack = JSON.parse(JSON.stringify(trackFromServer));
-                this._track = new Track(iTrack);
-            });
     }
 
     public async initialize(container: HTMLDivElement): Promise<void> {
@@ -122,14 +126,12 @@ export class RenderService {
     private update(): void {
         const timeSinceLastFrame: number = Date.now() - this._lastDate;
         this._playerCar.update(timeSinceLastFrame);
-        // TODO: Remove this instruction, only for testing
-        this._carAiService[0].update();
         this._aiCars[0].update(timeSinceLastFrame);
+        this._carAiService[0].update();
         this._lastDate = Date.now();
     }
 
     private async createScene(): Promise<void> {
-        this._scene = new Scene();
         await this._playerCar.init();
         this._scene.add(this._playerCar);
         for (const car of this._aiCars) {
@@ -151,7 +153,7 @@ export class RenderService {
 
         this._scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
         this.renderTrack();
-        await this.renderGround();
+        // await this.renderGround();
         // await this.renderSkyBox();
     }
 
@@ -173,7 +175,7 @@ export class RenderService {
         requestAnimationFrame(() => this.render());
         this.update();
         this._renderer.render(this._scene, this._camera);
-        this._stats.update();
+        // this._stats.update();
     }
 
     public onResize(): void {
@@ -194,7 +196,7 @@ export class RenderService {
                 this._playerCar.steerRight();
                 break;
             case BRAKE_KEYCODE:
-                this._playerCar.brake();
+                this._playerCar.reverse();
                 break;
             default:
                 break;
@@ -211,7 +213,7 @@ export class RenderService {
                 this._playerCar.releaseSteering();
                 break;
             case BRAKE_KEYCODE:
-                this._playerCar.releaseBrakes();
+                this._playerCar.releaseReverse();
                 break;
             default:
                 break;
@@ -260,37 +262,37 @@ export class RenderService {
         this._scene.add(line);
     }
 
-    private async renderGround(): Promise<void> {
-        const groundGeometry: PlaneGeometry = new PlaneGeometry(10000, 10000, 1, 1);
-        // const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ side: BackSide, color: 0x00FFFF });
-        const textureGround: Texture = await this.loadTexture("asphalte");
-        const material: MeshLambertMaterial = new MeshLambertMaterial({ map: textureGround, vertexColors: VertexColors });
-        const ground: Mesh = new Mesh(groundGeometry, material);
-        // ground.translateOnAxis(
-        //     this._trackPoints.points[0].coordinates,
-        //     Math.sqrt(Math.pow(
-        //         this._trackPoints.points[0].coordinates.x, SQUARED) +
-        //         Math.pow(this._trackPoints.points[0].coordinates.z, SQUARED)
-        //     )
-        // );
-        ground.rotateX(PI_OVER_2);
-        ground.translateZ(LOWER_GROUND);
-        this._scene.add(ground);
-    }
+    // private async renderGround(): Promise<void> {
+    //     const groundGeometry: PlaneGeometry = new PlaneGeometry(10000, 10000, 1, 1);
+    //     // const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ side: BackSide, color: 0x00FFFF });
+    //     const textureGround: Texture = await this.loadTexture("asphalte");
+    //     const material: MeshLambertMaterial = new MeshLambertMaterial({ map: textureGround, vertexColors: VertexColors });
+    //     const ground: Mesh = new Mesh(groundGeometry, material);
+    //     // ground.translateOnAxis(
+    //     //     this._trackPoints.points[0].coordinates,
+    //     //     Math.sqrt(Math.pow(
+    //     //         this._trackPoints.points[0].coordinates.x, SQUARED) +
+    //     //         Math.pow(this._trackPoints.points[0].coordinates.z, SQUARED)
+    //     //     )
+    //     // );
+    //     ground.rotateX(PI_OVER_2);
+    //     ground.translateZ(LOWER_GROUND);
+    //     this._scene.add(ground);
+    // }
 
-    private async renderSkyBox(): Promise<void> {
-        const textureSky: Texture = this._dayTime ? await this.loadTexture("sky") : await this.loadTexture("space");
-        const boxbox: BoxGeometry = new BoxGeometry(SKYBOX_SIZE, SKYBOX_SIZE, SKYBOX_SIZE);
-        const skyBox: Mesh = new Mesh(boxbox, new MeshLambertMaterial({ map: textureSky, vertexColors: VertexColors, side: BackSide }));
-        this._scene.add(skyBox);
-    }
+    // private async renderSkyBox(): Promise<void> {
+    //     const textureSky: Texture = this._dayTime ? await this.loadTexture("sky") : await this.loadTexture("space");
+    //     const boxbox: BoxGeometry = new BoxGeometry(SKYBOX_SIZE, SKYBOX_SIZE, SKYBOX_SIZE);
+    //     const skyBox: Mesh = new Mesh(boxbox, new MeshLambertMaterial({ map: textureSky, vertexColors: VertexColors, side: BackSide }));
+    //     this._scene.add(skyBox);
+    // }
 
-    private async loadTexture(textureName: String): Promise<Texture> {
-        return new Promise<Texture>((resolve, reject) => {
-            const loader: TextureLoader = new TextureLoader();
-            loader.load("assets/textures/" + textureName + ".jpg", (object) => {
-                resolve(object);
-            });
-        });
-    }
+    // private async loadTexture(textureName: String): Promise<Texture> {
+    //     return new Promise<Texture>((resolve, reject) => {
+    //         const loader: TextureLoader = new TextureLoader();
+    //         loader.load("assets/textures/" + textureName + ".jpg", (object) => {
+    //             resolve(object);
+    //         });
+    //     });
+    // }
 }

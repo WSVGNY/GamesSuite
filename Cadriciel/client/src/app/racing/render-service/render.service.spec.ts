@@ -17,13 +17,6 @@ describe("RenderService", () => {
     }));
 
     it("camera should be a child of _playerCar", inject([RenderService], (done: () => void) => {
-        // let render: RenderService;
-        // render = new RenderService();
-        // render.initialize(undefined).then(() => {
-        //     const cam: Object3D = render.playerCar.getChild("PLAYER_CAMERA");
-        //     expect(cam).toBeDefined();
-        //     done();
-        // }).catch(done);
         assert(false);
     }));
 });

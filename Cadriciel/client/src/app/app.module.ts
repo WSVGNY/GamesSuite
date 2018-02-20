@@ -13,7 +13,7 @@ import { RacingComponent } from "./racing/racing.component";
 import { TrackService } from "./racing/track-service/track.service";
 import { EditorComponent } from "./racing/editor/editor.component";
 import { MouseEventHandlerService } from "./racing/event-handlers/mouse-event-handler.service";
-import { CarAiService } from "./racing/ai/car-ai.service";
+import { CarAiService } from "./racing/artificial-intelligence/car-ai.service";
 
 @NgModule({
     declarations: [
