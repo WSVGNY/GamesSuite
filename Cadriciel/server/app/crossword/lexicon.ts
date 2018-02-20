@@ -81,8 +81,8 @@ export class Lexicon {
 
     private checkWordValidity(responseWord: ResponseWordFromAPI, randomWordFromList: string): boolean {
         if (this.checkFrequency(randomWordFromList)) {
-            responseWord.definition = this.getDefinition(randomWordFromList);
-            if (responseWord.definition !== "") {
+            responseWord._definition = this.getDefinition(randomWordFromList);
+            if (responseWord._definition !== "") {
                 return false;
             }
         }
@@ -97,7 +97,7 @@ export class Lexicon {
             isBadWord = true;
             const random: number = Math.floor(Math.random() * words.length);
             const randomWordFromList: string = words[random];
-            responseWord.word = randomWordFromList["word"].toUpperCase();
+            responseWord._word = randomWordFromList["word"].toUpperCase();
 
             isBadWord = this.checkWordValidity(responseWord, randomWordFromList);
 
@@ -110,7 +110,7 @@ export class Lexicon {
             }
 
         } while (isBadWord);
-        responseWord.word = this.removeSpecialCharacters(this.removeAccent(responseWord.word));
+        responseWord._word = this.removeSpecialCharacters(this.removeAccent(responseWord._word));
 
         return responseWord;
     }

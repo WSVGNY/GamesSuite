@@ -106,6 +106,7 @@ export class Car extends Object3D {
         this._weightRear = INITIAL_WEIGHT_DISTRIBUTION;
         this._speed = new Vector3(0, 0, 0);
         this.position.add(new Vector3(0, 0, 0));
+        // this.rotateX(Math.PI);
     }
 
     private async load(): Promise<Object3D> {

@@ -1,14 +1,14 @@
-export class Char {
+import { CommonChar } from "../../../common/crossword/commonChar";
 
-    public _value: string;
+export class Char extends CommonChar {
 
     public constructor(char: string) {
-        this._value = char;
+        super(char);
     }
 
     public set value(char: string) {
         if (char.length !== 1) {
-            throw new Error("Wrong length for char")
+            throw new Error("Wrong length for char");
         } else {
             this._value = char;
         }

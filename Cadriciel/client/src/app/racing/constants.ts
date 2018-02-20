@@ -10,7 +10,11 @@ export const HALF: number = 1 / 2;
 export const PI_OVER_2: number = Math.PI / 2;
 // tslint:disable-next-line:no-magic-numbers
 export const PI_OVER_4: number = Math.PI / 4;
+export const SQUARED: number = 2;
 export const WHITE: number = 0xFFFFFF;
 export const PINK: number = 0xFF00BF;
 export const BLUE: number = 0x0066FF;
 export const RED: number = 0xFF0000;
+export const TRACK_WIDTH: number = 10;
+export const LOWER_GROUND: number = -0.001;
+export const SKYBOX_SIZE: number = 700;

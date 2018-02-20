@@ -1,8 +1,8 @@
 import "reflect-metadata";
 import { injectable, } from "inversify";
-import { GridBox } from "../../../common/crossword/gridBox";
-import { Word } from "../../../common/crossword/word";
-import { Char } from "../../../common/crossword/char";
+import { GridBox } from "./gridBox";
+import { Word } from "./word";
+import { Char } from "./char";
 import * as requestPromise from "request-promise-native";
 import { Difficulty } from "../../../common/crossword/difficulty";
 import { ResponseWordFromAPI } from "../../../common/communication/responseWordFromAPI";
@@ -74,19 +74,19 @@ export class WordFiller {
     private generateConstraints(): void {
         let maxWordLength: number = 0;
         for (const word of this.words) {
-            if (word.length > maxWordLength) {
-                maxWordLength = word.length;
+            if (word._length > maxWordLength) {
+                maxWordLength = word._length;
                 this.longestWord = word;
             }
-            if (word.isHorizontal) {
-                for (let i: number = word._startPosition._x; i < word._startPosition._x + word.length; i++) {
-                    if (this.grid[word._startPosition._y][i].difficulty > 1) {
+            if (word._isHorizontal) {
+                for (let i: number = word._startPosition._x; i < word._startPosition._x + word._length; i++) {
+                    if (this.grid[word._startPosition._y][i]._difficulty > 1) {
                         word.addConstraint(this.grid[word._startPosition._y][i].getConstraint(IS_VERTICAL));
                     }
                 }
             } else {
-                for (let i: number = word._startPosition._y; i < word._startPosition._y + word.length; i++) {
-                    if (this.grid[i][word._startPosition._x].difficulty > 1) {
+                for (let i: number = word._startPosition._y; i < word._startPosition._y + word._length; i++) {
+                    if (this.grid[i][word._startPosition._x]._difficulty > 1) {
                         word.addConstraint(this.grid[i][word._startPosition._x].getConstraint(IS_HORIZONTAL));
                     }
                 }
@@ -107,8 +107,8 @@ export class WordFiller {
         }
         let state: Token;
         for (const next of currentWord._constraints) {
-            if (this.filledWords.findIndex((wordIteration: Word) => next.id === wordIteration.id) === -1) {
-                next.parentCaller = currentWord;
+            if (this.filledWords.findIndex((wordIteration: Word) => next._id === wordIteration._id) === -1) {
+                next._parentCaller = currentWord;
                 await this.manageBackTrack(next, currentWord, wordConstraint).then(
                     (result: Token) => {
                         state = result;
@@ -128,7 +128,7 @@ export class WordFiller {
             state = Token.Pass;
             await this.getWordFromAPI(wordConstraints).then(
                 (result: ResponseWordFromAPI) => {
-                    if (this.verifyWordAlreadyThere(result.word) || result.word === "") {
+                    if (this.verifyWordAlreadyThere(result._word) || result._word === "") {
                         state = Token.BackTrack;
                     }
                     if (state === Token.Pass) {
@@ -137,8 +137,8 @@ export class WordFiller {
                             this.backTrackingWord = undefined;
                         }
 
-                        word.value = result.word;
-                        word.definition = result.definition;
+                        word._value = result._word;
+                        word._definition = result._definition;
                         this.updateCharGrid(word);
                         this.filledWords.push(word);
                     }
@@ -159,9 +159,9 @@ export class WordFiller {
                 state = result;
             }).catch((e: Error) => console.error(e));
         if (state === Token.BackTrack) {
-            currentWord.value = wordConstraint.originalValue;
+            currentWord._value = wordConstraint.originalValue;
             this.updateCharGrid(currentWord);
-            const index: number = this.filledWords.findIndex((wordIteration: Word) => currentWord.id === wordIteration.id);
+            const index: number = this.filledWords.findIndex((wordIteration: Word) => currentWord._id === wordIteration._id);
             this.filledWords.splice(index, 1);
             this.backTrackCounter++;
             this.backTrackingWord = next;
@@ -181,7 +181,7 @@ export class WordFiller {
 
     private verifyWordAlreadyThere(wordToVerify: string): boolean {
         for (const verifWord of this.words) {
-            if (verifWord.definition !== "" && verifWord.value === wordToVerify) {
+            if (verifWord._definition !== "" && verifWord._value === wordToVerify) {
                 return true;
             }
         }
@@ -190,9 +190,9 @@ export class WordFiller {
     }
 
     private updateCharGrid(word: Word): void {
-        const splitWord: string[] = Array.from(word.value);
+        const splitWord: string[] = Array.from(word._value);
         for (let i: number = 0; i < splitWord.length; ++i) {
-            if (word.isHorizontal) {
+            if (word._isHorizontal) {
                 this.grid[word._startPosition._y][word._startPosition._x + i]._char.value = splitWord[i];
             } else {
                 this.grid[word._startPosition._y + i][word._startPosition._x]._char.value = splitWord[i];
@@ -205,8 +205,8 @@ export class WordFiller {
         await requestPromise(this.URL_WORD_API + constraints + "/" + this.gridDifficulty).then(
             (result: string) => {
                 result = JSON.parse(result);
-                responseWord.word = result["_word"];
-                responseWord.definition = result["_definition"];
+                responseWord._word = result["_word"];
+                responseWord._definition = result["_definition"];
             }
         ).catch((e: Error) => {
             console.error(e);
@@ -219,7 +219,7 @@ export class WordFiller {
         for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
             for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
                 if (this.grid[i][j]._char._value === "?") {
-                    return this.grid[i][j].word;
+                    return this.grid[i][j]._constraints[0];
                 }
             }
         }

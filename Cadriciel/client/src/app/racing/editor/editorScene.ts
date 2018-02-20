@@ -2,10 +2,10 @@ import {
     Vector3, Scene, AmbientLight, Mesh, Line, SphereGeometry,
     MeshBasicMaterial, LineBasicMaterial, Geometry, BackSide
 } from "three";
-import { PI_OVER_4, WHITE, RED, PINK, BLUE, HALF } from "../constants";
+import { PI_OVER_4, WHITE, RED, PINK, BLUE, HALF, TRACK_WIDTH } from "../constants";
 import { Angle } from "./constraints/angle";
 import { Intersection } from "./constraints/intersection";
-import { Coordinate } from "../../../../../common/crossword/coordinate";
+import { CommonCoordinate } from "../../../../../common/commonCoordinate";
 
 const RADIUS: number = 12;
 const OUTLINE_TO_VERTEX_RATIO: number = 1.25;
@@ -14,7 +14,6 @@ const SIMPLE_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: W
 const UNAUTHORIZED_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: RED });
 const START_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: PINK });
 const SIMPLE_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: BLUE });
-const TRACK_WIDTH: number = 100;
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
 
 export class EditorScene {
@@ -36,7 +35,7 @@ export class EditorScene {
         this._connections = new Array();
     }
 
-    public importTrackVertices(trackVertices: Array<Coordinate>): void {
+    public importTrackVertices(trackVertices: Array<CommonCoordinate>): void {
         this.clear();
         for (const entry of trackVertices) {
             this.addVertex(new Vector3(entry._x, entry._y, 0));
@@ -55,10 +54,10 @@ export class EditorScene {
         this._connections = [];
     }
 
-    public exportTrackVertices(): Array<Coordinate> {
-        const trackVertices: Array<Coordinate> = new Array();
+    public exportTrackVertices(): Array<CommonCoordinate> {
+        const trackVertices: Array<CommonCoordinate> = new Array();
         for (const entry of this.vertices) {
-            trackVertices.push(new Coordinate(entry.position.x, entry.position.y));
+            trackVertices.push(new CommonCoordinate(entry.position.x, entry.position.y));
         }
 
         return trackVertices;
@@ -151,6 +150,9 @@ export class EditorScene {
     public completeTrack(): void {
         this._isComplete = true;
         this.addConnection(this._lastVertex, this._firstVertex);
+        this.vertices.forEach((mesh: Mesh) => console.log(
+            "(" + mesh.position.x + ", " + mesh.position.y + ", " + mesh.position.z + ")")
+        );
     }
 
     public addConnection(firstVertex: Mesh, secondVertex: Mesh): void {
