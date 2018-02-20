@@ -212,7 +212,7 @@ export class RenderService {
     }
 
     private renderTrack(): void {
-        // this.renderTrackShape();
+        this.renderTrackShape();
         this.renderCenterLine();
     }
 
