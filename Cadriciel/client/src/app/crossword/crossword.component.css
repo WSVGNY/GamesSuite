@@ -25,7 +25,7 @@
 
 .push_button:hover {
 	background: #F66C7B;
-	/* background-image:linear-gradient(top,rgb(90, 196, 169), rgb(39, 129, 107)); */
+	background:linear-gradient(rgb(90, 196, 169), rgb(39, 129, 107));
 }
 
 #grid {
