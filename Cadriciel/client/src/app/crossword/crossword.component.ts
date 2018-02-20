@@ -100,6 +100,7 @@ export class CrosswordComponent {
         }
     }
 
+
     public highlightWord(word: CommonWord): void {
         this.deselectWords();
         if (word._isHorizontal) {
@@ -122,12 +123,12 @@ export class CrosswordComponent {
     }
 
     public play(): void {
-        //document.getElementById("modeSelection").style.display = "none";
         document.getElementById("buttongroupp").style.visibility = "visible";
+        document.getElementById("secondPlayer").style.visibility = "visible";
     }
 
     public playAlone(): void {
-        document.getElementById("secondPlayer").style.display = "none";
+        document.getElementById("secondPlayer").style.visibility = "hidden";
     }
 
     public deselectWords(): void {
