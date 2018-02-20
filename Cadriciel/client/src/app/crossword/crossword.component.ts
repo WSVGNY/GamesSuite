@@ -100,7 +100,6 @@ export class CrosswordComponent {
         }
     }
 
-
     public highlightWord(word: CommonWord): void {
         this.deselectWords();
         if (word._isHorizontal) {
