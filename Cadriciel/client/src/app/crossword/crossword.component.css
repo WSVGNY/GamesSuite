@@ -1,11 +1,43 @@
+
+.push_button {
+	position: relative;
+	width:340px;
+	height:140px;
+	text-align:center;
+	color:#FFF;
+	line-height:43px;
+	display: inline-block;
+    margin: 30px;
+    text-decoration: none;
+	background: rgb(55, 170, 141);
+	border:1px solid rgb(55, 170, 141);
+	border-radius:5px;
+    box-shadow:0 1px 0 rgba(255, 255, 255, .5) inset, 0 -1px 0 rgba(255, 255, 255, .1) inset, 0 7px 0 rgb(34, 119, 101), 0 4px 2px rgba(0, 0, 0, .5);
+    font-family: 'Londrina Outline', cursive;
+    font-size: 80px;
+    padding-top:70px;
+}
+
+.push_button:active {
+	box-shadow:0 1px 0 rgba(255, 255, 255, .5) inset, 0 -1px 0 rgba(255, 255, 255, .1) inset;
+	top:5px;
+}
+
+.push_button:hover {
+	background: #F66C7B;
+	background:linear-gradient(rgb(90, 196, 169), rgb(39, 129, 107));
+}
+
 #grid {
     width: 600px;
     min-height: 600px;
-    margin: 0 auto;
     border: 2px solid rgba(44, 107, 97, 0.233);
-    position: relative;
-    right: -25%;
+    position: absolute;
+    margin-left: 750px;
+    margin-bottom: 10px;
+    z-index: -1;
 }
+
 li {
     list-style-type: none;
 }
@@ -50,9 +82,26 @@ li {
 
 
 #buttonDifficulty {
-    color:midnightblue;
-    margin-bottom: 10px;
-    cursor: pointer;
+    margin-bottom: 15px;
+    margin-right: 5px;
+    padding: 5px 8px;
+    display: inline-block;
+    background-color: rgba(59, 82, 77, 0.938);
+    color:rgb(174, 211, 208);
+    border-radius: 4px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    transition-duration: 0.7s;
+    text-align: center;
+    width:100px;
+    font-size: 14px;
+    border:black;
+    
+}
+
+#buttonDifficulty:hover {
+    color: #0b4941;
+    background-color: rgb(186, 209, 207);
+    box-shadow: none;
 }
 
 #CheatButton {
@@ -61,11 +110,15 @@ li {
     top:2%;
     cursor: pointer;
     border-radius: 4px;
+    background: rgb(141, 175, 165);
+    border: 1px solid rgba(25, 66, 59, 0.705);
+    color:rgb(20, 49, 42);
+    font-size:16px;
 }
 
 #defs {
     width: 600px;
-    height: 600px;
+    height: 400px;
     margin: 0 auto;
     border: 2px solid rgba(44, 107, 97, 0.233);
     position: absolute;
@@ -75,15 +128,31 @@ li {
     overflow:auto;
 }
 
+#gameInformations {
+    width: 600px;
+    height: 180px;
+    margin: 0 auto;
+    border: 2px solid rgba(44, 107, 97, 0.233);
+    position: absolute;
+    left: 5%;
+    background: rgba(27, 92, 76, 0.068);
+    padding-left:20px;
+    margin-top:420px;
+}
+
 #loader {
-    border: 16px solid grey;
-    border-top: 16px solid #3498db; /* Blue */
+    border: 16px solid rgb(51, 77, 72);
+    border-top: 16px solid rgba(32, 100, 89, 0.842);
     border-radius: 50%;
     width: 30px;
     height: 30px;
     animation: spin 2s infinite;
     animation-fill-mode: both;
-    display: none;
+    display: inline-block;
+    visibility: hidden;
+    position: absolute;
+    margin-left: 5%;
+    margin-top:-3%;
 }
 
 #word{
@@ -98,7 +167,11 @@ li {
     100% { transform: rotate(360deg); }
 }
 
-[placeholder]:focus::-webkit-input-placeholder {
-    transition: opacity 0.5s 0.5s ease; 
-    opacity: 0;
-  }
+#modeSelection{
+    background: rgb(146, 192, 180);
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    position:absolute;
+    z-index: 1;
+}

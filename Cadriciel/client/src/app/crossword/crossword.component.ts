@@ -54,7 +54,7 @@ export class CrosswordComponent {
     }
 
     public show(): void {
-        document.getElementById("loader").style.display = "block";
+        document.getElementById("loader").style.visibility = "visible";
         const loader: HTMLElement = document.getElementById("loader");
         loader.addEventListener("animationend", (event: Event) => { loader.style.display = "none"; }, false);
     }
@@ -85,7 +85,10 @@ export class CrosswordComponent {
                 this.grid.boxes[word._startPosition._y + i][word._startPosition._x]._isColored = true;
             }
         }
+    }
 
+    public choseMode(): void {
+        document.getElementById("modeSelection").style.display = "none";
     }
 
     public deselectWords(): void {
