@@ -108,7 +108,7 @@ export class WordFiller {
         let state: Token;
         for (const next of currentWord._constraints) {
             if (this.filledWords.findIndex((wordIteration: Word) => next._id === wordIteration._id) === -1) {
-                next.parentCaller = currentWord;
+                next._parentCaller = currentWord;
                 await this.manageBackTrack(next, currentWord, wordConstraint).then(
                     (result: Token) => {
                         state = result;
