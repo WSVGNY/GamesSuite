@@ -17,10 +17,10 @@
     <div *ngFor="let word of words">
       <li *ngIf="word._isHorizontal">{{word._definitionID}})
         <span *ngIf="isInCheatMode">
-          <div id="word" (mouseup)="highlightWord(word)">{{getWordValue(word)}}</div>
+          <div [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}" (mouseup)="highlightWord(word)">{{getWordValue(word)}}</div>
         </span>
         <span *ngIf="!isInCheatMode">
-          <div id="word" (mouseup)="highlightWord(word)">{{word._definition}}</div>
+          <div [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}" (mouseup)="highlightWord(word)">{{word._definition}}</div>
         </span>
       </li>
     </div>
@@ -28,10 +28,10 @@
     <div *ngFor="let word of words">
       <li *ngIf="!word._isHorizontal">{{word._definitionID}})
         <span *ngIf="isInCheatMode">
-          <div id="word" (mouseup)="highlightWord(word)">{{getWordValue(word)}}</div>
+          <div [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}" (mouseup)="highlightWord(word)">{{getWordValue(word)}}</div>
         </span>
         <span *ngIf="!isInCheatMode">
-          <div id="word" (mouseup)="highlightWord(word)">{{word._definition}}</div>
+          <div [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}" (mouseup)="highlightWord(word)">{{word._definition}}</div>
         </span>
       </li>
     </div>
