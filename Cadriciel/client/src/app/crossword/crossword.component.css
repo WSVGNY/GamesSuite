@@ -29,8 +29,8 @@
 }
 
 #grid {
-    width: 609px;
-    min-height: 600px;
+    width: 604px;
+    min-height: 602px;
     border: 2px solid rgba(44, 107, 97, 0.233);
     position: absolute;
     margin-left: 750px;
@@ -39,7 +39,7 @@
 }
 
 #gridHider {
-    width: 609px;
+    width: 604px;
     min-height: 602px;
     border: 2px solid rgba(44, 107, 97, 0.233);
     position: absolute;
@@ -102,7 +102,6 @@ li {
     float: left;
 }
 
-
 #buttonDifficulty {
     margin-bottom: 15px;
     margin-right: 5px;
@@ -118,7 +117,6 @@ li {
     width:100px;
     font-size: 14px;
     border:black;
-    
 }
 
 #buttonDifficulty:hover {
@@ -138,8 +136,6 @@ li {
     color:rgb(20, 49, 42);
     font-size:16px;
 }
-
-
 
 #gameInformations {
     width: 630px;
@@ -164,9 +160,16 @@ li {
     display: inline-block;
     visibility: visible;
     position: absolute;
-    margin-left: 660px ;
+    margin-left: 1000px ;
     margin-top:320px;
     z-index: 1;
+}
+
+#input {
+    visibility: hidden;
+    position: absolute;
+    top: 350px;
+    left: 50px;
 }
 
 .selectedDefinition {
@@ -194,7 +197,7 @@ li {
     height: 100%;
     margin: 0 auto;
     position:absolute;
-    z-index: 1;
+    z-index: 2;
 }
 
 
@@ -205,7 +208,19 @@ li {
     visibility: hidden;
 }
 
+#buttongroupp{
+    visibility: hidden;
+    position: absolute;
+    left: 35px;
+    top:270px;
+}
+
 #modeButton{
     background : rgb(53, 83, 74);
     color: rgb(190, 216, 210);
+}
+
+
+h4{
+    display:inline-block;
 }

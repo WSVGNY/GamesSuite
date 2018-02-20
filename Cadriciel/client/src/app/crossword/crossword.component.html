@@ -2,18 +2,27 @@
   <h2> Crossword Game </h2>
 
   <div id="modeSelection">
-    <a (click)="choseMode()" class="push_button">New game</a>
-    <a (click)="choseMode()" class="push_button">Join game</a>
+    <a (click)="newGame()" class="push_button">New game</a>
+    <a (click)="joinGame()"class="push_button">Join game</a>
     <div id="buttongroup" class="btn-group">
-        <button id="modeButton" (click)="play()" class="btn btn-primary">One player</button>
-        <button id="modeButton"  (click)="play()" class="btn btn-primary">Two players</button>
-        <button id="modeButton"  (click)="play()" class="btn btn-primary">One versus one</button>
+        <button id="buttonDifficulty" (click)="play()" (click)="playAlone()" class="btn btn-primary">One player</button>
+        <button id="buttonDifficulty"  (click)="play()"class="btn btn-primary">Two players</button>
     </div>
+    
+    <div id="buttongroupp" class="btn-group">
+      <button id="buttonDifficulty" (click)="makeEasyGrid()" class="btn btn-primary">EASY</button>
+      <button id="buttonDifficulty" (click)="makeMediumGrid()" class="btn btn-primary">MEDIUM</button>
+      <button id="buttonDifficulty" (click)="makeHardGrid()" class="btn btn-primary">HARD</button>
+   </div>
+
+   <form id="input" (submit)="hideModeSelector()">
+    Enter name: <input type="text" name="playerName" value="Player Name">
+    <input type="submit" value="Submit">
+  </form>
+
   </div>
 
-  <button id="buttonDifficulty" (click)="makeEasyGrid()">EASY</button>
-  <button id="buttonDifficulty" (click)="makeMediumGrid()">MEDIUM</button>
-  <button id="buttonDifficulty" (click)="makeHardGrid()">HARD</button>
+ 
 
   <div id="loader" *ngIf="showLoader"></div>
 
@@ -46,7 +55,10 @@
 </div>
 
 <div id="gameInformations">
-
+  <h3> Player 1 : <h4> 0 words found</h4> </h3>
+    
+  <h3 id="secondPlayer"> Player 2 : <h4> 0 words found</h4> </h3>
+    
 </div>
 <div id="gridHider"></div>
 <div id="grid">

@@ -25,6 +25,7 @@ export class CrosswordComponent {
     }
 
     public createGrid(): void {
+        document.getElementById("input").style.visibility = "visible";
         this.words = undefined;
         this.gridService.gridGet(this.difficulty).subscribe((grid: Grid) => {
             this.grid = grid;
@@ -33,6 +34,10 @@ export class CrosswordComponent {
             this.showLoader = false;
             document.getElementById("gridHider").style.background = "rgba(255, 255, 255, 0)";
         });
+    }
+
+    public hideModeSelector(): void {
+         document.getElementById("modeSelection").style.display = "none";
     }
 
     public onSelect(gridBox: CommonGridBox): void {
@@ -108,12 +113,21 @@ export class CrosswordComponent {
         }
     }
 
-    public choseMode(): void {
+    public newGame(): void {
         document.getElementById("buttongroup").style.visibility = "visible";
     }
 
+    public joinGame(): void {
+        document.getElementById("buttongroup").style.visibility = "hidden";
+    }
+
     public play(): void {
-        document.getElementById("modeSelection").style.display = "none";
+        //document.getElementById("modeSelection").style.display = "none";
+        document.getElementById("buttongroupp").style.visibility = "visible";
+    }
+
+    public playAlone(): void {
+        document.getElementById("secondPlayer").style.display = "none";
     }
 
     public deselectWords(): void {

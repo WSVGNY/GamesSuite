@@ -9,6 +9,7 @@ h1 {
     position: absolute;
     left:600px;
     margin: 0 auto;
+    padding-top:10px;
 }
 
 #image1, #image2 {
