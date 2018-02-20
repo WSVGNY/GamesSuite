@@ -158,12 +158,19 @@ li {
     margin-top:320px;
 }
 
-#word{
+.selectedDefinition {
     display: inline-block;
     max-width: 530px;
     vertical-align:top;
+    background: rgba(25, 66, 59, 0.705);
 }
 
+.clearDefinition {
+    display: inline-block;
+    max-width: 530px;
+    vertical-align:top;
+    enable-background: 0%;
+}
 
 @keyframes spin {
     0% { transform: rotate(0deg); }

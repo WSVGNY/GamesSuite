@@ -15,11 +15,11 @@ export class CrosswordComponent {
     public selectedGridBox: CommonGridBox;
     public defs: CommonWord;
     private grid: Grid;
-    private boxes: CommonGridBox[][];
-    private words: CommonWord[];
+    public boxes: CommonGridBox[][];
+    public words: CommonWord[];
     private difficulty: Difficulty;
     private isInCheatMode: boolean = false;
-    private showLoader: boolean = false;
+    public showLoader: boolean = false;
 
     public constructor(private gridService: GridService) {
     }
@@ -64,6 +64,24 @@ export class CrosswordComponent {
         this.isInCheatMode ?
             this.isInCheatMode = false :
             this.isInCheatMode = true;
+    }
+
+    public highlightedWord(word: CommonWord): boolean {
+        if (word._isHorizontal) {
+            if (this.grid.boxes[word._startPosition._y][word._startPosition._x]._isColored &&
+                this.grid.boxes[word._startPosition._y][word._startPosition._x + 1]._isColored) {
+                return true;
+            }
+
+            return false;
+        } else {
+            if (this.grid.boxes[word._startPosition._y][word._startPosition._x]._isColored &&
+                this.grid.boxes[word._startPosition._y + 1][word._startPosition._x]._isColored) {
+                return true;
+            }
+
+            return false;
+        }
     }
 
     public highlightWordOfBox(gridBox: CommonGridBox): void {
