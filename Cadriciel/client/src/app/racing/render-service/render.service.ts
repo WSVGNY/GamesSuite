@@ -336,7 +336,7 @@ export class RenderService {
 
     private async renderGround(): Promise<void> {
         const groundGeometry: PlaneGeometry = new PlaneGeometry(TEMP_GRID_SIZE, TEMP_GRID_SIZE, 1, 1);
-        const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ color: 0x00FFFF });
+        // const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ color: 0x00FFFF });
         const textureGround: Texture = await this.loadTexture("green2");
         const material: MeshLambertMaterial = new MeshLambertMaterial({ map: textureGround, vertexColors: VertexColors });
         const ground: Mesh = new Mesh(groundGeometry, material);
