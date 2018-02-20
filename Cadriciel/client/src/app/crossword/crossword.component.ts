@@ -86,6 +86,10 @@ export class CrosswordComponent {
     }
 
     public choseMode(): void {
+        document.getElementById("buttongroup").style.visibility = "visible";
+    }
+
+    public play(): void {
         document.getElementById("modeSelection").style.display = "none";
     }
 
