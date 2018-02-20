@@ -6,7 +6,7 @@ import { TurnLeft } from "../commands/carAICommands/turnLeft";
 import { TurnRight} from "../commands/carAICommands/turnRight";
 import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";
 // import { Track } from "../../../../../common/racing/track";
-import { Vector3, Raycaster, Scene, Intersection, LineBasicMaterial, Geometry, Line, BoxHelper } from "three";
+import { Vector3, Scene, Line, BoxHelper } from "three";
 import { VectorHelper } from "./vectorHelper";
 import { PINK, BLUE } from "../constants";
 
@@ -15,14 +15,14 @@ export class CarAiService {
     private readonly DISTANCE_FROM_VEHICULE: number = 5;
 
     private _aiControl: CommandController;
-    private _isGoingForward: boolean = false;
-    private _isSteeringLeft: boolean = false;
-    private _isSteeringRight: boolean = false;
+    // private _isGoingForward: boolean = false;
+    // private _isSteeringLeft: boolean = false;
+    // private _isSteeringRight: boolean = false;
     // private _isBraking: boolean = false;
-    private _isReleasingSteering: boolean = false;
+    // private _isReleasingSteering: boolean = false;
     private _vectorTrack: {a: number, b: number, c: number}[];
-    private _visibleRay: Line;
-    private _isLeftOfLine: boolean = false;
+    // private _visibleRay: Line;
+    // private _isLeftOfLine: boolean = false;
     private _helper: BoxHelper;
     private _carVectorHelper: VectorHelper;
     private _distanceVectorHelper: VectorHelper;
@@ -147,7 +147,7 @@ export class CarAiService {
         const pointOnLine: Vector3 = new Vector3();
 
         const a: number = -this._vectorTrack[this._trackPortionIndex].b;
-        const b: number = -this._vectorTrack[this._trackPortionIndex].a;
+        const b: number = this._vectorTrack[this._trackPortionIndex].a;
         const c: number = -a * point.x - b * point.z;
 
         pointOnLine.z = (line.c * a - line.a * c) / ( line.a * b - a * line.b );
