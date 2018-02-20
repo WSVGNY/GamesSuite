@@ -32,7 +32,7 @@ export class CrosswordComponent {
             this.boxes = this.grid.boxes;
             this.words = this.grid.words;
             this.showLoader = false;
-            document.getElementById("gridHider").style.background = "rgba(255, 255, 255, 0)";
+            document.getElementById("gridHider").style.visibility = "hidden";
         });
     }
 
@@ -47,7 +47,7 @@ export class CrosswordComponent {
     public makeEasyGrid(): void {
         this.difficulty = Difficulty.Easy;
         this.showLoader = true;
-        document.getElementById("gridHider").style.background = "white";
+        document.getElementById("gridHider").style.visibility = "visible";
         this.createGrid();
     }
 
@@ -55,14 +55,14 @@ export class CrosswordComponent {
         this.difficulty = Difficulty.Medium;
         this.createGrid();
         this.showLoader = true;
-        document.getElementById("gridHider").style.background = "white";
+        document.getElementById("gridHider").style.visibility = "visible";
     }
 
     public makeHardGrid(): void {
         this.difficulty = Difficulty.Hard;
         this.createGrid();
         this.showLoader = true;
-        document.getElementById("gridHider").style.background = "white";
+        document.getElementById("gridHider").style.visibility = "visible";
     }
 
     public hide(): void {

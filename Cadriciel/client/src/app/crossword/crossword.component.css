@@ -45,7 +45,8 @@
     position: absolute;
     margin-left: 750px;
     margin-bottom: 10px;
-    background:rgba(255, 255, 255, 0);
+    background:rgba(255, 255, 255);
+    visibility: hidden;
 }
 
 #defs {
@@ -161,8 +162,8 @@ li {
     display: inline-block;
     visibility: visible;
     position: absolute;
-    margin-left: 1000px ;
-    margin-top:320px;
+    margin-left: 1010px ;
+    margin-top:300px;
     z-index: 1;
 }
 
