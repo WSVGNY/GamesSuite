@@ -56,7 +56,7 @@ export class CarAiService {
         const turningPoint: Vector3 = this.projectTurningPoint();
         this._turningVectorHelper.update(new Vector3(this._track[this._trackPortionIndex].x, 0, this._track[this._trackPortionIndex].z), turningPoint, this._scene);
         for (let i: number = 0; i < this._track.length; ++i) {
-            if (Math.abs(this._track[i].x - pointOnLine.x) < 1 && Math.abs(this._track[i].z - pointOnLine.z) < 1) {
+            if ((this._track[this._trackPortionIndex].distanceTo(pointOnLine) + pointOnLine.distanceTo(turningPoint)) - this._track[this._trackPortionIndex].distanceTo(turningPoint) < 1) {
                 if (this._trackPortionIndex - 1 < 0) {
                     this._trackPortionIndex = this._vectorTrack.length - 1;
                 } else {
