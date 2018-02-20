@@ -1,13 +1,13 @@
 import { Injectable } from "@angular/core";
-import Stats = require("stats.js");
+// import Stats = require("stats.js");
 import {
     PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, Mesh, /*PlaneGeometry,*/ Shape,
     MeshBasicMaterial, ShapeGeometry, Path, Vector3, Geometry, LineBasicMaterial, Line,
     /*TextureLoader, Texture, BoxGeometry, MeshLambertMaterial, VertexColors,*/ BackSide
 } from "three";
-import { CarAiService } from "../ai/car-ai.service";
+import { CarAiService } from "../artificial-intelligence/car-ai.service";
 import { Car } from "../car/car";
-// import { Track, ITrack } from "../../../../../common/racing/track";
+// import { Track } from "../../../../../common/racing/track";
 // import { TrackService } from "../track-service/track.service";
 // import { ActivatedRoute } from "@angular/router";
 import { TRACK_WIDTH, PI_OVER_2, /*SQUARED, LOWER_GROUND,  SKYBOX_SIZE */ } from "../constants";
@@ -42,11 +42,10 @@ export class RenderService {
     private _playerCar: Car;
     private _renderer: WebGLRenderer;
     private _scene: Scene;
-    private _stats: Stats;
+    // private _stats: Stats;
     private _lastDate: number;
     private _carAiService: CarAiService[];
     private _aiCars: Car[];
-    private _track: Track;
     //private _dayTime: boolean = true;
 
     private trackCenterPoints: Vector3[] = MOCK_TRACK;
@@ -71,7 +70,7 @@ export class RenderService {
         // this._track = new Track;
         for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
             this._aiCars.push(new Car());
-            this._carAiService.push(new CarAiService(this._playerCar, this._track, this._scene));
+            this._carAiService.push(new CarAiService(this._playerCar, this.trackCenterPoints, this._scene));
             this._aiCars[i].position.add(new Vector3(this.trackCenterPoints[0].x, 0, this.trackCenterPoints[0].z));
             this.rotateCarToFaceStart(this._aiCars[i]);
         }
@@ -104,15 +103,15 @@ export class RenderService {
 
         await this.createScene();
         // this._carAiService[0]._scene = this._scene;
-        this.initStats();
+        // this.initStats();
         this.startRenderingLoop();
     }
 
-    private initStats(): void {
-        this._stats = new Stats();
-        this._stats.dom.style.position = "absolute";
-        this._container.appendChild(this._stats.dom);
-    }
+    // private initStats(): void {
+    //     // this._stats = new Stats();
+    //     this._stats.dom.style.position = "absolute";
+    //     this._container.appendChild(this._stats.dom);
+    // }
 
     private update(): void {
         const timeSinceLastFrame: number = Date.now() - this._lastDate;
@@ -167,7 +166,7 @@ export class RenderService {
         requestAnimationFrame(() => this.render());
         this.update();
         this._renderer.render(this._scene, this._camera);
-        this._stats.update();
+        // this._stats.update();
     }
 
     public onResize(): void {

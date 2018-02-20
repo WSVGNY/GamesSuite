@@ -1,12 +1,12 @@
 import { Injectable } from "@angular/core";
 import { Car } from "../car/car";
 import { CommandController } from "../commandController";
-import { GoFoward } from "../commands/carAICommands/goFoward";
-import { TurnLeft } from "../commands/carAICommands/turnLeft";
-import { TurnRight} from "../commands/carAICommands/turnRight";
-import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";
+// import { GoFoward } from "../commands/carAICommands/goFoward";
+// import { TurnLeft } from "../commands/carAICommands/turnLeft";
+// import { TurnRight} from "../commands/carAICommands/turnRight";
+// import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";
 // import { Track } from "../../../../../common/racing/track";
-import { Vector3, Scene, Line, BoxHelper } from "three";
+import { Vector3, Scene, BoxHelper } from "three";
 import { VectorHelper } from "./vectorHelper";
 import { PINK, BLUE } from "../constants";
 
@@ -22,7 +22,6 @@ export class CarAiService {
     // private _isBraking: boolean = false;
     // private _isReleasingSteering: boolean = false;
     private _vectorTrack: {a: number, b: number, c: number}[];
-    // private _visibleRay: Line;
     // private _isLeftOfLine: boolean = false;
     private _helper: BoxHelper;
     private _carVectorHelper: VectorHelper;
@@ -48,7 +47,7 @@ export class CarAiService {
         }
         this._helper.update(this._car);
         const projection: Vector3 = this.projectInFrontOfCar();
-        const lineDistance: number = this.getPointDistanceFromTrack(projection);
+        // const lineDistance: number = this.getPointDistanceFromTrack(projection);
         const carPosition: Vector3 = new Vector3(this._car.position.x - this._car.currentPosition.x, 0,
                                                  this._car.position.z - this._car.currentPosition.z);
         this._carVectorHelper.update(carPosition, projection, this._scene);
@@ -87,32 +86,32 @@ export class CarAiService {
         // }
     }
 
-    private goForward(): void {
-        this._aiControl.setCommand(new GoFoward(this._car));
-        this._aiControl.execute();
-        this._isGoingForward = true;
-    }
+    // private goForward(): void {
+    //     this._aiControl.setCommand(new GoFoward(this._car));
+    //     this._aiControl.execute();
+    //     this._isGoingForward = true;
+    // }
 
-    private goLeft(): void {
-        this._aiControl.setCommand(new TurnLeft(this._car));
-        this._aiControl.execute();
-        this._isSteeringLeft = true;
-    }
+    // private goLeft(): void {
+    //     this._aiControl.setCommand(new TurnLeft(this._car));
+    //     this._aiControl.execute();
+    //     this._isSteeringLeft = true;
+    // }
 
-    private goRight(): void {
-        this._aiControl.setCommand(new TurnRight(this._car));
-        this._aiControl.execute();
-        this._isSteeringRight = true;
-    }
+    // private goRight(): void {
+    //     this._aiControl.setCommand(new TurnRight(this._car));
+    //     this._aiControl.execute();
+    //     this._isSteeringRight = true;
+    // }
 
-    private releaseSteering(): void {
-        this._aiControl.setCommand(new ReleaseSteering(this._car));
-        this._aiControl.execute();
-        this._isReleasingSteering = true;
-        this._isSteeringRight = false;
-        this._isSteeringLeft = false;
-        this._isGoingForward = false;
-    }
+    // private releaseSteering(): void {
+    //     this._aiControl.setCommand(new ReleaseSteering(this._car));
+    //     this._aiControl.execute();
+    //     this._isReleasingSteering = true;
+    //     this._isSteeringRight = false;
+    //     this._isSteeringLeft = false;
+    //     this._isGoingForward = false;
+    // }
 
     private projectInFrontOfCar(): Vector3 {
         const dir: Vector3 = this._car.direction.normalize();
@@ -139,13 +138,13 @@ export class CarAiService {
         }
     }
 
-    private getPointDistanceFromTrack(point: Vector3): number {
-        const line: {a: number, b: number, c: number} = this._vectorTrack[this._trackPortionIndex];
-        const top: number = Math.abs(line.a * point.x + line.b * point.z + line.c);
-        const bottom: number = Math.sqrt(line.a * line.a + line.b * line.b);
+    // private getPointDistanceFromTrack(point: Vector3): number {
+    //     const line: {a: number, b: number, c: number} = this._vectorTrack[this._trackPortionIndex];
+    //     const top: number = Math.abs(line.a * point.x + line.b * point.z + line.c);
+    //     const bottom: number = Math.sqrt(line.a * line.a + line.b * line.b);
 
-        return top / bottom;
-    }
+    //     return top / bottom;
+    // }
 
     private projectPointOnLine(point: Vector3): Vector3 {
         const line: {a: number, b: number, c: number} = this._vectorTrack[this._trackPortionIndex];
@@ -162,7 +161,7 @@ export class CarAiService {
     }
 
     private projectTurningPoint(): Vector3 {
-        const line: {a: number, b: number, c: number} = this._vectorTrack[this._trackPortionIndex];
+        // const line: {a: number, b: number, c: number} = this._vectorTrack[this._trackPortionIndex];
         let p2: Vector3;
         if (this._trackPortionIndex === this._track.length - 1) {
             p2 = this._track[0];
