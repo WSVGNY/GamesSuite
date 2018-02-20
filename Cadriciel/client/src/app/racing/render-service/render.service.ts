@@ -62,7 +62,7 @@ export class RenderService {
         // this._playerCar.position.add(new Vector3(125, 0, 900));
         // this._playerCar.rotateY(-PI_OVER_2);
         this._playerCar.position.add(new Vector3(this.trackCenterPoints[0].x, 0, this.trackCenterPoints[0].z));
-        this.rotateCarToFaceStart(this._playerCar);
+        // this.rotateCarToFaceStart(this._playerCar);
 
         this._carAiService = [];
         this._aiCars = [];

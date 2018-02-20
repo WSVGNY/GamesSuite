@@ -48,15 +48,15 @@ export class CarAiService {
         this._helper.update(this._car);
         const projection: Vector3 = this.projectInFrontOfCar();
         // const lineDistance: number = this.getPointDistanceFromTrack(projection);
-        const carPosition: Vector3 = new Vector3(this._car.position.x - this._car.currentPosition.x, 0,
-                                                 this._car.position.z - this._car.currentPosition.z);
+        const carPosition: Vector3 = new Vector3(this._car.position.x + this._car.currentPosition.x, 0,
+                                                 this._car.position.z + this._car.currentPosition.z);
         this._carVectorHelper.update(carPosition, projection, this._scene);
         const pointOnLine: Vector3 = this.projectPointOnLine(projection);
         this._distanceVectorHelper.update(projection, pointOnLine, this._scene);
         const turningPoint: Vector3 = this.projectTurningPoint();
-        this._turningVectorHelper.update(new Vector3(this._track[4].x, 0, this._track[4].y), turningPoint, this._scene);
+        this._turningVectorHelper.update(new Vector3(this._track[4].x, 0, this._track[4].z), turningPoint, this._scene);
         for (let i: number = 0; i < this._track.length; ++i) {
-            if (Math.abs(this._track[i].x - pointOnLine.x) < 1 && Math.abs(this._track[i].y - pointOnLine.z) < 1) {
+            if (Math.abs(this._track[i].x - pointOnLine.x) < 1 && Math.abs(this._track[i].z - pointOnLine.z) < 1) {
                 if (this._trackPortionIndex - 1 < 0) {
                     this._trackPortionIndex = this._vectorTrack.length - 1;
                 } else {
@@ -115,11 +115,11 @@ export class CarAiService {
 
     private projectInFrontOfCar(): Vector3 {
         const dir: Vector3 = this._car.direction.normalize();
-        const positionInFront: Vector3 = new Vector3(this._car.position.x - this._car.currentPosition.x, 0,
-                                                     this._car.position.z - this._car.currentPosition.z);
+        const positionInFront: Vector3 = new Vector3(this._car.position.x + this._car.currentPosition.x, 0,
+                                                     this._car.position.z + this._car.currentPosition.z);
 
-        positionInFront.x -= dir.x * this.DISTANCE_FROM_VEHICULE;
-        positionInFront.z -= dir.z * this.DISTANCE_FROM_VEHICULE;
+        positionInFront.x += dir.x * this.DISTANCE_FROM_VEHICULE;
+        positionInFront.z += dir.z * this.DISTANCE_FROM_VEHICULE;
 
         return positionInFront;
     }
@@ -131,9 +131,9 @@ export class CarAiService {
             if (i === track.length - 1) {
                 nextVertex = -i;
             }
-            const a: number = track[i].y - track[i + nextVertex].y;
+            const a: number = track[i].z - track[i + nextVertex].z;
             const b: number = track[i + nextVertex].x - track[i].x;
-            const c: number = track[i].x * track[i + nextVertex].y - track[i + nextVertex].x * track[i].y;
+            const c: number = track[i].x * track[i + nextVertex].z - track[i + nextVertex].x * track[i].z;
             this._vectorTrack.push({a, b, c});
         }
     }
@@ -171,12 +171,12 @@ export class CarAiService {
         const p1: Vector3 = this._track[this._trackPortionIndex];
 
         const dx: number = p2.x - p1.x;
-        const dz: number = p2.y - p1.y;
+        const dz: number = p2.z - p1.z;
 
         const turningPoint: Vector3 = new Vector3();
         turningPoint.x = (p2.x + dx * this.TURNING_POINT_DISTANCE);
         turningPoint.y = 0;
-        turningPoint.z = (p2.y + dz * this.TURNING_POINT_DISTANCE);
+        turningPoint.z = (p2.z + dz * this.TURNING_POINT_DISTANCE);
 
         return turningPoint;
     }
