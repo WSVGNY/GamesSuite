@@ -13,6 +13,7 @@ import { PINK, BLUE } from "../constants";
 @Injectable()
 export class CarAiService {
     private readonly DISTANCE_FROM_VEHICULE: number = 5;
+    private readonly TURNING_POINT_DISTANCE: number = 0.1;
 
     private _aiControl: CommandController;
     // private _isGoingForward: boolean = false;
@@ -26,6 +27,7 @@ export class CarAiService {
     private _helper: BoxHelper;
     private _carVectorHelper: VectorHelper;
     private _distanceVectorHelper: VectorHelper;
+    private _turningVectorHelper: VectorHelper;
     private _trackPortionIndex: number;
 
     public constructor(private _car: Car, private _track: Vector3[], public _scene: Scene) {
@@ -35,6 +37,7 @@ export class CarAiService {
         this._scene.add(this._helper);
         this._carVectorHelper = new VectorHelper(PINK);
         this._distanceVectorHelper = new VectorHelper(BLUE);
+        this._turningVectorHelper = new VectorHelper(PINK);
         this._trackPortionIndex = 0;
     }
 
@@ -51,6 +54,8 @@ export class CarAiService {
         this._carVectorHelper.update(carPosition, projection, this._scene);
         const pointOnLine: Vector3 = this.projectPointOnLine(projection);
         this._distanceVectorHelper.update(projection, pointOnLine, this._scene);
+        const turningPoint: Vector3 = this.projectTurningPoint();
+        this._turningVectorHelper.update(new Vector3(this._track[4].x, 0, this._track[4].y), turningPoint, this._scene);
         for (let i: number = 0; i < this._track.length; ++i) {
             if (Math.abs(this._track[i].x - pointOnLine.x) < 1 && Math.abs(this._track[i].y - pointOnLine.z) < 1) {
                 if (this._trackPortionIndex - 1 < 0) {
@@ -154,6 +159,27 @@ export class CarAiService {
         pointOnLine.x = ( -c - b * pointOnLine.z ) / a;
 
         return pointOnLine;
+    }
+
+    private projectTurningPoint(): Vector3 {
+        const line: {a: number, b: number, c: number} = this._vectorTrack[this._trackPortionIndex];
+        let p2: Vector3;
+        if (this._trackPortionIndex === this._track.length - 1) {
+            p2 = this._track[0];
+        } else {
+            p2 = this._track[this._trackPortionIndex + 1];
+        }
+        const p1: Vector3 = this._track[this._trackPortionIndex];
+
+        const dx: number = p2.x - p1.x;
+        const dz: number = p2.y - p1.y;
+
+        const turningPoint: Vector3 = new Vector3();
+        turningPoint.x = (p2.x + dx * this.TURNING_POINT_DISTANCE);
+        turningPoint.y = 0;
+        turningPoint.z = (p2.y + dz * this.TURNING_POINT_DISTANCE);
+
+        return turningPoint;
     }
 
 }
