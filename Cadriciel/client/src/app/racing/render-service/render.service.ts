@@ -3,8 +3,7 @@ import Stats = require("stats.js");
 import {
     PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, Mesh, PlaneGeometry, Shape,
     MeshBasicMaterial, ShapeGeometry, Path, Vector3, Geometry, LineBasicMaterial, Line, Raycaster,
-    TextureLoader, Texture, BoxGeometry, MeshLambertMaterial, VertexColors, ImageUtils, ShaderLib,
-    Shader, UniformsUtils, ShaderMaterial, DoubleSide, BackSide, Mapping, EquirectangularReflectionMapping, CubeTextureLoader, MeshFaceMaterial
+    TextureLoader, Texture, BoxGeometry, MeshLambertMaterial, VertexColors, DoubleSide, MeshFaceMaterial, PointLight, DirectionalLight
 } from "three";
 import { Car } from "../car/car";
 import { Track, ITrack } from "../../../../../common/racing/track";
@@ -22,6 +21,8 @@ const ACCELERATE_KEYCODE: number = 87;  // w
 const LEFT_KEYCODE: number = 65;        // a
 const BRAKE_KEYCODE: number = 83;       // s
 const RIGHT_KEYCODE: number = 68;       // d
+const DAY_KEYCODE: number = 74;     // j
+const NIGHT_KEYCODE: number = 78;     // j
 
 const INITIAL_CAMERA_POSITION_Z: number = 10;
 const INITIAL_CAMERA_POSITION_Y: number = 5;
@@ -37,7 +38,6 @@ const AI_CARS_NUMBER: number = 1;
 export class RenderService {
     /*private tracks: Track[];
     private trackService: TrackService;*/
-    // private _dayTime: any;
     private _camera: PerspectiveCamera;
     private _container: HTMLDivElement;
     private _playerCar: Car;
@@ -48,7 +48,8 @@ export class RenderService {
     private _carAiService: CarAiService[];
     private _aiCars: Car[];
     private _track: Track;
-    private _dayTime: boolean = true;
+    private _dayTime: boolean;
+    private _skyBox: Mesh;
 
     private trackCenterPoints: Vector3[] = MOCK_TRACK;
     private trackExteriorPoints: Vector3[] = [];
@@ -144,6 +145,7 @@ export class RenderService {
         this.renderGround();
         this.renderTrack();
         await this.renderSkyBox();
+        this.renderLight();
     }
 
     private getAspectRatio(): number {
@@ -177,6 +179,7 @@ export class RenderService {
         switch (event.keyCode) {
             case ACCELERATE_KEYCODE:
                 this._playerCar.accelerate();
+                this.renderLight();
                 break;
             case LEFT_KEYCODE:
                 this._playerCar.steerLeft();
@@ -186,6 +189,16 @@ export class RenderService {
                 break;
             case BRAKE_KEYCODE:
                 this._playerCar.brake();
+                break;
+            case DAY_KEYCODE:
+                this._dayTime = true;
+                this._scene.remove(this._skyBox);
+                this.renderSkyBox();
+                break;
+            case NIGHT_KEYCODE:
+                this._dayTime = false;
+                this._scene.remove(this._skyBox);
+                this.renderSkyBox();
                 break;
             default:
                 break;
@@ -338,7 +351,7 @@ export class RenderService {
     private async renderGround(): Promise<void> {
         const groundGeometry: PlaneGeometry = new PlaneGeometry(TEMP_GRID_SIZE, TEMP_GRID_SIZE, 1, 1);
         // const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ color: 0x00FFFF });
-        const textureGround: Texture = await this.loadTexture("green2");
+        const textureGround: Texture = await this.loadTexture("gravel");
         const material: MeshLambertMaterial = new MeshLambertMaterial({ map: textureGround, vertexColors: VertexColors });
         const ground: Mesh = new Mesh(groundGeometry, material);
         ground.translateOnAxis(
@@ -350,29 +363,55 @@ export class RenderService {
         this._scene.add(ground);
     }
 
-    private async renderSkyBox(): Promise<void> {
-        const boxMaterials: MeshBasicMaterial[] = [
-            new MeshBasicMaterial({ map: new TextureLoader().load("/assets/textures/posx.jpg"), side: DoubleSide }),
-            new MeshBasicMaterial({ map: new TextureLoader().load("/assets/textures/negx.jpg"), side: DoubleSide }),
-            new MeshBasicMaterial({ map: new TextureLoader().load("/assets/textures/posy.jpg"), side: DoubleSide }),
-            new MeshBasicMaterial({ map: new TextureLoader().load("/assets/textures/negy.jpg"), side: DoubleSide }),
-            new MeshBasicMaterial({ map: new TextureLoader().load("/assets/textures/posz.jpg"), side: DoubleSide }),
-            new MeshBasicMaterial({ map: new TextureLoader().load("/assets/textures/negz.jpg"), side: DoubleSide })
-        ];
+    private renderSkyBox(): void {
+        let boxMaterials: MeshBasicMaterial[];
+        if (this._dayTime === true) {
+            boxMaterials = [
+                new MeshBasicMaterial({ map: new TextureLoader().load("/assets/textures/posx.jpg"), side: DoubleSide }),
+                new MeshBasicMaterial({ map: new TextureLoader().load("/assets/textures/negx.jpg"), side: DoubleSide }),
+                new MeshBasicMaterial({ map: new TextureLoader().load("/assets/textures/posy.jpg"), side: DoubleSide }),
+                new MeshBasicMaterial({ map: new TextureLoader().load("/assets/textures/negy.jpg"), side: DoubleSide }),
+                new MeshBasicMaterial({ map: new TextureLoader().load("/assets/textures/posz.jpg"), side: DoubleSide }),
+                new MeshBasicMaterial({ map: new TextureLoader().load("/assets/textures/negz.jpg"), side: DoubleSide })
+            ];
+        } else {
+            boxMaterials = [
+                new MeshBasicMaterial({ map: new TextureLoader().load("/assets/textures/nightsky_1.png"), side: DoubleSide }),
+                new MeshBasicMaterial({ map: new TextureLoader().load("/assets/textures/nightsky_3.png"), side: DoubleSide }),
+                new MeshBasicMaterial({ map: new TextureLoader().load("/assets/textures/nightsky_6.png"), side: DoubleSide }),
+                new MeshBasicMaterial({ map: new TextureLoader().load("/assets/textures/nightsky_2.png"), side: DoubleSide }),
+                new MeshBasicMaterial({ map: new TextureLoader().load("/assets/textures/nightsky_4.png"), side: DoubleSide }),
+                new MeshBasicMaterial({ map: new TextureLoader().load("/assets/textures/nightsky_5.png"), side: DoubleSide })
+            ];
+        }
         // this._scene.background = new CubeTextureLoader().setPath("/assets/textures/").load(urls);
-        const skyBoxMaterial: MeshFaceMaterial = new MeshFaceMaterial( boxMaterials );
+        const skyBoxMaterial: MeshFaceMaterial = new MeshFaceMaterial(boxMaterials);
         const boxbox: BoxGeometry = new BoxGeometry(SKYBOX_SIZE, SKYBOX_SIZE, SKYBOX_SIZE, 1, 1, 1);
         const skyBox: Mesh = new Mesh(boxbox, skyBoxMaterial);
         skyBox.rotateX(Math.PI);
+        this._skyBox = skyBox;
         this._scene.add(skyBox);
-}
+    }
 
-    private async loadTexture(textureName: String): Promise < Texture > {
-    return new Promise<Texture>((resolve, reject) => {
-        const loader: TextureLoader = new TextureLoader();
-        loader.load("assets/textures/" + textureName + ".jpg", (object) => {
-            resolve(object);
+    private async loadTexture(textureName: String): Promise<Texture> {
+        return new Promise<Texture>((resolve, reject) => {
+            const loader: TextureLoader = new TextureLoader();
+            loader.load("assets/textures/" + textureName + ".png", (object) => {
+                resolve(object);
+            });
         });
-    });
-}
+    }
+    private renderLight(): void {
+        /*const pointLight: PointLight = new PointLight(0xffff00);
+        pointLight.position = this._playerCar.position;
+        this._scene.add(pointLight);*/
+        /*var ambient = new THREE.AmbientLight( 0x101010 );
+        scene.add( ambient );
+        directionalLight = new THREE.DirectionalLight( 0xffffff );
+        directionalLight.position.set( 0, -70, 100 ).normalize();*/
+        const directionalLight: DirectionalLight = new DirectionalLight(0xffff00);
+        directionalLight.position.set(this._playerCar.position.x, this._playerCar.position.y, this._playerCar.position.z).normalize();
+        this._scene.add(directionalLight);
+    }
+
 }
