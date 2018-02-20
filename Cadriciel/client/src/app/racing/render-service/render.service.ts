@@ -59,10 +59,10 @@ export class RenderService {
 
     public constructor(private trackService: TrackService, private route: ActivatedRoute) {
         this._playerCar = new Car();
-        this._playerCar.position.add(new Vector3(125, 0, 900));
-        this._playerCar.rotateY(-PI_OVER_2);
-        // this._playerCar.position.add(new Vector3(this.trackCenterPoints[0].x, 0, this.trackCenterPoints[0].z));
-        // this.rotateCarToFaceStart(this._playerCar);
+        // this._playerCar.position.add(new Vector3(125, 0, 900));
+        // this._playerCar.rotateY(-PI_OVER_2);
+        this._playerCar.position.add(new Vector3(this.trackCenterPoints[0].x, 0, this.trackCenterPoints[0].z));
+        this.rotateCarToFaceStart(this._playerCar);
 
         this._carAiService = [];
         this._aiCars = [];
@@ -222,7 +222,7 @@ export class RenderService {
         geometryPoints.vertices.push(this.trackCenterPoints[0]);
         const line: Line = new Line(geometryPoints, new LineBasicMaterial({ color: 0x00FF00, linewidth: 3 }));
         // line.position.add(new Vector3(0, 125, 0));
-        line.rotateX(-PI_OVER_2);
+        // line.rotateX(-PI_OVER_2);
         this._scene.add(line);
     }
 
@@ -252,9 +252,9 @@ export class RenderService {
         );
         shape.holes.push(holePath);
         const geometry: ShapeGeometry = new ShapeGeometry(shape);
-        const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ /*side: BackSide,*/ color: 0x0000FF });
+        const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ side: BackSide, color: 0x0000FF });
         const ground: Mesh = new Mesh(geometry, groundMaterial);
-        // ground.rotateX(PI_OVER_2);
+        ground.rotateX(PI_OVER_2);
         this._scene.add(ground);
     }
 
@@ -278,16 +278,13 @@ export class RenderService {
                 (vectorToNextCenterPoint.length() + vectorToPreviousCenterPoint.length());
         });
 
-        console.log(angleSum);
         return angleSum >= 0 ? true : false;
     }
 
     // tslint:disable-next-line:max-func-body-length
     private createExteriorInteriorTrackPoints(): void {
         const trackIsClockwise: boolean = this.checkTrackPointsOrientation();
-        console.log(trackIsClockwise);
         if (!trackIsClockwise) {
-            console.log("bgobgobgogbo");
             const returnArray: Vector3[] = Array<Vector3>(this.trackCenterPoints.length);
             this.trackCenterPoints.forEach((currentPoint: Vector3, i: number) => {
                 returnArray[this.trackCenterPoints.length - 1 - i] = new Vector3(currentPoint.x, currentPoint.y, currentPoint.z);
@@ -355,34 +352,34 @@ export class RenderService {
         return vectorANoReference.cross(vectorBNoReference).y;
     }
 
-    // private async renderGround(): Promise<void> {
-    //     const groundGeometry: PlaneGeometry = new PlaneGeometry(TEMP_GRID_SIZE, TEMP_GRID_SIZE, 1, 1);
-    //     const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ color: 0x00FFFF });
-    //     const textureGround: Texture = await this.loadTexture("green2");
-    //     const material: MeshLambertMaterial = new MeshLambertMaterial({ map: textureGround, vertexColors: VertexColors });
-    //     const ground: Mesh = new Mesh(groundGeometry, material);
-    //     ground.translateOnAxis(
-    //         this.trackCenterPoints[0],
-    //         Math.sqrt(Math.pow(this.trackCenterPoints[0].x, SQUARED) + Math.pow(this.trackCenterPoints[0].z, SQUARED))
-    //     );
-    //     ground.rotateX(DEG_TO_RAD * TEMP_GRID_ORIENTATION);
-    //     ground.translateZ(LOWER_GROUND);
-    //     this._scene.add(ground);
-    // }
+    private async renderGround(): Promise<void> {
+        const groundGeometry: PlaneGeometry = new PlaneGeometry(10000, 10000, 1, 1);
+        // const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ color: 0x00FFFF });
+        const textureGround: Texture = await this.loadTexture("green2");
+        const material: MeshLambertMaterial = new MeshLambertMaterial({ map: textureGround, vertexColors: VertexColors });
+        const ground: Mesh = new Mesh(groundGeometry, material);
+        ground.translateOnAxis(
+            this.trackCenterPoints[0],
+            Math.sqrt(Math.pow(this.trackCenterPoints[0].x, SQUARED) + Math.pow(this.trackCenterPoints[0].z, SQUARED))
+        );
+        // ground.rotateX(DEG_TO_RAD * TEMP_GRID_ORIENTATION);
+        ground.translateZ(LOWER_GROUND);
+        this._scene.add(ground);
+    }
 
-    // private async renderSkyBox(): Promise<void> {
-    //     const textureSky: Texture = this._dayTime ? await this.loadTexture("sky") : await this.loadTexture("space");
-    //     const boxbox: BoxGeometry = new BoxGeometry(SKYBOX_SIZE, SKYBOX_SIZE, SKYBOX_SIZE);
-    //     const skyBox: Mesh = new Mesh(boxbox, new MeshLambertMaterial({ map: textureSky, vertexColors: VertexColors, side: BackSide }));
-    //     this._scene.add(skyBox);
-    // }
+    private async renderSkyBox(): Promise<void> {
+        const textureSky: Texture = this._dayTime ? await this.loadTexture("sky") : await this.loadTexture("space");
+        const boxbox: BoxGeometry = new BoxGeometry(SKYBOX_SIZE, SKYBOX_SIZE, SKYBOX_SIZE);
+        const skyBox: Mesh = new Mesh(boxbox, new MeshLambertMaterial({ map: textureSky, vertexColors: VertexColors, side: BackSide }));
+        this._scene.add(skyBox);
+    }
 
-    // private async loadTexture(textureName: String): Promise<Texture> {
-    //     return new Promise<Texture>((resolve, reject) => {
-    //         const loader: TextureLoader = new TextureLoader();
-    //         loader.load("assets/textures/" + textureName + ".jpg", (object) => {
-    //             resolve(object);
-    //         });
-    //     });
-    // }
+    private async loadTexture(textureName: String): Promise<Texture> {
+        return new Promise<Texture>((resolve, reject) => {
+            const loader: TextureLoader = new TextureLoader();
+            loader.load("assets/textures/" + textureName + ".jpg", (object) => {
+                resolve(object);
+            });
+        });
+    }
 }
