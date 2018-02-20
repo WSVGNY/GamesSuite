@@ -9,6 +9,7 @@ h1 {
     position: absolute;
     left:600px;
     margin: 0 auto;
+    padding-top:10px;
 }
 
 #image1, #image2 {
@@ -36,7 +37,7 @@ nav a {
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
     transition-duration: 0.7s;
     text-align: center;
-    width:100px;
+    width:130px;
     font-size: 18px;
     
 }
@@ -52,6 +53,7 @@ nav a:hover {
     font-size:40px;color:rgb(58, 107, 106);
     position: absolute;
     top:20px;
+    left:10px;
 }
 
 

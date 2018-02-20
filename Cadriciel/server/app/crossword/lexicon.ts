@@ -10,7 +10,7 @@ export class Lexicon {
 
     private readonly BASE_URL: string = "https://api.datamuse.com/words?";
     private difficulty: Difficulty = Difficulty.Easy;
-    private readonly FREQUENCY_DELIMITER: number = 5;
+    private readonly FREQUENCY_DELIMITER: number = 6;
     private readonly MIN_NUMBER_OF_DEFINITION: number = 2;
     private readonly UNWANTED_CHARACTERS_LENGTH: number = 2;
     private readonly ERROR_STATUS_CODE_LENGTH: number = 3;
