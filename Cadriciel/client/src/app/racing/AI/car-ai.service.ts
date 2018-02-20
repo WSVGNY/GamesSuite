@@ -52,7 +52,7 @@ export class CarAiService {
     private projectInFrontOfCar(): void {
         const dir: Vector3 = this._car.direction.normalize();
         const posRaycaster: Vector3 = new Vector3(this._car.position.x - this._car.currentPosition.x, 0,
-                                                  this._car.position.z - this._car.currentPosition.z);
+            this._car.position.z - this._car.currentPosition.z);
 
         posRaycaster.x -= dir.x * this.DISTANCE_RAYCASTER_FROM_VEHICULE;
         posRaycaster.y = this.DISTANCE_RAYCASTER_FROM_VEHICULE;
@@ -61,9 +61,9 @@ export class CarAiService {
         const raycaster: Raycaster = new Raycaster(posRaycaster, new Vector3(0, -1, 0), 0, this.DISTANCE_RAYCASTER_FROM_VEHICULE + 1);
         const intersects: Intersection[] = raycaster.intersectObjects(this._scene.children);
         if (intersects.length !== 0) {
-            console.log(intersects);
+            // console.log(intersects);
         } else {
-            console.log("NOTHING");
+            // console.log("NOTHING");
         }
 
     }
