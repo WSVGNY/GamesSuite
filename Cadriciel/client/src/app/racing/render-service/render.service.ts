@@ -3,7 +3,8 @@ import Stats = require("stats.js");
 import {
     PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, Mesh, PlaneGeometry, Shape,
     MeshBasicMaterial, ShapeGeometry, Path, Vector3, Geometry, LineBasicMaterial, Line, Raycaster,
-    TextureLoader, Texture, BoxGeometry, MeshLambertMaterial, VertexColors, BackSide
+    TextureLoader, Texture, BoxGeometry, MeshLambertMaterial, VertexColors, ImageUtils, ShaderLib,
+    Shader, UniformsUtils, ShaderMaterial, DoubleSide, BackSide, Mapping, EquirectangularReflectionMapping, CubeTextureLoader, MeshFaceMaterial
 } from "three";
 import { Car } from "../car/car";
 import { Track, ITrack } from "../../../../../common/racing/track";
@@ -350,18 +351,28 @@ export class RenderService {
     }
 
     private async renderSkyBox(): Promise<void> {
-        const textureSky: Texture = this._dayTime ? await this.loadTexture("sky") : await this.loadTexture("space");
-        const boxbox: BoxGeometry = new BoxGeometry(SKYBOX_SIZE, SKYBOX_SIZE, SKYBOX_SIZE);
-        const skyBox: Mesh = new Mesh(boxbox, new MeshLambertMaterial({ map: textureSky, vertexColors: VertexColors, side: BackSide }));
+        const boxMaterials: MeshBasicMaterial[] = [
+            new MeshBasicMaterial({ map: new TextureLoader().load("/assets/textures/posx.jpg"), side: DoubleSide }),
+            new MeshBasicMaterial({ map: new TextureLoader().load("/assets/textures/negx.jpg"), side: DoubleSide }),
+            new MeshBasicMaterial({ map: new TextureLoader().load("/assets/textures/posy.jpg"), side: DoubleSide }),
+            new MeshBasicMaterial({ map: new TextureLoader().load("/assets/textures/negy.jpg"), side: DoubleSide }),
+            new MeshBasicMaterial({ map: new TextureLoader().load("/assets/textures/posz.jpg"), side: DoubleSide }),
+            new MeshBasicMaterial({ map: new TextureLoader().load("/assets/textures/negz.jpg"), side: DoubleSide })
+        ];
+        // this._scene.background = new CubeTextureLoader().setPath("/assets/textures/").load(urls);
+        const skyBoxMaterial: MeshFaceMaterial = new MeshFaceMaterial( boxMaterials );
+        const boxbox: BoxGeometry = new BoxGeometry(SKYBOX_SIZE, SKYBOX_SIZE, SKYBOX_SIZE, 1, 1, 1);
+        const skyBox: Mesh = new Mesh(boxbox, skyBoxMaterial);
+        skyBox.rotateX(Math.PI);
         this._scene.add(skyBox);
-    }
+}
 
-    private async loadTexture(textureName: String): Promise<Texture> {
-        return new Promise<Texture>((resolve, reject) => {
-            const loader: TextureLoader = new TextureLoader();
-            loader.load("assets/textures/" + textureName + ".jpg", (object) => {
-                resolve(object);
-            });
+    private async loadTexture(textureName: String): Promise < Texture > {
+    return new Promise<Texture>((resolve, reject) => {
+        const loader: TextureLoader = new TextureLoader();
+        loader.load("assets/textures/" + textureName + ".jpg", (object) => {
+            resolve(object);
         });
-    }
+    });
+}
 }
