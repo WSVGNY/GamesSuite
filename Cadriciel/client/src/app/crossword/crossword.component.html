@@ -8,7 +8,7 @@
   <button id="buttonDifficulty" (click)="makeMediumGrid()">MEDIUM</button>
   <button id="buttonDifficulty" (click)="makeHardGrid()">HARD</button>
 
-  <div id="loader"></div>
+  <div id="loader" *ngIf="showLoader"></div>
 
   <div id="defs" (mousedown)="deselectWords()">
     <button id="CheatButton" (click)="changeMode()"> Cheat mode </button>
@@ -44,9 +44,9 @@
 
 <div id="grid">
   <div *ngFor="let line of boxes">
-    <div *ngFor="let gridBox of line" (mouseenter)="hideLoader()">
+    <div *ngFor="let gridBox of line" (mouseup)="highlightWordOfBox(gridBox)">
       <div [ngClass]="{filledGridBox : gridBox._isBlack, selectedGridBox: gridBox._isColored, emptyGridBox : !gridBox._isBlack}">
-        <div (mouseup)="highlightWord(gridbox)">{{gridBox._char._value}}</div> 
+        <div>{{getGridBoxID(gridBox)}}</div> 
       </div>
     </div>
   </div>

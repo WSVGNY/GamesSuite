@@ -19,6 +19,7 @@ export class CrosswordComponent {
     private words: CommonWord[];
     private difficulty: Difficulty;
     private isInCheatMode: boolean = false;
+    private showLoader: boolean = false;
 
     public constructor(private gridService: GridService) {
     }
@@ -28,6 +29,7 @@ export class CrosswordComponent {
             this.grid = grid;
             this.boxes = this.grid.boxes;
             this.words = this.grid.words;
+            this.showLoader = false;
         });
     }
 
@@ -37,30 +39,20 @@ export class CrosswordComponent {
 
     public makeEasyGrid(): void {
         this.difficulty = Difficulty.Easy;
-        this.show();
+        this.showLoader = true;
         this.createGrid();
     }
 
     public makeMediumGrid(): void {
         this.difficulty = Difficulty.Medium;
         this.createGrid();
-        this.show();
+        this.showLoader = true;
     }
 
     public makeHardGrid(): void {
         this.difficulty = Difficulty.Hard;
         this.createGrid();
-        this.show();
-    }
-
-    public show(): void {
-        document.getElementById("loader").style.visibility = "visible";
-        const loader: HTMLElement = document.getElementById("loader");
-        loader.addEventListener("animationend", (event: Event) => { loader.style.display = "none"; }, false);
-    }
-
-    public hideLoader(): void {
-        document.getElementById("loader").style.display = "none";
+        this.showLoader = true;
     }
 
     public hide(): void {
@@ -74,14 +66,20 @@ export class CrosswordComponent {
             this.isInCheatMode = true;
     }
 
+    public highlightWordOfBox(gridBox: CommonGridBox): void {
+        if (gridBox._constraints[0] !== undefined) {
+            this.highlightWord((gridBox as CommonGridBox)._constraints[0]);
+        }
+    }
+
     public highlightWord(word: CommonWord): void {
         this.deselectWords();
         if (word._isHorizontal) {
-            for (let i: number = 0; i < word["_length"]; i++) {
+            for (let i: number = 0; i < word._length; i++) {
                 this.grid.boxes[word._startPosition._y][i + word._startPosition._x]._isColored = true;
             }
         } else {
-            for (let i: number = 0; i < word["_length"]; i++) {
+            for (let i: number = 0; i < word._length; i++) {
                 this.grid.boxes[word._startPosition._y + i][word._startPosition._x]._isColored = true;
             }
         }
@@ -104,11 +102,11 @@ export class CrosswordComponent {
     public getWordValue(word: CommonWord): string {
         let value: string = "";
         if (word._isHorizontal) {
-            for (let i: number = 0; i < word["_length"]; i++) {
+            for (let i: number = 0; i < word._length; i++) {
                 value += this.grid.boxes[word._startPosition._y][i + word._startPosition._x]._char._value;
             }
         } else {
-            for (let i: number = 0; i < word["_length"]; i++) {
+            for (let i: number = 0; i < word._length; i++) {
                 value += this.grid.boxes[word._startPosition._y + i][word._startPosition._x]._char._value;
             }
         }
@@ -117,20 +115,20 @@ export class CrosswordComponent {
     }
 
     public getGridBoxID(gridBox: CommonGridBox): number {
-        if (gridBox["_constraints"][0] !== undefined) {
-            if (gridBox["_constraints"][1] !== undefined) {
-                if (gridBox["_id"]["_x"] === gridBox["_constraints"][1]["_startPosition"]["_x"]
-                    && gridBox["_id"]["_y"] === gridBox["_constraints"][1]["_startPosition"]["_y"]) {
-                    return gridBox["_constraints"][1]["_definitionID"];
+        if (gridBox._constraints[0] !== undefined) {
+            if (gridBox._constraints[1] !== undefined) {
+                if (gridBox._id._x === gridBox._constraints[1]._startPosition._x
+                    && gridBox._id._y === gridBox._constraints[1]._startPosition._y) {
+                    return gridBox._constraints[1]._definitionID;
                 }
-                if (gridBox["_id"]["_x"] === gridBox["_constraints"][0]["_startPosition"]["_x"]
-                    && gridBox["_id"]["_y"] === gridBox["_constraints"][0]["_startPosition"]["_y"]) {
-                    return gridBox["_constraints"][0]["_definitionID"];
+                if (gridBox._id._x === gridBox._constraints[0]._startPosition._x
+                    && gridBox._id._y === gridBox._constraints[0]._startPosition._y) {
+                    return gridBox._constraints[0]._definitionID;
                 }
             }
-            if (gridBox["_id"]["_x"] === gridBox["_constraints"][0]["_startPosition"]["_x"]
-                && gridBox["_id"]["_y"] === gridBox["_constraints"][0]["_startPosition"]["_y"]) {
-                return gridBox["_constraints"][0]["_definitionID"];
+            if (gridBox._id._x === gridBox._constraints[0]._startPosition._x
+                && gridBox._id._y === gridBox._constraints[0]._startPosition._y) {
+                return gridBox._constraints[0]._definitionID;
             }
         }
 

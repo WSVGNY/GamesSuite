@@ -149,7 +149,7 @@ li {
     animation: spin 2s infinite;
     animation-fill-mode: both;
     display: inline-block;
-    visibility: hidden;
+    visibility: visible;
     position: absolute;
     margin-left: 5%;
     margin-top:-3%;
