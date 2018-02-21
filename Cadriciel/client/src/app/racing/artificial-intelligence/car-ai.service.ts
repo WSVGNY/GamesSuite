@@ -152,10 +152,8 @@ export class CarAiService {
     private createVectorTrackFromPoints(track: Vector3[]): void {
         this._trackVectors = [];
         for (let i: number = 0; i < track.length; ++i) {
-            let nextVertex: number = 1;
-            if (i === track.length - 1) {
-                nextVertex = -i;
-            }
+            const nextVertex: number = i === track.length - 1 ? 1 : -i;
+
             const a: number = track[i].z - track[i + nextVertex].z;
             const b: number = track[i + nextVertex].x - track[i].x;
             const c: number = track[i].x * track[i + nextVertex].z - track[i + nextVertex].x * track[i].z;
@@ -173,12 +171,12 @@ export class CarAiService {
 
     private projectPointOnLine(point: Vector3): Vector3 {
         const line: {a: number, b: number, c: number} = this._trackVectors[this._trackPortionIndex];
-        const pointOnLine: Vector3 = new Vector3();
 
         const a: number = -this._trackVectors[this._trackPortionIndex].b;
         const b: number = this._trackVectors[this._trackPortionIndex].a;
         const c: number = -a * point.x - b * point.z;
 
+        const pointOnLine: Vector3 = new Vector3();
         pointOnLine.z = (line.c * a - line.a * c) / ( line.a * b - a * line.b );
         pointOnLine.x = ( -c - b * pointOnLine.z ) / a;
 
