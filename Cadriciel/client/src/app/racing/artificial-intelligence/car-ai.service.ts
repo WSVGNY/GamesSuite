@@ -186,24 +186,16 @@ export class CarAiService {
     }
 
     private projectTurningPoint(): Vector3 {
-        // const line: {a: number, b: number, c: number} = this._vectorTrack[this._trackPortionIndex];
-        let p1: Vector3;
-        if (this._trackPortionIndex === this._trackVertices.length - 1) {
-            p1 = this._trackVertices[0];
-        } else {
-            p1 = this._trackVertices[this._trackPortionIndex + 1];
-        }
+        const p1: Vector3 = this._trackPortionIndex === this._trackVertices.length - 1 ?
+                            this._trackVertices[0] :
+                            this._trackVertices[this._trackPortionIndex + 1];
+
         const p2: Vector3 = this._trackVertices[this._trackPortionIndex];
 
         const dx: number = p2.x - p1.x;
         const dz: number = p2.z - p1.z;
 
-        const turningPoint: Vector3 = new Vector3();
-        turningPoint.x = (p2.x + dx * this.TURNING_POINT_DISTANCE);
-        turningPoint.y = 0;
-        turningPoint.z = (p2.z + dz * this.TURNING_POINT_DISTANCE);
-
-        return turningPoint;
+        return new Vector3((p2.x + dx * this.TURNING_POINT_DISTANCE), 0, (p2.z + dz * this.TURNING_POINT_DISTANCE));
     }
 
 }
