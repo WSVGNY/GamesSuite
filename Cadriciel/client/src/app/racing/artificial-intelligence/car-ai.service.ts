@@ -8,16 +8,17 @@ import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";
 import { Vector3, Scene, BoxHelper } from "three";
 import { VectorHelper } from "./vectorHelper";
 import { PINK, WHITE } from "../constants";
+import { Difficulty } from "../../../../../common/crossword/difficulty";
 
 @Injectable()
 export class CarAiService {
-    private readonly DISTANCE_FROM_VEHICULE: number = 12;
+    private readonly DISTANCE_FROM_VEHICULE: number;
+    private readonly DISTANCE_BEFORE_REPLACEMENT: number;
     private readonly TURNING_POINT_DISTANCE: number = 0.1;
-    private readonly DISTANCE_BEFORE_REPLACEMENT: number = 2;
     private readonly START_INDEX: number = 0;
-    private readonly TURNING_POINT_BUFFER: number = 3;
+    private readonly TURNING_POINT_BUFFER: number = 5;
 
-    private readonly DEBUG_MODE: boolean = false;
+    private readonly DEBUG_MODE: boolean = true;
 
     private _aiControl: CommandController;
     private _isGoingForward: boolean = false;
@@ -34,9 +35,26 @@ export class CarAiService {
     private _distanceVectorHelper: VectorHelper;
     private _turningVectorHelper: VectorHelper;
 
-    public constructor(private _car: Car, private _trackVertices: Vector3[], public _scene: Scene) {
+    public constructor(private _car: Car, private _trackVertices: Vector3[], public _scene: Scene, difficulty: Difficulty) {
         this._aiControl = new CommandController();
         this.createVectorTrackFromPoints(_trackVertices);
+
+        if (difficulty === Difficulty.Hard) {
+            // tslint:disable-next-line:no-magic-numbers
+            this.DISTANCE_FROM_VEHICULE = 18;
+            // tslint:disable-next-line:no-magic-numbers
+            this.DISTANCE_BEFORE_REPLACEMENT = 1.2;
+        } else if (difficulty === Difficulty.Medium) {
+            // tslint:disable-next-line:no-magic-numbers
+            this.DISTANCE_FROM_VEHICULE = 12;
+            // tslint:disable-next-line:no-magic-numbers
+            this.DISTANCE_BEFORE_REPLACEMENT = 2;
+        } else {
+            // tslint:disable-next-line:no-magic-numbers
+            this.DISTANCE_FROM_VEHICULE = 5.5;
+            // tslint:disable-next-line:no-magic-numbers
+            this.DISTANCE_BEFORE_REPLACEMENT = 3;
+        }
 
         if (this.DEBUG_MODE) {
             this.initializeDebugMode();

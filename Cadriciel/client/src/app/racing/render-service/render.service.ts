@@ -15,6 +15,7 @@ import { Car } from "../car/car";
 import { PI_OVER_2, LOWER_GROUND } from "../constants";
 import { MOCK_TRACK } from "./mock-track";
 import { TrackPoint, TrackPointList } from "./trackPoint";
+import { Difficulty } from "../../../../../common/crossword/difficulty";
 
 const FAR_CLIPPING_PLANE: number = 1000;
 const NEAR_CLIPPING_PLANE: number = 1;
@@ -72,7 +73,7 @@ export class RenderService {
 
         for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
             this._aiCars.push(new Car());
-            this._carAiService.push(new CarAiService(this._playerCar, points, this._scene));
+            this._carAiService.push(new CarAiService(this._playerCar, points, this._scene, Difficulty.Easy));
         }
     }
 
