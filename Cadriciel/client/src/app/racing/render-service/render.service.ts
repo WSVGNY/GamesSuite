@@ -108,14 +108,14 @@ export class RenderService {
     }
 
     private rotateCarToFaceStart(car: Car): void {
-        const carfinalFacingVector: Vector3 = new Vector3(
-            this._trackPoints.points[1].coordinates.x - this._trackPoints.points[0].coordinates.x,
-            this._trackPoints.points[1].coordinates.y - this._trackPoints.points[0].coordinates.y,
-            this._trackPoints.points[1].coordinates.z - this._trackPoints.points[0].coordinates.z
-        ).normalize();
-        const angle: number = carfinalFacingVector.z < 0 ?
-            Math.acos(carfinalFacingVector.x) :
-            - Math.acos(carfinalFacingVector.x);
+        // const carfinalFacingVector: Vector3 = new Vector3(
+        //     this._trackPoints.points[1].coordinates.x - this._trackPoints.points[0].coordinates.x,
+        //     this._trackPoints.points[1].coordinates.y - this._trackPoints.points[0].coordinates.y,
+        //     this._trackPoints.points[1].coordinates.z - this._trackPoints.points[0].coordinates.z
+        // ).normalize();
+        // const angle: number = carfinalFacingVector.z < 0 ?
+        //     Math.acos(carfinalFacingVector.x) :
+        //     - Math.acos(carfinalFacingVector.x);
         //car.rotateY(Math.PI + angle);
     }
 
