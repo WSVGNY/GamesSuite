@@ -1,16 +1,21 @@
 import assert = require("assert");
 import { Grid } from "../../../common/crossword/grid";
 import { BlackTiledGrid } from "./blackTiledGrid";
+import { GridCreate } from "./gridCreate";
+import { Difficulty } from "../../../common/crossword/difficulty";
 
 let grid: Grid;
+let gridCreate: GridCreate;
 let blackGrid: BlackTiledGrid;
 
 describe("GRID CREATE TESTS", () => {
 
-    it("Grid is defined on creation", (done: MochaDone) => {
-        grid = new Grid();
-        grid["newGrid"]().then(() => {
-            assert(grid["grid"] !== undefined);
+    it("GridCreate grid is defined on creation", (done: MochaDone) => {
+        gridCreate = new GridCreate();
+        gridCreate["difficulty"] = Difficulty.Easy;
+        gridCreate["newGrid"]().then(() => {
+            grid = gridCreate["grid"];
+            assert(gridCreate["grid"] !== undefined);
             done();
         }).catch((e: Error) => {
             assert(false);

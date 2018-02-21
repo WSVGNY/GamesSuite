@@ -6,7 +6,7 @@ import { Coordinate } from "./coordinate";
 
 const IS_HORIZONTAL: boolean = true;
 const IS_VERTICAL: boolean = false;
-const MAX_DIFFICULTY: number = 100;
+const MAX_DIFFICULTY: number = 99;
 const BLACK_TILES_RATIO: number = 0.45;
 const MIN_WORD_LENGTH: number = 2;
 
