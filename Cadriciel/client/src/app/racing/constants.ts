@@ -16,5 +16,5 @@ export const PINK: number = 0xFF00BF;
 export const BLUE: number = 0x0066FF;
 export const RED: number = 0xFF0000;
 export const TRACK_WIDTH: number = 10;
-export const LOWER_GROUND: number = -0.001;
+export const LOWER_GROUND: number = 0.002;
 export const SKYBOX_SIZE: number = 700;

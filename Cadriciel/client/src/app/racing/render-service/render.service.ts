@@ -1,17 +1,20 @@
 import { Injectable } from "@angular/core";
-// import Stats = require("stats.js");
+import Stats = require("stats.js");
 import {
-    PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, Mesh, /*PlaneGeometry,*/ Shape,
+    PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, Mesh, Shape,
     MeshBasicMaterial, ShapeGeometry, Path, Vector3, Geometry, LineBasicMaterial, Line,
-    /*TextureLoader, Texture, BoxGeometry, MeshLambertMaterial, VertexColors,*/ BackSide
+    BackSide,
+    TextureLoader,
+    Texture,
+    RepeatWrapping,
+    PlaneGeometry,
+    CubeTextureLoader
 } from "three";
 import { CarAiService } from "../artificial-intelligence/car-ai.service";
 import { Car } from "../car/car";
-// import { Track } from "../../../../../common/racing/track";
-// import { TrackService } from "../track-service/track.service";
-// import { ActivatedRoute } from "@angular/router";
-import { TRACK_WIDTH, PI_OVER_2, /*SQUARED, LOWER_GROUND,  SKYBOX_SIZE */ } from "../constants";
+import { PI_OVER_2, LOWER_GROUND } from "../constants";
 import { MOCK_TRACK } from "./mock-track";
+import { TrackPoint, TrackPointList } from "./trackPoint";
 
 const FAR_CLIPPING_PLANE: number = 1000;
 const NEAR_CLIPPING_PLANE: number = 1;
@@ -34,67 +37,44 @@ const AI_CARS_NUMBER: number = 1;
 
 @Injectable()
 export class RenderService {
-    /*private tracks: Track[];
-    private trackService: TrackService;*/
-    // private _dayTime: any;
     private _camera: PerspectiveCamera;
     private _container: HTMLDivElement;
     private _playerCar: Car;
     private _renderer: WebGLRenderer;
     private _scene: Scene;
-    // private _stats: Stats;
+    private _stats: Stats;
     private _lastDate: number;
     private _carAiService: CarAiService[];
     private _aiCars: Car[];
-    //private _dayTime: boolean = true;
-
-    private trackCenterPoints: Vector3[] = MOCK_TRACK;
-    private trackExteriorPoints: Vector3[] = [];
-    private trackInteriorPoints: Vector3[] = [];
+    // private _dayTime: boolean = true;
+    private _trackPoints: TrackPointList;
 
     public get playerCar(): Car {
         return this._playerCar;
     }
 
-    public constructor(/*private trackService: TrackService, private route: ActivatedRoute*/) {
-        // this.getTrack();
+    public constructor() {
+        this._trackPoints = new TrackPointList(MOCK_TRACK);
         this._playerCar = new Car();
-        // this._playerCar.position.add(new Vector3(125, 0, 900));
-        // this._playerCar.rotateY(-PI_OVER_2);
-        this._playerCar.position.add(new Vector3(this.trackCenterPoints[0].x, 0, this.trackCenterPoints[0].z));
-        // this.rotateCarToFaceStart(this._playerCar);
-
+        this._scene = new Scene();
         this._carAiService = [];
         this._aiCars = [];
-        this._scene = new Scene();
-        // this._track = new Track;
+
+        const points: Vector3[] = new Array();
+
+        this._trackPoints.points.forEach((currentPoint: TrackPoint) => {
+            points.push(new Vector3(
+                currentPoint.coordinates.x,
+                currentPoint.coordinates.y,
+                currentPoint.coordinates.z,
+            ));
+        });
+
         for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
             this._aiCars.push(new Car());
-            this._carAiService.push(new CarAiService(this._playerCar, this.trackCenterPoints, this._scene));
-            this._aiCars[i].position.add(new Vector3(this.trackCenterPoints[0].x, 0, this.trackCenterPoints[0].z));
-            this.rotateCarToFaceStart(this._aiCars[i]);
+            this._carAiService.push(new CarAiService(this._playerCar, points, this._scene));
         }
     }
-
-    private rotateCarToFaceStart(car: Car): void {
-        const carfinalFacingVector: Vector3 = new Vector3(
-            this.trackCenterPoints[1].x - this.trackCenterPoints[0].x,
-            this.trackCenterPoints[1].y - this.trackCenterPoints[0].y,
-            this.trackCenterPoints[1].z - this.trackCenterPoints[0].z
-        ).normalize();
-        const angle: number = carfinalFacingVector.z < 0 ?
-            - Math.acos(carfinalFacingVector.x) :
-            Math.acos(carfinalFacingVector.x);
-        car.rotateY(Math.PI + angle);
-    }
-
-    // public getTrack(): void {
-    //     this.trackService.getTrackFromId(this.route.snapshot.paramMap.get("5a7fc1173cb1de3b7ce47a4a"))
-    //         .subscribe((trackFromServer: string) => {
-    //             const iTrack: ITrack = JSON.parse(JSON.stringify(trackFromServer));
-    //             this._track = new Track(iTrack);
-    //         });
-    // }
 
     public async initialize(container: HTMLDivElement): Promise<void> {
         if (container) {
@@ -102,21 +82,52 @@ export class RenderService {
         }
 
         await this.createScene();
-        // this._carAiService[0]._scene = this._scene;
-        // this.initStats();
+        this.initializeCarsPositions();
+        this._carAiService[0]._scene = this._scene;
+        this.initStats();
         this.startRenderingLoop();
     }
 
-    // private initStats(): void {
-    //     // this._stats = new Stats();
-    //     this._stats.dom.style.position = "absolute";
-    //     this._container.appendChild(this._stats.dom);
-    // }
+    private initializeCarsPositions(): void {
+        this._playerCar.position.add(new Vector3(
+            this._trackPoints.points[0].coordinates.x, 0,
+            this._trackPoints.points[0].coordinates.z)
+        );
+        this.rotateCarToFaceStart(this._playerCar);
+
+        // this._playerCar.position.add(new Vector3(0, 0, 900));
+        // this._playerCar.rotateY(-PI_OVER_2);
+
+        for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
+            this._aiCars[i].position.add(new Vector3(
+                this._trackPoints.points[0].coordinates.x, 0,
+                this._trackPoints.points[0].coordinates.z
+            ));
+            this.rotateCarToFaceStart(this._aiCars[i]);
+        }
+    }
+
+    private rotateCarToFaceStart(car: Car): void {
+        const carfinalFacingVector: Vector3 = new Vector3(
+            this._trackPoints.points[1].coordinates.x - this._trackPoints.points[0].coordinates.x,
+            this._trackPoints.points[1].coordinates.y - this._trackPoints.points[0].coordinates.y,
+            this._trackPoints.points[1].coordinates.z - this._trackPoints.points[0].coordinates.z
+        ).normalize();
+        const angle: number = carfinalFacingVector.z < 0 ?
+            Math.acos(carfinalFacingVector.x) :
+            - Math.acos(carfinalFacingVector.x);
+        //car.rotateY(Math.PI + angle);
+    }
+
+    private initStats(): void {
+        this._stats = new Stats();
+        this._stats.dom.style.position = "absolute";
+        this._container.appendChild(this._stats.dom);
+    }
 
     private update(): void {
         const timeSinceLastFrame: number = Date.now() - this._lastDate;
         this._playerCar.update(timeSinceLastFrame);
-        // TODO: Remove this instruction, only for testing
         this._aiCars[0].update(timeSinceLastFrame);
         this._carAiService[0].update();
         this._lastDate = Date.now();
@@ -143,9 +154,9 @@ export class RenderService {
         this._playerCar.attachCamera(this._camera);
 
         this._scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
-        // this.renderGround();
         this.renderTrack();
-        // await this.renderSkyBox();
+        this.renderGround();
+        this.renderSkyBox();
     }
 
     private getAspectRatio(): number {
@@ -212,174 +223,85 @@ export class RenderService {
     }
 
     private renderTrack(): void {
+        this._trackPoints = new TrackPointList(MOCK_TRACK);
         this.renderTrackShape();
         this.renderCenterLine();
     }
 
+    private renderTrackShape(): void {
+        const shape: Shape = new Shape();
+        const lastPoint: TrackPoint = this._trackPoints.points[this._trackPoints.length - 1];
+        shape.moveTo(lastPoint.exterior.x, lastPoint.exterior.z);
+        for (let i: number = this._trackPoints.length - 2; i >= 0; --i) {
+            shape.lineTo(this._trackPoints.points[i].exterior.x, this._trackPoints.points[i].exterior.z);
+        }
+        shape.lineTo(lastPoint.exterior.x, lastPoint.exterior.z);
+
+        const holePath: Path = new Path();
+        holePath.moveTo(lastPoint.interior.x, lastPoint.interior.z);
+        for (let i: number = this._trackPoints.length - 2; i >= 0; --i) {
+            holePath.lineTo(this._trackPoints.points[i].interior.x, this._trackPoints.points[i].interior.z);
+        }
+        holePath.lineTo(lastPoint.interior.x, lastPoint.interior.z);
+
+        shape.holes.push(holePath);
+        const geometry: ShapeGeometry = new ShapeGeometry(shape);
+
+        const texture: Texture = new TextureLoader().load("assets/textures/asphalte.jpg");
+        texture.wrapS = RepeatWrapping;
+        texture.wrapT = RepeatWrapping;
+        texture.repeat.set(0.045, 0.045);
+        const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ side: BackSide, map: texture });
+
+        const ground: Mesh = new Mesh(geometry, groundMaterial);
+        ground.rotateX(PI_OVER_2);
+        this._scene.add(ground);
+    }
+
     private renderCenterLine(): void {
         const geometryPoints: Geometry = new Geometry();
-        this.trackCenterPoints.forEach((vertex: Vector3) => geometryPoints.vertices.push(vertex));
-        geometryPoints.vertices.push(this.trackCenterPoints[0]);
+        this._trackPoints.points.forEach((currentPoint: TrackPoint) => geometryPoints.vertices.push(currentPoint.coordinates));
+        geometryPoints.vertices.push(this._trackPoints.points[0].coordinates);
         const line: Line = new Line(geometryPoints, new LineBasicMaterial({ color: 0x00FF00, linewidth: 3 }));
         // line.position.add(new Vector3(0, 125, 0));
         // line.rotateX(-PI_OVER_2);
         this._scene.add(line);
     }
 
-    private renderTrackShape(): void {
-        this.createExteriorInteriorTrackPoints();
-        this.checkInteriorPointsValidity();
-        const shape: Shape = new Shape();
-        shape.moveTo(
-            this.trackExteriorPoints[this.trackExteriorPoints.length - 1].x,
-            this.trackExteriorPoints[this.trackExteriorPoints.length - 1].z
-        );
-        for (let i: number = this.trackExteriorPoints.length - 2; i >= 0; --i) {
-            shape.lineTo(this.trackExteriorPoints[i].x, this.trackExteriorPoints[i].z);
-        }
-        shape.lineTo(this.trackExteriorPoints[0].x, this.trackExteriorPoints[0].z);
-        const holePath: Path = new Path();
-        holePath.moveTo(
-            this.trackInteriorPoints[this.trackInteriorPoints.length - 1].x,
-            this.trackInteriorPoints[this.trackInteriorPoints.length - 1].z
-        );
-        for (let i: number = this.trackInteriorPoints.length - 2; i >= 0; --i) {
-            holePath.lineTo(this.trackInteriorPoints[i].x, this.trackInteriorPoints[i].z);
-        }
-        holePath.lineTo(
-            this.trackInteriorPoints[this.trackInteriorPoints.length - 1].x,
-            this.trackInteriorPoints[this.trackInteriorPoints.length - 1].z
-        );
-        shape.holes.push(holePath);
-        const geometry: ShapeGeometry = new ShapeGeometry(shape);
-        const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ side: BackSide, color: 0x0000FF });
-        const ground: Mesh = new Mesh(geometry, groundMaterial);
+    private async renderGround(): Promise<void> {
+        const groundGeometry: PlaneGeometry = new PlaneGeometry(10000, 10000, 1, 1);
+
+        const texture: Texture = new TextureLoader().load("assets/textures/green-grass-texture.jpg");
+        texture.wrapS = RepeatWrapping;
+        texture.wrapT = RepeatWrapping;
+        texture.repeat.set(1000, 1000);
+        const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ side: BackSide, map: texture });
+
+        const ground: Mesh = new Mesh(groundGeometry, groundMaterial);
         ground.rotateX(PI_OVER_2);
+        ground.translateZ(LOWER_GROUND);
         this._scene.add(ground);
     }
 
-    private checkTrackPointsOrientation(): boolean {
-        let angleSum: number = 0;
-        this.trackCenterPoints.forEach((currentPoint: Vector3, i: number) => {
-            const nextPoint: Vector3 = (i + 1) === this.trackCenterPoints.length ?
-                this.trackCenterPoints[0] : this.trackCenterPoints[i + 1];
-            const previousPoint: Vector3 = i === 0 ?
-                this.trackCenterPoints[this.trackCenterPoints.length - 1] : this.trackCenterPoints[i - 1];
-            const vectorToPreviousCenterPoint: Vector3 = new Vector3(
-                previousPoint.x - currentPoint.x, previousPoint.y - currentPoint.y, previousPoint.z - currentPoint.z
-            );
-            const vectorToNextCenterPoint: Vector3 = new Vector3(
-                nextPoint.x - currentPoint.x, nextPoint.y - currentPoint.y, nextPoint.z - currentPoint.z
-            );
-            angleSum += this.crossVectorMultiplication(vectorToNextCenterPoint, vectorToPreviousCenterPoint) > 0 ?
-                vectorToNextCenterPoint.angleTo(vectorToPreviousCenterPoint) *
-                (vectorToNextCenterPoint.length() + vectorToPreviousCenterPoint.length()) :
-                -vectorToNextCenterPoint.angleTo(vectorToPreviousCenterPoint) *
-                (vectorToNextCenterPoint.length() + vectorToPreviousCenterPoint.length());
-        });
-
-        return angleSum >= 0 ? true : false;
+    private async renderSkyBox(): Promise<void> {
+        this._scene.background = new CubeTextureLoader()
+            // .setPath("assets/textures/clouds/")
+            // .load([
+            //     "CloudyLightRays_px.jpg", // 'px.png',
+            //     "CloudyLightRays_nx.jpg", // 'nx.png',
+            //     "CloudyLightRays_py.jpg", // 'py.png',
+            //     "CloudyLightRays_ny.jpg", // 'ny.png',
+            //     "CloudyLightRays_pz.jpg", // 'pz.png',
+            //     "CloudyLightRays_nz.jpg"// 'nz.png'
+            // ]);
+            .setPath("assets/textures/Tropical/")
+            .load([
+                "TropicalSunnyDay_px.jpg", // 'px.png',
+                "TropicalSunnyDay_nx.jpg", // 'nx.png',
+                "TropicalSunnyDay_py.jpg", // 'py.png',
+                "TropicalSunnyDay_ny.jpg", // 'ny.png',
+                "TropicalSunnyDay_pz.jpg", // 'pz.png',
+                "TropicalSunnyDay_nz.jpg"// 'nz.png'
+            ]);
     }
-
-    // tslint:disable-next-line:max-func-body-length
-    private createExteriorInteriorTrackPoints(): void {
-        const trackIsClockwise: boolean = this.checkTrackPointsOrientation();
-        if (!trackIsClockwise) {
-            const returnArray: Vector3[] = Array<Vector3>(this.trackCenterPoints.length);
-            this.trackCenterPoints.forEach((currentPoint: Vector3, i: number) => {
-                returnArray[this.trackCenterPoints.length - 1 - i] = new Vector3(currentPoint.x, currentPoint.y, currentPoint.z);
-            });
-            this.trackCenterPoints = new Array();
-            returnArray.forEach((currentPoint: Vector3, i: number) => {
-                this.trackCenterPoints[i] = new Vector3(currentPoint.x, currentPoint.y, currentPoint.z);
-            });
-        }
-        // tslint:disable-next-line:max-func-body-length
-        this.trackCenterPoints.forEach((currentPoint: Vector3, i: number) => {
-            const nextPoint: Vector3 = (i + 1) === this.trackCenterPoints.length ?
-                this.trackCenterPoints[0] : this.trackCenterPoints[i + 1];
-            const previousPoint: Vector3 = i === 0 ?
-                this.trackCenterPoints[this.trackCenterPoints.length - 1] : this.trackCenterPoints[i - 1];
-            const normalizedVectorToPreviousCenterPoint: Vector3 = new Vector3(
-                previousPoint.x - currentPoint.x, previousPoint.y - currentPoint.y, previousPoint.z - currentPoint.z
-            ).normalize();
-            const normalizedVectorToNextCenterPoint: Vector3 = new Vector3(
-                nextPoint.x - currentPoint.x, nextPoint.y - currentPoint.y, nextPoint.z - currentPoint.z
-            ).normalize();
-            const angle: number =
-                this.crossVectorMultiplication(normalizedVectorToNextCenterPoint, normalizedVectorToPreviousCenterPoint) < 0 ?
-                    -normalizedVectorToNextCenterPoint.angleTo(normalizedVectorToPreviousCenterPoint) / 2 :
-                    normalizedVectorToNextCenterPoint.angleTo(normalizedVectorToPreviousCenterPoint) / 2;
-            const vectorToInteriorPoint: Vector3 = new Vector3()
-                .addVectors(new Vector3(0, 0, 0), normalizedVectorToNextCenterPoint)
-                .applyAxisAngle(new Vector3(0, 1, 0), angle)
-                .multiplyScalar(TRACK_WIDTH / Math.sin(angle));
-
-            this.trackInteriorPoints.push(new Vector3(
-                currentPoint.x + vectorToInteriorPoint.x, 0, currentPoint.z + vectorToInteriorPoint.z
-            ));
-            this.trackExteriorPoints.push(new Vector3(
-                currentPoint.x - vectorToInteriorPoint.x, 0, currentPoint.z - vectorToInteriorPoint.z
-            ));
-
-        });
-    }
-
-    private checkInteriorPointsValidity(): void {
-        this.trackCenterPoints.forEach((currentPoint: Vector3, i: number) => {
-            const nextPoint: Vector3 = (i + 1) === this.trackCenterPoints.length ?
-                this.trackCenterPoints[0] :
-                this.trackCenterPoints[i + 1];
-
-            let currentPointNoReference: Vector3 = new Vector3().addVectors(currentPoint, new Vector3());
-            const vectorOnCenterPoints: Vector3 = new Vector3().addVectors(nextPoint, currentPointNoReference.multiplyScalar(-1));
-            currentPointNoReference = new Vector3().addVectors(currentPoint, new Vector3());
-            const vectorWithInteriorPoint: Vector3 =
-                new Vector3().addVectors(this.trackInteriorPoints[i], currentPointNoReference.multiplyScalar(-1));
-
-            if (this.crossVectorMultiplication(vectorOnCenterPoints, vectorWithInteriorPoint) < 0) {
-                const tempPoint: Vector3 = this.trackInteriorPoints[i];
-                this.trackInteriorPoints[i] = this.trackExteriorPoints[i];
-                this.trackExteriorPoints[i] = tempPoint;
-            }
-        });
-    }
-
-    private crossVectorMultiplication(vectorA: Vector3, vectorB: Vector3): number {
-        const vectorANoReference: Vector3 = new Vector3().addVectors(vectorA, new Vector3());
-        const vectorBNoReference: Vector3 = new Vector3().addVectors(vectorB, new Vector3());
-
-        return vectorANoReference.cross(vectorBNoReference).y;
-    }
-
-    // private async renderGround(): Promise<void> {
-    //     const groundGeometry: PlaneGeometry = new PlaneGeometry(10000, 10000, 1, 1);
-    //     // const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ color: 0x00FFFF });
-    //     const textureGround: Texture = await this.loadTexture("green2");
-    //     const material: MeshLambertMaterial = new MeshLambertMaterial({ map: textureGround, vertexColors: VertexColors });
-    //     const ground: Mesh = new Mesh(groundGeometry, material);
-    //     ground.translateOnAxis(
-    //         this.trackCenterPoints[0],
-    //         Math.sqrt(Math.pow(this.trackCenterPoints[0].x, SQUARED) + Math.pow(this.trackCenterPoints[0].z, SQUARED))
-    //     );
-    //     // ground.rotateX(DEG_TO_RAD * TEMP_GRID_ORIENTATION);
-    //     ground.translateZ(LOWER_GROUND);
-    //     this._scene.add(ground);
-    // }
-
-    // private async renderSkyBox(): Promise<void> {
-    //     const textureSky: Texture = this._dayTime ? await this.loadTexture("sky") : await this.loadTexture("space");
-    //     const boxbox: BoxGeometry = new BoxGeometry(SKYBOX_SIZE, SKYBOX_SIZE, SKYBOX_SIZE);
-    //     const skyBox: Mesh = new Mesh(boxbox, new MeshLambertMaterial({ map: textureSky, vertexColors: VertexColors, side: BackSide }));
-    //     this._scene.add(skyBox);
-    // }
-
-    // private async loadTexture(textureName: String): Promise<Texture> {
-    //     return new Promise<Texture>((resolve, reject) => {
-    //         const loader: TextureLoader = new TextureLoader();
-    //         loader.load("assets/textures/" + textureName + ".jpg", (object) => {
-    //             resolve(object);
-    //         });
-    //     });
-    // }
 }
