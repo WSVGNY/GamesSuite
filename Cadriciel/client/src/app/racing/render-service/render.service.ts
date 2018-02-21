@@ -34,7 +34,7 @@ const AMBIENT_LIGHT_OPACITY: number = 0.5;
 // const TEMP_GRID_SIZE: number = 1000;
 // const SKYBOX_SIZE: number = 1000;
 const PLAYER_CAMERA: string = "PLAYER_CAMERA";
-const AI_CARS_NUMBER: number = 1;
+const AI_CARS_NUMBER: number = 3;
 
 @Injectable()
 export class RenderService {
@@ -73,7 +73,13 @@ export class RenderService {
 
         for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
             this._aiCars.push(new Car());
-            this._carAiService.push(new CarAiService(this._playerCar, points, this._scene, Difficulty.Hard));
+            let diff: Difficulty = Difficulty.Hard;
+            if (i === 1 ) {
+                diff = Difficulty.Medium;
+            } else if (i === 2) {
+                diff = Difficulty.Easy;
+            }
+            this._carAiService.push(new CarAiService(this._aiCars[i], points, this._scene, diff));
         }
     }
 
@@ -101,7 +107,7 @@ export class RenderService {
 
         for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
             this._aiCars[i].position.add(new Vector3(
-                this._trackPoints.points[0].coordinates.x, 0,
+                this._trackPoints.points[0].coordinates.x + i, 0,
                 this._trackPoints.points[0].coordinates.z
             ));
             this.rotateCarToFaceStart(this._aiCars[i]);
@@ -117,7 +123,7 @@ export class RenderService {
         // const angle: number = carfinalFacingVector.z < 0 ?
         //     Math.acos(carfinalFacingVector.x) :
         //     - Math.acos(carfinalFacingVector.x);
-        //car.rotateY(Math.PI + angle);
+        // car.rotateY(Math.PI + angle);
     }
 
     private initStats(): void {
@@ -129,8 +135,10 @@ export class RenderService {
     private update(): void {
         const timeSinceLastFrame: number = Date.now() - this._lastDate;
         this._playerCar.update(timeSinceLastFrame);
-        this._aiCars[0].update(timeSinceLastFrame);
-        this._carAiService[0].update();
+        for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
+            this._aiCars[i].update(timeSinceLastFrame);
+            this._carAiService[i].update();
+        }
         this._lastDate = Date.now();
     }
 

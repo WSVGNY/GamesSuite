@@ -19,7 +19,7 @@ export class CarAiService {
     private readonly START_INDEX: number = 0;
     private readonly TURNING_POINT_BUFFER: number = 2;
 
-    private readonly DEBUG_MODE: boolean = true;
+    private readonly DEBUG_MODE: boolean = false;
 
     private _aiControl: CommandController;
     private _isGoingForward: boolean = false;
@@ -56,6 +56,10 @@ export class CarAiService {
         if (this.DEBUG_MODE) {
             this.initializeDebugMode();
         }
+
+        // TODO: Remove those two lines when orientation is sorted
+        this.goForward();
+        this._isGoingForward = false;
     }
 
     // Helper
