@@ -16,6 +16,8 @@ export class CarAiService {
     private readonly DISTANCE_BEFORE_REPLACEMENT: number = 2;
     private readonly START_INDEX: number = 0;
 
+    private readonly DEBUG_MODE: boolean = false;
+
     private _aiControl: CommandController;
     private _isGoingForward: boolean = false;
     private _isSteeringLeft: boolean = false;
@@ -26,29 +28,35 @@ export class CarAiService {
     private _trackVectors: {a: number, b: number, c: number}[];
 
     // HELPER
-    private _helper: BoxHelper;
+    private _carHelper: BoxHelper;
     private _carVectorHelper: VectorHelper;
     private _distanceVectorHelper: VectorHelper;
     private _turningVectorHelper: VectorHelper;
-
 
     public constructor(private _car: Car, private _trackVertices: Vector3[], public _scene: Scene) {
         this._aiControl = new CommandController();
         this.createVectorTrackFromPoints(_trackVertices);
 
-        // HELPER
-        this._carVectorHelper = new VectorHelper(PINK);
-        this._distanceVectorHelper = new VectorHelper(WHITE);
-        this._turningVectorHelper = new VectorHelper(PINK);
-        this._helper = new BoxHelper(this._car);
-        this._scene.add(this._helper);
+        if (this.DEBUG_MODE) {
+            this.initializeDebugMode();
+        }
+    }
 
+    // Helper
+    private initializeDebugMode(): void {
+    this._carVectorHelper = new VectorHelper(PINK);
+    this._distanceVectorHelper = new VectorHelper(WHITE);
+    this._turningVectorHelper = new VectorHelper(PINK);
+    this._carHelper = new BoxHelper(this._car);
+    this._scene.add(this._carHelper);
     }
 
     // tslint:disable-next-line:max-func-body-length
     public update(): void {
         // Helper
-        this._helper.update(this._car);
+        if (this.DEBUG_MODE) {
+            this._carHelper.update(this._car);
+        }
 
         const projection: Vector3 = this.projectInFrontOfCar();
         const lineDistance: number = this.getPointDistanceFromTrack(projection);
@@ -59,11 +67,9 @@ export class CarAiService {
         const turningPoint: Vector3 = this.projectTurningPoint();
 
         // Helper
-        this._carVectorHelper.update(carPosition, projection, this._scene);
-        this._distanceVectorHelper.update(projection, pointOnLine, this._scene);
-        this._turningVectorHelper.update(new Vector3(this._trackVertices[this._trackPortionIndex].x, 0,
-                                                     this._trackVertices[this._trackPortionIndex].z),
-                                         turningPoint, this._scene);
+        if (this.DEBUG_MODE) {
+            this.updateDebugMode(carPosition, projection, pointOnLine, turningPoint);
+        }
 
         if ((this._trackVertices[this._trackPortionIndex].distanceTo(pointOnLine) + pointOnLine.distanceTo(turningPoint)) - this._trackVertices[this._trackPortionIndex].distanceTo(turningPoint) < 3) {
             if (this._trackPortionIndex - 1 < 0) {
@@ -89,6 +95,14 @@ export class CarAiService {
                 this.releaseSteering();
             }
         }
+    }
+
+    private updateDebugMode(carPosition: Vector3, projection: Vector3, pointOnLine: Vector3, turningPoint: Vector3): void {
+        this._carVectorHelper.update(carPosition, projection, this._scene);
+        this._distanceVectorHelper.update(projection, pointOnLine, this._scene);
+        this._turningVectorHelper.update(new Vector3(this._trackVertices[this._trackPortionIndex].x, 0,
+                                                     this._trackVertices[this._trackPortionIndex].z),
+                                         turningPoint, this._scene);
     }
 
     private goForward(): void {
