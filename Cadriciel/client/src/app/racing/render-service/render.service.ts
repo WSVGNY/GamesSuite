@@ -3,7 +3,8 @@ import Stats = require("stats.js");
 import {
     PerspectiveCamera, WebGLRenderer, Scene, AmbientLight, Mesh, PlaneGeometry, Shape,
     MeshBasicMaterial, ShapeGeometry, Path, Vector3, Geometry, LineBasicMaterial, Line, Raycaster,
-    TextureLoader, Texture, BoxGeometry, MeshLambertMaterial, VertexColors, DoubleSide, MeshFaceMaterial, PointLight, DirectionalLight
+    TextureLoader, Texture, BoxGeometry, MeshLambertMaterial, VertexColors, DoubleSide, MeshFaceMaterial,
+    PointLight, DirectionalLight, SpotLight, SpotLight
 } from "three";
 import { Car } from "../car/car";
 import { Track, ITrack } from "../../../../../common/racing/track";
@@ -142,7 +143,7 @@ export class RenderService {
         this._playerCar.attachCamera(this._camera);
 
         this._scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
-        this.renderGround();
+        // this.renderGround();
         this.renderTrack();
         await this.renderSkyBox();
         this.renderLight();
@@ -412,6 +413,12 @@ export class RenderService {
         const directionalLight: DirectionalLight = new DirectionalLight(0xffff00);
         directionalLight.position.set(this._playerCar.position.x, this._playerCar.position.y, this._playerCar.position.z).normalize();
         this._scene.add(directionalLight);
-    }
 
+        const light: SpotLight = new SpotLight( 0xffffff, 5, 300, Math.PI/2, 1 );
+        light.position.set( this._playerCar.position.x, this._playerCar.position.y, this._playerCar.position.z );
+        light.target.position.set(50, 0, 800);
+        light.distance = 100;
+        light.castShadow = false;
+        this._scene.add(light);
+    }
 }
