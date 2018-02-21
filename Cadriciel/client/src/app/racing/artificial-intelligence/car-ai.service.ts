@@ -15,6 +15,7 @@ export class CarAiService {
     private readonly TURNING_POINT_DISTANCE: number = 0.1;
     private readonly DISTANCE_BEFORE_REPLACEMENT: number = 2;
     private readonly START_INDEX: number = 0;
+    private readonly TURNING_POINT_BUFFER: number = 3;
 
     private readonly DEBUG_MODE: boolean = false;
 
@@ -51,12 +52,7 @@ export class CarAiService {
     this._scene.add(this._carHelper);
     }
 
-    // tslint:disable-next-line:max-func-body-length
     public update(): void {
-        // Helper
-        if (this.DEBUG_MODE) {
-            this._carHelper.update(this._car);
-        }
 
         const projection: Vector3 = this.projectInFrontOfCar();
         const lineDistance: number = this.getPointDistanceFromTrack(projection);
@@ -71,14 +67,32 @@ export class CarAiService {
             this.updateDebugMode(carPosition, projection, pointOnLine, turningPoint);
         }
 
-        if ((this._trackVertices[this._trackPortionIndex].distanceTo(pointOnLine) + pointOnLine.distanceTo(turningPoint)) - this._trackVertices[this._trackPortionIndex].distanceTo(turningPoint) < 3) {
+        this.updateTrackPortionIndex(pointOnLine, turningPoint);
+        this.updateCarDirection(lineDistance);
+    }
+
+    private updateDebugMode(carPosition: Vector3, projection: Vector3, pointOnLine: Vector3, turningPoint: Vector3): void {
+        this._carHelper.update(this._car);
+        this._carVectorHelper.update(carPosition, projection, this._scene);
+        this._distanceVectorHelper.update(projection, pointOnLine, this._scene);
+        this._turningVectorHelper.update(new Vector3(this._trackVertices[this._trackPortionIndex].x, 0,
+                                                     this._trackVertices[this._trackPortionIndex].z),
+                                         turningPoint, this._scene);
+    }
+
+    private updateTrackPortionIndex(pointOnLine: Vector3, turningPoint: Vector3): void {
+        if ((this._trackVertices[this._trackPortionIndex].distanceTo(pointOnLine) + pointOnLine.distanceTo(turningPoint))
+             - this._trackVertices[this._trackPortionIndex].distanceTo(turningPoint) < this.TURNING_POINT_BUFFER) {
+
             if (this._trackPortionIndex - 1 < 0) {
                 this._trackPortionIndex = this._trackVectors.length - 1;
             } else {
                 this._trackPortionIndex--;
             }
         }
+    }
 
+    private updateCarDirection(lineDistance: number): void {
         if (Math.abs(lineDistance) > this.DISTANCE_BEFORE_REPLACEMENT) {
             if (lineDistance < 0) {
                 if (!this._isSteeringLeft) {
@@ -95,14 +109,6 @@ export class CarAiService {
                 this.releaseSteering();
             }
         }
-    }
-
-    private updateDebugMode(carPosition: Vector3, projection: Vector3, pointOnLine: Vector3, turningPoint: Vector3): void {
-        this._carVectorHelper.update(carPosition, projection, this._scene);
-        this._distanceVectorHelper.update(projection, pointOnLine, this._scene);
-        this._turningVectorHelper.update(new Vector3(this._trackVertices[this._trackPortionIndex].x, 0,
-                                                     this._trackVertices[this._trackPortionIndex].z),
-                                         turningPoint, this._scene);
     }
 
     private goForward(): void {
