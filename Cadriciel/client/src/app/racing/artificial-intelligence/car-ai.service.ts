@@ -152,7 +152,7 @@ export class CarAiService {
     private createVectorTrackFromPoints(track: Vector3[]): void {
         this._trackVectors = [];
         for (let i: number = 0; i < track.length; ++i) {
-            const nextVertex: number = i === track.length - 1 ? 1 : -i;
+            const nextVertex: number = i === track.length - 1 ? -i : 1;
 
             const a: number = track[i].z - track[i + nextVertex].z;
             const b: number = track[i + nextVertex].x - track[i].x;
