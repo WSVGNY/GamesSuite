@@ -5,11 +5,14 @@ import {
     MeshBasicMaterial, ShapeGeometry, Path, Vector3, Geometry, LineBasicMaterial, Line,
     BackSide,
     TextureLoader,
-    Texture
+    Texture,
+    RepeatWrapping,
+    PlaneGeometry,
+    CubeTextureLoader
 } from "three";
 import { CarAiService } from "../artificial-intelligence/car-ai.service";
 import { Car } from "../car/car";
-import { PI_OVER_2 } from "../constants";
+import { PI_OVER_2, LOWER_GROUND } from "../constants";
 import { MOCK_TRACK } from "./mock-track";
 import { TrackPoint, TrackPointList } from "./trackPoint";
 
@@ -153,8 +156,8 @@ export class RenderService {
 
         this._scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
         this.renderTrack();
-        // await this.renderGround();
-        // await this.renderSkyBox();
+        this.renderGround();
+        this.renderSkyBox();
     }
 
     private getAspectRatio(): number {
@@ -244,12 +247,16 @@ export class RenderService {
 
         shape.holes.push(holePath);
         const geometry: ShapeGeometry = new ShapeGeometry(shape);
-        new TextureLoader().load("assets/textures/asphalte.jpg", (texture: Texture) => {
-            const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ side: BackSide, map: texture });
-            const ground: Mesh = new Mesh(geometry, groundMaterial);
-            ground.rotateX(PI_OVER_2);
-            this._scene.add(ground);
-        });
+
+        const texture: Texture = new TextureLoader().load("assets/textures/asphalte.jpg");
+        texture.wrapS = RepeatWrapping;
+        texture.wrapT = RepeatWrapping;
+        texture.repeat.set(0.045, 0.045);
+        const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ side: BackSide, map: texture });
+
+        const ground: Mesh = new Mesh(geometry, groundMaterial);
+        ground.rotateX(PI_OVER_2);
+        this._scene.add(ground);
     }
 
     private renderCenterLine(): void {
@@ -262,37 +269,40 @@ export class RenderService {
         this._scene.add(line);
     }
 
-    // private async renderGround(): Promise<void> {
-    //     const groundGeometry: PlaneGeometry = new PlaneGeometry(10000, 10000, 1, 1);
-    //     // const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ side: BackSide, color: 0x00FFFF });
-    //     const textureGround: Texture = await this.loadTexture("asphalte");
-    //     const material: MeshLambertMaterial = new MeshLambertMaterial({ map: textureGround, vertexColors: VertexColors });
-    //     const ground: Mesh = new Mesh(groundGeometry, material);
-    //     // ground.translateOnAxis(
-    //     //     this._trackPoints.points[0].coordinates,
-    //     //     Math.sqrt(Math.pow(
-    //     //         this._trackPoints.points[0].coordinates.x, SQUARED) +
-    //     //         Math.pow(this._trackPoints.points[0].coordinates.z, SQUARED)
-    //     //     )
-    //     // );
-    //     ground.rotateX(PI_OVER_2);
-    //     ground.translateZ(LOWER_GROUND);
-    //     this._scene.add(ground);
-    // }
+    private async renderGround(): Promise<void> {
+        const groundGeometry: PlaneGeometry = new PlaneGeometry(10000, 10000, 1, 1);
 
-    // private async renderSkyBox(): Promise<void> {
-    //     const textureSky: Texture = this._dayTime ? await this.loadTexture("sky") : await this.loadTexture("space");
-    //     const boxbox: BoxGeometry = new BoxGeometry(SKYBOX_SIZE, SKYBOX_SIZE, SKYBOX_SIZE);
-    //     const skyBox: Mesh = new Mesh(boxbox, new MeshLambertMaterial({ map: textureSky, vertexColors: VertexColors, side: BackSide }));
-    //     this._scene.add(skyBox);
-    // }
+        const texture: Texture = new TextureLoader().load("assets/textures/green-grass-texture.jpg");
+        texture.wrapS = RepeatWrapping;
+        texture.wrapT = RepeatWrapping;
+        texture.repeat.set(1000, 1000);
+        const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ side: BackSide, map: texture });
 
-    // private async loadTexture(textureName: String): Promise<Texture> {
-    //     return new Promise<Texture>((resolve, reject) => {
-    //         const loader: TextureLoader = new TextureLoader();
-    //         loader.load("assets/textures/" + textureName + ".jpg", (object) => {
-    //             resolve(object);
-    //         });
-    //     });
-    // }
+        const ground: Mesh = new Mesh(groundGeometry, groundMaterial);
+        ground.rotateX(PI_OVER_2);
+        ground.translateZ(LOWER_GROUND);
+        this._scene.add(ground);
+    }
+
+    private async renderSkyBox(): Promise<void> {
+        this._scene.background = new CubeTextureLoader()
+            // .setPath("assets/textures/clouds/")
+            // .load([
+            //     "CloudyLightRays_px.jpg", // 'px.png',
+            //     "CloudyLightRays_nx.jpg", // 'nx.png',
+            //     "CloudyLightRays_py.jpg", // 'py.png',
+            //     "CloudyLightRays_ny.jpg", // 'ny.png',
+            //     "CloudyLightRays_pz.jpg", // 'pz.png',
+            //     "CloudyLightRays_nz.jpg"// 'nz.png'
+            // ]);
+            .setPath("assets/textures/Tropical/")
+            .load([
+                "TropicalSunnyDay_px.jpg", // 'px.png',
+                "TropicalSunnyDay_nx.jpg", // 'nx.png',
+                "TropicalSunnyDay_py.jpg", // 'py.png',
+                "TropicalSunnyDay_ny.jpg", // 'ny.png',
+                "TropicalSunnyDay_pz.jpg", // 'pz.png',
+                "TropicalSunnyDay_nz.jpg"// 'nz.png'
+            ]);
+    }
 }
