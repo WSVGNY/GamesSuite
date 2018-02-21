@@ -73,7 +73,7 @@ export class RenderService {
 
         for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
             this._aiCars.push(new Car());
-            this._carAiService.push(new CarAiService(this._playerCar, points, this._scene, Difficulty.Easy));
+            this._carAiService.push(new CarAiService(this._playerCar, points, this._scene, Difficulty.Hard));
         }
     }
 

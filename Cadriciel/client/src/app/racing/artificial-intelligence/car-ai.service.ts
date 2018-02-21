@@ -15,9 +15,9 @@ import { Line } from "./line";
 export class CarAiService {
     private readonly DISTANCE_FROM_VEHICULE: number;
     private readonly DISTANCE_BEFORE_REPLACEMENT: number;
-    private readonly TURNING_POINT_DISTANCE: number = 0.1;
+    private readonly TURNING_POINT_DISTANCE: number = 0.05;
     private readonly START_INDEX: number = 0;
-    private readonly TURNING_POINT_BUFFER: number = 5;
+    private readonly TURNING_POINT_BUFFER: number = 2;
 
     private readonly DEBUG_MODE: boolean = true;
 
@@ -42,7 +42,7 @@ export class CarAiService {
 
         // tslint:disable:no-magic-numbers
         if (difficulty === Difficulty.Hard) {
-            this.DISTANCE_FROM_VEHICULE = 18;
+            this.DISTANCE_FROM_VEHICULE = 20;
             this.DISTANCE_BEFORE_REPLACEMENT = 1.2;
         } else if (difficulty === Difficulty.Medium) {
             this.DISTANCE_FROM_VEHICULE = 12;
@@ -95,8 +95,8 @@ export class CarAiService {
     }
 
     private updateTrackPortionIndex(pointOnLine: Vector3, turningPoint: Vector3): void {
-        if ((this._trackVertices[this._trackPortionIndex].distanceTo(pointOnLine) + pointOnLine.distanceTo(turningPoint))
-             - this._trackVertices[this._trackPortionIndex].distanceTo(turningPoint) < this.TURNING_POINT_BUFFER) {
+        if (this._trackVertices[this._trackPortionIndex].distanceTo(pointOnLine) > this.TURNING_POINT_BUFFER &&
+             pointOnLine.distanceTo(turningPoint) < this.TURNING_POINT_BUFFER) {
 
             if (this._trackPortionIndex - 1 < 0) {
                 this._trackPortionIndex = this._trackVectors.length - 1;
