@@ -8,7 +8,12 @@ import {
     Texture,
     RepeatWrapping,
     PlaneGeometry,
-    CubeTextureLoader
+    CubeTextureLoader,
+    HemisphereLight,
+    HemisphereLightHelper,
+    MeshLambertMaterial,
+    DirectionalLight,
+    DirectionalLightHelper
 } from "three";
 import { CarAiService } from "../artificial-intelligence/car-ai.service";
 import { Car } from "../car/car";
@@ -29,9 +34,6 @@ const INITIAL_CAMERA_POSITION_Z: number = 10;
 const INITIAL_CAMERA_POSITION_Y: number = 5;
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
-// const TEMP_GRID_ORIENTATION: number = 90;
-// const TEMP_GRID_SIZE: number = 1000;
-// const SKYBOX_SIZE: number = 1000;
 const PLAYER_CAMERA: string = "PLAYER_CAMERA";
 const AI_CARS_NUMBER: number = 1;
 
@@ -73,7 +75,6 @@ export class RenderService {
         for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
             this._aiCars.push(new Car());
             this._carAiService.push(new CarAiService(this._playerCar, points, this._scene));
-            this.rotateCarToFaceStart(this._aiCars[i]);
         }
     }
 
@@ -96,9 +97,6 @@ export class RenderService {
         );
         this.rotateCarToFaceStart(this._playerCar);
 
-        // this._playerCar.position.add(new Vector3(0, 0, 900));
-        // this._playerCar.rotateY(-PI_OVER_2);
-
         for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
             this._aiCars[i].position.add(new Vector3(
                 this._trackPoints.points[0].coordinates.x, 0,
@@ -117,7 +115,7 @@ export class RenderService {
         const angle: number = carfinalFacingVector.z < 0 ?
             Math.acos(carfinalFacingVector.x) :
             - Math.acos(carfinalFacingVector.x);
-        car.rotateY(Math.PI + angle);
+        // car.rotateY(Math.PI + angle);
     }
 
     private initStats(): void {
@@ -154,10 +152,41 @@ export class RenderService {
         this._camera.position.y = INITIAL_CAMERA_POSITION_Y;
         this._playerCar.attachCamera(this._camera);
 
-        this._scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
+        this.lighting();
         this.renderTrack();
         this.renderGround();
         this.renderSkyBox();
+    }
+
+    public lighting(): void {
+
+        // this._scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
+
+        // const hemiLight: HemisphereLight = new HemisphereLight(0xffffff, 0xffffff, 0.6);
+        // hemiLight.color.setHSL(0.6, 1, 0.6);
+        // hemiLight.groundColor.setHSL(0.095, 1, 0.75);
+        // hemiLight.position.set(0, 50, 0);
+        // this._scene.add(hemiLight);
+        // const hemiLightHelper: HemisphereLightHelper = new HemisphereLightHelper(hemiLight, 10);
+        // this._scene.add(hemiLightHelper);
+
+        const dirLight: DirectionalLight = new DirectionalLight(0xffffff, 0.5);
+        dirLight.color.setHSL(0.1, 1, 0.95);
+        dirLight.position.set(-1, 1.75, 1);
+        dirLight.position.multiplyScalar(30);
+        this._scene.add(dirLight);
+        dirLight.castShadow = true;
+        dirLight.shadow.mapSize.width = 2048;
+        dirLight.shadow.mapSize.height = 2048;
+        const d: number = 50;
+        dirLight.shadow.camera.left = -d;
+        dirLight.shadow.camera.right = d;
+        dirLight.shadow.camera.top = d;
+        dirLight.shadow.camera.bottom = -d;
+        dirLight.shadow.camera.far = 3500;
+        dirLight.shadow.bias = -0.0001;
+        const dirLightHeper: DirectionalLightHelper = new DirectionalLightHelper(dirLight, 10)
+        this._scene.add(dirLightHeper);
     }
 
     private getAspectRatio(): number {
@@ -252,7 +281,7 @@ export class RenderService {
         texture.wrapS = RepeatWrapping;
         texture.wrapT = RepeatWrapping;
         texture.repeat.set(0.045, 0.045);
-        const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ side: BackSide, map: texture });
+        const groundMaterial: MeshLambertMaterial = new MeshLambertMaterial({ side: BackSide, map: texture });
 
         const ground: Mesh = new Mesh(geometry, groundMaterial);
         ground.rotateX(PI_OVER_2);
@@ -276,7 +305,7 @@ export class RenderService {
         texture.wrapS = RepeatWrapping;
         texture.wrapT = RepeatWrapping;
         texture.repeat.set(1000, 1000);
-        const groundMaterial: MeshBasicMaterial = new MeshBasicMaterial({ side: BackSide, map: texture });
+        const groundMaterial: MeshLambertMaterial = new MeshLambertMaterial({ side: BackSide, map: texture });
 
         const ground: Mesh = new Mesh(groundGeometry, groundMaterial);
         ground.rotateX(PI_OVER_2);
@@ -295,14 +324,24 @@ export class RenderService {
             //     "CloudyLightRays_pz.jpg", // 'pz.png',
             //     "CloudyLightRays_nz.jpg"// 'nz.png'
             // ]);
-            .setPath("assets/textures/Tropical/")
+            // .setPath("assets/textures/Tropical/")
+            // .load([
+            //     "TropicalSunnyDay_px.jpg", // 'px.png',
+            //     "TropicalSunnyDay_nx.jpg", // 'nx.png',
+            //     "TropicalSunnyDay_py.jpg", // 'py.png',
+            //     "TropicalSunnyDay_ny.jpg", // 'ny.png',
+            //     "TropicalSunnyDay_pz.jpg", // 'pz.png',
+            //     "TropicalSunnyDay_nz.jpg"// 'nz.png'
+            // ]);
+
+            .setPath("assets/textures/night/")
             .load([
-                "TropicalSunnyDay_px.jpg", // 'px.png',
-                "TropicalSunnyDay_nx.jpg", // 'nx.png',
-                "TropicalSunnyDay_py.jpg", // 'py.png',
-                "TropicalSunnyDay_ny.jpg", // 'ny.png',
-                "TropicalSunnyDay_pz.jpg", // 'pz.png',
-                "TropicalSunnyDay_nz.jpg"// 'nz.png'
+                "night_px.jpg", // 'px.png',
+                "night_nx.jpg", // 'nx.png',
+                "night_py.jpg", // 'py.png',
+                "night_ny.jpg", // 'ny.png',
+                "night_pz.jpg", // 'pz.png',
+                "night_nz.jpg"// 'nz.png'
             ]);
     }
 }
