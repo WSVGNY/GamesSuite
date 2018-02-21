@@ -57,7 +57,7 @@ describe("GRID CREATE TESTS", () => {
 
     it("Lexicon fills all words", (done: MochaDone) => {
         for (const word of grid["words"]) {
-            if (word.value === "" || String(word.value).indexOf("?", 0) > -1) {
+            if (word._value === "" || String(word._value).indexOf("?", 0) > -1) {
                 assert(false);
                 done();
             }
@@ -69,7 +69,7 @@ describe("GRID CREATE TESTS", () => {
     it("Grid doesn't contain same words twice", (done: MochaDone) => {
         for (const word1 of grid["words"]) {
             for (const word2 of grid["words"]) {
-                if (word1.value === word2.value && word1.id !== word2.id) {
+                if (word1._value === word2._value && word1._id !== word2._id) {
                     assert(false);
                     done();
                 }

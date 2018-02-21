@@ -1,7 +1,7 @@
-import { Word } from "./word";
+import { Word } from "../../server/app/crossword/word";
 import { Difficulty } from "./difficulty";
-import { GridBox } from "./gridBox";
-import { Coordinate } from "./coordinate";
+import { GridBox } from "../../server/app/crossword/gridBox";
+import { Coordinate } from "../../server/app/crossword/coordinate";
 
 export class Grid {
     public readonly SIZE_GRID_X: number = 10;
