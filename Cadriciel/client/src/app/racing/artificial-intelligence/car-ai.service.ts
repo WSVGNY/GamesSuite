@@ -23,8 +23,8 @@ export class CarAiService {
     private _isGoingForward: boolean = false;
     private _isSteeringLeft: boolean = false;
     private _isSteeringRight: boolean = false;
-    private _isBraking: boolean = false;
-    private _isReleasingSteering: boolean = false;
+    // private _isBraking: boolean = false;
+    // private _isReleasingSteering: boolean = false;
     private _trackPortionIndex: number = this.START_INDEX;
     private _trackVectors: {a: number, b: number, c: number}[];
 
@@ -53,12 +53,11 @@ export class CarAiService {
     }
 
     public update(): void {
-
-        const projection: Vector3 = this.projectInFrontOfCar();
-        const lineDistance: number = this.getPointDistanceFromTrack(projection);
         const carPosition: Vector3 = new Vector3(this._car.position.x + this._car.currentPosition.x, 0,
                                                  this._car.position.z + this._car.currentPosition.z);
 
+        const projection: Vector3 = this.projectInFrontOfCar();
+        const lineDistance: number = this.getPointDistanceFromTrack(projection);
         const pointOnLine: Vector3 = this.projectPointOnLine(projection);
         const turningPoint: Vector3 = this.projectTurningPoint();
 
@@ -132,7 +131,7 @@ export class CarAiService {
     private releaseSteering(): void {
         this._aiControl.setCommand(new ReleaseSteering(this._car));
         this._aiControl.execute();
-        this._isReleasingSteering = true;
+        // this._isReleasingSteering = true;
         this._isSteeringRight = false;
         this._isSteeringLeft = false;
         this._isGoingForward = false;
