@@ -9,6 +9,7 @@ import { Vector3, Scene, BoxHelper } from "three";
 import { VectorHelper } from "./vectorHelper";
 import { PINK, WHITE } from "../constants";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
+import { Line } from "./line";
 
 @Injectable()
 export class CarAiService {
@@ -27,7 +28,7 @@ export class CarAiService {
     // private _isBraking: boolean = false;
     // private _isReleasingSteering: boolean = false;
     private _trackPortionIndex: number = this.START_INDEX;
-    private _trackVectors: {a: number, b: number, c: number}[];
+    private _trackVectors: Line[];
 
     // HELPER
     private _carHelper: BoxHelper;
@@ -39,22 +40,18 @@ export class CarAiService {
         this._aiControl = new CommandController();
         this.createVectorTrackFromPoints(_trackVertices);
 
+        // tslint:disable:no-magic-numbers
         if (difficulty === Difficulty.Hard) {
-            // tslint:disable-next-line:no-magic-numbers
             this.DISTANCE_FROM_VEHICULE = 18;
-            // tslint:disable-next-line:no-magic-numbers
             this.DISTANCE_BEFORE_REPLACEMENT = 1.2;
         } else if (difficulty === Difficulty.Medium) {
-            // tslint:disable-next-line:no-magic-numbers
             this.DISTANCE_FROM_VEHICULE = 12;
-            // tslint:disable-next-line:no-magic-numbers
             this.DISTANCE_BEFORE_REPLACEMENT = 2;
         } else {
-            // tslint:disable-next-line:no-magic-numbers
             this.DISTANCE_FROM_VEHICULE = 5.5;
-            // tslint:disable-next-line:no-magic-numbers
             this.DISTANCE_BEFORE_REPLACEMENT = 3;
         }
+        // tslint:enable:no-magic-numbers
 
         if (this.DEBUG_MODE) {
             this.initializeDebugMode();
@@ -174,12 +171,14 @@ export class CarAiService {
             const a: number = track[i].z - track[i + nextVertex].z;
             const b: number = track[i + nextVertex].x - track[i].x;
             const c: number = track[i].x * track[i + nextVertex].z - track[i + nextVertex].x * track[i].z;
-            this._trackVectors.push({a, b, c});
+            const line: Line = new Line (a, b, c);
+
+            this._trackVectors.push(line);
         }
     }
 
     private getPointDistanceFromTrack(point: Vector3): number {
-        const line: {a: number, b: number, c: number} = this._trackVectors[this._trackPortionIndex];
+        const line: Line = this._trackVectors[this._trackPortionIndex];
         const top: number = line.a * point.x + line.b * point.z + line.c;
         const bottom: number = Math.sqrt(line.a * line.a + line.b * line.b);
 
@@ -187,7 +186,7 @@ export class CarAiService {
     }
 
     private projectPointOnLine(point: Vector3): Vector3 {
-        const line: {a: number, b: number, c: number} = this._trackVectors[this._trackPortionIndex];
+        const line: Line = this._trackVectors[this._trackPortionIndex];
 
         const a: number = -this._trackVectors[this._trackPortionIndex].b;
         const b: number = this._trackVectors[this._trackPortionIndex].a;
