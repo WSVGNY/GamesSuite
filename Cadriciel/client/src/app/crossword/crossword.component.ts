@@ -65,11 +65,6 @@ export class CrosswordComponent {
         document.getElementById("gridHider").style.visibility = "visible";
     }
 
-    public hide(): void {
-        document.getElementById("image1").style.display = "none";
-        document.getElementById("image2").style.display = "none";
-    }
-
     public changeMode(): void {
         this.isInCheatMode ?
             this.isInCheatMode = false :
