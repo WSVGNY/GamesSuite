@@ -5,15 +5,16 @@ import * as requestPromise from "request-promise-native";
 import { Difficulty } from "../../../common/crossword/difficulty";
 import { ResponseWordFromAPI } from "../../../common/communication/responseWordFromAPI";
 
+const FREQUENCY_DELIMITER: number = 6;
+const MIN_NUMBER_OF_DEFINITION: number = 2;
+const UNWANTED_CHARACTERS_LENGTH: number = 2;
+const ERROR_STATUS_CODE: number = 500;
+
 @injectable()
 export class Lexicon {
 
     private readonly BASE_URL: string = "https://api.datamuse.com/words?";
     private difficulty: Difficulty = Difficulty.Easy;
-    private readonly FREQUENCY_DELIMITER: number = 6;
-    private readonly MIN_NUMBER_OF_DEFINITION: number = 2;
-    private readonly UNWANTED_CHARACTERS_LENGTH: number = 2;
-    private readonly ERROR_STATUS_CODE_LENGTH: number = 3;
 
     private getDefinition(word: string): string {
         const definitions: string = word["defs"];
@@ -36,7 +37,7 @@ export class Lexicon {
         if (this.difficulty === Difficulty.Easy) {
             return definitions[0];
         } else {
-            if (definitions.length >= this.MIN_NUMBER_OF_DEFINITION) {
+            if (definitions.length >= MIN_NUMBER_OF_DEFINITION) {
                 return definitions[1];
             } else {
                 return definitions[0];
@@ -45,15 +46,15 @@ export class Lexicon {
     }
 
     private checkFrequency(word: string): boolean {
-        const frequency: number = word["tags"][0].substring(this.UNWANTED_CHARACTERS_LENGTH);
+        const frequency: number = word["tags"][0].substring(UNWANTED_CHARACTERS_LENGTH);
         if (this.difficulty === Difficulty.Hard) {
-            if (frequency < this.FREQUENCY_DELIMITER) {
+            if (frequency < FREQUENCY_DELIMITER) {
                 return true;
             } else {
                 return false;
             }
         } else {
-            if (frequency >= this.FREQUENCY_DELIMITER) {
+            if (frequency >= FREQUENCY_DELIMITER) {
                 return true;
             } else {
                 return false;
@@ -127,8 +128,7 @@ export class Lexicon {
                 }
             }
         ).catch((e: Error) => {
-            const status: number = +e.message.substring(0, this.ERROR_STATUS_CODE_LENGTH);
-            res.sendStatus(status);
+            res.sendStatus(ERROR_STATUS_CODE);
         });
     }
 }
