@@ -1,4 +1,4 @@
-import { Vector3, Matrix4, Object3D, ObjectLoader, Euler, Quaternion, Camera } from "three";
+import { Vector3, Matrix4, Object3D, ObjectLoader, Euler, Quaternion, Camera, SpotLight } from "three";
 import { Engine } from "./engine";
 import { MS_TO_SECONDS, GRAVITY, PI_OVER_2, RAD_TO_DEG } from "../constants";
 import { Wheel } from "./wheel";
@@ -56,6 +56,10 @@ export class Car extends Object3D {
 
     public attachCamera(camera: Camera): void {
         this._mesh.add(camera);
+    }
+
+    public attachLight(light: SpotLight): void {
+        this._mesh.add(light);
     }
 
     public attachCube(cube: Object3D): void {

@@ -51,8 +51,10 @@ export class RenderService {
     private _lastDate: number;
     private _carAiService: CarAiService[];
     private _aiCars: Car[];
-    // private _dayTime: boolean = true;
+    private _dayTime: boolean = true;
     private _trackPoints: TrackPointList;
+    private _lightColor: string;
+    private _sceneLight: SpotLight;
 
     public get playerCar(): Car {
         return this._playerCar;
@@ -170,6 +172,7 @@ export class RenderService {
         this.renderTrack();
         this.renderGround();
         this.renderSkyBox();
+        this.renderLight();
     }
 
     private getAspectRatio(): number {
@@ -203,7 +206,6 @@ export class RenderService {
         switch (event.keyCode) {
             case ACCELERATE_KEYCODE:
                 this._playerCar.accelerate();
-                this.renderLight();
                 break;
             case LEFT_KEYCODE:
                 this._playerCar.steerLeft();
@@ -213,16 +215,17 @@ export class RenderService {
                 break;
             case BRAKE_KEYCODE:
                 this._playerCar.reverse();
+                /*this._scene.remove(this._sceneLight);
+                this.renderLight(0xff0000);*/
                 break;
             case DAY_KEYCODE:
-                // this._dayTime = true;
-                // this._scene.remove(this._skyBox);
+                this._dayTime = true;
                 this.renderSkyBox();
                 break;
             case NIGHT_KEYCODE:
-                // this._dayTime = false;
-                // this._scene.remove(this._skyBox);
+                this._dayTime = false;
                 this.renderSkyBox();
+                this.renderLight(0xffff00);
                 break;
             default:
                 break;
@@ -308,16 +311,8 @@ export class RenderService {
     }
 
     private async renderSkyBox(): Promise<void> {
-        this._scene.background = new CubeTextureLoader()
-            // .setPath("assets/textures/clouds/")
-            // .load([
-            //     "CloudyLightRays_px.jpg", // 'px.png',
-            //     "CloudyLightRays_nx.jpg", // 'nx.png',
-            //     "CloudyLightRays_py.jpg", // 'py.png',
-            //     "CloudyLightRays_ny.jpg", // 'ny.png',
-            //     "CloudyLightRays_pz.jpg", // 'pz.png',
-            //     "CloudyLightRays_nz.jpg"// 'nz.png'
-            // ]);
+        if (this._dayTime === true) {
+            this._scene.background = new CubeTextureLoader()
             .setPath("assets/textures/Tropical/")
             .load([
                 "TropicalSunnyDay_px.jpg", // 'px.png',
@@ -327,8 +322,20 @@ export class RenderService {
                 "TropicalSunnyDay_pz.jpg", // 'pz.png',
                 "TropicalSunnyDay_nz.jpg"// 'nz.png'
             ]);
+        } else {
+            this._scene.background = new CubeTextureLoader()
+            .setPath("assets/textures/clouds/")
+            .load([
+                "CloudyLightRays_px.jpg", // 'px.png',
+                "CloudyLightRays_nx.jpg", // 'nx.png',
+                "CloudyLightRays_py.jpg", // 'py.png',
+                "CloudyLightRays_ny.jpg", // 'ny.png',
+                "CloudyLightRays_pz.jpg", // 'pz.png',
+                "CloudyLightRays_nz.jpg"// 'nz.png'
+            ]);
+        }
     }
-    private renderLight(): void {
+    private renderLight(color: string): void {
         /*const pointLight: PointLight = new PointLight(0xffff00);
         pointLight.position = this._playerCar.position;
         this._scene.add(pointLight);*/
@@ -336,15 +343,24 @@ export class RenderService {
         scene.add( ambient );
         directionalLight = new THREE.DirectionalLight( 0xffffff );
         directionalLight.position.set( 0, -70, 100 ).normalize();*/
-        const directionalLight: DirectionalLight = new DirectionalLight(0xffff00);
+        /*const directionalLight: DirectionalLight = new DirectionalLight(0xffff00);
         directionalLight.position.set(this._playerCar.position.x, this._playerCar.position.y, this._playerCar.position.z).normalize();
-        this._scene.add(directionalLight);
+        this._scene.add(directionalLight);*/
 
-        const light: SpotLight = new SpotLight( 0xffffff, 5, 300, Math.PI/2, 1 );
-        light.position.set( this._playerCar.position.x, this._playerCar.position.y, this._playerCar.position.z );
+        const light: SpotLight = new SpotLight( color, 5, 300, Math.PI/2, 1 );
+        const light2: SpotLight = new SpotLight( 0xff0000, 5, 300, Math.PI/2, 1 );
+
+        light.position.set( this._playerCar.position.x - 2, this._playerCar.position.y + 5, this._playerCar.position.z );
+        light2.position.set( this._playerCar.position.x + 2, this._playerCar.position.y + 5, this._playerCar.position.z );
         light.target.position.set(50, 0, 800);
+        light2.target.position.set(1, 1, 1);
         light.distance = 100;
-        light.castShadow = false;
+        light2.distance = 100;
+        light.castShadow = true;
         this._scene.add(light);
+        this._sceneLight = light;
+
+        this._playerCar.attachLight(light);
+        this._playerCar.attachLight(light2);
     }
 }
