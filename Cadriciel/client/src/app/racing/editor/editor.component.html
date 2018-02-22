@@ -1,5 +1,5 @@
 <button (click)="goBack()"> Go back </button>
 <input #trackName type="text" [value]="currentTrackName" (keyup.enter)="saveTrackName(trackName.value)" (blur)="saveTrackName(trackName.value)">
-<button (click)="saveTrack()"> Save </button>
+<button id="saveButton" (click)="saveTrack()" (click)="goBack()"> Save and go back </button>
 <div #containerEditor>
 </div>

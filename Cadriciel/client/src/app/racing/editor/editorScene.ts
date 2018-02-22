@@ -215,8 +215,18 @@ export class EditorScene {
             connection.material = SIMPLE_LINE_MATERIAL;
         }
         constraintsPass = ConstraintValidator.checkLength(this._connections);
-        constraintsPass = ConstraintValidator.checkAngle(this._connections, this._isComplete);
-        constraintsPass = ConstraintValidator.checkIntersection(this._connections, this._isComplete);
+        if (constraintsPass) {
+            constraintsPass = ConstraintValidator.checkAngle(this._connections, this._isComplete);
+        }
+        if (constraintsPass) {
+            constraintsPass = ConstraintValidator.checkIntersection(this._connections, this._isComplete);
+        }
+        if (constraintsPass) {
+            constraintsPass = this._isComplete;
+        }
+        constraintsPass ?
+            (document.getElementById("saveButton") as HTMLInputElement).disabled = false :
+            (document.getElementById("saveButton") as HTMLInputElement).disabled = true;
 
         return constraintsPass;
     }
