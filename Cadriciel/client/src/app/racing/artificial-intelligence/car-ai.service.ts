@@ -1,21 +1,21 @@
 import { Injectable } from "@angular/core";
 import { Car } from "../car/car";
 import { CommandController } from "../commandController";
-// import { GoFoward } from "../commands/carAICommands/goFoward";
 import { TurnLeft } from "../commands/carAICommands/turnLeft";
 import { TurnRight } from "../commands/carAICommands/turnRight";
 import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";
 import { Vector3, Scene, BoxHelper } from "three";
 import { VectorHelper } from "./vectorHelper";
-import { PINK, WHITE } from "../constants";
+import { PINK, WHITE, SQUARED } from "../constants";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { Line } from "./line";
+import { GoFoward } from "../commands/carAICommands/goFoward";
 
 @Injectable()
 export class CarAiService {
     private readonly DISTANCE_FROM_VEHICULE: number;
     private readonly DISTANCE_BEFORE_REPLACEMENT: number;
-    private readonly TURNING_POINT_DISTANCE: number = 0.05;
+    private readonly TURNING_POINT_DISTANCE: number = 0.1;
     private readonly START_INDEX: number = 0;
     private readonly TURNING_POINT_BUFFER: number = 2;
 
@@ -46,7 +46,7 @@ export class CarAiService {
         // tslint:disable:no-magic-numbers
         if (difficulty === Difficulty.Hard) {
             this.DISTANCE_FROM_VEHICULE = 20;
-            this.DISTANCE_BEFORE_REPLACEMENT = 1.2;
+            this.DISTANCE_BEFORE_REPLACEMENT = 1;
         } else if (difficulty === Difficulty.Medium) {
             this.DISTANCE_FROM_VEHICULE = 12;
             this.DISTANCE_BEFORE_REPLACEMENT = 2;
@@ -60,9 +60,6 @@ export class CarAiService {
             this.initializeDebugMode();
         }
 
-        // TODO: Remove those two lines when orientation is sorted
-        this.goForward();
-        this._isGoingForward = false;
     }
 
     // Helper
@@ -79,7 +76,8 @@ export class CarAiService {
     }
 
     public update(): void {
-        const carPosition: Vector3 = new Vector3(this._car.position.x + this._car.currentPosition.x, 0,
+        const carPosition: Vector3 = new Vector3(
+            this._car.position.x + this._car.currentPosition.x, 0,
             this._car.position.z + this._car.currentPosition.z);
 
         const projection: Vector3 = this.projectInFrontOfCar();
@@ -103,19 +101,24 @@ export class CarAiService {
         this._carHelper.update(this._car);
         this._carVectorHelper.update(carPosition, projection, this._scene);
         this._distanceVectorHelper.update(projection, pointOnLine, this._scene);
-        this._turningVectorHelper.update(new Vector3(this._trackVertices[this._trackPortionIndex].x, 0,
-            this._trackVertices[this._trackPortionIndex].z),
-            turningPoint, this._scene);
+        this._turningVectorHelper.update(
+            new Vector3(
+                this._trackVertices[this._trackPortionIndex].x,
+                0,
+                this._trackVertices[this._trackPortionIndex].z),
+            turningPoint,
+            this._scene
+        );
     }
 
     private updateTrackPortionIndex(pointOnLine: Vector3, turningPoint: Vector3): void {
         if (this._trackVertices[this._trackPortionIndex].distanceTo(pointOnLine) > this.TURNING_POINT_BUFFER &&
             pointOnLine.distanceTo(turningPoint) < this.TURNING_POINT_BUFFER) {
 
-            if (this._trackPortionIndex - 1 < 0) {
-                this._trackPortionIndex = this._trackVectors.length - 1;
+            if (this._trackPortionIndex + 1 >= this._trackVectors.length) {
+                this._trackPortionIndex = 0;
             } else {
-                this._trackPortionIndex--;
+                this._trackPortionIndex++;
             }
         }
     }
@@ -140,21 +143,21 @@ export class CarAiService {
     }
 
     private goForward(): void {
-        // this._aiControl.setCommand(new GoFoward(this._car));
-        // this._aiControl.execute();
-        // this._isGoingForward = true;
+        this._aiControl.setCommand(new GoFoward(this._car));
+        this._aiControl.execute();
+        this._isGoingForward = true;
     }
 
     private goLeft(): void {
-        // this._aiControl.setCommand(new TurnLeft(this._car));
-        // this._aiControl.execute();
-        // this._isSteeringLeft = true;
+        this._aiControl.setCommand(new TurnLeft(this._car));
+        this._aiControl.execute();
+        this._isSteeringLeft = true;
     }
 
     private goRight(): void {
-        // this._aiControl.setCommand(new TurnRight(this._car));
-        // this._aiControl.execute();
-        // this._isSteeringRight = true;
+        this._aiControl.setCommand(new TurnRight(this._car));
+        this._aiControl.execute();
+        this._isSteeringRight = true;
     }
 
     private releaseSteering(): void {
@@ -181,11 +184,11 @@ export class CarAiService {
     private createVectorTrackFromPoints(track: Vector3[]): void {
         this._trackVectors = [];
         for (let i: number = 0; i < track.length; ++i) {
-            const nextVertex: number = i === track.length - 1 ? -i : 1;
+            const nextVertex: Vector3 = i === track.length - 1 ? track[0] : track[i + 1];
 
-            const a: number = track[i].z - track[i + nextVertex].z;
-            const b: number = track[i + nextVertex].x - track[i].x;
-            const c: number = track[i].x * track[i + nextVertex].z - track[i + nextVertex].x * track[i].z;
+            const a: number = track[i].x - nextVertex.x;
+            const b: number = nextVertex.z - track[i].z;
+            const c: number = track[i].z * nextVertex.x - nextVertex.z * track[i].x;
             const line: Line = new Line(a, b, c);
 
             this._trackVectors.push(line);
@@ -194,7 +197,7 @@ export class CarAiService {
 
     private getPointDistanceFromTrack(point: Vector3): number {
         const line: Line = this._trackVectors[this._trackPortionIndex];
-        const top: number = line.a * point.x + line.b * point.z + line.c;
+        const top: number = line.a * point.z + line.b * point.x + line.c;
         const bottom: number = Math.sqrt(line.a * line.a + line.b * line.b);
 
         return top / bottom;
@@ -203,28 +206,28 @@ export class CarAiService {
     private projectPointOnLine(point: Vector3): Vector3 {
         const line: Line = this._trackVectors[this._trackPortionIndex];
 
+        // line equation : az + bx + c = 0
         const a: number = -this._trackVectors[this._trackPortionIndex].b;
         const b: number = this._trackVectors[this._trackPortionIndex].a;
-        const c: number = -a * point.x - b * point.z;
+        const c: number = -a * point.z - b * point.x;
 
         const pointOnLine: Vector3 = new Vector3();
-        pointOnLine.z = (line.c * a - line.a * c) / (line.a * b - a * line.b);
-        pointOnLine.x = (-c - b * pointOnLine.z) / a;
+        pointOnLine.x = (line.c * a - line.a * c) / (line.a * b - a * line.b);
+        pointOnLine.z = a !== 0 ? (-c - b * pointOnLine.x) / a : this._trackVertices[this._trackPortionIndex].z;
 
         return pointOnLine;
     }
-
     private projectTurningPoint(): Vector3 {
-        const p1: Vector3 = this._trackPortionIndex === this._trackVertices.length - 1 ?
+        const nextPoint: Vector3 = this._trackPortionIndex === this._trackVertices.length - 1 ?
             this._trackVertices[0] :
             this._trackVertices[this._trackPortionIndex + 1];
 
-        const p2: Vector3 = this._trackVertices[this._trackPortionIndex];
+        const currentPoint: Vector3 = this._trackVertices[this._trackPortionIndex];
 
-        const dx: number = p2.x - p1.x;
-        const dz: number = p2.z - p1.z;
+        const dx: number = (nextPoint.x - currentPoint.x) / Math.sqrt(Math.pow(nextPoint.x, SQUARED) + Math.pow(currentPoint.x, SQUARED));
+        const dz: number = (nextPoint.z - currentPoint.z) / Math.sqrt(Math.pow(nextPoint.z, SQUARED) + Math.pow(currentPoint.z, SQUARED));
 
-        return new Vector3((p2.x + dx * this.TURNING_POINT_DISTANCE), 0, (p2.z + dz * this.TURNING_POINT_DISTANCE));
+        return new Vector3((nextPoint.x + dx * this.TURNING_POINT_DISTANCE), 0, (nextPoint.z + dz * this.TURNING_POINT_DISTANCE));
     }
 
 }

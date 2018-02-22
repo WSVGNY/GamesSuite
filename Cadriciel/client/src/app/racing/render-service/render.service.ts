@@ -12,15 +12,11 @@ import {
     MeshLambertMaterial,
     DirectionalLight,
     DirectionalLightHelper,
-    HemisphereLight,
-    HemisphereLightHelper,
-    Geometry,
-    Line,
-    LineBasicMaterial
+    AmbientLight
 } from "three";
 import { CarAiService } from "../artificial-intelligence/car-ai.service";
 import { Car } from "../car/car";
-import { PI_OVER_2, LOWER_GROUND, RAD_TO_DEG } from "../constants";
+import { PI_OVER_2, LOWER_GROUND, WHITE } from "../constants";
 import { MOCK_TRACK } from "./mock-track";
 import { TrackPoint, TrackPointList } from "./trackPoint";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
@@ -36,10 +32,9 @@ const RIGHT_KEYCODE: number = 68;       // d
 
 const INITIAL_CAMERA_POSITION_Z: number = 10;
 const INITIAL_CAMERA_POSITION_Y: number = 5;
-// const WHITE: number = 0xFFFFFF;
-// const AMBIENT_LIGHT_OPACITY: number = 0.5;
+const AMBIENT_LIGHT_OPACITY: number = 0.2;
 const PLAYER_CAMERA: string = "PLAYER_CAMERA";
-const AI_CARS_NUMBER: number = 3;
+const AI_CARS_NUMBER: number = 1;
 
 @Injectable()
 export class RenderService {
@@ -65,7 +60,7 @@ export class RenderService {
         this._playerCar = new Car();
 
         for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
-            this._aiCars.push(new Car());
+            // this._aiCars.push(new Car());
         }
     }
 
@@ -76,11 +71,6 @@ export class RenderService {
 
         await this.createScene();
         this.initializeCars();
-        this._carAiService[0]._scene = this._scene;
-        // console.log(this._playerCar.direction);
-        // this._playerCar.rotate(new Vector3(0, 1, 0), PI_OVER_2);
-        // console.log(this._playerCar.direction);
-
         this.initStats();
         this.startRenderingLoop();
     }
@@ -106,12 +96,13 @@ export class RenderService {
             } else if (i === 2) {
                 diff = Difficulty.Easy;
             }
-            this._carAiService.push(new CarAiService(this._playerCar, points, this._scene, diff));
-            this._aiCars[i].position.add(new Vector3(
-                this._trackPoints.points[0].coordinates.x + i, 0,
-                this._trackPoints.points[0].coordinates.z
-            ));
-            this.rotateCarToFaceStart(this._aiCars[i]);
+            // this._carAiService.push(new CarAiService(this._aiCars[i], points, this._scene, diff));
+            this._carAiService.push(new CarAiService(this._playerCar, points, this._scene, Difficulty.Hard));
+            // this._aiCars[i].position.add(new Vector3(
+            //     this._trackPoints.points[0].coordinates.x + i, 0,
+            //     this._trackPoints.points[0].coordinates.z
+            // ));
+            // this.rotateCarToFaceStart(this._aiCars[i]);
         }
     }
 
@@ -137,7 +128,7 @@ export class RenderService {
         const timeSinceLastFrame: number = Date.now() - this._lastDate;
         this._playerCar.update(timeSinceLastFrame);
         for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
-            this._aiCars[i].update(timeSinceLastFrame);
+            // this._aiCars[i].update(timeSinceLastFrame);
             this._carAiService[i].update();
         }
         this._lastDate = Date.now();
@@ -146,10 +137,10 @@ export class RenderService {
     private async createScene(): Promise<void> {
         await this._playerCar.init();
         this._scene.add(this._playerCar);
-        for (const car of this._aiCars) {
-            await car.init();
-            this._scene.add(car);
-        }
+        // for (const car of this._aiCars) {
+        //     await car.init();
+        //     this._scene.add(car);
+        // }
 
         this._camera = new PerspectiveCamera(
             FIELD_OF_VIEW,
@@ -171,19 +162,10 @@ export class RenderService {
 
     public lighting(): void {
 
-        // this._scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
-
-        const hemiLight: HemisphereLight = new HemisphereLight(0xffffff, 0xffffff, 0.6);
-        hemiLight.color.setHSL(0.6, 1, 0.6);
-        hemiLight.groundColor.setHSL(0.095, 1, 0.75);
-        hemiLight.position.set(0, 50, 0);
-        this._scene.add(hemiLight);
-        const hemiLightHelper: HemisphereLightHelper = new HemisphereLightHelper(hemiLight, 10);
-        this._scene.add(hemiLightHelper);
-
+        this._scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
         const dirLight: DirectionalLight = new DirectionalLight(0xffffff, 0.8);
         dirLight.color.setHSL(0.1, 1, 0.95);
-        dirLight.position.set(-1, 1.75, 1);
+        dirLight.position.set(-1, 0.8, 1);
         dirLight.position.multiplyScalar(30);
         this._scene.add(dirLight);
         dirLight.castShadow = true;
@@ -271,19 +253,19 @@ export class RenderService {
 
     private renderTrackShape(): void {
         const shape: Shape = new Shape();
-        const lastPoint: TrackPoint = this._trackPoints.points[this._trackPoints.length - 1];
-        shape.moveTo(lastPoint.exterior.x, lastPoint.exterior.z);
-        for (let i: number = this._trackPoints.length - 2; i >= 0; --i) {
+        const firstPoint: TrackPoint = this._trackPoints.points[0];
+        shape.moveTo(firstPoint.exterior.x, firstPoint.exterior.z);
+        for (let i: number = 1; i < this._trackPoints.length; ++i) {
             shape.lineTo(this._trackPoints.points[i].exterior.x, this._trackPoints.points[i].exterior.z);
         }
-        shape.lineTo(lastPoint.exterior.x, lastPoint.exterior.z);
+        shape.lineTo(firstPoint.exterior.x, firstPoint.exterior.z);
 
         const holePath: Path = new Path();
-        holePath.moveTo(lastPoint.interior.x, lastPoint.interior.z);
-        for (let i: number = this._trackPoints.length - 2; i >= 0; --i) {
+        holePath.moveTo(firstPoint.interior.x, firstPoint.interior.z);
+        for (let i: number = this._trackPoints.length - 1; i > 0; --i) {
             holePath.lineTo(this._trackPoints.points[i].interior.x, this._trackPoints.points[i].interior.z);
         }
-        holePath.lineTo(lastPoint.interior.x, lastPoint.interior.z);
+        holePath.lineTo(firstPoint.interior.x, firstPoint.interior.z);
 
         shape.holes.push(holePath);
         const geometry: ShapeGeometry = new ShapeGeometry(shape);
@@ -292,7 +274,7 @@ export class RenderService {
         texture.wrapS = RepeatWrapping;
         texture.wrapT = RepeatWrapping;
         texture.repeat.set(0.045, 0.045);
-        const groundMaterial: MeshLambertMaterial = new MeshLambertMaterial({ side: BackSide });
+        const groundMaterial: MeshLambertMaterial = new MeshLambertMaterial({ side: BackSide, map: texture });
 
         const ground: Mesh = new Mesh(geometry, groundMaterial);
         ground.rotateX(PI_OVER_2);
@@ -304,8 +286,6 @@ export class RenderService {
     //     this._trackPoints.points.forEach((currentPoint: TrackPoint) => geometryPoints.vertices.push(currentPoint.coordinates));
     //     geometryPoints.vertices.push(this._trackPoints.points[0].coordinates);
     //     const line: Line = new Line(geometryPoints, new LineBasicMaterial({ color: 0x00FF00, linewidth: 3 }));
-    //     // line.position.add(new Vector3(0, 125, 0));
-    //     // line.rotateX(-PI_OVER_2);
     //     this._scene.add(line);
     // }
 
