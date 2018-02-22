@@ -20,6 +20,8 @@ export class CrosswordComponent {
     private difficulty: Difficulty;
     private isInCheatMode: boolean = false;
     public showLoader: boolean = false;
+    public playerName: string = "";
+    public correctWordCount: number = 0;
 
     public constructor(private gridService: GridService) {
     }
@@ -37,7 +39,7 @@ export class CrosswordComponent {
     }
 
     public hideModeSelector(): void {
-         document.getElementById("modeSelection").style.display = "none";
+        document.getElementById("modeSelection").style.display = "none";
     }
 
     public onSelect(gridBox: CommonGridBox): void {
