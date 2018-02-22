@@ -20,7 +20,7 @@ export class KeyboardEventHandlerService {
 
   public constructor() {}
 
-  public initialize(): void {
+  public async initialize(): Promise<void> {
     this._carControl = new CommandController();
   }
 
