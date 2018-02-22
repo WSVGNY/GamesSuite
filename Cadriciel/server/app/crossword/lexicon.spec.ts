@@ -1,38 +1,40 @@
-// import assert = require("assert");
-// import { ResponseWordFromAPI } from "../../../common/communication/responseWordFromAPI";
-// import * as requestPromise from "request-promise-native";
+import assert = require("assert");
+import { ResponseWordFromAPI } from "../../../common/communication/responseWordFromAPI";
+import * as requestPromise from "request-promise-native";
 // import { Lexicon } from "./lexicon";
-// import { Difficulty } from "../../../common/crossword/difficulty";
+import { Difficulty } from "../../../common/crossword/difficulty";
 
-// const SERVICE_BASE_URL: string = "http://localhost:3000/lexicon/";
-// const DATAMUSE_BASE_URL: string = "https://api.datamuse.com/words?md=fd&sp=";
+const SERVICE_BASE_URL: string = "http://localhost:3000/lexicon/";
+const DATAMUSE_BASE_URL: string = "https://api.datamuse.com/words?md=fd&sp=";
 // const UNWANTED_CHARACTERS_LENGTH: number = 2;
 // const FREQUENCY_DELIMITER: number = 5;
 
 describe("LEXICON TESTS", () => {
-    // it("is datamuse up", (done: MochaDone) => {
-    //     requestPromise(DATAMUSE_BASE_URL + "????").then((response: string) => {
-    //         done();
-    //     }).catch((e: Error) => {
-    //         console.error(e.message);
-    //         assert(false);
-    //         done();
-    //     });
-    // });
+    it("is datamuse up", (done: MochaDone) => {
+        requestPromise(DATAMUSE_BASE_URL + "????").then((response: string) => {
+            assert(true);
+            done();
+        }).catch((e: Error) => {
+            console.error(e.message);
+            assert(false);
+            done();
+        });
+    });
 
-    // describe("word should be a noun or a verb", () => {
-    //     it("word is a verb", (done: MochaDone) => {
-    //         let word: ResponseWordFromAPI = new ResponseWordFromAPI();
-    //         requestPromise(SERVICE_BASE_URL + "ask/" + Difficulty.Easy).then((response: string) => {
-    //             word = JSON.parse(response);
-    //             assert(word["definition"][0] === "v");
-    //             done();
-    //         }).catch((e: Error) => {
-    //             console.error(e.message);
-    //             assert(false);
-    //             done();
-    //         });
-    //     });
+    describe("word should be a noun or a verb", () => {
+        it("word is a verb", (done: MochaDone) => {
+            // let word: ResponseWordFromAPI = new ResponseWordFromAPI();
+            // requestPromise(SERVICE_BASE_URL + "ask/" + Difficulty.Easy).then((response: string) => {
+            //     word = JSON.parse(response);
+            //     assert(word["definition"][0] === "v");
+            //     done();
+            // }).catch((e: Error) => {
+            //     console.error(e.message);
+            //     assert(false);
+            //     done();
+            // });
+            assert(false);
+        });
 
     //     it("word is a noun", (done: MochaDone) => {
     //         let word: ResponseWordFromAPI;
@@ -73,7 +75,7 @@ describe("LEXICON TESTS", () => {
     //         assert(false);
     //         done();
     //     });
-    // });
+    });
 
     // describe("tests for accents or special characters", () => {
     //     it("word shouldn't contain any accents or special characters", (done: MochaDone) => {
