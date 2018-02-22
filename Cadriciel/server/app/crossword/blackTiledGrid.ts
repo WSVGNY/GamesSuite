@@ -16,8 +16,8 @@ export class BlackTiledGrid {
     public readonly NUMBER_OF_TILES: number = this.SIZE_GRID_X * this.SIZE_GRID_Y;
     public readonly NUM_BLACK_TILES: number = this.NUMBER_OF_TILES * BLACK_TILES_RATIO;
 
-    private wordId: number = 0;
-    private wordDefinitionID: number;
+    private _wordId: number = 0;
+    private _wordDefinitionID: number;
     private _words: Word[];
 
     public get words(): Word[] {
@@ -100,8 +100,8 @@ export class BlackTiledGrid {
     }
 
     private verifyBlackGridValidity(): boolean {
-        this.wordId = 1;
-        this.wordDefinitionID = 1;
+        this._wordId = 1;
+        this._wordDefinitionID = 1;
         this._words = [];
         let isValid: boolean = this.createWordsInGridHorizontally();
         if (isValid) {
@@ -124,12 +124,12 @@ export class BlackTiledGrid {
                         return false;
                     }
                 } else {
-                    this.words[this.wordId - 1] =
-                        new Word(this.wordId, this.wordDefinitionID++, IS_HORIZONTAL, wordLength, this.grid[i][j]._id);
+                    this.words[this._wordId - 1] =
+                        new Word(this._wordId, this._wordDefinitionID++, IS_HORIZONTAL, wordLength, this.grid[i][j]._id);
                     for (let k: number = j; k < j + wordLength; k++) {
-                        this.grid[i][k].addConstraint(this.words[this.wordId - 1]);
+                        this.grid[i][k].addConstraint(this.words[this._wordId - 1]);
                     }
-                    j += wordLength; wordCount++; this.wordId++;
+                    j += wordLength; wordCount++; this._wordId++;
                 }
             }
             if (wordCount < 1) {
@@ -162,12 +162,12 @@ export class BlackTiledGrid {
                 const wordLength: number = this.calculateWordLength(IS_VERTICAL, i, j);
 
                 if (wordLength >= MIN_WORD_LENGTH) {
-                    this.words[this.wordId - 1] =
-                        new Word(this.wordId, this.findHorizontalWordDefID(i, j), IS_VERTICAL, wordLength, this.grid[j][i]._id);
+                    this.words[this._wordId - 1] =
+                        new Word(this._wordId, this.findHorizontalWordDefID(i, j), IS_VERTICAL, wordLength, this.grid[j][i]._id);
                     for (let k: number = j; k < j + wordLength; k++) {
-                        this.grid[k][i].addConstraint(this.words[this.wordId - 1]);
+                        this.grid[k][i].addConstraint(this.words[this._wordId - 1]);
                     }
-                    j += wordLength; wordCount++; this.wordId++;
+                    j += wordLength; wordCount++; this._wordId++;
                 }
             }
             if (wordCount < 1) {
@@ -201,6 +201,6 @@ export class BlackTiledGrid {
             }
         }
 
-        return this.wordDefinitionID++;
+        return this._wordDefinitionID++;
     }
 }
