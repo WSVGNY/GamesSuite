@@ -34,14 +34,12 @@ describe("GRID CREATE TESTS", () => {
         let numBlackTiles: number = 0;
         for (let i: number = 0; i < grid.SIZE_GRID_X; i++) {
             for (let j: number = 0; j < grid.SIZE_GRID_Y; j++) {
-                console.log(grid.SIZE_GRID_X);
-                console.log(grid.SIZE_GRID_Y);
-                if (blackGrid["grid"]["boxes"][i][j]._isBlack) {
+                if (blackGrid["grid"][i][j]._char._value === "#") {
                     numBlackTiles++;
                 }
             }
         }
-        assert(numBlackTiles === blackGrid["BLACK_TILES_RATIO"] * blackGrid.NUMBER_OF_TILES);
+        assert(numBlackTiles === blackGrid["NUM_BLACK_TILES"]);
         done();
     });
 
