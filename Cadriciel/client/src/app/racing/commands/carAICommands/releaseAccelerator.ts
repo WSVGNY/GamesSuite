@@ -1,7 +1,7 @@
 import { AbstractCarAICommand } from "./../abstractCarAICommand";
 import { Car } from "../../car/car";
 
-export class ReleaseSteering extends AbstractCarAICommand {
+export class ReleaseAccelerator extends AbstractCarAICommand {
 
     public constructor(car: Car) {
         super(car);
