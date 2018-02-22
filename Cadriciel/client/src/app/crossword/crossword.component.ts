@@ -46,25 +46,25 @@ export class CrosswordComponent {
         this.selectedGridBox = gridBox;
     }
 
-    public makeEasyGrid(): void {
-        this.difficulty = Difficulty.Easy;
+    private makeGrid(): void {
         this.showLoader = true;
         document.getElementById("gridHider").style.visibility = "visible";
         this.createGrid();
+    }
+
+    public makeEasyGrid(): void {
+        this.difficulty = Difficulty.Easy;
+        this.makeGrid();
     }
 
     public makeMediumGrid(): void {
         this.difficulty = Difficulty.Medium;
-        this.createGrid();
-        this.showLoader = true;
-        document.getElementById("gridHider").style.visibility = "visible";
+        this.makeGrid();
     }
 
     public makeHardGrid(): void {
         this.difficulty = Difficulty.Hard;
-        this.createGrid();
-        this.showLoader = true;
-        document.getElementById("gridHider").style.visibility = "visible";
+        this.makeGrid();
     }
 
     public changeMode(): void {
