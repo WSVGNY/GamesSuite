@@ -19,7 +19,7 @@ export class CarAiService {
     private readonly START_INDEX: number = 0;
     private readonly TURNING_POINT_BUFFER: number = 2;
 
-    private readonly DEBUG_MODE: boolean = false;
+    private readonly DEBUG_MODE: boolean = true;
 
     private _aiControl: CommandController;
     private _isGoingForward: boolean = false;
@@ -76,22 +76,22 @@ export class CarAiService {
     }
 
     public update(): void {
-        const carPosition: Vector3 = new Vector3(
-            this._car.position.x + this._car.currentPosition.x, 0,
-            this._car.position.z + this._car.currentPosition.z);
+            const carPosition: Vector3 = new Vector3(
+                this._car.position.x + this._car.currentPosition.x, 0,
+                this._car.position.z + this._car.currentPosition.z);
 
-        const projection: Vector3 = this.projectInFrontOfCar();
-        const lineDistance: number = this.getPointDistanceFromTrack(projection);
-        const pointOnLine: Vector3 = this.projectPointOnLine(projection);
-        const turningPoint: Vector3 = this.projectTurningPoint();
+            const projection: Vector3 = this.projectInFrontOfCar();
+            const lineDistance: number = this.getPointDistanceFromTrack(projection);
+            const pointOnLine: Vector3 = this.projectPointOnLine(projection);
+            const turningPoint: Vector3 = this.projectTurningPoint();
 
-        // Helper
-        if (this.DEBUG_MODE) {
-            this.updateDebugMode(carPosition, projection, pointOnLine, turningPoint);
-        }
+            // Helper
+            if (this.DEBUG_MODE) {
+                this.updateDebugMode(carPosition, projection, pointOnLine, turningPoint);
+            }
 
-        this.updateTrackPortionIndex(pointOnLine, turningPoint);
-        this.updateCarDirection(lineDistance);
+            this.updateTrackPortionIndex(pointOnLine, turningPoint);
+            this.updateCarDirection(lineDistance);
     }
 
     private updateDebugMode(carPosition: Vector3, projection: Vector3, pointOnLine: Vector3, turningPoint: Vector3): void {
