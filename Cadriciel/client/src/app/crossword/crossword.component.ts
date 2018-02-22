@@ -40,9 +40,6 @@ export class CrosswordComponent {
          document.getElementById("modeSelection").style.display = "none";
     }
 
-    public onSelect(gridBox: CommonGridBox): void {
-        this.selectedGridBox = gridBox;
-    }
 
     public makeEasyGrid(): void {
         this.difficulty = Difficulty.Easy;

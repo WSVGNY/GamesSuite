@@ -1,10 +1,10 @@
 import assert = require("assert");
-import { ResponseWordFromAPI } from "../../../common/communication/responseWordFromAPI";
+// import { ResponseWordFromAPI } from "../../../common/communication/responseWordFromAPI";
 import * as requestPromise from "request-promise-native";
 // import { Lexicon } from "./lexicon";
-import { Difficulty } from "../../../common/crossword/difficulty";
+// import { Difficulty } from "../../../common/crossword/difficulty";
 
-const SERVICE_BASE_URL: string = "http://localhost:3000/lexicon/";
+// const SERVICE_BASE_URL: string = "http://localhost:3000/lexicon/";
 const DATAMUSE_BASE_URL: string = "https://api.datamuse.com/words?md=fd&sp=";
 // const UNWANTED_CHARACTERS_LENGTH: number = 2;
 // const FREQUENCY_DELIMITER: number = 5;
