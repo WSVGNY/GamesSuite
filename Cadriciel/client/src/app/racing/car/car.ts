@@ -7,7 +7,7 @@ export const DEFAULT_WHEELBASE: number = 2.78;
 export const DEFAULT_MASS: number = 1515;
 export const DEFAULT_DRAG_COEFFICIENT: number = 0.35;
 
-const MAXIMUM_STEERING_ANGLE: number = 0.25;
+const MAXIMUM_STEERING_ANGLE: number = 0.05;
 const INITIAL_MODEL_ROTATION: Euler = new Euler(0, PI_OVER_2, 0);
 const INITIAL_WEIGHT_DISTRIBUTION: number = 0.5;
 const MINIMUM_SPEED: number = 0.05;
@@ -25,9 +25,15 @@ export class Car extends Object3D {
     private _isAcceleratorPressed: boolean;
     private _speed: Vector3;
     private _isBraking: boolean;
+    private _isReversing: boolean;
     private _mesh: Object3D;
     private _steeringWheelDirection: number;
     private _weightRear: number;
+    private _initialDirection: Vector3 = new Vector3(0, 0, -1);
+
+    public rotate(axis: Vector3, angle: number): void {
+        this._mesh.rotateOnAxis(axis, angle);
+    }
 
     public get speed(): Vector3 {
         return this._speed.clone();
@@ -63,7 +69,7 @@ export class Car extends Object3D {
 
     public get direction(): Vector3 {
         const rotationMatrix: Matrix4 = new Matrix4();
-        const carDirection: Vector3 = new Vector3(0, 0, -1);
+        const carDirection: Vector3 = this._initialDirection.clone();
 
         rotationMatrix.extractRotation(this._mesh.matrix);
         carDirection.applyMatrix4(rotationMatrix);
@@ -105,6 +111,7 @@ export class Car extends Object3D {
         this._weightRear = INITIAL_WEIGHT_DISTRIBUTION;
         this._speed = new Vector3(0, 0, 0);
         this.position.add(new Vector3(0, 0, 0));
+        // this.rotateX(Math.PI);
     }
 
     private async load(): Promise<Object3D> {
@@ -140,6 +147,14 @@ export class Car extends Object3D {
 
     public brake(): void {
         this._isBraking = true;
+    }
+
+    public reverse(): void {
+        this._isReversing = true;
+    }
+
+    public releaseReverse(): void {
+        this._isReversing = false;
     }
 
     public accelerate(): void {
@@ -209,6 +224,11 @@ export class Car extends Object3D {
         } else if (this._isBraking && this.isGoingForward()) {
             const brakeForce: Vector3 = this.getBrakeForce();
             resultingForce.add(brakeForce);
+        } else if (this._isReversing) {
+            const tractionForce: number = this.getTractionForce();
+            const accelerationForce: Vector3 = this.direction;
+            accelerationForce.multiplyScalar(tractionForce);
+            resultingForce.add(accelerationForce.clone().multiplyScalar(-1));
         }
 
         return resultingForce;

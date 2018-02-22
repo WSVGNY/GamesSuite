@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, ViewChild, HostListener } from "@angular/core";
 import { RenderService } from "./render-service/render.service";
 import { Car } from "./car/car";
+import { KeyboardEventHandlerService } from "./event-handlers/keyboard-event-handler.service";
 
 @Component({
     moduleId: module.id,
@@ -14,7 +15,10 @@ export class RacingComponent implements AfterViewInit {
     @ViewChild("container")
     private containerRef: ElementRef;
 
-    public constructor(private renderService: RenderService) { }
+    public constructor(
+        private renderService: RenderService,
+        private keyboardEventHandlerService: KeyboardEventHandlerService
+    ) { }
 
     @HostListener("window:resize", ["$event"])
     public onResize(): void {
@@ -23,17 +27,21 @@ export class RacingComponent implements AfterViewInit {
 
     @HostListener("window:keydown", ["$event"])
     public onKeyDown(event: KeyboardEvent): void {
-        this.renderService.handleKeyDown(event);
+        this.keyboardEventHandlerService.handleKeyDown(event, this.car);
     }
 
     @HostListener("window:keyup", ["$event"])
     public onKeyUp(event: KeyboardEvent): void {
-        this.renderService.handleKeyUp(event);
+        this.keyboardEventHandlerService.handleKeyUp(event, this.car);
     }
 
     public ngAfterViewInit(): void {
         this.renderService
             .initialize(this.containerRef.nativeElement)
+            .then(/* do nothing */)
+            .catch((err) => console.error(err));
+        this.keyboardEventHandlerService
+            .initialize()
             .then(/* do nothing */)
             .catch((err) => console.error(err));
     }

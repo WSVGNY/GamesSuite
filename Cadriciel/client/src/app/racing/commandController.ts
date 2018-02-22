@@ -11,6 +11,8 @@ export class CommandController {
     }
 
     public execute(): void {
-      this.command.execute();
+      if (this.command !== undefined) {
+        this.command.execute();
+      }
     }
   }
