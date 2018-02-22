@@ -2,7 +2,7 @@ import { Vector3 } from "three";
 import { HALF, TRACK_WIDTH } from "../constants";
 
 export class TrackPointList {
-    private _trackPoints: TrackPoint[];
+    private _trackPoints: TrackPoint[] = new Array<TrackPoint>();
 
     public constructor(_trackPoints: Vector3[]) {
         this.fillFromVector3Array(_trackPoints)
@@ -14,7 +14,7 @@ export class TrackPointList {
             this._trackPoints = new Array<TrackPoint>();
 
             _trackPoints.forEach((currentPoint: Vector3, i: number) => {
-                this._trackPoints.push(new TrackPoint(currentPoint));
+                this._trackPoints.push(new TrackPoint(currentPoint.clone()));
             });
 
             for (let i: number = 0; i < this._trackPoints.length; i++) {
@@ -36,7 +36,7 @@ export class TrackPointList {
     private checkTrackPointsOrientation(): TrackPointList {
         let angleSum: number = 0;
         this._trackPoints.forEach((currentPoint: TrackPoint, i: number) => {
-            angleSum += currentPoint.vectorToNextCenterPoint.cross(currentPoint.vectorToPreviousCenterPoint).y > 0 ?
+            angleSum += currentPoint.vectorToNextCenterPoint.cross(currentPoint.vectorToPreviousCenterPoint).y < 0 ?
                 currentPoint.smallAngle *
                 (currentPoint.vectorToNextCenterPoint.length() + currentPoint.vectorToPreviousCenterPoint.length()) :
                 -currentPoint.smallAngle *
@@ -85,12 +85,11 @@ export class TrackPoint {
             this.vectorToNextCenterPoint.cross(this.vectorToPreviousCenterPoint).y > 0 ?
                 this._smallAngle * HALF :
                 -this._smallAngle * HALF;
-        const vectorToInteriorPoint: Vector3 = new Vector3()
-            .addVectors(new Vector3(0, 0, 0), this.vectorToNextCenterPoint.normalize())
+        const vectorToInteriorPoint: Vector3 = this.vectorToNextCenterPoint.clone().normalize()
             .applyAxisAngle(new Vector3(0, 1, 0), angle)
             .multiplyScalar(TRACK_WIDTH / Math.sin(angle));
 
-        if (this.vectorToNextCenterPoint.cross(vectorToInteriorPoint).y > 0) {
+        if (this.vectorToNextCenterPoint.cross(vectorToInteriorPoint).y < 0) {
             this._interior = new Vector3(
                 this._coordinates.x + vectorToInteriorPoint.x, 0, this._coordinates.z + vectorToInteriorPoint.z
             );
