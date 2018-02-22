@@ -20,6 +20,8 @@ export class CrosswordComponent {
     private difficulty: Difficulty;
     private isInCheatMode: boolean = false;
     public showLoader: boolean = false;
+    public playerName: string = "";
+    public correctWordCount: number = 0;
 
     public constructor(private gridService: GridService) {
     }
@@ -37,29 +39,29 @@ export class CrosswordComponent {
     }
 
     public hideModeSelector(): void {
-         document.getElementById("modeSelection").style.display = "none";
+        document.getElementById("modeSelection").style.display = "none";
     }
 
 
-    public makeEasyGrid(): void {
-        this.difficulty = Difficulty.Easy;
+    private makeGrid(): void {
         this.showLoader = true;
         document.getElementById("gridHider").style.visibility = "visible";
         this.createGrid();
+    }
+
+    public makeEasyGrid(): void {
+        this.difficulty = Difficulty.Easy;
+        this.makeGrid();
     }
 
     public makeMediumGrid(): void {
         this.difficulty = Difficulty.Medium;
-        this.createGrid();
-        this.showLoader = true;
-        document.getElementById("gridHider").style.visibility = "visible";
+        this.makeGrid();
     }
 
     public makeHardGrid(): void {
         this.difficulty = Difficulty.Hard;
-        this.createGrid();
-        this.showLoader = true;
-        document.getElementById("gridHider").style.visibility = "visible";
+        this.makeGrid();
     }
 
     public changeMode(): void {
