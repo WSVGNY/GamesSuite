@@ -62,6 +62,11 @@ export class Car extends Object3D {
         this._mesh.add(light);
     }
 
+    public dettachLight(light1: SpotLight, light2: SpotLight): void {
+        this._mesh.remove(light1);
+        this._mesh.remove(light2);
+    }
+
     public attachCube(cube: Object3D): void {
         this._mesh.add(cube);
     }

@@ -9,7 +9,6 @@ import {
     RepeatWrapping,
     PlaneGeometry,
     CubeTextureLoader,
-    DirectionalLight,
     SpotLight
 } from "three";
 import { CarAiService } from "../artificial-intelligence/car-ai.service";
@@ -33,6 +32,8 @@ const NIGHT_KEYCODE: number = 78;     // j
 const INITIAL_CAMERA_POSITION_Z: number = 10;
 const INITIAL_CAMERA_POSITION_Y: number = 5;
 const WHITE: number = 0xFFFFFF;
+const RED: number = 0xFF0000;
+const YELLOW: number = 0xFFFF00;
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
 // const TEMP_GRID_ORIENTATION: number = 90;
 // const TEMP_GRID_SIZE: number = 1000;
@@ -53,8 +54,9 @@ export class RenderService {
     private _aiCars: Car[];
     private _dayTime: boolean = true;
     private _trackPoints: TrackPointList;
-    private _lightColor: string;
-    private _sceneLight: SpotLight;
+    private _light1: SpotLight;
+    private _light2: SpotLight;
+    private _redLightOn: boolean = false;
 
     public get playerCar(): Car {
         return this._playerCar;
@@ -172,7 +174,6 @@ export class RenderService {
         this.renderTrack();
         this.renderGround();
         this.renderSkyBox();
-        this.renderLight();
     }
 
     private getAspectRatio(): number {
@@ -215,17 +216,24 @@ export class RenderService {
                 break;
             case BRAKE_KEYCODE:
                 this._playerCar.reverse();
+                if (this._redLightOn === false) {
+                    this.renderLight(RED);
+                }
+                this._redLightOn = true;
+
                 /*this._scene.remove(this._sceneLight);
                 this.renderLight(0xff0000);*/
                 break;
             case DAY_KEYCODE:
                 this._dayTime = true;
                 this.renderSkyBox();
+                this.killLights(this._light1, this._light2);
                 break;
             case NIGHT_KEYCODE:
                 this._dayTime = false;
+                this._redLightOn = false;
                 this.renderSkyBox();
-                this.renderLight(0xffff00);
+                this.renderLight(YELLOW);
                 break;
             default:
                 break;
@@ -238,11 +246,13 @@ export class RenderService {
                 this._playerCar.releaseAccelerator();
                 break;
             case LEFT_KEYCODE:
+            // choses à rajouter icite pour que ça bug plus quand on veut tourner à gauche.
             case RIGHT_KEYCODE:
                 this._playerCar.releaseSteering();
                 break;
             case BRAKE_KEYCODE:
                 this._playerCar.releaseReverse();
+                this.killLights(this._light1, this._light2);
                 break;
             default:
                 break;
@@ -335,7 +345,7 @@ export class RenderService {
             ]);
         }
     }
-    private renderLight(color: string): void {
+    private renderLight(color: number): void {
         /*const pointLight: PointLight = new PointLight(0xffff00);
         pointLight.position = this._playerCar.position;
         this._scene.add(pointLight);*/
@@ -348,9 +358,9 @@ export class RenderService {
         this._scene.add(directionalLight);*/
 
         const light: SpotLight = new SpotLight( color, 5, 300, Math.PI/2, 1 );
-        const light2: SpotLight = new SpotLight( 0xff0000, 5, 300, Math.PI/2, 1 );
+        const light2: SpotLight = new SpotLight( color, 5, 300, Math.PI/2, 1 );
 
-        light.position.set( this._playerCar.position.x - 2, this._playerCar.position.y + 5, this._playerCar.position.z );
+        /*light.position.set( this._playerCar.position.x - 2, this._playerCar.position.y + 5, this._playerCar.position.z );
         light2.position.set( this._playerCar.position.x + 2, this._playerCar.position.y + 5, this._playerCar.position.z );
         light.target.position.set(50, 0, 800);
         light2.target.position.set(1, 1, 1);
@@ -358,9 +368,16 @@ export class RenderService {
         light2.distance = 100;
         light.castShadow = true;
         this._scene.add(light);
-        this._sceneLight = light;
-
+        this._sceneLight = light;*/
+        this._light1 = light;
+        this._light2 = light2;
+        light.position.set(-5, -3, -2);
+        light2.position.set(5, 3, 2);
         this._playerCar.attachLight(light);
         this._playerCar.attachLight(light2);
+    }
+
+    private killLights(light1: SpotLight, light2: SpotLight): void {
+        this._playerCar.dettachLight(light1, light2);
     }
 }
