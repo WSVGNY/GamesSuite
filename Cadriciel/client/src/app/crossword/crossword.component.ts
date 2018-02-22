@@ -20,6 +20,8 @@ export class CrosswordComponent {
     private difficulty: Difficulty;
     private isInCheatMode: boolean = false;
     public showLoader: boolean = false;
+    public playerName: string = "";
+    public correctWordCount: number = 0;
 
     public constructor(private gridService: GridService) {
     }
@@ -32,12 +34,12 @@ export class CrosswordComponent {
             this.boxes = this.grid.boxes;
             this.words = this.grid.words;
             this.showLoader = false;
-            document.getElementById("gridHider").style.background = "rgba(255, 255, 255, 0)";
+            document.getElementById("gridHider").style.visibility = "hidden";
         });
     }
 
     public hideModeSelector(): void {
-         document.getElementById("modeSelection").style.display = "none";
+        document.getElementById("modeSelection").style.display = "none";
     }
 
     public onSelect(gridBox: CommonGridBox): void {
@@ -47,7 +49,7 @@ export class CrosswordComponent {
     public makeEasyGrid(): void {
         this.difficulty = Difficulty.Easy;
         this.showLoader = true;
-        document.getElementById("gridHider").style.background = "white";
+        document.getElementById("gridHider").style.visibility = "visible";
         this.createGrid();
     }
 
@@ -55,19 +57,14 @@ export class CrosswordComponent {
         this.difficulty = Difficulty.Medium;
         this.createGrid();
         this.showLoader = true;
-        document.getElementById("gridHider").style.background = "white";
+        document.getElementById("gridHider").style.visibility = "visible";
     }
 
     public makeHardGrid(): void {
         this.difficulty = Difficulty.Hard;
         this.createGrid();
         this.showLoader = true;
-        document.getElementById("gridHider").style.background = "white";
-    }
-
-    public hide(): void {
-        document.getElementById("image1").style.display = "none";
-        document.getElementById("image2").style.display = "none";
+        document.getElementById("gridHider").style.visibility = "visible";
     }
 
     public changeMode(): void {
