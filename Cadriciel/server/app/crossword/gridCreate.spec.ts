@@ -1,16 +1,21 @@
 import assert = require("assert");
 import { Grid } from "../../../common/crossword/grid";
 import { BlackTiledGrid } from "./blackTiledGrid";
+import { GridCreate } from "./gridCreate";
+import { Difficulty } from "../../../common/crossword/difficulty";
 
 let grid: Grid;
+let gridCreate: GridCreate;
 let blackGrid: BlackTiledGrid;
 
 describe("GRID CREATE TESTS", () => {
 
-    it("Grid is defined on creation", (done: MochaDone) => {
-        grid = new Grid();
-        grid["newGrid"]().then(() => {
-            assert(grid["grid"] !== undefined);
+    it("GridCreate grid is defined on creation", (done: MochaDone) => {
+        gridCreate = new GridCreate();
+        gridCreate["difficulty"] = Difficulty.Easy;
+        gridCreate["newGrid"]().then(() => {
+            grid = gridCreate["grid"];
+            assert(gridCreate["grid"] !== undefined);
             done();
         }).catch((e: Error) => {
             assert(false);
@@ -20,21 +25,23 @@ describe("GRID CREATE TESTS", () => {
     });
 
     it("Grid contains appropriate number of tiles", (done: MochaDone) => {
-        blackGrid = new BlackTiledGrid(grid.SIZE_GRID_X, grid.SIZE_GRID_Y, grid["grid"]);
+        blackGrid = new BlackTiledGrid(grid.SIZE_GRID_X, grid.SIZE_GRID_Y, grid["boxes"]);
         assert(blackGrid.NUMBER_OF_TILES === grid.SIZE_GRID_X * grid.SIZE_GRID_Y);
         done();
     });
 
     it("Grid contains appropriate number of black tiles", (done: MochaDone) => {
         let numBlackTiles: number = 0;
-        for (let i: number = 0; i < grid["SIZE_GRID_X"]; i++) {
-            for (let j: number = 0; j < grid["SIZE_GRID_Y"]; j++) {
-                if (blackGrid["grid"][i][j]._isBlack) {
+        for (let i: number = 0; i < grid.SIZE_GRID_X; i++) {
+            for (let j: number = 0; j < grid.SIZE_GRID_Y; j++) {
+                console.log(grid.SIZE_GRID_X);
+                console.log(grid.SIZE_GRID_Y);
+                if (blackGrid["grid"]["boxes"][i][j]._isBlack) {
                     numBlackTiles++;
                 }
             }
         }
-        assert(numBlackTiles >= blackGrid["BLACK_TILES_RATIO"] * blackGrid["NUMBER_OF_TILES"]);
+        assert(numBlackTiles === blackGrid["BLACK_TILES_RATIO"] * blackGrid.NUMBER_OF_TILES);
         done();
     });
 
