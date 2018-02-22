@@ -23,6 +23,7 @@ import { Car } from "../car/car";
 import { PI_OVER_2, LOWER_GROUND, RAD_TO_DEG } from "../constants";
 import { MOCK_TRACK } from "./mock-track";
 import { TrackPoint, TrackPointList } from "./trackPoint";
+import { Difficulty } from "../../../../../common/crossword/difficulty";
 
 const FAR_CLIPPING_PLANE: number = 1000;
 const NEAR_CLIPPING_PLANE: number = 1;
@@ -38,7 +39,7 @@ const INITIAL_CAMERA_POSITION_Y: number = 5;
 // const WHITE: number = 0xFFFFFF;
 // const AMBIENT_LIGHT_OPACITY: number = 0.5;
 const PLAYER_CAMERA: string = "PLAYER_CAMERA";
-const AI_CARS_NUMBER: number = 1;
+const AI_CARS_NUMBER: number = 3;
 
 @Injectable()
 export class RenderService {
@@ -64,7 +65,7 @@ export class RenderService {
         this._playerCar = new Car();
 
         for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
-            // this._aiCars.push(new Car());
+            this._aiCars.push(new Car());
         }
     }
 
@@ -99,12 +100,18 @@ export class RenderService {
             );
         });
         for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
-            // this._aiCars[i].position.add(new Vector3(
-            //     this._trackPoints.points[0].coordinates.x, 0,
-            //     this._trackPoints.points[0].coordinates.z
-            // ));
-            // this.rotateCarToFaceStart(this._aiCars[i]);
-            this._carAiService.push(new CarAiService(this._playerCar, points, this._scene));
+            let diff: Difficulty = Difficulty.Hard;
+            if (i === 1) {
+                diff = Difficulty.Medium;
+            } else if (i === 2) {
+                diff = Difficulty.Easy;
+            }
+            this._carAiService.push(new CarAiService(this._playerCar, points, this._scene, diff));
+            this._aiCars[i].position.add(new Vector3(
+                this._trackPoints.points[0].coordinates.x + i, 0,
+                this._trackPoints.points[0].coordinates.z
+            ));
+            this.rotateCarToFaceStart(this._aiCars[i]);
         }
     }
 
@@ -117,7 +124,6 @@ export class RenderService {
         const angle: number = new Vector3(-1, 0, 0).cross(carfinalFacingVector).y > 0 ?
             new Vector3(-1, 0, 0).angleTo(carfinalFacingVector) :
             - new Vector3(-1, 0, 0).angleTo(carfinalFacingVector);
-        console.log(angle * RAD_TO_DEG);
         car.rotate(new Vector3(0, 1, 0), angle);
     }
 
@@ -130,8 +136,10 @@ export class RenderService {
     private update(): void {
         const timeSinceLastFrame: number = Date.now() - this._lastDate;
         this._playerCar.update(timeSinceLastFrame);
-        // this._aiCars[0].update(timeSinceLastFrame);
-        this._carAiService[0].update();
+        for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
+            this._aiCars[i].update(timeSinceLastFrame);
+            this._carAiService[i].update();
+        }
         this._lastDate = Date.now();
     }
 
