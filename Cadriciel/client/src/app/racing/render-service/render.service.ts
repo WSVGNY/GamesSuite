@@ -41,7 +41,7 @@ export class RenderService {
     private _stats: Stats;
     private _lastDate: number;
     private _carAiService: CarAiService[] = [];
-    private _aiCars: Car[] = [];
+    // private _aiCars: Car[] = [];
     // private _dayTime: boolean = true;
     private _trackPoints: TrackPointList;
 
