@@ -2,41 +2,49 @@ import { Injectable } from "@angular/core";
 import { Car } from "../car/car";
 import { CommandController } from "../commandController";
 // import { GoFoward } from "../commands/carAICommands/goFoward";
-// import { TurnLeft } from "../commands/carAICommands/turnLeft";
-// import { TurnRight} from "../commands/carAICommands/turnRight";
-// import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";
+import { TurnLeft } from "../commands/carAICommands/turnLeft";
+import { TurnRight } from "../commands/carAICommands/turnRight";
+import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";
 // import { Track } from "../../../../../common/racing/track";
-import { Vector3, Scene, BoxHelper } from "three";
+import { Vector3, Scene } from "three";
 import { VectorHelper } from "./vectorHelper";
-import { PINK, BLUE } from "../constants";
+import { PINK, WHITE, RED } from "../constants";
+import { GoFoward } from "../commands/carAICommands/goFoward";
 
 @Injectable()
 export class CarAiService {
-    private readonly DISTANCE_FROM_VEHICULE: number = 5;
+    private readonly DISTANCE_FROM_VEHICULE: number = 20;
     private readonly TURNING_POINT_DISTANCE: number = 0.1;
 
     private _aiControl: CommandController;
-    // private _isGoingForward: boolean = false;
-    // private _isSteeringLeft: boolean = false;
-    // private _isSteeringRight: boolean = false;
+    private _isGoingForward: boolean = false;
+    private _isSteeringLeft: boolean = false;
+    private _isSteeringRight: boolean = false;
     // private _isBraking: boolean = false;
-    // private _isReleasingSteering: boolean = false;
-    private _vectorTrack: {a: number, b: number, c: number}[];
+    private _isReleasingSteering: boolean = false;
+    private _vectorTrack: { a: number, b: number, c: number }[];
     // private _isLeftOfLine: boolean = false;
-    private _helper: BoxHelper;
+    // private _helper: BoxHelper;
     private _carVectorHelper: VectorHelper;
     private _distanceVectorHelper: VectorHelper;
     private _turningVectorHelper: VectorHelper;
+    private _axisX: VectorHelper;
+    private _axisY: VectorHelper;
+    private _axisZ: VectorHelper;
     private _trackPortionIndex: number;
 
     public constructor(private _car: Car, private _track: Vector3[], public _scene: Scene) {
         this._aiControl = new CommandController();
         this.createVectorTrackFromPoints(_track);
-        this._helper = new BoxHelper(this._car);
-        this._scene.add(this._helper);
+        // this._helper = new BoxHelper(this._car);
+        // this._scene.add(this._helper);
         this._carVectorHelper = new VectorHelper(PINK);
-        this._distanceVectorHelper = new VectorHelper(BLUE);
+        this._distanceVectorHelper = new VectorHelper(WHITE);
         this._turningVectorHelper = new VectorHelper(PINK);
+
+        this._axisX = new VectorHelper(RED);
+        this._axisY = new VectorHelper(0x00FF00);
+        this._axisZ = new VectorHelper(0x0000FF);
         this._trackPortionIndex = 0;
     }
 
@@ -45,78 +53,85 @@ export class CarAiService {
         if (this._scene === undefined) {
             return;
         }
-        this._helper.update(this._car);
+        // this._helper.update(this._car);
         const projection: Vector3 = this.projectInFrontOfCar();
-        // const lineDistance: number = this.getPointDistanceFromTrack(projection);
-        const carPosition: Vector3 = new Vector3(this._car.position.x + this._car.currentPosition.x, 0,
-                                                 this._car.position.z + this._car.currentPosition.z);
+        const lineDistance: number = this.getPointDistanceFromTrack(projection);
+        const carPosition: Vector3 = new Vector3(
+            this._car.position.x + this._car.currentPosition.x, 0,
+            this._car.position.z + this._car.currentPosition.z);
+        this._axisX.update(carPosition, carPosition.clone().add(new Vector3(5, 0, 0)), this._scene);
+        this._axisY.update(carPosition, carPosition.clone().add(new Vector3(0, 5, 0)), this._scene);
+        this._axisZ.update(carPosition, carPosition.clone().add(new Vector3(0, 0, 5)), this._scene);
         this._carVectorHelper.update(carPosition, projection, this._scene);
         const pointOnLine: Vector3 = this.projectPointOnLine(projection);
         this._distanceVectorHelper.update(projection, pointOnLine, this._scene);
         const turningPoint: Vector3 = this.projectTurningPoint();
-        this._turningVectorHelper.update(new Vector3(this._track[4].x, 0, this._track[4].z), turningPoint, this._scene);
-        for (let i: number = 0; i < this._track.length; ++i) {
-            if (Math.abs(this._track[i].x - pointOnLine.x) < 1 && Math.abs(this._track[i].z - pointOnLine.z) < 1) {
+        this._turningVectorHelper.update(new Vector3(
+            this._track[this._trackPortionIndex].x, 0,
+            this._track[this._trackPortionIndex].z), turningPoint, this._scene
+        );
+        // for (let i: number = 0; i < this._track.length; ++i) {
+        this._track.forEach(() => {
+            if ((this._track[this._trackPortionIndex].distanceTo(pointOnLine) +
+                pointOnLine.distanceTo(turningPoint)) - this._track[this._trackPortionIndex].distanceTo(turningPoint) < 3) {
                 if (this._trackPortionIndex - 1 < 0) {
                     this._trackPortionIndex = this._vectorTrack.length - 1;
                 } else {
                     this._trackPortionIndex--;
                 }
             }
+        });
+
+        if (Math.abs(lineDistance) > 3) {
+            if (lineDistance < 0) {
+                if (!this._isSteeringLeft) {
+                    this.goLeft();
+                }
+            } else {
+                if (!this._isSteeringRight) {
+                    this.goRight();
+                }
+            }
+        } else {
+            if (!this._isGoingForward) {
+                this.goForward();
+                this.releaseSteering();
+            }
         }
-
-        // console.log(lineDistance);
-
-        // if (lineDistance === undefined) {
-        //     if (!this._isSteeringRight && this._isLeftOfLine) {
-        //         this._isLeftOfLine = !this._isLeftOfLine;
-        //         this.goRight();
-        //     } else {
-        //         if (!this._isSteeringLeft && !this._isLeftOfLine) {
-        //             this._isLeftOfLine = !this._isLeftOfLine;
-        //             this.goLeft();
-        //         }
-        //     }
-
-        // } else {
-        //     if (!this._isGoingForward) {
-        //         this.goForward();
-        //         this.releaseSteering();
-        //     }
-        // }
     }
 
-    // private goForward(): void {
-    //     this._aiControl.setCommand(new GoFoward(this._car));
-    //     this._aiControl.execute();
-    //     this._isGoingForward = true;
-    // }
+    private goForward(): void {
+        // this._aiControl.setCommand(new GoFoward(this._car));
+        // this._aiControl.execute();
+        // this._isGoingForward = true;
+    }
 
-    // private goLeft(): void {
-    //     this._aiControl.setCommand(new TurnLeft(this._car));
-    //     this._aiControl.execute();
-    //     this._isSteeringLeft = true;
-    // }
+    private goLeft(): void {
+        // this._aiControl.setCommand(new TurnLeft(this._car));
+        // this._aiControl.execute();
+        // this._isSteeringLeft = true;
+    }
 
-    // private goRight(): void {
-    //     this._aiControl.setCommand(new TurnRight(this._car));
-    //     this._aiControl.execute();
-    //     this._isSteeringRight = true;
-    // }
+    private goRight(): void {
+        // this._aiControl.setCommand(new TurnRight(this._car));
+        // this._aiControl.execute();
+        // this._isSteeringRight = true;
+    }
 
-    // private releaseSteering(): void {
-    //     this._aiControl.setCommand(new ReleaseSteering(this._car));
-    //     this._aiControl.execute();
-    //     this._isReleasingSteering = true;
-    //     this._isSteeringRight = false;
-    //     this._isSteeringLeft = false;
-    //     this._isGoingForward = false;
-    // }
+    private releaseSteering(): void {
+        // this._aiControl.setCommand(new ReleaseSteering(this._car));
+        // this._aiControl.execute();
+        // this._isReleasingSteering = true;
+        // this._isSteeringRight = false;
+        // this._isSteeringLeft = false;
+        // this._isGoingForward = false;
+    }
 
     private projectInFrontOfCar(): Vector3 {
         const dir: Vector3 = this._car.direction.normalize();
-        const positionInFront: Vector3 = new Vector3(this._car.position.x + this._car.currentPosition.x, 0,
-                                                     this._car.position.z + this._car.currentPosition.z);
+        const positionInFront: Vector3 = new Vector3(
+            this._car.position.x + this._car.currentPosition.x, 0,
+            this._car.position.z + this._car.currentPosition.z);
 
         positionInFront.x += dir.x * this.DISTANCE_FROM_VEHICULE;
         positionInFront.z += dir.z * this.DISTANCE_FROM_VEHICULE;
@@ -134,41 +149,41 @@ export class CarAiService {
             const a: number = track[i].z - track[i + nextVertex].z;
             const b: number = track[i + nextVertex].x - track[i].x;
             const c: number = track[i].x * track[i + nextVertex].z - track[i + nextVertex].x * track[i].z;
-            this._vectorTrack.push({a, b, c});
+            this._vectorTrack.push({ a, b, c });
         }
     }
 
-    // private getPointDistanceFromTrack(point: Vector3): number {
-    //     const line: {a: number, b: number, c: number} = this._vectorTrack[this._trackPortionIndex];
-    //     const top: number = Math.abs(line.a * point.x + line.b * point.z + line.c);
-    //     const bottom: number = Math.sqrt(line.a * line.a + line.b * line.b);
+    private getPointDistanceFromTrack(point: Vector3): number {
+        const line: { a: number, b: number, c: number } = this._vectorTrack[this._trackPortionIndex];
+        const top: number = line.a * point.x + line.b * point.z + line.c;
+        const bottom: number = Math.sqrt(line.a * line.a + line.b * line.b);
 
-    //     return top / bottom;
-    // }
+        return top / bottom;
+    }
 
     private projectPointOnLine(point: Vector3): Vector3 {
-        const line: {a: number, b: number, c: number} = this._vectorTrack[this._trackPortionIndex];
+        const line: { a: number, b: number, c: number } = this._vectorTrack[this._trackPortionIndex];
         const pointOnLine: Vector3 = new Vector3();
 
         const a: number = -this._vectorTrack[this._trackPortionIndex].b;
         const b: number = this._vectorTrack[this._trackPortionIndex].a;
         const c: number = -a * point.x - b * point.z;
 
-        pointOnLine.z = (line.c * a - line.a * c) / ( line.a * b - a * line.b );
-        pointOnLine.x = ( -c - b * pointOnLine.z ) / a;
+        pointOnLine.z = (line.c * a - line.a * c) / (line.a * b - a * line.b);
+        pointOnLine.x = (-c - b * pointOnLine.z) / a;
 
         return pointOnLine;
     }
 
     private projectTurningPoint(): Vector3 {
         // const line: {a: number, b: number, c: number} = this._vectorTrack[this._trackPortionIndex];
-        let p2: Vector3;
+        let p1: Vector3;
         if (this._trackPortionIndex === this._track.length - 1) {
-            p2 = this._track[0];
+            p1 = this._track[0];
         } else {
-            p2 = this._track[this._trackPortionIndex + 1];
+            p1 = this._track[this._trackPortionIndex + 1];
         }
-        const p1: Vector3 = this._track[this._trackPortionIndex];
+        const p2: Vector3 = this._track[this._trackPortionIndex];
 
         const dx: number = p2.x - p1.x;
         const dz: number = p2.z - p1.z;

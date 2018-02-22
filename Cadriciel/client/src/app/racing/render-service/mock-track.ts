@@ -1,11 +1,11 @@
 import { Vector3 } from "three";
 
 export const MOCK_TRACK: Vector3[] = [
-    // new Vector3(-250, 0, 0),
-    // new Vector3(0, 0, 250),
-    // new Vector3(0, 0, 0),
-    // new Vector3(250, 0, 0),
-    // new Vector3(0, 0, -250),
+    new Vector3(0, 0, 0),
+    new Vector3(250, 0, 0),
+    new Vector3(0, 0, -250),
+    new Vector3(-250, 0, 0),
+    new Vector3(0, 0, 250),
 
     // new Vector3(-59.375, 0, 332.5),
     // new Vector3(134.375, 0, 333.75),
@@ -56,10 +56,10 @@ export const MOCK_TRACK: Vector3[] = [
     // new Vector3(-840.625, 0, 68.75),
     // new Vector3(-715.625, 0, 195),
 
-    new Vector3(-48, 0, -27),
-    new Vector3(-55, 0, 17),
-    new Vector3(9, 0, 34),
-    new Vector3(74, 0, 7),
-    new Vector3(70, 0, -26)
+    // new Vector3(-48, 0, -27),
+    // new Vector3(-55, 0, 17),
+    // new Vector3(9, 0, 34),
+    // new Vector3(74, 0, 7),
+    // new Vector3(70, 0, -26)
 
 ];
