@@ -195,42 +195,6 @@ export class RenderService {
         this._renderer.setSize(this._container.clientWidth, this._container.clientHeight);
     }
 
-    public handleKeyDown(event: KeyboardEvent): void {
-        switch (event.keyCode) {
-            case ACCELERATE_KEYCODE:
-                this._playerCar.accelerate();
-                break;
-            case LEFT_KEYCODE:
-                this._playerCar.steerLeft();
-                break;
-            case RIGHT_KEYCODE:
-                this._playerCar.steerRight();
-                break;
-            case BRAKE_KEYCODE:
-                this._playerCar.reverse();
-                break;
-            default:
-                break;
-        }
-    }
-
-    public handleKeyUp(event: KeyboardEvent): void {
-        switch (event.keyCode) {
-            case ACCELERATE_KEYCODE:
-                this._playerCar.releaseAccelerator();
-                break;
-            case LEFT_KEYCODE:
-            case RIGHT_KEYCODE:
-                this._playerCar.releaseSteering();
-                break;
-            case BRAKE_KEYCODE:
-                this._playerCar.releaseReverse();
-                break;
-            default:
-                break;
-        }
-    }
-
     private renderTrack(): void {
         this._trackPoints = new TrackPointList(MOCK_TRACK);
         this.renderTrackShape();
