@@ -35,7 +35,7 @@
   </div>
 </div>
 
-<div id="gameInformations">
+<div id="gameInformations" (mousedown)="deselectWords()">
   <h3> {{configurationService.playerName}} :
     <h4> {{correctWordCount}} words found</h4>
   </h3>
