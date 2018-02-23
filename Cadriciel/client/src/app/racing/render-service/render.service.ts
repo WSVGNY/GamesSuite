@@ -41,7 +41,7 @@ export class RenderService {
     private _stats: Stats;
     private _lastDate: number;
     private _carAiService: CarAiService[] = [];
-    // private _aiCars: Car[] = [];
+    private _aiCars: Car[] = [];
     // private _dayTime: boolean = true;
     private _trackPoints: TrackPointList;
 
@@ -55,7 +55,7 @@ export class RenderService {
         this._playerCar = new Car();
 
         for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
-            // this._aiCars.push(new Car());
+            this._aiCars.push(new Car());
         }
     }
 
@@ -91,14 +91,15 @@ export class RenderService {
             } else if (i === 2) {
                 diff = Difficulty.Easy;
             }
-            // this._carAiService.push(new CarAiService(this._aiCars[i], points, this._scene, diff));
-            this._carAiService.push(new CarAiService(this._playerCar, points, this._scene, Difficulty.Hard));
-            // this._aiCars[i].position.add(new Vector3(
-            //     this._trackPoints.points[0].coordinates.x + i, 0,
-            //     this._trackPoints.points[0].coordinates.z
-            // ));
-            // this.rotateCarToFaceStart(this._aiCars[i]);
+            this._carAiService.push(new CarAiService(this._aiCars[i], points, this._scene, diff));
+            this._aiCars[i].position.add(new Vector3(
+                this._trackPoints.points[0].coordinates.x + i, 0,
+                this._trackPoints.points[0].coordinates.z
+            ));
+            this.rotateCarToFaceStart(this._aiCars[i]);
         }
+        this._carAiService.push(new CarAiService(this._playerCar, points, this._scene, Difficulty.Hard));
+
     }
 
     private rotateCarToFaceStart(car: Car): void {
@@ -123,19 +124,20 @@ export class RenderService {
         const timeSinceLastFrame: number = Date.now() - this._lastDate;
         this._playerCar.update(timeSinceLastFrame);
         for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
-            // this._aiCars[i].update(timeSinceLastFrame);
-            this._carAiService[i].update();
+            this._aiCars[i].update(timeSinceLastFrame);
+            this._carAiService[i].update(this._carAiService);
         }
+        this._carAiService[1].update(this._carAiService);
         this._lastDate = Date.now();
     }
 
     private async createScene(): Promise<void> {
         await this._playerCar.init();
         this._scene.add(this._playerCar);
-        // for (const car of this._aiCars) {
-        //     await car.init();
-        //     this._scene.add(car);
-        // }
+        for (const car of this._aiCars) {
+            await car.init();
+            this._scene.add(car);
+        }
 
         this._camera = new PerspectiveCamera(
             FIELD_OF_VIEW,
@@ -195,7 +197,7 @@ export class RenderService {
         requestAnimationFrame(() => this.render());
         this.update();
         this._renderer.render(this._scene, this._camera);
-        // this._stats.update();
+        this._stats.update();
     }
 
     public onResize(): void {
