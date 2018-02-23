@@ -1,122 +1,34 @@
 import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import {
-    PerspectiveCamera, WebGLRenderer, Scene, Mesh, Shape,
-    ShapeGeometry, Path, Vector3,
-    BackSide,
-    TextureLoader,
-    Texture,
-    RepeatWrapping,
-    PlaneGeometry,
-    CubeTextureLoader,
-    MeshLambertMaterial,
-    DirectionalLight,
-    DirectionalLightHelper,
-    AmbientLight
+    PerspectiveCamera, WebGLRenderer, Scene, Mesh, Shape, ShapeGeometry, Path, BackSide, TextureLoader, Texture, RepeatWrapping,
+    PlaneGeometry, CubeTextureLoader, MeshLambertMaterial, DirectionalLight, DirectionalLightHelper, AmbientLight, Group, Object3D
 } from "three";
-import { CarAiService } from "../artificial-intelligence/car-ai.service";
-import { Car } from "../car/car";
 import { PI_OVER_2, LOWER_GROUND } from "../constants";
-import { TrackPoint, TrackPointList } from "./trackPoint";
-import { Difficulty } from "../../../../../common/crossword/difficulty";
-import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
-import { MOCK_TRACK } from "./mock-track";
+import { TrackPointList } from "./trackPoint";
 
-const FAR_CLIPPING_PLANE: number = 1000;
-const NEAR_CLIPPING_PLANE: number = 1;
-const FIELD_OF_VIEW: number = 70;
-
-const INITIAL_CAMERA_POSITION_Z: number = 10;
-const INITIAL_CAMERA_POSITION_Y: number = 5;
 const WHITE: number = 0xFFFFFF;
 const AMBIENT_LIGHT_OPACITY: number = 0.1;
-const PLAYER_CAMERA: string = "PLAYER_CAMERA";
-const AI_CARS_NUMBER: number = 3;
 
 @Injectable()
 export class RenderService {
-    private _camera: PerspectiveCamera;
     private _container: HTMLDivElement;
-    private _playerCar: Car;
     private _renderer: WebGLRenderer;
     private _scene: Scene;
     private _stats: Stats;
-    private _lastDate: number;
-    private _carAiService: CarAiService[] = [];
-    private _aiCars: Car[] = [];
-    private _dayTime: boolean = true;
-    private _trackPoints: TrackPointList = new TrackPointList(MOCK_TRACK);
-
-    public get playerCar(): Car {
-        return this._playerCar;
-    }
+    private _group: Group = new Group();
+    private _camera: PerspectiveCamera;
 
     public constructor() {
+    }
+
+    public async initialize(container: HTMLDivElement, camera: PerspectiveCamera): Promise<void> {
+        this._container = container;
+        this._camera = camera;
         this._scene = new Scene();
-        this._playerCar = new Car();
-
-        for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
-            this._aiCars.push(new Car());
-        }
-    }
-
-    public setTrack(_trackPoints: CommonCoordinate3D[]): void {
-        this._trackPoints = new TrackPointList(_trackPoints);
-    }
-
-    public async initialize(container: HTMLDivElement): Promise<void> {
-        if (container) {
-            this._container = container;
-        }
-
+        this._scene.add(this._group);
         await this.createScene();
-        this.initializeCars();
         this.initStats();
-        this.startRenderingLoop();
-    }
-
-    private initializeCars(): void {
-        this._playerCar.position.add(new Vector3(
-            this._trackPoints.points[0].coordinates.x, 0,
-            this._trackPoints.points[0].coordinates.z)
-        );
-        this.rotateCarToFaceStart(this._playerCar);
-        const points: Vector3[] = new Array(this._trackPoints.length);
-        this._trackPoints.points.forEach((currentPoint: TrackPoint, i: number) => {
-            points[i] = new Vector3(
-                currentPoint.coordinates.x,
-                currentPoint.coordinates.y,
-                currentPoint.coordinates.z,
-            );
-        });
-        for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
-            let diff: Difficulty = Difficulty.Hard;
-            if (i === 1) {
-                diff = Difficulty.Medium;
-            } else if (i === 2) {
-                diff = Difficulty.Easy;
-            }
-            this._carAiService.push(new CarAiService(this._aiCars[i], points, this._scene, diff));
-            this._aiCars[i].position.add(new Vector3(
-                this._trackPoints.points[0].coordinates.x + i, 0,
-                this._trackPoints.points[0].coordinates.z
-            ));
-            this.rotateCarToFaceStart(this._aiCars[i]);
-        }
-        this._carAiService.push(new CarAiService(this._playerCar, points, this._scene, Difficulty.Hard));
-
-    }
-
-    private rotateCarToFaceStart(car: Car): void {
-        const carfinalFacingVector: Vector3 = new Vector3(
-            this._trackPoints.points[1].coordinates.x - this._trackPoints.points[0].coordinates.x,
-            this._trackPoints.points[1].coordinates.y - this._trackPoints.points[0].coordinates.y,
-            this._trackPoints.points[1].coordinates.z - this._trackPoints.points[0].coordinates.z
-        ).normalize();
-        const angle: number = new Vector3(-1, 0, 0).cross(carfinalFacingVector).y > 0 ?
-            new Vector3(-1, 0, 0).angleTo(carfinalFacingVector) :
-            - new Vector3(-1, 0, 0).angleTo(carfinalFacingVector);
-        car.rotate(new Vector3(0, 1, 0), angle);
     }
 
     private initStats(): void {
@@ -125,39 +37,12 @@ export class RenderService {
         this._container.appendChild(this._stats.dom);
     }
 
-    private update(): void {
-        const timeSinceLastFrame: number = Date.now() - this._lastDate;
-        this._playerCar.update(timeSinceLastFrame);
-        for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
-            this._aiCars[i].update(timeSinceLastFrame);
-            this._carAiService[i].update();
-        }
-        this._carAiService[1].update();
-        this._lastDate = Date.now();
+    public addObjectToScene(object: Object3D): void {
+        this._group.add(object);
     }
 
     private async createScene(): Promise<void> {
-        await this._playerCar.init();
-        this._scene.add(this._playerCar);
-        for (const car of this._aiCars) {
-            await car.init();
-            this._scene.add(car);
-        }
-
-        this._camera = new PerspectiveCamera(
-            FIELD_OF_VIEW,
-            this.getAspectRatio(),
-            NEAR_CLIPPING_PLANE,
-            FAR_CLIPPING_PLANE
-        );
-
-        this._camera.name = PLAYER_CAMERA;
-        this._camera.position.z = INITIAL_CAMERA_POSITION_Z;
-        this._camera.position.y = INITIAL_CAMERA_POSITION_Y;
-        this._playerCar.attachCamera(this._camera);
-
         this.lighting();
-        this.renderTrack();
         this.renderGround();
         this.renderSkyBox();
     }
@@ -184,23 +69,16 @@ export class RenderService {
         this._scene.add(dirLightHeper);
     }
 
-    private getAspectRatio(): number {
-        return this._container.clientWidth / this._container.clientHeight;
-    }
-
-    private startRenderingLoop(): void {
+    public setupRenderer(): void {
         this._renderer = new WebGLRenderer();
         this._renderer.setPixelRatio(devicePixelRatio);
         this._renderer.setSize(this._container.clientWidth, this._container.clientHeight);
 
-        this._lastDate = Date.now();
         this._container.appendChild(this._renderer.domElement);
         this.render();
     }
 
-    private render(): void {
-        requestAnimationFrame(() => this.render());
-        this.update();
+    public render(): void {
         this._renderer.render(this._scene, this._camera);
         this._stats.update();
     }
@@ -211,39 +89,41 @@ export class RenderService {
         this._renderer.setSize(this._container.clientWidth, this._container.clientHeight);
     }
 
-    private renderTrack(): void {
-        this.renderTrackShape();
-        // this.renderCenterLine();
+    public getAspectRatio(): number {
+        return this._container.clientWidth / this._container.clientHeight;
     }
 
-    private renderTrackShape(): void {
+    public createTrackMesh(trackPoints: TrackPointList): Mesh {
         const shape: Shape = new Shape();
-        const firstPoint: TrackPoint = this._trackPoints.points[0];
-        shape.moveTo(firstPoint.exterior.x, firstPoint.exterior.z);
-        for (let i: number = 1; i < this._trackPoints.length; ++i) {
-            shape.lineTo(this._trackPoints.points[i].exterior.x, this._trackPoints.points[i].exterior.z);
-        }
-        shape.lineTo(firstPoint.exterior.x, firstPoint.exterior.z);
+        this.createTrackExterior(shape, trackPoints);
+        this.drillHoleInTrackShape(shape, trackPoints);
 
-        const holePath: Path = new Path();
-        holePath.moveTo(firstPoint.interior.x, firstPoint.interior.z);
-        for (let i: number = this._trackPoints.length - 1; i > 0; --i) {
-            holePath.lineTo(this._trackPoints.points[i].interior.x, this._trackPoints.points[i].interior.z);
-        }
-        holePath.lineTo(firstPoint.interior.x, firstPoint.interior.z);
-
-        shape.holes.push(holePath);
         const geometry: ShapeGeometry = new ShapeGeometry(shape);
+        const trackMaterial: MeshLambertMaterial =
+            new MeshLambertMaterial({ side: BackSide, map: this.loadRepeatingTexture("assets/textures/asphalte.jpg", 0.045) });
 
-        const texture: Texture = new TextureLoader().load("assets/textures/asphalte.jpg");
-        texture.wrapS = RepeatWrapping;
-        texture.wrapT = RepeatWrapping;
-        texture.repeat.set(0.045, 0.045);
-        const groundMaterial: MeshLambertMaterial = new MeshLambertMaterial({ side: BackSide, map: texture });
+        const trackMesh: Mesh = new Mesh(geometry, trackMaterial);
+        trackMesh.rotateX(PI_OVER_2);
 
-        const ground: Mesh = new Mesh(geometry, groundMaterial);
-        ground.rotateX(PI_OVER_2);
-        this._scene.add(ground);
+        return trackMesh;
+    }
+
+    private createTrackExterior(trackShape: Shape, trackPoints: TrackPointList): void {
+        trackShape.moveTo(trackPoints.first.exterior.x, trackPoints.first.exterior.z);
+        for (let i: number = 1; i < trackPoints.length; ++i) {
+            trackShape.lineTo(trackPoints.points[i].exterior.x, trackPoints.points[i].exterior.z);
+        }
+        trackShape.lineTo(trackPoints.first.exterior.x, trackPoints.first.exterior.z);
+    }
+
+    private drillHoleInTrackShape(trackShape: Shape, trackPoints: TrackPointList): void {
+        const holePath: Path = new Path();
+        holePath.moveTo(trackPoints.first.interior.x, trackPoints.first.interior.z);
+        for (let i: number = trackPoints.length - 1; i > 0; --i) {
+            holePath.lineTo(trackPoints.points[i].interior.x, trackPoints.points[i].interior.z);
+        }
+        holePath.lineTo(trackPoints.first.interior.x, trackPoints.first.interior.z);
+        trackShape.holes.push(holePath);
     }
 
     // private renderCenterLine(): void {
@@ -254,14 +134,10 @@ export class RenderService {
     //     this._scene.add(line);
     // }
 
-    private async renderGround(): Promise<void> {
+    private renderGround(): void {
         const groundGeometry: PlaneGeometry = new PlaneGeometry(10000, 10000, 1, 1);
-
-        const texture: Texture = new TextureLoader().load("assets/textures/green-grass-texture.jpg");
-        texture.wrapS = RepeatWrapping;
-        texture.wrapT = RepeatWrapping;
-        texture.repeat.set(1000, 1000);
-        const groundMaterial: MeshLambertMaterial = new MeshLambertMaterial({ side: BackSide, map: texture });
+        const groundMaterial: MeshLambertMaterial =
+            new MeshLambertMaterial({ side: BackSide, map: this.loadRepeatingTexture("assets/textures/green-grass-texture.jpg", 1000) });
 
         const ground: Mesh = new Mesh(groundGeometry, groundMaterial);
         ground.rotateX(PI_OVER_2);
@@ -269,38 +145,47 @@ export class RenderService {
         this._scene.add(ground);
     }
 
+    private loadRepeatingTexture(pathToImage: string, imageRatio: number): Texture {
+        const texture: Texture = new TextureLoader().load(pathToImage);
+        texture.wrapS = RepeatWrapping;
+        texture.wrapT = RepeatWrapping;
+        texture.repeat.set(imageRatio, imageRatio);
+
+        return texture;
+    }
+
     private async renderSkyBox(): Promise<void> {
-        if (this._dayTime === true) {
-            this._scene.background = new CubeTextureLoader()
-                .setPath("assets/textures/night/")
-                .load([
-                    "night_px.jpg", // 'px.png',
-                    "night_nx.jpg", // 'nx.png',
-                    "night_py.jpg", // 'py.png',
-                    "night_ny.jpg", // 'ny.png',
-                    "night_pz.jpg", // 'pz.png',
-                    "night_nz.jpg"// 'nz.png'
-                ]);
-        } else {
-            this._scene.background = new CubeTextureLoader()
-                // .setPath("assets/textures/Tropical/")
-                // .load([
-                //     "TropicalSunnyDay_px.jpg", // 'px.png',
-                //     "TropicalSunnyDay_nx.jpg", // 'nx.png',
-                //     "TropicalSunnyDay_py.jpg", // 'py.png',
-                //     "TropicalSunnyDay_ny.jpg", // 'ny.png',
-                //     "TropicalSunnyDay_pz.jpg", // 'pz.png',
-                //     "TropicalSunnyDay_nz.jpg"// 'nz.png'
-                // ]);
-                .setPath("assets/textures/clouds/")
-                .load([
-                    "CloudyLightRays_px.jpg", // 'px.png',
-                    "CloudyLightRays_nx.jpg", // 'nx.png',
-                    "CloudyLightRays_py.jpg", // 'py.png',
-                    "CloudyLightRays_ny.jpg", // 'ny.png',
-                    "CloudyLightRays_pz.jpg", // 'pz.png',
-                    "CloudyLightRays_nz.jpg"// 'nz.png'
-                ]);
-        }
+        // if (this._dayTime === true) {
+        this._scene.background = new CubeTextureLoader()
+            .setPath("assets/textures/night/")
+            .load([
+                "night_px.jpg", // 'px.png',
+                "night_nx.jpg", // 'nx.png',
+                "night_py.jpg", // 'py.png',
+                "night_ny.jpg", // 'ny.png',
+                "night_pz.jpg", // 'pz.png',
+                "night_nz.jpg"// 'nz.png'
+            ]);
+        // } else {
+        //     this._scene.background = new CubeTextureLoader()
+        //         // .setPath("assets/textures/Tropical/")
+        //         // .load([
+        //         //     "TropicalSunnyDay_px.jpg", // 'px.png',
+        //         //     "TropicalSunnyDay_nx.jpg", // 'nx.png',
+        //         //     "TropicalSunnyDay_py.jpg", // 'py.png',
+        //         //     "TropicalSunnyDay_ny.jpg", // 'ny.png',
+        //         //     "TropicalSunnyDay_pz.jpg", // 'pz.png',
+        //         //     "TropicalSunnyDay_nz.jpg"// 'nz.png'
+        //         // ]);
+        //         .setPath("assets/textures/clouds/")
+        //         .load([
+        //             "CloudyLightRays_px.jpg", // 'px.png',
+        //             "CloudyLightRays_nx.jpg", // 'nx.png',
+        //             "CloudyLightRays_py.jpg", // 'py.png',
+        //             "CloudyLightRays_ny.jpg", // 'ny.png',
+        //             "CloudyLightRays_pz.jpg", // 'pz.png',
+        //             "CloudyLightRays_nz.jpg"// 'nz.png'
+        //         ]);
+        // }
     }
 }

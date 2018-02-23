@@ -4,7 +4,7 @@ import { CommandController } from "../commandController";
 import { TurnLeft } from "../commands/carAICommands/turnLeft";
 import { TurnRight } from "../commands/carAICommands/turnRight";
 import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";
-import { Vector3, Scene, BoxHelper } from "three";
+import { Vector3, BoxHelper } from "three";
 import { VectorHelper } from "./vectorHelper";
 import { PINK, WHITE, SQUARED } from "../constants";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
@@ -39,7 +39,7 @@ export class CarAiService {
     private _distanceVectorHelper: VectorHelper;
     private _turningVectorHelper: VectorHelper;
 
-    public constructor(private _car: Car, private _trackVertices: Vector3[], public _scene: Scene, difficulty: Difficulty) {
+    public constructor(private _car: Car, private _trackVertices: Vector3[]/*, public _scene: Scene*/, difficulty: Difficulty) {
         this._aiControl = new CommandController();
         this.createVectorTrackFromPoints(_trackVertices);
 
@@ -72,43 +72,43 @@ export class CarAiService {
         this._distanceVectorHelper = new VectorHelper(WHITE);
         this._turningVectorHelper = new VectorHelper(PINK);
         this._carHelper = new BoxHelper(this._car);
-        this._scene.add(this._carHelper);
+        // this._scene.add(this._carHelper);
     }
 
     public update(): void {
-            const carPosition: Vector3 = new Vector3(
-                this._car.position.x + this._car.currentPosition.x, 0,
-                this._car.position.z + this._car.currentPosition.z);
+        const carPosition: Vector3 = new Vector3(
+            this._car.position.x + this._car.currentPosition.x, 0,
+            this._car.position.z + this._car.currentPosition.z);
 
-            const projection: Vector3 = this.projectInFrontOfCar();
-            const lineDistance: number = this.getPointDistanceFromTrack(projection);
-            const pointOnLine: Vector3 = this.projectPointOnLine(projection);
-            const turningPoint: Vector3 = this.projectTurningPoint();
+        const projection: Vector3 = this.projectInFrontOfCar();
+        const lineDistance: number = this.getPointDistanceFromTrack(projection);
+        const pointOnLine: Vector3 = this.projectPointOnLine(projection);
+        const turningPoint: Vector3 = this.projectTurningPoint();
 
-            // Helper
-            if (this.DEBUG_MODE) {
-                this.updateDebugMode(carPosition, projection, pointOnLine, turningPoint);
-            }
+        // Helper
+        if (this.DEBUG_MODE) {
+            this.updateDebugMode(carPosition, projection, pointOnLine, turningPoint);
+        }
 
-            this.updateTrackPortionIndex(pointOnLine, turningPoint);
-            this.updateCarDirection(lineDistance);
+        this.updateTrackPortionIndex(pointOnLine, turningPoint);
+        this.updateCarDirection(lineDistance);
     }
 
     private updateDebugMode(carPosition: Vector3, projection: Vector3, pointOnLine: Vector3, turningPoint: Vector3): void {
-        this._axisX.update(carPosition, carPosition.clone().add(new Vector3(5, 0, 0)), this._scene);
-        this._axisY.update(carPosition, carPosition.clone().add(new Vector3(0, 5, 0)), this._scene);
-        this._axisZ.update(carPosition, carPosition.clone().add(new Vector3(0, 0, 5)), this._scene);
-        this._carHelper.update(this._car);
-        this._carVectorHelper.update(carPosition, projection, this._scene);
-        this._distanceVectorHelper.update(projection, pointOnLine, this._scene);
-        this._turningVectorHelper.update(
-            new Vector3(
-                this._trackVertices[this._trackPortionIndex].x,
-                0,
-                this._trackVertices[this._trackPortionIndex].z),
-            turningPoint,
-            this._scene
-        );
+        // this._axisX.update(carPosition, carPosition.clone().add(new Vector3(5, 0, 0)), this._scene);
+        // this._axisY.update(carPosition, carPosition.clone().add(new Vector3(0, 5, 0)), this._scene);
+        // this._axisZ.update(carPosition, carPosition.clone().add(new Vector3(0, 0, 5)), this._scene);
+        // this._carHelper.update(this._car);
+        // this._carVectorHelper.update(carPosition, projection, this._scene);
+        // this._distanceVectorHelper.update(projection, pointOnLine, this._scene);
+        // this._turningVectorHelper.update(
+        //     new Vector3(
+        //         this._trackVertices[this._trackPortionIndex].x,
+        //         0,
+        //         this._trackVertices[this._trackPortionIndex].z),
+        //     turningPoint,
+        //     this._scene
+        // );
     }
 
     private updateTrackPortionIndex(pointOnLine: Vector3, turningPoint: Vector3): void {

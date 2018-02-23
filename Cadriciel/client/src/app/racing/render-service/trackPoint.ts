@@ -57,12 +57,25 @@ export class TrackPointList {
         return this;
     }
 
+    public get first(): TrackPoint {
+        return this._trackPoints[0];
+    }
+
     public get length(): number {
         return this._trackPoints.length;
     }
 
     public get points(): TrackPoint[] {
         return this._trackPoints;
+    }
+
+    public get pointVectors(): Vector3[] {
+        const points: Vector3[] = new Array(this._trackPoints.length);
+        this._trackPoints.forEach((currentPoint: TrackPoint, i: number) => {
+            points[i] = currentPoint.coordinates.clone();
+        });
+
+        return points;
     }
 }
 
