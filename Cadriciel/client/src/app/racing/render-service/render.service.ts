@@ -16,7 +16,7 @@ import {
 } from "three";
 import { CarAiService } from "../artificial-intelligence/car-ai.service";
 import { Car } from "../car/car";
-import { PI_OVER_2, LOWER_GROUND, WHITE } from "../constants";
+import { PI_OVER_2, LOWER_GROUND } from "../constants";
 import { MOCK_TRACK } from "./mock-track";
 import { TrackPoint, TrackPointList } from "./trackPoint";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
@@ -27,9 +27,10 @@ const FIELD_OF_VIEW: number = 70;
 
 const INITIAL_CAMERA_POSITION_Z: number = 10;
 const INITIAL_CAMERA_POSITION_Y: number = 5;
-const AMBIENT_LIGHT_OPACITY: number = 0.2;
+const WHITE: number = 0xFFFFFF;
+const AMBIENT_LIGHT_OPACITY: number = 0.1;
 const PLAYER_CAMERA: string = "PLAYER_CAMERA";
-const AI_CARS_NUMBER: number = 1;
+const AI_CARS_NUMBER: number = 3;
 
 @Injectable()
 export class RenderService {
@@ -42,7 +43,7 @@ export class RenderService {
     private _lastDate: number;
     private _carAiService: CarAiService[] = [];
     private _aiCars: Car[] = [];
-    // private _dayTime: boolean = true;
+    private _dayTime: boolean = true;
     private _trackPoints: TrackPointList;
 
     public get playerCar(): Car {
@@ -125,9 +126,9 @@ export class RenderService {
         this._playerCar.update(timeSinceLastFrame);
         for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
             this._aiCars[i].update(timeSinceLastFrame);
-            this._carAiService[i].update(this._carAiService);
+            this._carAiService[i].update();
         }
-        this._carAiService[1].update(this._carAiService);
+        this._carAiService[1].update();
         this._lastDate = Date.now();
     }
 
@@ -266,34 +267,37 @@ export class RenderService {
     }
 
     private async renderSkyBox(): Promise<void> {
-        this._scene.background = new CubeTextureLoader()
-            // .setPath("assets/textures/clouds/")
-            // .load([
-            //     "CloudyLightRays_px.jpg", // 'px.png',
-            //     "CloudyLightRays_nx.jpg", // 'nx.png',
-            //     "CloudyLightRays_py.jpg", // 'py.png',
-            //     "CloudyLightRays_ny.jpg", // 'ny.png',
-            //     "CloudyLightRays_pz.jpg", // 'pz.png',
-            //     "CloudyLightRays_nz.jpg"// 'nz.png'
-            // ]);
-            // .setPath("assets/textures/Tropical/")
-            // .load([
-            //     "TropicalSunnyDay_px.jpg", // 'px.png',
-            //     "TropicalSunnyDay_nx.jpg", // 'nx.png',
-            //     "TropicalSunnyDay_py.jpg", // 'py.png',
-            //     "TropicalSunnyDay_ny.jpg", // 'ny.png',
-            //     "TropicalSunnyDay_pz.jpg", // 'pz.png',
-            //     "TropicalSunnyDay_nz.jpg"// 'nz.png'
-            // ]);
-
-            .setPath("assets/textures/night/")
-            .load([
-                "night_px.jpg", // 'px.png',
-                "night_nx.jpg", // 'nx.png',
-                "night_py.jpg", // 'py.png',
-                "night_ny.jpg", // 'ny.png',
-                "night_pz.jpg", // 'pz.png',
-                "night_nz.jpg"// 'nz.png'
-            ]);
+        if (this._dayTime === true) {
+            this._scene.background = new CubeTextureLoader()
+                .setPath("assets/textures/night/")
+                .load([
+                    "night_px.jpg", // 'px.png',
+                    "night_nx.jpg", // 'nx.png',
+                    "night_py.jpg", // 'py.png',
+                    "night_ny.jpg", // 'ny.png',
+                    "night_pz.jpg", // 'pz.png',
+                    "night_nz.jpg"// 'nz.png'
+                ]);
+        } else {
+            this._scene.background = new CubeTextureLoader()
+                // .setPath("assets/textures/Tropical/")
+                // .load([
+                //     "TropicalSunnyDay_px.jpg", // 'px.png',
+                //     "TropicalSunnyDay_nx.jpg", // 'nx.png',
+                //     "TropicalSunnyDay_py.jpg", // 'py.png',
+                //     "TropicalSunnyDay_ny.jpg", // 'ny.png',
+                //     "TropicalSunnyDay_pz.jpg", // 'pz.png',
+                //     "TropicalSunnyDay_nz.jpg"// 'nz.png'
+                // ]);
+                .setPath("assets/textures/clouds/")
+                .load([
+                    "CloudyLightRays_px.jpg", // 'px.png',
+                    "CloudyLightRays_nx.jpg", // 'nx.png',
+                    "CloudyLightRays_py.jpg", // 'py.png',
+                    "CloudyLightRays_ny.jpg", // 'ny.png',
+                    "CloudyLightRays_pz.jpg", // 'pz.png',
+                    "CloudyLightRays_nz.jpg"// 'nz.png'
+                ]);
+        }
     }
 }

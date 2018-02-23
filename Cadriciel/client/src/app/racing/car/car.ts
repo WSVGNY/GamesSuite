@@ -1,4 +1,4 @@
-import { Vector3, Matrix4, Object3D, ObjectLoader, Euler, Quaternion, Camera } from "three";
+import { Vector3, Matrix4, Object3D, ObjectLoader, Euler, Quaternion, Camera, SpotLight, Color } from "three";
 import { Engine } from "./engine";
 import { MS_TO_SECONDS, GRAVITY, PI_OVER_2, RAD_TO_DEG } from "../constants";
 import { Wheel } from "./wheel";
@@ -13,6 +13,7 @@ const INITIAL_WEIGHT_DISTRIBUTION: number = 0.5;
 const MINIMUM_SPEED: number = 0.05;
 const NUMBER_REAR_WHEELS: number = 2;
 const NUMBER_WHEELS: number = 4;
+const YELLOW: number = 0xFFFF00;
 
 export class Car extends Object3D {
 
@@ -30,6 +31,10 @@ export class Car extends Object3D {
     private _steeringWheelDirection: number;
     private _weightRear: number;
     private _initialDirection: Vector3 = new Vector3(0, 0, -1);
+    private _frontLight1: SpotLight;
+    private _frontLight2: SpotLight;
+    private _backLight1: SpotLight;
+    private _backLight2: SpotLight;
 
     public rotate(axis: Vector3, angle: number): void {
         this._mesh.rotateOnAxis(axis, angle);
@@ -61,6 +66,33 @@ export class Car extends Object3D {
 
     public attachCamera(camera: Camera): void {
         this._mesh.add(camera);
+    }
+
+    public createLights(): void {
+        this._frontLight1 = new SpotLight(YELLOW, 5, 300, -Math.PI / 2, 1);
+        this._frontLight2 = new SpotLight(YELLOW, 5, 300, -Math.PI / 2, 1);
+        this._backLight1 = new SpotLight(YELLOW, 5, 300, Math.PI / 2, 1);
+        this._backLight2 = new SpotLight(YELLOW, 5, 300, Math.PI / 2, 1);
+        this._frontLight1.position.set(-10, 0, 1);
+        this._frontLight2.position.set(-10, 0, 1);
+        this._backLight1.position.set(0, 0, 1);
+        this._backLight2.position.set(0, 0, 1);
+        this._mesh.add(this._frontLight1);
+        this._mesh.add(this._frontLight2);
+        this._mesh.add(this._backLight1);
+        this._mesh.add(this._backLight2);
+    }
+
+    public dettachLight(): void {
+        this._mesh.remove(this._frontLight1);
+        this._mesh.remove(this._frontLight2);
+        this._mesh.remove(this._backLight1);
+        this._mesh.remove(this._backLight2);
+    }
+
+    public setBackLightColor(color: number): void {
+        this._backLight1.color = new Color(color);
+        this._backLight2.color = new Color(color);
     }
 
     public attachCube(cube: Object3D): void {
