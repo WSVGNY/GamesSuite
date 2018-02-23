@@ -10,7 +10,6 @@ import { PINK, WHITE,  SQUARED } from "../constants";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { Line } from "./line";
 import { GoFoward } from "../commands/carAICommands/goFoward";
-import { Brake } from "../commands/carAICommands/brake";
 
 @Injectable()
 export class CarAiService {
@@ -19,7 +18,7 @@ export class CarAiService {
     private readonly TURNING_POINT_DISTANCE: number = 0.1;
     private readonly START_INDEX: number = 0;
     private readonly TURNING_POINT_BUFFER: number = 2;
-    private readonly CAR_SURROUNDING_SPHERE_SIZE: number = 4;
+    private readonly CAR_SURROUNDING_SPHERE_SIZE: number = 2;
 
     private readonly DEBUG_MODE: boolean = true;
 
@@ -32,7 +31,6 @@ export class CarAiService {
     private _trackPortionIndex: number = this.START_INDEX;
     private _trackVectors: Line[];
     private _carSurroundingSphere: Sphere;
-    private distanceBuffer: number = 0;
 
     // HELPER
     // private _carHelper: BoxHelper;
@@ -85,7 +83,7 @@ export class CarAiService {
     }
 
     // tslint:disable-next-line:max-func-body-length
-    public update(aiServices: CarAiService[], move: boolean): void {
+    public update(aiServices: CarAiService[]): void {
             const carPosition: Vector3 = new Vector3(
                 this._car.position.x + this._car.currentPosition.x, 0,
                 this._car.position.z + this._car.currentPosition.z);
@@ -109,24 +107,18 @@ export class CarAiService {
                 if (this._carSurroundingSphere.center !== aiServices[i].boundingSphere.center) {
                     if (this._carSurroundingSphere.center.distanceTo(aiServices[i].boundingSphere.center) < 10) {
                         // console.log("close");
-                        if (move) {
-                            this.goForward();
-                        }
-                        this._betweeVectorHelper.update(this._carSurroundingSphere.center, aiServices[i].boundingSphere.center, this._scene);
+                        // this._betweeVectorHelper.update(this._carSurroundingSphere.center, aiServices[i].boundingSphere.center, this._scene);
                         if (this._carSurroundingSphere.intersectsSphere(aiServices[i].boundingSphere)) {
-                            this.distanceBuffer = this._carSurroundingSphere.center.distanceTo(aiServices[i].boundingSphere.center);
                             const touchpoint: Vector3 = this._carSurroundingSphere.clampPoint(aiServices[i].boundingSphere.center);
                             const centerToPoint: Vector3 = new Vector3();
                             centerToPoint.x = touchpoint.x - this._carSurroundingSphere.center.x;
                             centerToPoint.z = touchpoint.z - this._carSurroundingSphere.center.z;
                             const vectorialProduct: Vector3 = new Vector3();
                             vectorialProduct.crossVectors(this._car.direction.normalize(), centerToPoint);
-                            if (move) {
                             if (vectorialProduct.y < 0) {
                                 this.goLeft();
                             } else {
                                 this.goRight();
-                            }
                             }
                             this._originVectorHelper.update(
                                 touchpoint,
@@ -135,21 +127,12 @@ export class CarAiService {
                             );
                         } else {
                             this.releaseSteering();
-                            this.distanceBuffer = 0;
-                        }
-                    } else {
-                        if (move) {
-                            this._aiControl.setCommand(new Brake(this._car));
-                            this._aiControl.execute();
-                            this._isGoingForward = false;
                         }
                     }
                 }
             }
             this.updateTrackPortionIndex(pointOnLine, turningPoint);
-            if (move) {
-                this.updateCarDirection(lineDistance);
-            }
+            this.updateCarDirection(lineDistance);
     }
 
     private updateDebugMode(carPosition: Vector3, projection: Vector3, pointOnLine: Vector3, turningPoint: Vector3): void {
@@ -182,14 +165,14 @@ export class CarAiService {
     }
 
     private updateCarDirection(lineDistance: number): void {
-        if (Math.abs(lineDistance) > this.DISTANCE_BEFORE_REPLACEMENT + this.distanceBuffer) {
+        if (Math.abs(lineDistance) > this.DISTANCE_BEFORE_REPLACEMENT) {
             if (lineDistance < 0) {
                 if (!this._isSteeringLeft) {
-                    // this.goLeft();
+                    this.goLeft();
                 }
             } else {
                 if (!this._isSteeringRight) {
-                    // this.goRight();
+                    this.goRight();
                 }
             }
         } else {

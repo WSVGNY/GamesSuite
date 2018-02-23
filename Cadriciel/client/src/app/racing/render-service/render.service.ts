@@ -125,9 +125,9 @@ export class RenderService {
         this._playerCar.update(timeSinceLastFrame);
         for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
             this._aiCars[i].update(timeSinceLastFrame);
-            this._carAiService[i].update(this._carAiService, true);
+            this._carAiService[i].update(this._carAiService);
         }
-        this._carAiService[1].update(this._carAiService, false);
+        this._carAiService[1].update(this._carAiService);
         this._lastDate = Date.now();
     }
 
