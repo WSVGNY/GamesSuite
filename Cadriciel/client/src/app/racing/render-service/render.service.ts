@@ -29,7 +29,7 @@ const INITIAL_CAMERA_POSITION_Z: number = 10;
 const INITIAL_CAMERA_POSITION_Y: number = 5;
 const AMBIENT_LIGHT_OPACITY: number = 0.2;
 const PLAYER_CAMERA: string = "PLAYER_CAMERA";
-const AI_CARS_NUMBER: number = 2;
+const AI_CARS_NUMBER: number = 1;
 
 @Injectable()
 export class RenderService {
@@ -92,13 +92,14 @@ export class RenderService {
                 diff = Difficulty.Easy;
             }
             this._carAiService.push(new CarAiService(this._aiCars[i], points, this._scene, diff));
-            // this._carAiService.push(new CarAiService(this._playerCar, points, this._scene, Difficulty.Hard));
             this._aiCars[i].position.add(new Vector3(
                 this._trackPoints.points[0].coordinates.x + i, 0,
                 this._trackPoints.points[0].coordinates.z
             ));
             this.rotateCarToFaceStart(this._aiCars[i]);
         }
+        this._carAiService.push(new CarAiService(this._playerCar, points, this._scene, Difficulty.Hard));
+
     }
 
     private rotateCarToFaceStart(car: Car): void {
@@ -124,8 +125,9 @@ export class RenderService {
         this._playerCar.update(timeSinceLastFrame);
         for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
             this._aiCars[i].update(timeSinceLastFrame);
-            this._carAiService[i].update();
+            this._carAiService[i].update(this._carAiService);
         }
+        this._carAiService[1].update(this._carAiService);
         this._lastDate = Date.now();
     }
 
