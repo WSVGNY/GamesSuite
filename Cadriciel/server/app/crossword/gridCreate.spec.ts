@@ -51,7 +51,7 @@ describe("GRID CREATE TESTS", () => {
     it("Grid contains a word or more per line", (done: MochaDone) => {
         let indexCounter: number = 0;
         for (let i: number = 0; i < grid["words"].length; i++) {
-            if (grid["words"][i]._startPosition._x === indexCounter) {
+            if (grid["words"][i].startPosition.x === indexCounter) {
                 indexCounter++;
                 i = -1;
             }
@@ -62,7 +62,7 @@ describe("GRID CREATE TESTS", () => {
 
     it("Lexicon fills all words", (done: MochaDone) => {
         for (const word of grid["words"]) {
-            if (word._value === "" || String(word._value).indexOf("?", 0) > -1) {
+            if (word.value === "" || String(word.value).indexOf("?", 0) > -1) {
                 assert(false);
                 done();
             }
@@ -74,7 +74,7 @@ describe("GRID CREATE TESTS", () => {
     it("Grid doesn't contain same words twice", (done: MochaDone) => {
         for (const word1 of grid["words"]) {
             for (const word2 of grid["words"]) {
-                if (word1._value === word2._value && word1._id !== word2._id) {
+                if (word1.value === word2.value && word1.id !== word2.id) {
                     assert(false);
                     done();
                 }

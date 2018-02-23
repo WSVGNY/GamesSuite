@@ -1,10 +1,10 @@
-import { Coordinate } from "./coordinate";
+import { Coordinate2D } from "./coordinate2D";
 import { Word } from "./word";
 import { CommonGridBox } from "../../../common/crossword/commonGridBox";
 
 export class GridBox extends CommonGridBox {
 
-    public constructor(id: Coordinate, isBlack: boolean) {
+    public constructor(id: Coordinate2D, isBlack: boolean) {
         super(id, isBlack);
     }
 
@@ -15,7 +15,7 @@ export class GridBox extends CommonGridBox {
 
     public getConstraint(isHorizontal: boolean): Word {
         for (const constraint of this._constraints) {
-            if (constraint._isHorizontal === isHorizontal) {
+            if (constraint.isHorizontal === isHorizontal) {
                 return constraint;
             }
         }
@@ -24,7 +24,7 @@ export class GridBox extends CommonGridBox {
 
     public eliminateConstraints(): void {
         for (const constraint of this._constraints) {
-            constraint._constraints = undefined;
+            constraint.constraints = undefined;
         }
     }
 
@@ -35,7 +35,7 @@ export class GridBox extends CommonGridBox {
         return this._difficulty;
     }
 
-    public get id(): Coordinate {
+    public get id(): Coordinate2D {
         return this._id;
     }
 

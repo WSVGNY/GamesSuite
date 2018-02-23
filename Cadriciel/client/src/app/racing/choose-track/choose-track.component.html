@@ -1,0 +1,8 @@
+<h2>Track list</h2>
+<ul class="tracks">
+  <li class="track" *ngFor="let track of tracks; let i = index">
+    <a routerLink="/race/{{track.key}}">
+      <span class="badge">{{i+1}}</span> {{track.value.name}}
+    </a>
+  </li>
+</ul>

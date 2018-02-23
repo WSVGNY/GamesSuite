@@ -20,6 +20,7 @@ import { PI_OVER_2, LOWER_GROUND, WHITE } from "../constants";
 import { MOCK_TRACK } from "./mock-track";
 import { TrackPoint, TrackPointList } from "./trackPoint";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
+import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
 
 const FAR_CLIPPING_PLANE: number = 1000;
 const NEAR_CLIPPING_PLANE: number = 1;
@@ -50,13 +51,16 @@ export class RenderService {
     }
 
     public constructor() {
-        this._trackPoints = new TrackPointList(MOCK_TRACK);
         this._scene = new Scene();
         this._playerCar = new Car();
 
         for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
             // this._aiCars.push(new Car());
         }
+    }
+
+    public setTrack(_trackPoints: CommonCoordinate3D[]): void {
+        this._trackPoints = new TrackPointList(_trackPoints);
     }
 
     public async initialize(container: HTMLDivElement): Promise<void> {
@@ -205,7 +209,6 @@ export class RenderService {
     }
 
     private renderTrack(): void {
-        this._trackPoints = new TrackPointList(MOCK_TRACK);
         this.renderTrackShape();
         // this.renderCenterLine();
     }

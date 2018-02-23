@@ -1,7 +1,7 @@
 import { Word } from "../../server/app/crossword/word";
 import { Difficulty } from "./difficulty";
 import { GridBox } from "../../server/app/crossword/gridBox";
-import { Coordinate } from "../../server/app/crossword/coordinate";
+import { Coordinate2D } from "../../server/app/crossword/coordinate2D";
 
 export class Grid {
     public readonly SIZE_GRID_X: number = 10;
@@ -15,7 +15,7 @@ export class Grid {
         for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
             const row: GridBox[] = new Array<GridBox>();
             for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                row.push(new GridBox(new Coordinate(j, i), false));
+                row.push(new GridBox(new Coordinate2D(j, i), false));
             }
             this.boxes.push(row);
         }

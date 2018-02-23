@@ -1,10 +1,10 @@
 import assert = require("assert");
-import { ResponseWordFromAPI } from "../../../common/communication/responseWordFromAPI";
+// import { ResponseWordFromAPI } from "../../../common/communication/responseWordFromAPI";
 import * as requestPromise from "request-promise-native";
 // import { Lexicon } from "./lexicon";
-import { Difficulty } from "../../../common/crossword/difficulty";
+// import { Difficulty } from "../../../common/crossword/difficulty";
 
-const SERVICE_BASE_URL: string = "http://localhost:3000/lexicon/";
+// const SERVICE_BASE_URL: string = "http://localhost:3000/lexicon/";
 const DATAMUSE_BASE_URL: string = "https://api.datamuse.com/words?md=fd&sp=";
 // const UNWANTED_CHARACTERS_LENGTH: number = 2;
 // const FREQUENCY_DELIMITER: number = 5;
@@ -36,45 +36,45 @@ describe("LEXICON TESTS", () => {
             assert(false);
         });
 
-    //     it("word is a noun", (done: MochaDone) => {
-    //         let word: ResponseWordFromAPI;
-    //         requestPromise(SERVICE_BASE_URL + "test/" + Difficulty.Easy).then((response: string) => {
-    //             word = JSON.parse(response);
-    //             assert(word["definition"][0] === "n");
-    //             done();
-    //         }).catch((e: Error) => {
-    //             console.error(e.message);
-    //             assert(false);
-    //             done();
-    //         });
+        //     it("word is a noun", (done: MochaDone) => {
+        //         let word: ResponseWordFromAPI;
+        //         requestPromise(SERVICE_BASE_URL + "test/" + Difficulty.Easy).then((response: string) => {
+        //             word = JSON.parse(response);
+        //             assert(word["definition"][0] === "n");
+        //             done();
+        //         }).catch((e: Error) => {
+        //             console.error(e.message);
+        //             assert(false);
+        //             done();
+        //         });
 
-    //     });
+        //     });
 
-    //     it("if word is an adj or adv, return empty word", (done: MochaDone) => {
-    //         let word: ResponseWordFromAPI;
-    //         requestPromise(SERVICE_BASE_URL + "beautiful/" + Difficulty.Easy).then((response: string) => {
-    //             word = JSON.parse(response);
-    //             assert(word["word"] === "" && word["definition"] === "");
-    //             done();
-    //         }).catch((e: Error) => {
-    //             console.error(e.message);
-    //             assert(false);
-    //             done();
-    //         });
-    //     });
-    // });
+        //     it("if word is an adj or adv, return empty word", (done: MochaDone) => {
+        //         let word: ResponseWordFromAPI;
+        //         requestPromise(SERVICE_BASE_URL + "beautiful/" + Difficulty.Easy).then((response: string) => {
+        //             word = JSON.parse(response);
+        //             assert(word["word"] === "" && word["definition"] === "");
+        //             done();
+        //         }).catch((e: Error) => {
+        //             console.error(e.message);
+        //             assert(false);
+        //             done();
+        //         });
+        //     });
+        // });
 
-    // it("if there is no definitions, it should return empty word", (done: MochaDone) => {
-    //     let word: ResponseWordFromAPI;
-    //     requestPromise(SERVICE_BASE_URL + "zent/" + Difficulty.Easy).then((response: string) => {
-    //         word = JSON.parse(response);
-    //         assert(word["word"] === "" && word["definition"] === "");
-    //         done();
-    //     }).catch((e: Error) => {
-    //         console.error(e.message);
-    //         assert(false);
-    //         done();
-    //     });
+        // it("if there is no definitions, it should return empty word", (done: MochaDone) => {
+        //     let word: ResponseWordFromAPI;
+        //     requestPromise(SERVICE_BASE_URL + "zent/" + Difficulty.Easy).then((response: string) => {
+        //         word = JSON.parse(response);
+        //         assert(word["word"] === "" && word["definition"] === "");
+        //         done();
+        //     }).catch((e: Error) => {
+        //         console.error(e.message);
+        //         assert(false);
+        //         done();
+        //     });
     });
 
     // describe("tests for accents or special characters", () => {
