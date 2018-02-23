@@ -8,6 +8,7 @@ export class CommonWord {
     public _constraints: Word[] = new Array<Word>();
     public _difficulty: number = 0;
     public _parentCaller: Word;
+    public _isComplete: boolean = false;
 
     public constructor(
         public _id: number,

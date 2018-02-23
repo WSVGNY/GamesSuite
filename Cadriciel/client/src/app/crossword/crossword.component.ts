@@ -98,14 +98,16 @@ export class CrosswordComponent {
     }
 
     public highlightWord(word: CommonWord): void {
-        this.deselectWords();
-        if (word._isHorizontal) {
-            for (let i: number = 0; i < word._length; i++) {
-                this.grid.boxes[word._startPosition._y][i + word._startPosition._x]._isColored = true;
-            }
-        } else {
-            for (let i: number = 0; i < word._length; i++) {
-                this.grid.boxes[word._startPosition._y + i][word._startPosition._x]._isColored = true;
+        if (!word._isComplete) {
+            this.deselectWords();
+            if (word._isHorizontal) {
+                for (let i: number = 0; i < word._length; i++) {
+                    this.grid.boxes[word._startPosition._y][i + word._startPosition._x]._isColored = true;
+                }
+            } else {
+                for (let i: number = 0; i < word._length; i++) {
+                    this.grid.boxes[word._startPosition._y + i][word._startPosition._x]._isColored = true;
+                }
             }
         }
     }
@@ -171,6 +173,15 @@ export class CrosswordComponent {
         }
 
         return undefined;
+    }
+
+    public isCompletedWord(word: CommonWord, wordEntered: string): boolean {
+        return this.getWordValue(word) === wordEntered;
+    }
+
+    public addToScore(word: CommonWord): void {
+        word._isComplete = true;
+        this.correctWordCount++;
     }
 
 }
