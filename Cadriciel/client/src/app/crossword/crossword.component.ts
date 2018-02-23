@@ -1,6 +1,5 @@
 import { Component } from "@angular/core";
 import { CommonGridBox } from "../../../../common/crossword/commonGridBox";
-import { Grid } from "../../../../common/crossword/grid";
 import { CommonWord } from "../../../../common/crossword/commonWord";
 import { ConfigurationService } from "./configuration.service";
 
@@ -13,25 +12,13 @@ export class CrosswordComponent {
 
     public selectedGridBox: CommonGridBox;
     public defs: CommonWord;
-    private grid: Grid;
-    public boxes: CommonGridBox[][];
-    public words: CommonWord[];
-    private isInCheatMode: boolean = false;
-    public playerName: string = "";
     public correctWordCount: number = 0;
-    public configurationDone: boolean = false;
-    public isTwoPlayerGame: boolean = false;
+    private isInCheatMode: boolean = false;
 
-    public constructor(private configurationService: ConfigurationService) {
+    public constructor(public configurationService: ConfigurationService) {
     }
 
     public isConfigurationDone(): boolean {
-        this.words = this.configurationService.words;
-        this.boxes = this.configurationService.boxes;
-        this.grid = this.configurationService.grid;
-        this.isTwoPlayerGame = this.configurationService.isTwoPlayerGame;
-        this.playerName = this.configurationService.playerName;
-
         return this.configurationService.configurationDone;
     }
 
@@ -43,15 +30,15 @@ export class CrosswordComponent {
 
     public highlightedWord(word: CommonWord): boolean {
         if (word._isHorizontal) {
-            if (this.grid.boxes[word._startPosition._y][word._startPosition._x]._isColored &&
-                this.grid.boxes[word._startPosition._y][word._startPosition._x + 1]._isColored) {
+            if (this.configurationService.grid.boxes[word._startPosition._y][word._startPosition._x]._isColored &&
+                this.configurationService.grid.boxes[word._startPosition._y][word._startPosition._x + 1]._isColored) {
                 return true;
             }
 
             return false;
         } else {
-            if (this.grid.boxes[word._startPosition._y][word._startPosition._x]._isColored &&
-                this.grid.boxes[word._startPosition._y + 1][word._startPosition._x]._isColored) {
+            if (this.configurationService.grid.boxes[word._startPosition._y][word._startPosition._x]._isColored &&
+                this.configurationService.grid.boxes[word._startPosition._y + 1][word._startPosition._x]._isColored) {
                 return true;
             }
 
@@ -70,19 +57,19 @@ export class CrosswordComponent {
             this.deselectWords();
             if (word._isHorizontal) {
                 for (let i: number = 0; i < word._length; i++) {
-                    this.grid.boxes[word._startPosition._y][i + word._startPosition._x]._isColored = true;
+                    this.configurationService.grid.boxes[word._startPosition._y][i + word._startPosition._x]._isColored = true;
                 }
             } else {
                 for (let i: number = 0; i < word._length; i++) {
-                    this.grid.boxes[word._startPosition._y + i][word._startPosition._x]._isColored = true;
+                    this.configurationService.grid.boxes[word._startPosition._y + i][word._startPosition._x]._isColored = true;
                 }
             }
         }
     }
 
     public deselectWords(): void {
-        if (this.grid !== undefined) {
-            for (const line of this.grid.boxes) {
+        if (this.configurationService.grid !== undefined) {
+            for (const line of this.configurationService.grid.boxes) {
                 for (const box of line) {
                     box._isColored = false;
                 }
@@ -94,11 +81,11 @@ export class CrosswordComponent {
         let value: string = "";
         if (word._isHorizontal) {
             for (let i: number = 0; i < word._length; i++) {
-                value += this.grid.boxes[word._startPosition._y][i + word._startPosition._x]._char._value;
+                value += this.configurationService.grid.boxes[word._startPosition._y][i + word._startPosition._x]._char._value;
             }
         } else {
             for (let i: number = 0; i < word._length; i++) {
-                value += this.grid.boxes[word._startPosition._y + i][word._startPosition._x]._char._value;
+                value += this.configurationService.grid.boxes[word._startPosition._y + i][word._startPosition._x]._char._value;
             }
         }
 
