@@ -42,9 +42,6 @@ export class CrosswordComponent {
         document.getElementById("modeSelection").style.display = "none";
     }
 
-    public onSelect(gridBox: CommonGridBox): void {
-        this.selectedGridBox = gridBox;
-    }
 
     private makeGrid(): void {
         this.showLoader = true;
