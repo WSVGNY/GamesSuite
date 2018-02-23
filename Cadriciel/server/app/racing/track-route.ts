@@ -35,7 +35,7 @@ export class TrackRoute {
     public newTrack(req: Request, res: Response): void {
         MongoClient.connect(this.DATABASE_URL).then((dbConnection: MongoClient) => {
             const track: Track = new Track(
-                { "_id": "", "track": { "_name": req.params.name, "_vertices": [] } }
+                { "_id": "", "track": { "name": req.params.name, "vertices": [] } }
             );
             dbConnection.db("log2990").collection(this.COLLECTION)
                 .insertOne({ track }).then(() => {

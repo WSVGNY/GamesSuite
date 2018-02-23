@@ -2,7 +2,7 @@ import "reflect-metadata";
 import { injectable, } from "inversify";
 import { GridBox } from "./gridBox";
 import { Word } from "./word";
-import { Coordinate } from "./coordinate";
+import { Coordinate2D } from "./coordinate2D";
 
 const IS_HORIZONTAL: boolean = true;
 const IS_VERTICAL: boolean = false;
@@ -32,9 +32,9 @@ export class BlackTiledGrid {
     }
 
     public placeBlackGridTiles(): Word[] {
-        const array: Coordinate[] = this.createShuffledArray();
+        const array: Coordinate2D[] = this.createShuffledArray();
         for (let i: number = 0; i < this.NUM_BLACK_TILES; i++) {
-            const randomTileId: Coordinate = array[i];
+            const randomTileId: Coordinate2D = array[i];
             this.findMatchingTileById(randomTileId)._isBlack = true;
         }
         if (this.verifyBlackGridValidity()) {
@@ -59,10 +59,10 @@ export class BlackTiledGrid {
         let maxWordLength: number = 0;
         let minLengthWordQuantity: number = 0;
         for (const word of this.words) {
-            if (word._length > maxWordLength) {
-                maxWordLength = word._length;
+            if (word.length > maxWordLength) {
+                maxWordLength = word.length;
             }
-            if (word._length === MIN_WORD_LENGTH) {
+            if (word.length === MIN_WORD_LENGTH) {
                 minLengthWordQuantity++;
             }
         }
@@ -71,12 +71,12 @@ export class BlackTiledGrid {
         return totalDifficulty;
     }
 
-    private createShuffledArray(): Array<Coordinate> {
-        const array: Array<Coordinate> = [];
+    private createShuffledArray(): Array<Coordinate2D> {
+        const array: Array<Coordinate2D> = [];
         let arrayIndex: number = 0;
         for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
             for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
-                array[arrayIndex++] = new Coordinate(j, i);
+                array[arrayIndex++] = new Coordinate2D(j, i);
             }
         }
 
@@ -88,7 +88,7 @@ export class BlackTiledGrid {
         return array;
     }
 
-    private findMatchingTileById(id: Coordinate): GridBox {
+    private findMatchingTileById(id: Coordinate2D): GridBox {
         for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
             for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
                 if (this.grid[i][j]._id.equals(id)) {
@@ -196,8 +196,8 @@ export class BlackTiledGrid {
 
     private findHorizontalWordDefID(i: number, j: number): number {
         for (const word of this.words) {
-            if (word._startPosition._x === i && word._startPosition._y === j) {
-                return word._definitionID;
+            if (word.startPosition.x === i && word.startPosition.y === j) {
+                return word.definitionID;
             }
         }
 

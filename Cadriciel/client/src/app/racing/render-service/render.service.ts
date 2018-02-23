@@ -17,9 +17,10 @@ import {
 import { CarAiService } from "../artificial-intelligence/car-ai.service";
 import { Car } from "../car/car";
 import { PI_OVER_2, LOWER_GROUND } from "../constants";
-import { MOCK_TRACK } from "./mock-track";
 import { TrackPoint, TrackPointList } from "./trackPoint";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
+import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
+import { MOCK_TRACK } from "./mock-track";
 
 const FAR_CLIPPING_PLANE: number = 1000;
 const NEAR_CLIPPING_PLANE: number = 1;
@@ -44,20 +45,23 @@ export class RenderService {
     private _carAiService: CarAiService[] = [];
     private _aiCars: Car[] = [];
     private _dayTime: boolean = true;
-    private _trackPoints: TrackPointList;
+    private _trackPoints: TrackPointList = new TrackPointList(MOCK_TRACK);
 
     public get playerCar(): Car {
         return this._playerCar;
     }
 
     public constructor() {
-        this._trackPoints = new TrackPointList(MOCK_TRACK);
         this._scene = new Scene();
         this._playerCar = new Car();
 
         for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
             this._aiCars.push(new Car());
         }
+    }
+
+    public setTrack(_trackPoints: CommonCoordinate3D[]): void {
+        this._trackPoints = new TrackPointList(_trackPoints);
     }
 
     public async initialize(container: HTMLDivElement): Promise<void> {
@@ -208,7 +212,6 @@ export class RenderService {
     }
 
     private renderTrack(): void {
-        this._trackPoints = new TrackPointList(MOCK_TRACK);
         this.renderTrackShape();
         // this.renderCenterLine();
     }

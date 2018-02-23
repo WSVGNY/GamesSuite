@@ -74,20 +74,20 @@ export class WordFiller {
     private generateConstraints(): void {
         let maxWordLength: number = 0;
         for (const word of this.words) {
-            if (word._length > maxWordLength) {
-                maxWordLength = word._length;
+            if (word.length > maxWordLength) {
+                maxWordLength = word.length;
                 this.longestWord = word;
             }
-            if (word._isHorizontal) {
-                for (let i: number = word._startPosition._x; i < word._startPosition._x + word._length; i++) {
-                    if (this.grid[word._startPosition._y][i]._difficulty > 1) {
-                        word.addConstraint(this.grid[word._startPosition._y][i].getConstraint(IS_VERTICAL));
+            if (word.isHorizontal) {
+                for (let i: number = word.startPosition.x; i < word.startPosition.x + word.length; i++) {
+                    if (this.grid[word.startPosition.y][i]._difficulty > 1) {
+                        word.addConstraint(this.grid[word.startPosition.y][i].getConstraint(IS_VERTICAL));
                     }
                 }
             } else {
-                for (let i: number = word._startPosition._y; i < word._startPosition._y + word._length; i++) {
-                    if (this.grid[i][word._startPosition._x]._difficulty > 1) {
-                        word.addConstraint(this.grid[i][word._startPosition._x].getConstraint(IS_HORIZONTAL));
+                for (let i: number = word.startPosition.y; i < word.startPosition.y + word.length; i++) {
+                    if (this.grid[i][word.startPosition.x]._difficulty > 1) {
+                        word.addConstraint(this.grid[i][word.startPosition.x].getConstraint(IS_HORIZONTAL));
                     }
                 }
             }
@@ -106,9 +106,9 @@ export class WordFiller {
             return Token.BackTrack;
         }
         let state: Token;
-        for (const next of currentWord._constraints) {
-            if (this.filledWords.findIndex((wordIteration: Word) => next._id === wordIteration._id) === -1) {
-                next._parentCaller = currentWord;
+        for (const next of currentWord.constraints) {
+            if (this.filledWords.findIndex((wordIteration: Word) => next.id === wordIteration.id) === -1) {
+                next.parentCaller = currentWord;
                 await this.manageBackTrack(next, currentWord, wordConstraint).then(
                     (result: Token) => {
                         state = result;
@@ -137,8 +137,8 @@ export class WordFiller {
                             this.backTrackingWord = undefined;
                         }
 
-                        word._value = result._word;
-                        word._definition = result._definition;
+                        word.value = result._word;
+                        word.definition = result._definition;
                         this.updateCharGrid(word);
                         this.filledWords.push(word);
                     }
@@ -159,9 +159,9 @@ export class WordFiller {
                 state = result;
             }).catch((e: Error) => console.error(e));
         if (state === Token.BackTrack) {
-            currentWord._value = wordConstraint.originalValue;
+            currentWord.value = wordConstraint.originalValue;
             this.updateCharGrid(currentWord);
-            const index: number = this.filledWords.findIndex((wordIteration: Word) => currentWord._id === wordIteration._id);
+            const index: number = this.filledWords.findIndex((wordIteration: Word) => currentWord.id === wordIteration.id);
             this.filledWords.splice(index, 1);
             this.backTrackCounter++;
             this.backTrackingWord = next;
@@ -181,7 +181,7 @@ export class WordFiller {
 
     private verifyWordAlreadyThere(wordToVerify: string): boolean {
         for (const verifWord of this.words) {
-            if (verifWord._definition !== "" && verifWord._value === wordToVerify) {
+            if (verifWord.definition !== "" && verifWord.value === wordToVerify) {
                 return true;
             }
         }
@@ -190,12 +190,12 @@ export class WordFiller {
     }
 
     private updateCharGrid(word: Word): void {
-        const splitWord: string[] = Array.from(word._value);
+        const splitWord: string[] = Array.from(word.value);
         for (let i: number = 0; i < splitWord.length; ++i) {
-            if (word._isHorizontal) {
-                this.grid[word._startPosition._y][word._startPosition._x + i]._char.value = splitWord[i];
+            if (word.isHorizontal) {
+                this.grid[word.startPosition.y][word.startPosition.x + i]._char.value = splitWord[i];
             } else {
-                this.grid[word._startPosition._y + i][word._startPosition._x]._char.value = splitWord[i];
+                this.grid[word.startPosition.y + i][word.startPosition.x]._char.value = splitWord[i];
             }
         }
     }
