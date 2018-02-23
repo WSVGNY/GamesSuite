@@ -212,7 +212,7 @@ export class CarAiService {
         const c: number = -a * point.z - b * point.x;
 
         const pointOnLine: Vector3 = new Vector3();
-        pointOnLine.x = (line.c * a - line.a * c) / (line.a * b - a * line.b);
+        pointOnLine.x = b !== 0 ? (line.c * a - line.a * c) / (line.a * b - a * line.b) : this._trackVertices[this._trackPortionIndex].x;
         pointOnLine.z = a !== 0 ? (-c - b * pointOnLine.x) / a : this._trackVertices[this._trackPortionIndex].z;
 
         return pointOnLine;
