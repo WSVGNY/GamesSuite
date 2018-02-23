@@ -2,8 +2,7 @@ import { Component } from "@angular/core";
 import { CommonGridBox } from "../../../../common/crossword/commonGridBox";
 import { Grid } from "../../../../common/crossword/grid";
 import { CommonWord } from "../../../../common/crossword/commonWord";
-import { GridService } from "./grid.service";
-import { Difficulty } from "../../../../common/crossword/difficulty";
+import { ConfigurationService } from "./configuration.service";
 
 @Component({
     selector: "app-crossword",
@@ -17,51 +16,23 @@ export class CrosswordComponent {
     private grid: Grid;
     public boxes: CommonGridBox[][];
     public words: CommonWord[];
-    private difficulty: Difficulty;
     private isInCheatMode: boolean = false;
-    public showLoader: boolean = false;
     public playerName: string = "";
     public correctWordCount: number = 0;
+    public configurationDone: boolean = false;
+    public isTwoPlayerGame: boolean = false;
 
-    public constructor(private gridService: GridService) {
+    public constructor(private configurationService: ConfigurationService) {
     }
 
-    public createGrid(): void {
-        document.getElementById("input").style.visibility = "visible";
-        this.words = undefined;
-        this.gridService.gridGet(this.difficulty).subscribe((grid: Grid) => {
-            this.grid = grid;
-            this.boxes = this.grid.boxes;
-            this.words = this.grid.words;
-            this.showLoader = false;
-            document.getElementById("gridHider").style.visibility = "hidden";
-        });
-    }
+    public isConfigurationDone(): boolean {
+        this.words = this.configurationService.words;
+        this.boxes = this.configurationService.boxes;
+        this.grid = this.configurationService.grid;
+        this.isTwoPlayerGame = this.configurationService.isTwoPlayerGame;
+        this.playerName = this.configurationService.playerName;
 
-    public hideModeSelector(): void {
-        document.getElementById("modeSelection").style.display = "none";
-    }
-
-
-    private makeGrid(): void {
-        this.showLoader = true;
-        document.getElementById("gridHider").style.visibility = "visible";
-        this.createGrid();
-    }
-
-    public makeEasyGrid(): void {
-        this.difficulty = Difficulty.Easy;
-        this.makeGrid();
-    }
-
-    public makeMediumGrid(): void {
-        this.difficulty = Difficulty.Medium;
-        this.makeGrid();
-    }
-
-    public makeHardGrid(): void {
-        this.difficulty = Difficulty.Hard;
-        this.makeGrid();
+        return this.configurationService.configurationDone;
     }
 
     public changeMode(): void {
@@ -107,23 +78,6 @@ export class CrosswordComponent {
                 }
             }
         }
-    }
-
-    public newGame(): void {
-        document.getElementById("buttongroup").style.visibility = "visible";
-    }
-
-    public joinGame(): void {
-        document.getElementById("buttongroup").style.visibility = "hidden";
-    }
-
-    public play(): void {
-        document.getElementById("buttongroupp").style.visibility = "visible";
-        document.getElementById("secondPlayer").style.visibility = "visible";
-    }
-
-    public playAlone(): void {
-        document.getElementById("secondPlayer").style.visibility = "hidden";
     }
 
     public deselectWords(): void {

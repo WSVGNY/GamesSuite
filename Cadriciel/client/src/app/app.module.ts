@@ -14,7 +14,9 @@ import { TrackService } from "./racing/track-service/track.service";
 import { EditorComponent } from "./racing/editor/editor.component";
 import { MouseEventHandlerService } from "./racing/event-handlers/mouse-event-handler.service";
 import { CarAiService } from "./racing/artificial-intelligence/car-ai.service";
-import { KeyboardEventHandlerService } from './racing/event-handlers/keyboard-event-handler.service';
+import { KeyboardEventHandlerService } from "./racing/event-handlers/keyboard-event-handler.service";
+import { ConfigurationComponent } from "./crossword/configuration/configuration.component";
+import { ConfigurationService } from "./crossword/configuration.service";
 
 @NgModule({
     declarations: [
@@ -22,7 +24,8 @@ import { KeyboardEventHandlerService } from './racing/event-handlers/keyboard-ev
         AdminComponent,
         RacingComponent,
         CrosswordComponent,
-        EditorComponent
+        EditorComponent,
+        ConfigurationComponent
     ],
     imports: [
         BrowserModule,
@@ -37,7 +40,8 @@ import { KeyboardEventHandlerService } from './racing/event-handlers/keyboard-ev
         EditorRenderService,
         MouseEventHandlerService,
         CarAiService,
-        KeyboardEventHandlerService
+        KeyboardEventHandlerService,
+        ConfigurationService
     ],
     bootstrap: [AppComponent]
 })
