@@ -5,9 +5,10 @@ import { TrackPointList } from "./render-service/trackPoint";
 import { MOCK_TRACK } from "./render-service/mock-track";
 import { Vector3, PerspectiveCamera } from "three";
 import { Difficulty } from "../../../../common/crossword/difficulty";
-import { Track } from "../../../../common/racing/track";
+import { TrackType } from "../../../../common/racing/trackType";
 import { ElementRef } from "@angular/core";
-import { RAD_TO_DEG } from "./constants";
+import { Track } from "../../../../common/racing/track";
+import { SkyBox } from "./skybox";
 
 const AI_CARS_NUMBER: number = 3;
 const FAR_CLIPPING_PLANE: number = 1000;
@@ -20,21 +21,23 @@ const PLAYER_CAMERA: string = "PLAYER_CAMERA";
 export class RaceGame {
     private _camera: PerspectiveCamera;
     private _playerCar: Car = new Car();
-    private _aiPlayerCarService: CarAiService;
     private _aiCarService: CarAiService[] = [];
     private _aiCars: Car[] = [];
-    // private _dayTime: boolean = true;
+    private _isDay: boolean = true;
+    private _trackType: TrackType;
     private _trackPoints: TrackPointList = new TrackPointList(MOCK_TRACK);
     private _lastDate: number;
 
     public constructor(private renderService: RenderService) { }
 
     public async initialize(track: Track, containerRef: ElementRef): Promise<void> {
+        this._trackType = track.type;
         this._trackPoints = new TrackPointList(MOCK_TRACK);
         this.initializeCamera(containerRef.nativeElement);
         await this.initializePlayerCar();
         await this.initializeAICars();
         this.addObjectsToRenderScene();
+        this.setSkyBox(this._trackType);
         await this.renderService.initialize(containerRef.nativeElement, this._camera);
         this.startGameLoop();
     }
@@ -61,12 +64,7 @@ export class RaceGame {
     private async initializePlayerCar(): Promise<void> {
         this._playerCar = new Car();
         await this._playerCar.init(this._trackPoints.first.coordinates, this.findFirstTrackSegmentAngle());
-        console.log(this._trackPoints.pointVectors);
-        console.log(this.findFirstTrackSegmentAngle() * RAD_TO_DEG);
         this._playerCar.attachCamera(this._camera);
-
-        // TODO: remove this to control player car
-        this._aiPlayerCarService = new CarAiService(this._playerCar, this._trackPoints.pointVectors, Difficulty.Medium);
     }
 
     private async initializeAICars(): Promise<void> {
@@ -85,14 +83,16 @@ export class RaceGame {
 
     private findFirstTrackSegmentAngle(): number {
         const carfinalFacingVector: Vector3 = this._trackPoints.points[1].coordinates.clone()
-            .sub(this._trackPoints.points[0].coordinates);
-        // .normalize();
+            .sub(this._trackPoints.points[0].coordinates)
+            .normalize();
 
-        console.log(carfinalFacingVector);
-        console.log(new Vector3(0, 0, -1).angleTo(carfinalFacingVector.normalize()) * RAD_TO_DEG);
         return new Vector3(0, 0, -1).cross(carfinalFacingVector).y > 0 ?
             new Vector3(0, 0, -1).angleTo(carfinalFacingVector) :
             - new Vector3(0, 0, -1).angleTo(carfinalFacingVector);
+    }
+
+    private setSkyBox(trackType: TrackType): void {
+        this.renderService.loadSkyBox(SkyBox.getPath(trackType));
     }
 
     public startGameLoop(): void {
@@ -101,23 +101,28 @@ export class RaceGame {
         this.update();
     }
 
-    public update(): void {
+    private update(): void {
         requestAnimationFrame(() => {
-            this.renderService.render();
             const timeSinceLastFrame: number = Date.now() - this._lastDate;
+            this._lastDate = Date.now();
+
+            this.renderService.render();
             this._playerCar.update(timeSinceLastFrame);
-            this._aiPlayerCarService.update();
             for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
                 this._aiCars[i].update(timeSinceLastFrame);
                 this._aiCarService[i].update();
             }
-            this._aiCarService[1].update();
-            this._lastDate = Date.now();
+
             this.update();
         });
     }
 
     public get playerCar(): Car {
         return this._playerCar;
+    }
+
+    public set isDay(isDay: boolean) {
+        this._isDay = isDay;
+        isDay ? this.setSkyBox(TrackType.Default) : this.setSkyBox(TrackType.Night);
     }
 }

@@ -1,6 +1,6 @@
 import { Vector3, Matrix4, Object3D, ObjectLoader, Quaternion, Camera, SpotLight, Color } from "three";
 import { Engine } from "./engine";
-import { MS_TO_SECONDS, GRAVITY, RAD_TO_DEG } from "../constants";
+import { MS_TO_SECONDS, GRAVITY, RAD_TO_DEG, CAR_TEXTURE } from "../constants";
 import { Wheel } from "./wheel";
 
 export const DEFAULT_WHEELBASE: number = 2.78;
@@ -36,7 +36,6 @@ export class Car extends Object3D {
     private _backLight1: SpotLight;
     private _backLight2: SpotLight;
 
-
     public get speed(): Vector3 {
         return this._speed.clone();
     }
@@ -65,7 +64,7 @@ export class Car extends Object3D {
         this._mesh.add(camera);
     }
 
-    public createLights(): void {
+    private createLights(): void {
         this._frontLight1 = new SpotLight(YELLOW, 5, 300, -Math.PI / 2, 1);
         this._frontLight2 = new SpotLight(YELLOW, 5, 300, -Math.PI / 2, 1);
         this._backLight1 = new SpotLight(YELLOW, 5, 300, Math.PI / 2, 1);
@@ -74,13 +73,16 @@ export class Car extends Object3D {
         this._frontLight2.position.set(-10, 0, 1);
         this._backLight1.position.set(0, 0, 1);
         this._backLight2.position.set(0, 0, 1);
+    }
+
+    public attachLights(): void {
         this._mesh.add(this._frontLight1);
         this._mesh.add(this._frontLight2);
         this._mesh.add(this._backLight1);
         this._mesh.add(this._backLight2);
     }
 
-    public dettachLight(): void {
+    public dettachLights(): void {
         this._mesh.remove(this._frontLight1);
         this._mesh.remove(this._frontLight2);
         this._mesh.remove(this._backLight1);
@@ -146,7 +148,7 @@ export class Car extends Object3D {
     private async load(): Promise<Object3D> {
         return new Promise<Object3D>((resolve, reject) => {
             const loader: ObjectLoader = new ObjectLoader();
-            loader.load("../../assets/camero/camero-2010-low-poly.json", (object) => {
+            loader.load(CAR_TEXTURE, (object) => {
                 resolve(object);
             });
         });
@@ -156,6 +158,7 @@ export class Car extends Object3D {
         this._mesh = await this.load();
         this._mesh.position.add(startPoint);
         this._mesh.setRotationFromAxisAngle(new Vector3(0, 1, 0), rotationAngle);
+        this.createLights();
         this.add(this._mesh);
     }
 

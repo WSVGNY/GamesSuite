@@ -36,12 +36,16 @@ export class RacingComponent implements AfterViewInit {
 
     @HostListener("window:keydown", ["$event"])
     public onKeyDown(event: KeyboardEvent): void {
-        this.keyboardEventHandlerService.handleKeyDown(event, this.car);
+        if (this._raceGame !== undefined) {
+            this.keyboardEventHandlerService.handleKeyDown(event, this._raceGame);
+        }
     }
 
     @HostListener("window:keyup", ["$event"])
     public onKeyUp(event: KeyboardEvent): void {
-        this.keyboardEventHandlerService.handleKeyUp(event, this.car);
+        if (this._raceGame !== undefined) {
+            this.keyboardEventHandlerService.handleKeyUp(event, this._raceGame);
+        }
     }
 
     public async ngAfterViewInit(): Promise<void> {

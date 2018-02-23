@@ -18,3 +18,15 @@ export const RED: number = 0xFF0000;
 export const TRACK_WIDTH: number = 10;
 export const LOWER_GROUND: number = 0.01;
 export const SKYBOX_SIZE: number = 700;
+
+// Texture Paths
+const BASE_URL: string = "http://localhost:4200/";
+const BASE_ASSETS_PATH: string = BASE_URL + "assets/";
+const BASE_TEXTURE_PATH: string = BASE_ASSETS_PATH + "textures/";
+const SKYBOX_PATH: string = BASE_ASSETS_PATH + "skyboxes/";
+export const CAR_TEXTURE: string = BASE_ASSETS_PATH + "camero/camero-2010-low-poly.json";
+export const SUNSET_SKYBOX: string = SKYBOX_PATH + "sunset/";
+export const DEFAULT_SKYBOX: string = SKYBOX_PATH + "default/";
+export const NIGHT_SKYBOX: string = SKYBOX_PATH + "nightsky/";
+export const CLOUD_SKYBOX: string = SKYBOX_PATH + "clouds/";
+export const ROME_SKYBOX: string = SKYBOX_PATH + "rome/";

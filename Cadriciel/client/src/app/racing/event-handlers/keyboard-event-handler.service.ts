@@ -7,6 +7,7 @@ import { TurnRight } from "../commands/carAICommands/turnRight";
 import { Brake } from "../commands/carAICommands/brake";
 import { ReleaseAccelerator } from "../commands/carAICommands/releaseAccelerator";
 import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";
+import { RaceGame } from "../raceGame";
 
 const ACCELERATE_KEYCODE: number = 87;  // w
 const LEFT_KEYCODE: number = 65;        // a
@@ -27,52 +28,50 @@ export class KeyboardEventHandlerService {
     }
 
     // tslint:disable-next-line:max-func-body-length
-    public handleKeyDown(event: KeyboardEvent, car: Car): void {
+    public handleKeyDown(event: KeyboardEvent, raceGame: RaceGame): void {
         switch (event.keyCode) {
             case ACCELERATE_KEYCODE:
-                this._carControl.setCommand(new GoFoward(car));
+                this._carControl.setCommand(new GoFoward(raceGame.playerCar));
                 this._carControl.execute();
                 break;
             case LEFT_KEYCODE:
-                this._carControl.setCommand(new TurnLeft(car));
+                this._carControl.setCommand(new TurnLeft(raceGame.playerCar));
                 this._carControl.execute();
                 break;
             case RIGHT_KEYCODE:
-                this._carControl.setCommand(new TurnRight(car));
+                this._carControl.setCommand(new TurnRight(raceGame.playerCar));
                 this._carControl.execute();
                 break;
             case BRAKE_KEYCODE:
-                this._carControl.setCommand(new Brake(car));
+                this._carControl.setCommand(new Brake(raceGame.playerCar));
                 this._carControl.execute();
                 break;
             case DAY_KEYCODE:
-                // this._dayTime = true;
-                // this.renderSkyBox();
-                // this._playerCar.dettachLight();
+                raceGame.isDay = true;
+                raceGame.playerCar.dettachLights();
                 break;
             case NIGHT_KEYCODE:
-                // this._dayTime = false;
-                // this.renderSkyBox();
-                // this._playerCar.createLights();
+                raceGame.isDay = false;
+                raceGame.playerCar.attachLights();
                 break;
             default:
                 break;
         }
     }
 
-    public handleKeyUp(event: KeyboardEvent, car: Car): void {
+    public handleKeyUp(event: KeyboardEvent, raceGame: RaceGame): void {
         switch (event.keyCode) {
             case ACCELERATE_KEYCODE:
-                this._carControl.setCommand(new ReleaseAccelerator(car));
+                this._carControl.setCommand(new ReleaseAccelerator(raceGame.playerCar));
                 this._carControl.execute();
                 break;
             case LEFT_KEYCODE:
             case RIGHT_KEYCODE:
-                this._carControl.setCommand(new ReleaseSteering(car));
+                this._carControl.setCommand(new ReleaseSteering(raceGame.playerCar));
                 this._carControl.execute();
                 break;
             case BRAKE_KEYCODE:
-                this._carControl.setCommand(new Brake(car));
+                this._carControl.setCommand(new Brake(raceGame.playerCar));
                 this._carControl.execute();
                 // this._playerCar.setBackLightColor(YELLOW);
                 break;

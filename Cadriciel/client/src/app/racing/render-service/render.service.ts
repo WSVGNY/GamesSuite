@@ -2,7 +2,8 @@ import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import {
     PerspectiveCamera, WebGLRenderer, Scene, Mesh, Shape, ShapeGeometry, Path, BackSide, TextureLoader, Texture, RepeatWrapping,
-    PlaneGeometry, CubeTextureLoader, MeshLambertMaterial, DirectionalLight, DirectionalLightHelper, AmbientLight, Group, Object3D
+    PlaneGeometry, MeshLambertMaterial, DirectionalLight, DirectionalLightHelper, AmbientLight, Group, Object3D, CubeTexture,
+    CubeTextureLoader
 } from "three";
 import { PI_OVER_2, LOWER_GROUND } from "../constants";
 import { TrackPointList } from "./trackPoint";
@@ -18,6 +19,7 @@ export class RenderService {
     private _stats: Stats;
     private _group: Group = new Group();
     private _camera: PerspectiveCamera;
+    private _skyBoxTexture: CubeTexture;
 
     public constructor() {
     }
@@ -26,6 +28,7 @@ export class RenderService {
         this._container = container;
         this._camera = camera;
         this._scene = new Scene();
+        this._scene.background = this._skyBoxTexture;
         this._scene.add(this._group);
         await this.createScene();
         this.initStats();
@@ -44,7 +47,6 @@ export class RenderService {
     private async createScene(): Promise<void> {
         this.lighting();
         this.renderGround();
-        this.renderSkyBox();
     }
 
     public lighting(): void {
@@ -154,38 +156,20 @@ export class RenderService {
         return texture;
     }
 
-    private async renderSkyBox(): Promise<void> {
-        // if (this._dayTime === true) {
-        this._scene.background = new CubeTextureLoader()
-            .setPath("assets/textures/night/")
+    public loadSkyBox(pathToImages: string): void {
+        this._skyBoxTexture = new CubeTextureLoader()
+            .setPath(pathToImages)
             .load([
-                "night_px.jpg", // 'px.png',
-                "night_nx.jpg", // 'nx.png',
-                "night_py.jpg", // 'py.png',
-                "night_ny.jpg", // 'ny.png',
-                "night_pz.jpg", // 'pz.png',
-                "night_nz.jpg"// 'nz.png'
+                "px.jpg",
+                "nx.jpg",
+                "py.jpg",
+                "ny.jpg",
+                "pz.jpg",
+                "nz.jpg"
             ]);
-        // } else {
-        //     this._scene.background = new CubeTextureLoader()
-        //         // .setPath("assets/textures/Tropical/")
-        //         // .load([
-        //         //     "TropicalSunnyDay_px.jpg", // 'px.png',
-        //         //     "TropicalSunnyDay_nx.jpg", // 'nx.png',
-        //         //     "TropicalSunnyDay_py.jpg", // 'py.png',
-        //         //     "TropicalSunnyDay_ny.jpg", // 'ny.png',
-        //         //     "TropicalSunnyDay_pz.jpg", // 'pz.png',
-        //         //     "TropicalSunnyDay_nz.jpg"// 'nz.png'
-        //         // ]);
-        //         .setPath("assets/textures/clouds/")
-        //         .load([
-        //             "CloudyLightRays_px.jpg", // 'px.png',
-        //             "CloudyLightRays_nx.jpg", // 'nx.png',
-        //             "CloudyLightRays_py.jpg", // 'py.png',
-        //             "CloudyLightRays_ny.jpg", // 'ny.png',
-        //             "CloudyLightRays_pz.jpg", // 'pz.png',
-        //             "CloudyLightRays_nz.jpg"// 'nz.png'
-        //         ]);
-        // }
+
+        if (this._scene !== undefined) {
+            this._scene.background = this._skyBoxTexture;
+        }
     }
 }
