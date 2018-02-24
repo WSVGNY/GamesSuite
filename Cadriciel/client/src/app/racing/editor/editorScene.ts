@@ -34,7 +34,7 @@ export class EditorScene {
     public importTrackVertices(trackVertices: Array<CommonCoordinate3D>): void {
         this.clear();
         for (const entry of trackVertices) {
-            this.addVertex(new Vector3(entry.x, entry.y, 0));
+            this.addVertex(new Vector3(entry.z, entry.x, 0));
         }
         if (trackVertices.length !== 0) {
             this.completeTrack();
