@@ -1,5 +1,7 @@
-import { Vector3, Matrix4, Object3D, ObjectLoader, Quaternion, Camera,
-         SpotLight, Color, Mesh, BoxGeometry, MeshBasicMaterial } from "three";
+import {
+    Vector3, Matrix4, Object3D, ObjectLoader, Quaternion, Camera,
+    SpotLight, Color, Mesh, BoxGeometry, MeshBasicMaterial
+} from "three";
 import { Engine } from "./engine";
 import { MS_TO_SECONDS, GRAVITY, RAD_TO_DEG, CAR_TEXTURE, RED, YELLOW } from "../constants";
 import { Wheel } from "./wheel";
@@ -9,7 +11,6 @@ export const DEFAULT_MASS: number = 1515;
 export const DEFAULT_DRAG_COEFFICIENT: number = 0.35;
 
 const MAXIMUM_STEERING_ANGLE: number = 0.05;
-// const INITIAL_MODEL_ROTATION: Euler = new Euler(0, PI_OVER_2, 0);
 const INITIAL_WEIGHT_DISTRIBUTION: number = 0.5;
 const MINIMUM_SPEED: number = 0.05;
 const NUMBER_REAR_WHEELS: number = 2;
@@ -156,7 +157,6 @@ export class Car extends Object3D {
         this._weightRear = INITIAL_WEIGHT_DISTRIBUTION;
         this._speed = new Vector3(0, 0, 0);
         this.position.add(new Vector3(0, 0, 0));
-        // this.rotateX(Math.PI);
     }
 
     private async load(): Promise<Object3D> {
@@ -224,7 +224,6 @@ export class Car extends Object3D {
         rotationQuaternion.setFromRotationMatrix(rotationMatrix);
         this._speed.applyMatrix4(rotationMatrix);
 
-        // Physics calculations
         this.physicsUpdate(deltaTime);
 
         // Move back to world coordinates

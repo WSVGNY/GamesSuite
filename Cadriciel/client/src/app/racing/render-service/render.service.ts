@@ -67,7 +67,7 @@ export class RenderService {
         dirLight.shadow.camera.bottom = -d;
         dirLight.shadow.camera.far = 3500;
         dirLight.shadow.bias = -0.0001;
-        const dirLightHeper: DirectionalLightHelper = new DirectionalLightHelper(dirLight, 10)
+        const dirLightHeper: DirectionalLightHelper = new DirectionalLightHelper(dirLight, 10);
         this._scene.add(dirLightHeper);
     }
 
