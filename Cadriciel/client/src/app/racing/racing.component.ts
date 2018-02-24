@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, ViewChild, HostListener } from "@
 import { RenderService } from "./render-service/render.service";
 import { Car } from "./car/car";
 import { KeyboardEventHandlerService } from "./event-handlers/keyboard-event-handler.service";
-import { Track, ITrack } from "../../../../common/racing/track";
+import { Track, TrackDocument } from "../../../../common/racing/track";
 import { TrackService } from "./track-service/track.service";
 import { ActivatedRoute } from "@angular/router";
 import { RaceGame } from "./game-loop/raceGame";
@@ -61,7 +61,7 @@ export class RacingComponent implements AfterViewInit {
         this._currentTrackId = this.route.snapshot.paramMap.get("id");
         this.trackService.getTrackFromId(this._currentTrackId)
             .subscribe((trackFromServer: string) => {
-                const iTrack: ITrack = JSON.parse(JSON.stringify(trackFromServer));
+                const iTrack: TrackDocument = JSON.parse(JSON.stringify(trackFromServer));
                 this._chosenTrack = new Track(iTrack);
                 this.initializeGame();
             });

@@ -1,9 +1,9 @@
 export class ResponseWordFromAPI {
-    public _word: string;
-    public _definition: string;
+    public word: string;
+    public definition: string;
 
     public constructor() {
-        this._word = "";
-        this._definition = "";
+        this.word = "";
+        this.definition = "";
     }
 }

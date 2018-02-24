@@ -1,9 +1,5 @@
 export class CommonChar {
+    public constructor(public _value: string) {
 
-    public _value: string;
-
-    public constructor(char: string) {
-        this._value = char;
     }
-
 }

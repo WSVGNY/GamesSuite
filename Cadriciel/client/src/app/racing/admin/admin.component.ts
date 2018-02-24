@@ -1,5 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { Track, ITrack, TrackMapElement } from "../../../../../common/racing/track";
+import { Track, TrackDocument, TrackMapElement } from "../../../../../common/racing/track";
 import { TrackService } from "../track-service/track.service";
 
 @Component({
@@ -22,7 +22,7 @@ export class AdminComponent implements OnInit {
             .subscribe((tracksFromServer: string) => {
                 this.tracks = [];
                 JSON.parse(tracksFromServer).forEach((document: string) => {
-                    const iTrack: ITrack = JSON.parse(JSON.stringify(document));
+                    const iTrack: TrackDocument = JSON.parse(JSON.stringify(document));
                     this.tracks.push({
                         "key": iTrack._id,
                         "value": new Track(iTrack)
@@ -36,7 +36,7 @@ export class AdminComponent implements OnInit {
             .subscribe((tracksFromServer: string) => {
                 this.tracks = [];
                 JSON.parse(tracksFromServer).forEach((document: string) => {
-                    const iTrack: ITrack = JSON.parse(JSON.stringify(document));
+                    const iTrack: TrackDocument = JSON.parse(JSON.stringify(document));
                     this.tracks.push({
                         "key": iTrack._id,
                         "value": new Track(iTrack)
@@ -50,7 +50,7 @@ export class AdminComponent implements OnInit {
             .subscribe((tracksFromServer: string) => {
                 this.tracks = [];
                 JSON.parse(tracksFromServer).forEach((document: string) => {
-                    const iTrack: ITrack = JSON.parse(JSON.stringify(document));
+                    const iTrack: TrackDocument = JSON.parse(JSON.stringify(document));
                     this.tracks.push({
                         "key": iTrack._id,
                         "value": new Track(iTrack)

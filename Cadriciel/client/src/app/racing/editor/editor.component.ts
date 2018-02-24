@@ -1,7 +1,7 @@
 import { Component, AfterViewInit, HostListener, ElementRef, ViewChild, Input } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
-import { Track, ITrack } from "../../../../../common/racing/track";
+import { Track, TrackDocument } from "../../../../../common/racing/track";
 import { TrackService } from "../track-service/track.service";
 import { EditorCamera } from "./editorCamera";
 import { EditorScene } from "./editorScene";
@@ -62,7 +62,7 @@ export class EditorComponent implements AfterViewInit {
         this.currentTrackId = this.route.snapshot.paramMap.get("id");
         this.trackService.getTrackFromId(this.currentTrackId)
             .subscribe((trackFromServer: string) => {
-                const iTrack: ITrack = JSON.parse(JSON.stringify(trackFromServer));
+                const iTrack: TrackDocument = JSON.parse(JSON.stringify(trackFromServer));
                 this.trackChosenFromAdmin = new Track(iTrack);
                 this.currentTrackName = this.trackChosenFromAdmin.name;
                 this.editorScene.importTrackVertices(this.trackChosenFromAdmin.vertices);
@@ -74,7 +74,7 @@ export class EditorComponent implements AfterViewInit {
         this.trackChosenFromAdmin.vertices = this.editorScene.exportTrackVertices();
         this.trackService.putTrack(this.currentTrackId, this.trackChosenFromAdmin)
             .subscribe((trackFromServer: string) => {
-                const iTrack: ITrack = JSON.parse(JSON.stringify(trackFromServer));
+                const iTrack: TrackDocument = JSON.parse(JSON.stringify(trackFromServer));
                 this.trackChosenFromAdmin = new Track(iTrack);
             });
     }

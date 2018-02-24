@@ -10,7 +10,7 @@ import { Track } from "../../../../../common/racing/track";
 @Injectable()
 export class TrackService {
 
-    private readonly BASE_URL: string = "http://localhost:3000/admin";
+    private readonly BASE_URL: string = "http://localhost:3000/track";
     private readonly httpOptions: { headers: HttpHeaders; } = {
         headers: new HttpHeaders({
         })

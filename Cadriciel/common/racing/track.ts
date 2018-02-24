@@ -3,7 +3,7 @@ import { TrackType } from "./trackType";
 
 export type TrackMapElement = { "key": string, "value": Track };
 
-export interface ITrack {
+export interface TrackDocument {
     _id: string;
     track: {
         name: string;
@@ -17,7 +17,7 @@ export class Track {
     public vertices: Array<CommonCoordinate3D>;
     public type: TrackType;
 
-    public constructor(rawTrack: ITrack) {
+    public constructor(rawTrack: TrackDocument) {
         this.name = rawTrack.track.name;
         this.vertices = rawTrack.track.vertices;
         this.type = rawTrack.track.type;

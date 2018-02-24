@@ -6,9 +6,9 @@ import { AbstractService } from "../AbstractService";
 
 @injectable()
 export class TrackService extends AbstractService {
-    public readonly baseRoute: string = "/admin";
+    public readonly baseRoute: string = "/track";
 
-    public constructor( @inject(Types.TrackRoute) private trackRoute: TrackRoute) {
+    public constructor(@inject(Types.TrackRoute) private trackRoute: TrackRoute) {
         super();
     }
 

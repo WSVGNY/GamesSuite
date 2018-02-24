@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import "reflect-metadata";
 import { injectable, } from "inversify";
-import { Track, ITrack } from "../../../common/racing/track";
+import { Track, TrackDocument } from "../../../common/racing/track";
 import { MongoClient } from "mongodb";
 import { ObjectId } from "bson";
 import { TrackType } from "../../../common/racing/trackType";
@@ -26,7 +26,7 @@ export class TrackRoute {
         MongoClient.connect(this.DATABASE_URL).then((dbConnection: MongoClient) => {
             dbConnection.db("log2990").collection(this.COLLECTION)
                 .findOne({ "_id": new ObjectId(req.params.id) }).then((document: string) => {
-                    const iTrack: ITrack = JSON.parse(JSON.stringify(document));
+                    const iTrack: TrackDocument = JSON.parse(JSON.stringify(document));
                     res.send(JSON.stringify(iTrack));
                     dbConnection.close();
                 }).catch((e: Error) => res.send(e));
