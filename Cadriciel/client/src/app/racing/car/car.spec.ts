@@ -71,7 +71,7 @@ describe("Car", () => {
         car.accelerate();
         car.steerLeft();
         car.update(MS_BETWEEN_FRAMES * 2);
-        expect(car.angle).toBeLessThan(initialAngle);
+        expect(car.angle).toBeGreaterThan(initialAngle);
     });
 
     it("should turn right when right turn key is pressed", () => {
