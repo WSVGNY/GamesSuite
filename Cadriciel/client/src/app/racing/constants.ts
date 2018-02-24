@@ -35,3 +35,5 @@ export const DEFAULT_SKYBOX: string = SKYBOX_PATH + "default/";
 export const NIGHT_SKYBOX: string = SKYBOX_PATH + "nightsky/";
 export const CLOUD_SKYBOX: string = SKYBOX_PATH + "clouds/";
 export const ROME_SKYBOX: string = SKYBOX_PATH + "rome/";
+export const GROUND_SIZE: number = 10000;
+export const GROUND_TEXTURE_FACTOR: number = 0.045;

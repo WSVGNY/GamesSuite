@@ -14,6 +14,7 @@ const INITIAL_WEIGHT_DISTRIBUTION: number = 0.5;
 const MINIMUM_SPEED: number = 0.05;
 const NUMBER_REAR_WHEELS: number = 2;
 const NUMBER_WHEELS: number = 4;
+const DISTANCE_FROM_CAR: number = 30;
 
 export class Car extends Object3D {
 
@@ -73,6 +74,10 @@ export class Car extends Object3D {
         this._frontLight2.position.set(1, 0, -1);
         this._backLight1.position.set(-1, 0, 1);
         this._backLight2.position.set(1, 0, 1);
+        this._frontLight1.target = this.attachTarget(-DISTANCE_FROM_CAR);
+        this._frontLight2.target = this.attachTarget(-DISTANCE_FROM_CAR);
+        this._backLight1.target = this.attachTarget(DISTANCE_FROM_CAR);
+        this._backLight2.target = this.attachTarget(DISTANCE_FROM_CAR);
     }
 
     public attachLights(): void {
@@ -80,10 +85,7 @@ export class Car extends Object3D {
         this._mesh.add(this._frontLight2);
         this._mesh.add(this._backLight1);
         this._mesh.add(this._backLight2);
-        this._frontLight1.target = this.attachTarget(-20);
-        this._frontLight2.target = this.attachTarget(-20);
-        this._backLight1.target = this.attachTarget(20);
-        this._backLight2.target = this.attachTarget(20);
+
     }
 
     public dettachLights(): void {
@@ -100,10 +102,9 @@ export class Car extends Object3D {
 
     public attachTarget(distance: number): Mesh {
         const geometry: BoxGeometry = new BoxGeometry(0, 0, 0);
-        const material: MeshBasicMaterial = new MeshBasicMaterial({ color: 0x00ff00 });
+        const material: MeshBasicMaterial = new MeshBasicMaterial({ color: YELLOW });
         const cube: Mesh = new Mesh(geometry, material);
-        // cube.position = this.projectInFrontOfCar();
-        cube.position.set(0, 0, distance);
+        cube.position.set(0, -1, distance);
         this._mesh.add(cube);
 
         return cube;

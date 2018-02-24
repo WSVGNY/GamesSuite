@@ -5,10 +5,10 @@ import {
     PlaneGeometry, MeshLambertMaterial, DirectionalLight, DirectionalLightHelper, AmbientLight, Group, Object3D, CubeTexture,
     CubeTextureLoader
 } from "three";
-import { PI_OVER_2, LOWER_GROUND } from "../constants";
+import { PI_OVER_2, LOWER_GROUND, WHITE, GROUND_SIZE, GROUND_TEXTURE_FACTOR } from "../constants";
 import { TrackPointList } from "./trackPoint";
 
-const WHITE: number = 0xFFFFFF;
+
 const AMBIENT_LIGHT_OPACITY: number = 0.1;
 
 @Injectable()
@@ -52,7 +52,7 @@ export class RenderService {
     public lighting(): void {
 
         this._scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
-        const dirLight: DirectionalLight = new DirectionalLight(0xffffff, 0.8);
+        const dirLight: DirectionalLight = new DirectionalLight(WHITE, 0.8);
         dirLight.color.setHSL(0.1, 1, 0.95);
         dirLight.position.set(-1, 0.8, 1);
         dirLight.position.multiplyScalar(30);
@@ -102,7 +102,9 @@ export class RenderService {
 
         const geometry: ShapeGeometry = new ShapeGeometry(shape);
         const trackMaterial: MeshLambertMaterial =
-            new MeshLambertMaterial({ side: BackSide, map: this.loadRepeatingTexture("assets/textures/asphalte.jpg", 0.045) });
+            new MeshLambertMaterial({
+                side: BackSide, map: this.loadRepeatingTexture("assets/textures/asphalte.jpg", GROUND_TEXTURE_FACTOR)
+            });
 
         const trackMesh: Mesh = new Mesh(geometry, trackMaterial);
         trackMesh.rotateX(PI_OVER_2);
@@ -129,7 +131,7 @@ export class RenderService {
     }
 
     private renderGround(): void {
-        const groundGeometry: PlaneGeometry = new PlaneGeometry(10000, 10000, 1, 1);
+        const groundGeometry: PlaneGeometry = new PlaneGeometry(GROUND_SIZE, GROUND_SIZE, 1, 1);
         const groundMaterial: MeshLambertMaterial =
             new MeshLambertMaterial({ side: BackSide, map: this.loadRepeatingTexture("assets/textures/green-grass-texture.jpg", 1000) });
 
