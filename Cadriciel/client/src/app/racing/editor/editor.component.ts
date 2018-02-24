@@ -9,8 +9,8 @@ import { EditorRenderService } from "./editor-render-service/editor-render.servi
 import { MouseEventHandlerService } from "../event-handlers/mouse-event-handler.service";
 import { Vector3 } from "three";
 
-const CAMERA_Y_POSITION: number = 480;
-const CAMERA_POSITION: Vector3 = new Vector3(0, CAMERA_Y_POSITION, 0);
+const CAMERA_Z_POSITION: number = 480;
+const CAMERA_POSITION: Vector3 = new Vector3(0, 0, CAMERA_Z_POSITION);
 const VIEW_SIZE: number = 1000;
 
 @Component({
