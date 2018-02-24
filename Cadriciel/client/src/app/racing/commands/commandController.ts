@@ -1,4 +1,4 @@
-import { AbstractCommand } from "./commands/abstractCommand";
+import { AbstractCommand } from "./../commands/abstractCommand";
 
 export class CommandController {
 

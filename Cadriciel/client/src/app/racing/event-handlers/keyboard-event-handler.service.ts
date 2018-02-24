@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { CommandController } from "../commandController";
+import { CommandController } from "../commands/commandController";
 import { GoFoward } from "../commands/carAICommands/goFoward";
 import { TurnLeft } from "../commands/carAICommands/turnLeft";
 import { TurnRight } from "../commands/carAICommands/turnRight";

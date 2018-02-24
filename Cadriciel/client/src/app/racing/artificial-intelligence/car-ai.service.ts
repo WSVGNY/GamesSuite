@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Car } from "../car/car";
-import { CommandController } from "../commandController";
+import { CommandController } from "../commands/commandController";
 import { TurnLeft } from "../commands/carAICommands/turnLeft";
 import { TurnRight } from "../commands/carAICommands/turnRight";
 import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";

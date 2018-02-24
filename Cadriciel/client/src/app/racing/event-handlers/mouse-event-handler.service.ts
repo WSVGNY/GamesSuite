@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Vector3, Raycaster } from "three";
 import { EditorScene } from "../editor/editorScene";
 import { EditorCamera } from "../editor/editorCamera";
-import { CommandController } from "../commandController";
+import { CommandController } from "../commands/commandController";
 import { SelectVertex } from "../commands/editorCommands/selectVertex";
 import { CloseLoop } from "../commands/editorCommands/closeLoop";
 import { PlaceVertex } from "../commands/editorCommands/placeVertex";
