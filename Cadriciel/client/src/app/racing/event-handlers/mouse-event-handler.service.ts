@@ -108,21 +108,21 @@ export class MouseEventHandlerService {
 
     private handleLeftClick(editorScene: EditorScene): void {
         if (editorScene.isEmpty) {
-            this._editorControl.setCommand(new PlaceVertex(editorScene, this._mouseWorldCoordinates));
+            this._editorControl.command = new PlaceVertex(editorScene, this._mouseWorldCoordinates);
             this._editorControl.execute();
         } else if (this.clickOnVertex(editorScene)) {
             if (this.clickOnFirstVertex(editorScene) && editorScene.nbVertices >= REQUIRED_VERTEX_COUNT) {
                 if (editorScene.isComplete) {
-                    this._editorControl.setCommand(new SelectVertex(editorScene, this.clickedVertexName(editorScene)));
+                    this._editorControl.command = new SelectVertex(editorScene, this.clickedVertexName(editorScene));
                 } else {
-                    this._editorControl.setCommand(new CloseLoop(editorScene));
+                    this._editorControl.command = new CloseLoop(editorScene);
                 }
             } else {
-                this._editorControl.setCommand(new SelectVertex(editorScene, this.clickedVertexName(editorScene)));
+                this._editorControl.command = new SelectVertex(editorScene, this.clickedVertexName(editorScene));
             }
             this._editorControl.execute();
         } else if (!editorScene.isComplete) {
-            this._editorControl.setCommand(new PlaceVertex(editorScene, this._mouseWorldCoordinates));
+            this._editorControl.command = new PlaceVertex(editorScene, this._mouseWorldCoordinates);
             this._editorControl.execute();
         }
     }
@@ -139,7 +139,7 @@ export class MouseEventHandlerService {
                     break;
                 case RIGHT_CLICK_KEYCODE:
                     if (!editorScene.isEmpty) {
-                        this._editorControl.setCommand(new RemoveVertex(editorScene));
+                        this._editorControl.command = new RemoveVertex(editorScene);
                         this._editorControl.execute();
                     }
                     break;
@@ -153,7 +153,7 @@ export class MouseEventHandlerService {
         if (this.isMouseOnScene(mouseScreenCoordinates)) {
             this.convertToWorldCoordinates(mouseScreenCoordinates);
             if (this._isMouseDown && editorScene.selectedVertex !== undefined) {
-                this._editorControl.setCommand(new MoveVertex(editorScene, this._mouseWorldCoordinates));
+                this._editorControl.command = new MoveVertex(editorScene, this._mouseWorldCoordinates);
                 this._editorControl.execute();
             }
         }
@@ -162,8 +162,7 @@ export class MouseEventHandlerService {
     public handleMouseUp(event: MouseEvent, editorScene: EditorScene): void {
         const mouseScreenCoordinates: Vector3 = new Vector3(event.clientX, event.clientY, 0);
         if (this.isMouseOnScene(mouseScreenCoordinates)) {
-            this._editorControl.setCommand(
-                new DeselectVertex(editorScene));
+            this._editorControl.command = new DeselectVertex(editorScene);
             this._editorControl.execute();
             this._isMouseDown = false;
         }

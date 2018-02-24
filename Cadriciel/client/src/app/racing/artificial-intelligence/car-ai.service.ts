@@ -6,7 +6,7 @@ import { TurnRight } from "../commands/carAICommands/turnRight";
 import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";
 import { Vector3, BoxHelper, Group } from "three";
 import { VectorHelper } from "./vectorHelper";
-import { PINK, WHITE, SQUARED } from "../constants";
+import { PINK, WHITE, RED, GREEN, BLUE, SQUARED } from "../constants";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { Line } from "./line";
 import { GoFoward } from "../commands/carAICommands/goFoward";
@@ -21,11 +21,6 @@ export class CarAiService {
     private _debugGroup: Group;
 
     private _aiControl: CommandController;
-    private _isGoingForward: boolean = false;
-    private _isSteeringLeft: boolean = false;
-    private _isSteeringRight: boolean = false;
-    // private _isBraking: boolean = false;
-    // private _isReleasingSteering: boolean = false;
     private _trackPortionIndex: number = this.START_INDEX;
     private _trackVectors: Line[];
     private _aiConfig: AIConfig;
@@ -50,9 +45,9 @@ export class CarAiService {
     // Helper
     private initializeDebugMode(): void {
         this._debugGroup = new Group;
-        this._axisX = new VectorHelper(0xFF0000);
-        this._axisY = new VectorHelper(0x00FF00);
-        this._axisZ = new VectorHelper(0x0000FF);
+        this._axisX = new VectorHelper(RED);
+        this._axisY = new VectorHelper(GREEN);
+        this._axisZ = new VectorHelper(BLUE);
 
         this._carVectorHelper = new VectorHelper(PINK);
         this._distanceVectorHelper = new VectorHelper(WHITE);
@@ -79,7 +74,6 @@ export class CarAiService {
         const pointOnLine: Vector3 = this.projectPointOnLine(projection);
         const turningPoint: Vector3 = this.projectTurningPoint();
 
-        // Helper
         this.updateDebugMode(carPosition, projection, pointOnLine, turningPoint);
 
         this.updateTrackPortionIndex(pointOnLine, turningPoint);
@@ -117,47 +111,34 @@ export class CarAiService {
     private updateCarDirection(lineDistance: number): void {
         if (Math.abs(lineDistance) > this._aiConfig.distanceBeforeReplacement) {
             if (lineDistance < 0) {
-                if (!this._isSteeringLeft) {
-                    this.goLeft();
-                }
+                this.goLeft();
             } else {
-                if (!this._isSteeringRight) {
-                    this.goRight();
-                }
+                this.goRight();
             }
         } else {
-            if (!this._isGoingForward) {
-                this.goForward();
-                this.releaseSteering();
-            }
+            this.goForward();
+            this.releaseSteering();
         }
     }
 
     private goForward(): void {
-        this._aiControl.setCommand(new GoFoward(this._car));
+        this._aiControl.command = new GoFoward(this._car);
         this._aiControl.execute();
-        this._isGoingForward = true;
     }
 
     private goLeft(): void {
-        this._aiControl.setCommand(new TurnLeft(this._car));
+        this._aiControl.command = new TurnLeft(this._car);
         this._aiControl.execute();
-        this._isSteeringLeft = true;
     }
 
     private goRight(): void {
-        this._aiControl.setCommand(new TurnRight(this._car));
+        this._aiControl.command = new TurnRight(this._car);
         this._aiControl.execute();
-        this._isSteeringRight = true;
     }
 
     private releaseSteering(): void {
-        this._aiControl.setCommand(new ReleaseSteering(this._car));
+        this._aiControl.command = new ReleaseSteering(this._car);
         this._aiControl.execute();
-        // this._isReleasingSteering = true;
-        this._isSteeringRight = false;
-        this._isSteeringLeft = false;
-        this._isGoingForward = false;
     }
 
     private projectInFrontOfCar(): Vector3 {

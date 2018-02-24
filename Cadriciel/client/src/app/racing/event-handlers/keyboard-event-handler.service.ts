@@ -31,19 +31,19 @@ export class KeyboardEventHandlerService {
     public handleKeyDown(event: KeyboardEvent, raceGame: RaceGame): void {
         switch (event.keyCode) {
             case ACCELERATE_KEYCODE:
-                this._carControl.setCommand(new GoFoward(raceGame.playerCar));
+                this._carControl.command = new GoFoward(raceGame.playerCar);
                 this._carControl.execute();
                 break;
             case LEFT_KEYCODE:
-                this._carControl.setCommand(new TurnLeft(raceGame.playerCar));
+                this._carControl.command = new TurnLeft(raceGame.playerCar);
                 this._carControl.execute();
                 break;
             case RIGHT_KEYCODE:
-                this._carControl.setCommand(new TurnRight(raceGame.playerCar));
+                this._carControl.command = new TurnRight(raceGame.playerCar);
                 this._carControl.execute();
                 break;
             case BRAKE_KEYCODE:
-                this._carControl.setCommand(new Brake(raceGame.playerCar));
+                this._carControl.command = new Brake(raceGame.playerCar);
                 this._carControl.execute();
                 break;
             case DAY_KEYCODE:
@@ -63,16 +63,16 @@ export class KeyboardEventHandlerService {
     public handleKeyUp(event: KeyboardEvent, raceGame: RaceGame): void {
         switch (event.keyCode) {
             case ACCELERATE_KEYCODE:
-                this._carControl.setCommand(new ReleaseAccelerator(raceGame.playerCar));
+                this._carControl.command =new ReleaseAccelerator(raceGame.playerCar);
                 this._carControl.execute();
                 break;
             case LEFT_KEYCODE:
             case RIGHT_KEYCODE:
-                this._carControl.setCommand(new ReleaseSteering(raceGame.playerCar));
+                this._carControl.command = new ReleaseSteering(raceGame.playerCar);
                 this._carControl.execute();
                 break;
             case BRAKE_KEYCODE:
-                this._carControl.setCommand(new Brake(raceGame.playerCar));
+                this._carControl.command = new Brake(raceGame.playerCar);
                 this._carControl.execute();
                 // this._playerCar.setBackLightColor(YELLOW);
                 break;
