@@ -1,9 +1,6 @@
 import { SphereGeometry, MeshBasicMaterial, Mesh, Scene, Line, Geometry, LineBasicMaterial, Vector3} from "three";
+import { ORANGE, GREEN, WHITE, PINK } from "./constants";
 
-const ORANGE: number = 0xFF6600;
-const GREEN: number = 0x26FF00;
-const WHITE: number = 0xFFFFFF;
-const PINK: number = 0xFF00BF;
 const RADIUS: number = 12;
 export const VERTEX_GEOMETRY: SphereGeometry  = new SphereGeometry(RADIUS, RADIUS, RADIUS);
 const START_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial ({color : PINK});
