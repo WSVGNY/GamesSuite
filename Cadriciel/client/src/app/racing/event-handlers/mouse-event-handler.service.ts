@@ -61,11 +61,11 @@ export class MouseEventHandlerService {
     }
 
     private convertToWorldCoordinates(position: Vector3): void {
-        this._mouseWorldCoordinates.z =
+        this._mouseWorldCoordinates.x =
             (position.x - this._divOffset.x - this._centerOffset.x) *
             this._viewSize / this._containerEditor.clientHeight;
 
-        this._mouseWorldCoordinates.x =
+        this._mouseWorldCoordinates.y =
             -(position.y - this._divOffset.y - this._centerOffset.y) *
             this._viewSize / this._containerEditor.clientHeight;
     }
