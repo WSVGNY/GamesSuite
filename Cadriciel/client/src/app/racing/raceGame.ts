@@ -9,15 +9,7 @@ import { TrackType } from "../../../../common/racing/trackType";
 import { ElementRef } from "@angular/core";
 import { Track } from "../../../../common/racing/track";
 import { SkyBox } from "./skybox";
-
-const AI_CARS_NUMBER: number = 6;
-const FAR_CLIPPING_PLANE: number = 1000;
-const NEAR_CLIPPING_PLANE: number = 1;
-const FIELD_OF_VIEW: number = 70;
-const INITIAL_CAMERA_POSITION_Z: number = 10;
-const INITIAL_CAMERA_POSITION_Y: number = 5;
-const PLAYER_CAMERA: string = "PLAYER_CAMERA";
-const START_POSITION_OFFSET: number = 4;
+import { RaceGameConfig } from "./raceGameConfig";
 
 export class RaceGame {
     private _camera: PerspectiveCamera;
@@ -54,37 +46,37 @@ export class RaceGame {
 
     private initializeCamera(containerRef: HTMLDivElement): void {
         this._camera = new PerspectiveCamera(
-            FIELD_OF_VIEW,
+            RaceGameConfig.FIELD_OF_VIEW,
             containerRef.clientWidth / containerRef.clientHeight,
-            NEAR_CLIPPING_PLANE,
-            FAR_CLIPPING_PLANE
+            RaceGameConfig.NEAR_CLIPPING_PLANE,
+            RaceGameConfig.FAR_CLIPPING_PLANE
         );
 
-        this._camera.name = PLAYER_CAMERA;
-        this._camera.position.z = INITIAL_CAMERA_POSITION_Z;
-        this._camera.position.y = INITIAL_CAMERA_POSITION_Y;
+        this._camera.name = RaceGameConfig.PLAYER_CAMERA;
+        this._camera.position.z = RaceGameConfig.INITIAL_CAMERA_POSITION_Z;
+        this._camera.position.y = RaceGameConfig.INITIAL_CAMERA_POSITION_Y;
     }
 
     private async initializePlayerCar(): Promise<void> {
         this._playerCar = new Car();
-        const startPos: Vector3 = new Vector3(this._trackPoints.first.coordinates.x + START_POSITION_OFFSET,
+        const startPos: Vector3 = new Vector3(this._trackPoints.first.coordinates.x + RaceGameConfig.START_POSITION_OFFSET,
                                               this._trackPoints.first.coordinates.y,
-                                              this._trackPoints.first.coordinates.z + START_POSITION_OFFSET);
+                                              this._trackPoints.first.coordinates.z + RaceGameConfig.START_POSITION_OFFSET);
         await this._playerCar.init(startPos, this.findFirstTrackSegmentAngle());
         this._playerCar.attachCamera(this._camera);
     }
 
     private async initializeAICars(): Promise<void> {
-        for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
+        for (let i: number = 0; i < RaceGameConfig.AI_CARS_NUMBER; ++i) {
             this._aiCars.push(new Car());
             this._aiCarService.push(new CarAiService(this._aiCars[i],
                                                      this._trackPoints.pointVectors,
                                                      this.isPair(i) ? Difficulty.Hard : Difficulty.Easy));
             this._aiCarsDebug.add(this._aiCarService[i].debugGroup);
 
-            const startPos: Vector3 = new Vector3(this._trackPoints.first.coordinates.x - i * START_POSITION_OFFSET,
+            const startPos: Vector3 = new Vector3(this._trackPoints.first.coordinates.x - i * RaceGameConfig.START_POSITION_OFFSET,
                                                   this._trackPoints.first.coordinates.y,
-                                                  this._trackPoints.first.coordinates.z - i * START_POSITION_OFFSET);
+                                                  this._trackPoints.first.coordinates.z - i * RaceGameConfig.START_POSITION_OFFSET);
 
             await this._aiCars[i].init(startPos, this.findFirstTrackSegmentAngle());
         }
@@ -122,7 +114,7 @@ export class RaceGame {
 
             this.renderService.render();
             this._playerCar.update(timeSinceLastFrame);
-            for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
+            for (let i: number = 0; i < RaceGameConfig.AI_CARS_NUMBER; ++i) {
                 this._aiCars[i].update(timeSinceLastFrame);
                 this._aiCarService[i].update();
             }
