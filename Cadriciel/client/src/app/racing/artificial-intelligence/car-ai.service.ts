@@ -10,11 +10,10 @@ import { PINK, WHITE, SQUARED } from "../constants";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { Line } from "./line";
 import { GoFoward } from "../commands/carAICommands/goFoward";
+import { AIConfig } from "./ai-config";
 
 @Injectable()
 export class CarAiService {
-    private readonly DISTANCE_FROM_VEHICULE: number;
-    private readonly DISTANCE_BEFORE_REPLACEMENT: number;
     private readonly TURNING_POINT_DISTANCE: number = 0.1;
     private readonly START_INDEX: number = 0;
     private readonly TURNING_POINT_BUFFER: number = 2;
@@ -29,6 +28,7 @@ export class CarAiService {
     // private _isReleasingSteering: boolean = false;
     private _trackPortionIndex: number = this.START_INDEX;
     private _trackVectors: Line[];
+    private _aiConfig: AIConfig;
 
     // HELPER
     private _carHelper: BoxHelper;
@@ -42,21 +42,8 @@ export class CarAiService {
     public constructor(private _car: Car, private _trackVertices: Vector3[]/*, public _scene: Scene*/, difficulty: Difficulty) {
         this._aiControl = new CommandController();
         this.createVectorTrackFromPoints(_trackVertices);
-
-        // tslint:disable:no-magic-numbers
-        if (difficulty === Difficulty.Hard) {
-            this.DISTANCE_FROM_VEHICULE = 20;
-            this.DISTANCE_BEFORE_REPLACEMENT = 1;
-        } else if (difficulty === Difficulty.Medium) {
-            this.DISTANCE_FROM_VEHICULE = 12;
-            this.DISTANCE_BEFORE_REPLACEMENT = 2;
-        } else {
-            this.DISTANCE_FROM_VEHICULE = 5.5;
-            this.DISTANCE_BEFORE_REPLACEMENT = 3;
-        }
-        // tslint:enable:no-magic-numbers
-
         this.initializeDebugMode();
+        this._aiConfig = new AIConfig(difficulty);
 
     }
 
@@ -128,7 +115,7 @@ export class CarAiService {
     }
 
     private updateCarDirection(lineDistance: number): void {
-        if (Math.abs(lineDistance) > this.DISTANCE_BEFORE_REPLACEMENT) {
+        if (Math.abs(lineDistance) > this._aiConfig.distanceBeforeReplacement) {
             if (lineDistance < 0) {
                 if (!this._isSteeringLeft) {
                     this.goLeft();
@@ -179,8 +166,8 @@ export class CarAiService {
             this._car.position.x + this._car.currentPosition.x, 0,
             this._car.position.z + this._car.currentPosition.z);
 
-        positionInFront.x += dir.x * this.DISTANCE_FROM_VEHICULE;
-        positionInFront.z += dir.z * this.DISTANCE_FROM_VEHICULE;
+        positionInFront.x += dir.x * this._aiConfig.distanceFromVehicule;
+        positionInFront.z += dir.z * this._aiConfig.distanceFromVehicule;
 
         return positionInFront;
     }
