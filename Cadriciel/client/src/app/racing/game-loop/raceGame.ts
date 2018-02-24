@@ -1,14 +1,14 @@
-import { RenderService } from "./render-service/render.service";
-import { Car } from "./car/car";
-import { CarAiService } from "./artificial-intelligence/car-ai.service";
-import { TrackPointList, TrackPoint } from "./render-service/trackPoint";
-import { MOCK_TRACK } from "./render-service/mock-track";
+import { RenderService } from "./../render-service/render.service";
+import { Car } from "./../car/car";
+import { CarAiService } from "./../artificial-intelligence/car-ai.service";
+import { TrackPointList, TrackPoint } from "./../render-service/trackPoint";
+import { MOCK_TRACK } from "./../render-service/mock-track";
 import { Vector3, PerspectiveCamera, Group, LineBasicMaterial, Line, Geometry } from "three";
-import { Difficulty } from "../../../../common/crossword/difficulty";
-import { TrackType } from "../../../../common/racing/trackType";
+import { Difficulty } from "../../../../../common/crossword/difficulty";
+import { TrackType } from "../../../../../common/racing/trackType";
 import { ElementRef } from "@angular/core";
-import { Track } from "../../../../common/racing/track";
-import { SkyBox } from "./skybox";
+import { Track } from "../../../../../common/racing/track";
+import { SkyBox } from "./../skybox";
 import { RaceGameConfig } from "./raceGameConfig";
 
 export class RaceGame {

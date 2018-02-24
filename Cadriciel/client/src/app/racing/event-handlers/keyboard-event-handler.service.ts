@@ -6,7 +6,7 @@ import { TurnRight } from "../commands/carAICommands/turnRight";
 import { Brake } from "../commands/carAICommands/brake";
 import { ReleaseAccelerator } from "../commands/carAICommands/releaseAccelerator";
 import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";
-import { RaceGame } from "../raceGame";
+import { RaceGame } from "../game-loop/raceGame";
 
 const ACCELERATE_KEYCODE: number = 87;  // w
 const LEFT_KEYCODE: number = 65;        // a
