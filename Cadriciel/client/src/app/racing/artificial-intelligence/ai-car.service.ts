@@ -3,17 +3,17 @@ import { Car } from "../car/car";
 import { CommandController } from "../commands/commandController";
 import { TurnLeft } from "../commands/carAICommands/turnLeft";
 import { TurnRight } from "../commands/carAICommands/turnRight";
+import { GoFoward } from "../commands/carAICommands/goFoward";
 import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";
 import { Vector3, Group } from "three";
 import { SQUARED } from "../constants";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { Line } from "./line";
-import { GoFoward } from "../commands/carAICommands/goFoward";
 import { AIConfig } from "./ai-config";
 import { AIDebug } from "./ai-debug";
 
 @Injectable()
-export class CarAiService {
+export class AICarService {
 
     private _aiControl: CommandController;
     private _trackPortionIndex: number;
