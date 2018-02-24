@@ -2,14 +2,14 @@
   <a (click)="setNewGame()" class="push_button">New game</a>
   <a (click)="setJoinGame()" class="push_button">Join game</a>
   <div *ngIf="isNewGame" id="buttongroup" class="btn-group">
-    <button id="buttonDifficulty" (click)="configurationService.isTwoPlayerGame = false" class="btn btn-primary">One player</button>
-    <button id="buttonDifficulty" (click)="configurationService.isTwoPlayerGame = true" class="btn btn-primary">Two players</button>
+    <button id="button" (click)="configurationService.isTwoPlayerGame = false" class="btn btn-primary">One player</button>
+    <button id="button" (click)="configurationService.isTwoPlayerGame = true" class="btn btn-primary">Two players</button>
   </div>
 
   <div *ngIf="configurationService.isTwoPlayerGame !== undefined" id="buttongroupp" class="btn-group">
-    <button id="buttonDifficulty" (click)="makeEasyGrid()" class="btn btn-primary">EASY</button>
-    <button id="buttonDifficulty" (click)="makeMediumGrid()" class="btn btn-primary">MEDIUM</button>
-    <button id="buttonDifficulty" (click)="makeHardGrid()" class="btn btn-primary">HARD</button>
+    <button id="button" (click)="makeEasyGrid()" class="btn btn-primary">EASY</button>
+    <button id="button" (click)="makeMediumGrid()" class="btn btn-primary">MEDIUM</button>
+    <button id="button" (click)="makeHardGrid()" class="btn btn-primary">HARD</button>
   </div>
 
   <div *ngIf="difficulty !== undefined" id="input">
