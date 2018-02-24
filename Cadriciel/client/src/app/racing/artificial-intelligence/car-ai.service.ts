@@ -29,6 +29,7 @@ export class CarAiService {
     private _carVectorHelper: VectorHelper;
     private _distanceVectorHelper: VectorHelper;
     private _turningVectorHelper: VectorHelper;
+    private readonly AXIS_LENGTH: number = 5;
 
     public constructor(private _car: Car, private _trackVertices: Vector3[]/*, public _scene: Scene*/, difficulty: Difficulty) {
         this._aiControl = new CommandController();
@@ -38,7 +39,6 @@ export class CarAiService {
         this._trackPortionIndex = this._aiConfig.startIndex;
     }
 
-    // Helper
     private initializeDebugMode(): void {
         this._debugGroup = new Group;
         this._axisX = new VectorHelper(RED);
@@ -77,9 +77,9 @@ export class CarAiService {
     }
 
     private updateDebugMode(carPosition: Vector3, projection: Vector3, pointOnLine: Vector3, turningPoint: Vector3): void {
-        this._axisX.update(carPosition, carPosition.clone().add(new Vector3(5, 0, 0)));
-        this._axisY.update(carPosition, carPosition.clone().add(new Vector3(0, 5, 0)));
-        this._axisZ.update(carPosition, carPosition.clone().add(new Vector3(0, 0, 5)));
+        this._axisX.update(carPosition, carPosition.clone().add(new Vector3(this.AXIS_LENGTH, 0, 0)));
+        this._axisY.update(carPosition, carPosition.clone().add(new Vector3(0, this.AXIS_LENGTH, 0)));
+        this._axisZ.update(carPosition, carPosition.clone().add(new Vector3(0, 0, this.AXIS_LENGTH)));
         this._carHelper.update(this._car);
         this._carVectorHelper.update(carPosition, projection);
         this._distanceVectorHelper.update(projection, pointOnLine);
@@ -174,7 +174,6 @@ export class CarAiService {
     private projectPointOnLine(point: Vector3): Vector3 {
         const line: Line = this._trackVectors[this._trackPortionIndex];
 
-        // line equation : az + bx + c = 0
         const a: number = -this._trackVectors[this._trackPortionIndex].b;
         const b: number = this._trackVectors[this._trackPortionIndex].a;
         const c: number = -a * point.z - b * point.x;
