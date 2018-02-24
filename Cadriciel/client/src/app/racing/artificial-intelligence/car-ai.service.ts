@@ -31,7 +31,7 @@ export class CarAiService {
     private _turningVectorHelper: VectorHelper;
     private readonly AXIS_LENGTH: number = 5;
 
-    public constructor(private _car: Car, private _trackVertices: Vector3[]/*, public _scene: Scene*/, difficulty: Difficulty) {
+    public constructor(private _car: Car, private _trackVertices: Vector3[], difficulty: Difficulty) {
         this._aiControl = new CommandController();
         this.createVectorTrackFromPoints(_trackVertices);
         this.initializeDebugMode();
@@ -51,12 +51,12 @@ export class CarAiService {
         this._carHelper = new BoxHelper(this._car);
 
         this._debugGroup.add(this._carHelper);
-        this._debugGroup.add(this._axisX.visual);
-        this._debugGroup.add(this._axisY.visual);
-        this._debugGroup.add(this._axisZ.visual);
-        this._debugGroup.add(this._carVectorHelper.visual);
-        this._debugGroup.add(this._distanceVectorHelper.visual);
-        this._debugGroup.add(this._turningVectorHelper.visual);
+        this._debugGroup.add(this._axisX);
+        this._debugGroup.add(this._axisY);
+        this._debugGroup.add(this._axisZ);
+        this._debugGroup.add(this._carVectorHelper);
+        this._debugGroup.add(this._distanceVectorHelper);
+        this._debugGroup.add(this._turningVectorHelper);
 
     }
 
@@ -199,8 +199,9 @@ export class CarAiService {
         const dx: number = (nextPoint.x - currentPoint.x) / Math.sqrt(Math.pow(nextPoint.x, SQUARED) + Math.pow(currentPoint.x, SQUARED));
         const dz: number = (nextPoint.z - currentPoint.z) / Math.sqrt(Math.pow(nextPoint.z, SQUARED) + Math.pow(currentPoint.z, SQUARED));
 
-        return new Vector3((nextPoint.x + dx * AIConfig.TURNING_POINT_DISTANCE), 0,
-                           (nextPoint.z + dz * AIConfig.TURNING_POINT_DISTANCE));
+        return new Vector3(
+            (nextPoint.x + dx * AIConfig.TURNING_POINT_DISTANCE), 0,
+            (nextPoint.z + dz * AIConfig.TURNING_POINT_DISTANCE));
     }
 
     public get debugGroup(): Group {
