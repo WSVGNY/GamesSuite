@@ -55,7 +55,7 @@ export class EditorScene {
     public exportTrackVertices(): Array<CommonCoordinate3D> {
         const trackVertices: Array<CommonCoordinate3D> = new Array();
         for (const entry of this.vertices) {
-            trackVertices.push(new CommonCoordinate3D(entry.position.x, entry.position.y, entry.position.z));
+            trackVertices.push(new CommonCoordinate3D(entry.position.y, entry.position.z, entry.position.x));
         }
 
         return trackVertices;
