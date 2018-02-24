@@ -111,7 +111,7 @@ export class MouseEventHandlerService {
         this._editorControl.setCommand(new PlaceVertex(editorScene, this._mouseWorldCoordinates));
         this._editorControl.execute();
     } else if (this.clickOnVertex(editorScene)) {
-        if (this.clickOnFirstVertex(editorScene) && editorScene.nbVertices >= REQUIRED_VERTEX_COUNT) {
+        if (this.clickOnFirstVertex(editorScene) && editorScene.vertices.length >= REQUIRED_VERTEX_COUNT) {
             if (editorScene.isComplete) {
                 this._editorControl.setCommand(new SelectVertex(editorScene, this.clickedVertexName(editorScene)));
             } else {

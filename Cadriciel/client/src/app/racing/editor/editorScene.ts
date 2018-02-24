@@ -8,10 +8,10 @@ import { ConstraintValidator } from "./constraints/constraintValidator";
 
 const RADIUS: number = 12;
 const OUTLINE_TO_VERTEX_RATIO: number = 1.25;
-const VERTEX_GEOMETRY: SphereGeometry = new SphereGeometry(RADIUS, RADIUS, RADIUS);
-const SIMPLE_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: WHITE });
-const START_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: PINK });
-const SIMPLE_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: BLUE });
+export const VERTEX_GEOMETRY: SphereGeometry = new SphereGeometry(RADIUS, RADIUS, RADIUS);
+export const SIMPLE_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: WHITE });
+export const START_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: PINK });
+export const SIMPLE_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: BLUE });
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
 
 export class EditorScene {
@@ -22,7 +22,6 @@ export class EditorScene {
     private _firstVertex: Mesh;
     private _lastVertex: Mesh;
     private _selectedVertex: Mesh;
-    private _nbVertices: number = 0;
     private _isComplete: boolean = false;
 
     public constructor() {
@@ -98,20 +97,16 @@ export class EditorScene {
         return this._connections;
     }
 
-    public get nbVertices(): number {
-        return this._nbVertices;
-    }
-
     public get isComplete(): boolean {
         return this._isComplete;
     }
 
     private createVertex(position: Vector3): Mesh {
-        const vertex: Mesh = (this._nbVertices === 0) ?
+        const vertex: Mesh = (this._vertices.length === 0) ?
             new Mesh(VERTEX_GEOMETRY, START_VERTEX_MATERIAL) :
             new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
         vertex.position.set(position.x, position.y, 0);
-        vertex.name = (this._nbVertices) ? "vertex" + this._nbVertices : "Start";
+        vertex.name = (this._vertices.length) ? "vertex" + this._vertices.length : "Start";
 
         const outlineMaterial: MeshBasicMaterial = new MeshBasicMaterial({ color: WHITE, side: BackSide });
         const outlineMesh: Mesh = new Mesh(VERTEX_GEOMETRY, outlineMaterial);
@@ -130,7 +125,6 @@ export class EditorScene {
         } else {
             this.addConnection(this._lastVertex, vertex);
         }
-        this._nbVertices++;
         this._lastVertex = vertex;
     }
 
@@ -161,8 +155,7 @@ export class EditorScene {
     public removeLastVertex(): void {
         this._scene.remove(this._vertices.pop());
         this._scene.remove(this._connections.pop());
-        this._nbVertices--;
-        this._lastVertex = this._vertices[this._nbVertices - 1];
+        this._lastVertex = this._vertices[this._vertices.length - 1];
         if (this._isComplete) {
             this._isComplete = false;
             this._scene.remove(this._connections.pop());
@@ -224,9 +217,10 @@ export class EditorScene {
         if (constraintsPass) {
             constraintsPass = this._isComplete;
         }
-        constraintsPass ?
-            (document.getElementById("saveButton") as HTMLInputElement).disabled = false :
-            (document.getElementById("saveButton") as HTMLInputElement).disabled = true;
+        // TODO: Check the constranints with Charles to figure out a better way to talk with saveButton
+        // constraintsPass ?
+        //     (document.getElementById("saveButton") as HTMLInputElement).disabled = false :
+        //     (document.getElementById("saveButton") as HTMLInputElement).disabled = true;
 
         return constraintsPass;
     }
