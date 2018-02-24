@@ -155,7 +155,7 @@ export class EditorScene {
     public removeLastVertex(): void {
         this._scene.remove(this._vertices.pop());
         this._scene.remove(this._connections.pop());
-        this._lastVertex = this._vertices[this._vertices.length - 1];
+        this._lastVertex = (this._vertices.length === 0) ? undefined : this._vertices[this._vertices.length - 1];
         if (this._isComplete) {
             this._isComplete = false;
             this._scene.remove(this._connections.pop());
