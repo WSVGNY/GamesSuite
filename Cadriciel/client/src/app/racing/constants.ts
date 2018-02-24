@@ -22,6 +22,7 @@ export const BLUE: number = 0x0066FF;
 export const RED: number = 0xFF0000;
 export const GREEN: number = 0x00FF00;
 export const ORANGE: number = 0xFF6600;
+export const YELLOW: number = 0xFFFF00;
 
 // Texture Paths
 const BASE_URL: string = "http://localhost:4200/";
