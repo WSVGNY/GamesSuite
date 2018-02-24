@@ -14,14 +14,10 @@ import { AIConfig } from "./ai-config";
 
 @Injectable()
 export class CarAiService {
-    private readonly TURNING_POINT_DISTANCE: number = 0.1;
-    private readonly START_INDEX: number = 0;
-    private readonly TURNING_POINT_BUFFER: number = 2;
 
     private _debugGroup: Group;
-
     private _aiControl: CommandController;
-    private _trackPortionIndex: number = this.START_INDEX;
+    private _trackPortionIndex: number;
     private _trackVectors: Line[];
     private _aiConfig: AIConfig;
 
@@ -39,7 +35,7 @@ export class CarAiService {
         this.createVectorTrackFromPoints(_trackVertices);
         this.initializeDebugMode();
         this._aiConfig = new AIConfig(difficulty);
-
+        this._trackPortionIndex = this._aiConfig.startIndex;
     }
 
     // Helper
@@ -97,8 +93,8 @@ export class CarAiService {
     }
 
     private updateTrackPortionIndex(pointOnLine: Vector3, turningPoint: Vector3): void {
-        if (this._trackVertices[this._trackPortionIndex].distanceTo(pointOnLine) > this.TURNING_POINT_BUFFER &&
-            pointOnLine.distanceTo(turningPoint) < this.TURNING_POINT_BUFFER) {
+        if (this._trackVertices[this._trackPortionIndex].distanceTo(pointOnLine) > this._aiConfig.turningPointBuffer &&
+            pointOnLine.distanceTo(turningPoint) < this._aiConfig.turningPointBuffer) {
 
             if (this._trackPortionIndex + 1 >= this._trackVectors.length) {
                 this._trackPortionIndex = 0;
@@ -199,7 +195,8 @@ export class CarAiService {
         const dx: number = (nextPoint.x - currentPoint.x) / Math.sqrt(Math.pow(nextPoint.x, SQUARED) + Math.pow(currentPoint.x, SQUARED));
         const dz: number = (nextPoint.z - currentPoint.z) / Math.sqrt(Math.pow(nextPoint.z, SQUARED) + Math.pow(currentPoint.z, SQUARED));
 
-        return new Vector3((nextPoint.x + dx * this.TURNING_POINT_DISTANCE), 0, (nextPoint.z + dz * this.TURNING_POINT_DISTANCE));
+        return new Vector3((nextPoint.x + dx * this._aiConfig.turningPointDistance), 0,
+                           (nextPoint.z + dz * this._aiConfig.turningPointDistance));
     }
 
     public get debugGroup(): Group {
