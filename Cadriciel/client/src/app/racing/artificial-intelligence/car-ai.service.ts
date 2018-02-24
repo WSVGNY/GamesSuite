@@ -4,7 +4,7 @@ import { CommandController } from "../commandController";
 import { TurnLeft } from "../commands/carAICommands/turnLeft";
 import { TurnRight } from "../commands/carAICommands/turnRight";
 import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";
-import { Vector3, BoxHelper } from "three";
+import { Vector3, BoxHelper, Group } from "three";
 import { VectorHelper } from "./vectorHelper";
 import { PINK, WHITE, SQUARED } from "../constants";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
@@ -19,7 +19,7 @@ export class CarAiService {
     private readonly START_INDEX: number = 0;
     private readonly TURNING_POINT_BUFFER: number = 2;
 
-    private readonly DEBUG_MODE: boolean = true;
+    private _debugGroup: Group;
 
     private _aiControl: CommandController;
     private _isGoingForward: boolean = false;
@@ -56,14 +56,13 @@ export class CarAiService {
         }
         // tslint:enable:no-magic-numbers
 
-        if (this.DEBUG_MODE) {
-            this.initializeDebugMode();
-        }
+        this.initializeDebugMode();
 
     }
 
     // Helper
     private initializeDebugMode(): void {
+        this._debugGroup = new Group;
         this._axisX = new VectorHelper(0xFF0000);
         this._axisY = new VectorHelper(0x00FF00);
         this._axisZ = new VectorHelper(0x0000FF);
@@ -72,7 +71,15 @@ export class CarAiService {
         this._distanceVectorHelper = new VectorHelper(WHITE);
         this._turningVectorHelper = new VectorHelper(PINK);
         this._carHelper = new BoxHelper(this._car);
-        // this._scene.add(this._carHelper);
+
+        this._debugGroup.add(this._carHelper);
+        this._debugGroup.add(this._axisX.visual);
+        this._debugGroup.add(this._axisY.visual);
+        this._debugGroup.add(this._axisZ.visual);
+        this._debugGroup.add(this._carVectorHelper.visual);
+        this._debugGroup.add(this._distanceVectorHelper.visual);
+        this._debugGroup.add(this._turningVectorHelper.visual);
+
     }
 
     public update(): void {
@@ -86,29 +93,26 @@ export class CarAiService {
         const turningPoint: Vector3 = this.projectTurningPoint();
 
         // Helper
-        if (this.DEBUG_MODE) {
-            this.updateDebugMode(carPosition, projection, pointOnLine, turningPoint);
-        }
+        this.updateDebugMode(carPosition, projection, pointOnLine, turningPoint);
 
         this.updateTrackPortionIndex(pointOnLine, turningPoint);
         this.updateCarDirection(lineDistance);
     }
 
     private updateDebugMode(carPosition: Vector3, projection: Vector3, pointOnLine: Vector3, turningPoint: Vector3): void {
-        // this._axisX.update(carPosition, carPosition.clone().add(new Vector3(5, 0, 0)), this._scene);
-        // this._axisY.update(carPosition, carPosition.clone().add(new Vector3(0, 5, 0)), this._scene);
-        // this._axisZ.update(carPosition, carPosition.clone().add(new Vector3(0, 0, 5)), this._scene);
-        // this._carHelper.update(this._car);
-        // this._carVectorHelper.update(carPosition, projection, this._scene);
-        // this._distanceVectorHelper.update(projection, pointOnLine, this._scene);
-        // this._turningVectorHelper.update(
-        //     new Vector3(
-        //         this._trackVertices[this._trackPortionIndex].x,
-        //         0,
-        //         this._trackVertices[this._trackPortionIndex].z),
-        //     turningPoint,
-        //     this._scene
-        // );
+        this._axisX.update(carPosition, carPosition.clone().add(new Vector3(5, 0, 0)));
+        this._axisY.update(carPosition, carPosition.clone().add(new Vector3(0, 5, 0)));
+        this._axisZ.update(carPosition, carPosition.clone().add(new Vector3(0, 0, 5)));
+        this._carHelper.update(this._car);
+        this._carVectorHelper.update(carPosition, projection);
+        this._distanceVectorHelper.update(projection, pointOnLine);
+        this._turningVectorHelper.update(
+            new Vector3(
+                this._trackVertices[this._trackPortionIndex].x,
+                0,
+                this._trackVertices[this._trackPortionIndex].z),
+            turningPoint
+        );
     }
 
     private updateTrackPortionIndex(pointOnLine: Vector3, turningPoint: Vector3): void {
@@ -230,4 +234,7 @@ export class CarAiService {
         return new Vector3((nextPoint.x + dx * this.TURNING_POINT_DISTANCE), 0, (nextPoint.z + dz * this.TURNING_POINT_DISTANCE));
     }
 
+    public get debugGroup(): Group {
+        return this._debugGroup;
+    }
 }

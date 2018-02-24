@@ -128,14 +128,6 @@ export class RenderService {
         trackShape.holes.push(holePath);
     }
 
-    // private renderCenterLine(): void {
-    //     const geometryPoints: Geometry = new Geometry();
-    //     this._trackPoints.points.forEach((currentPoint: TrackPoint) => geometryPoints.vertices.push(currentPoint.coordinates));
-    //     geometryPoints.vertices.push(this._trackPoints.points[0].coordinates);
-    //     const line: Line = new Line(geometryPoints, new LineBasicMaterial({ color: 0x00FF00, linewidth: 3 }));
-    //     this._scene.add(line);
-    // }
-
     private renderGround(): void {
         const groundGeometry: PlaneGeometry = new PlaneGeometry(10000, 10000, 1, 1);
         const groundMaterial: MeshLambertMaterial =
@@ -171,5 +163,13 @@ export class RenderService {
         if (this._scene !== undefined) {
             this._scene.background = this._skyBoxTexture;
         }
+    }
+
+    public addDebugObject(object: Object3D): void {
+        this._group.add(object);
+    }
+
+    public removeDebugObject(object: Object3D): void {
+        this._group.remove(object);
     }
 }

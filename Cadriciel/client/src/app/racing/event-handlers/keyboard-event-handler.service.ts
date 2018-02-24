@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { Car } from "../car/car";
 import { CommandController } from "../commandController";
 import { GoFoward } from "../commands/carAICommands/goFoward";
 import { TurnLeft } from "../commands/carAICommands/turnLeft";
@@ -15,6 +14,7 @@ const BRAKE_KEYCODE: number = 83;       // s
 const RIGHT_KEYCODE: number = 68;       // d
 const DAY_KEYCODE: number = 74;         // j
 const NIGHT_KEYCODE: number = 78;       // n
+const DEBUG_KEYCODE: number = 48;       // 0
 
 @Injectable()
 export class KeyboardEventHandlerService {
@@ -48,11 +48,12 @@ export class KeyboardEventHandlerService {
                 break;
             case DAY_KEYCODE:
                 raceGame.isDay = true;
-                raceGame.playerCar.dettachLights();
                 break;
             case NIGHT_KEYCODE:
                 raceGame.isDay = false;
-                raceGame.playerCar.attachLights();
+                break;
+            case DEBUG_KEYCODE:
+                raceGame.debug = !raceGame.debug;
                 break;
             default:
                 break;

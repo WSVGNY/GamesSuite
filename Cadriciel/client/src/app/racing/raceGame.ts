@@ -1,9 +1,9 @@
 import { RenderService } from "./render-service/render.service";
 import { Car } from "./car/car";
 import { CarAiService } from "./artificial-intelligence/car-ai.service";
-import { TrackPointList } from "./render-service/trackPoint";
+import { TrackPointList, TrackPoint } from "./render-service/trackPoint";
 import { MOCK_TRACK } from "./render-service/mock-track";
-import { Vector3, PerspectiveCamera } from "three";
+import { Vector3, PerspectiveCamera, Group, LineBasicMaterial, Line, Geometry } from "three";
 import { Difficulty } from "../../../../common/crossword/difficulty";
 import { TrackType } from "../../../../common/racing/trackType";
 import { ElementRef } from "@angular/core";
@@ -23,10 +23,12 @@ export class RaceGame {
     private _playerCar: Car = new Car();
     private _aiCarService: CarAiService[] = [];
     private _aiCars: Car[] = [];
-    private _isDay: boolean = true;
+    private _aiCarsDebug: Group = new Group();
     private _trackType: TrackType;
     private _trackPoints: TrackPointList = new TrackPointList(MOCK_TRACK);
     private _lastDate: number;
+    private _debug: boolean;
+    private _centerLine: Line;
 
     public constructor(private renderService: RenderService) { }
 
@@ -36,6 +38,7 @@ export class RaceGame {
         this.initializeCamera(containerRef.nativeElement);
         await this.initializePlayerCar();
         await this.initializeAICars();
+        this.setCenterLine();
         this.addObjectsToRenderScene();
         this.setSkyBox(this._trackType);
         await this.renderService.initialize(containerRef.nativeElement, this._camera);
@@ -77,6 +80,7 @@ export class RaceGame {
             }
             this._aiCars.push(new Car());
             this._aiCarService.push(new CarAiService(this._aiCars[i], this._trackPoints.pointVectors, diff));
+            this._aiCarsDebug.add(this._aiCarService[i].debugGroup);
             await this._aiCars[i].init(this._trackPoints.first.coordinates, this.findFirstTrackSegmentAngle());
         }
     }
@@ -121,8 +125,37 @@ export class RaceGame {
         return this._playerCar;
     }
 
+
     public set isDay(isDay: boolean) {
-        this._isDay = isDay;
-        isDay ? this.setSkyBox(TrackType.Default) : this.setSkyBox(TrackType.Night);
+        if (isDay) {
+            this.setSkyBox(this._trackType);
+            this._playerCar.dettachLights();
+        } else {
+            this.setSkyBox(TrackType.Night);
+            this._playerCar.attachLights();
+        }
+    }
+
+    public get debug(): boolean {
+        return this._debug;
+    }
+
+    public set debug(debug: boolean) {
+        this._debug = debug;
+        if (debug) {
+            this.renderService.addDebugObject(this._aiCarsDebug);
+            this.renderService.addDebugObject(this._centerLine);
+        } else {
+            this.renderService.removeDebugObject(this._aiCarsDebug);
+            this.renderService.removeDebugObject(this._centerLine);
+        }
+    }
+
+    private setCenterLine(): void {
+        const geometryPoints: Geometry = new Geometry();
+        this._trackPoints.points.forEach((currentPoint: TrackPoint) => geometryPoints.vertices.push(currentPoint.coordinates));
+        geometryPoints.vertices.push(this._trackPoints.points[0].coordinates);
+
+        this._centerLine = new Line(geometryPoints, new LineBasicMaterial({ color: 0x00FF00, linewidth: 3 }));
     }
 }

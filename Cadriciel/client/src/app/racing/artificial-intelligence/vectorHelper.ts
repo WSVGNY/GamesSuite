@@ -1,8 +1,8 @@
-import { Vector3, Scene, LineBasicMaterial, Geometry, Line } from "three";
+import { Vector3, LineBasicMaterial, Geometry, Line } from "three";
 
 export class VectorHelper {
 
-    private visual: Line;
+    public visual: Line;
     private material: LineBasicMaterial;
 
     public constructor(lineColor: number) {
@@ -10,12 +10,10 @@ export class VectorHelper {
         this.material = new LineBasicMaterial({ color: lineColor });
     }
 
-    public update(origin: Vector3, destination: Vector3, scene: Scene): void {
-        scene.remove(this.visual);
+    public update(origin: Vector3, destination: Vector3): void {
         const geometry: Geometry = new Geometry();
         geometry.vertices.push(origin);
         geometry.vertices.push(destination);
         this.visual = new Line(geometry, this.material);
-        scene.add(this.visual);
     }
 }
