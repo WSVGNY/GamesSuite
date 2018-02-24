@@ -1,5 +1,5 @@
-import { EditorScene, VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL } from "./editorScene";
-import { Vector3, Scene, Mesh } from "three";
+import { EditorScene, VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL, SIMPLE_LINE_MATERIAL } from "./editorScene";
+import { Vector3, Scene, Mesh, Geometry, Line } from "three";
 
 // tslint:disable:no-magic-numbers
 
@@ -68,5 +68,41 @@ describe("Editor Scene", () => {
         editorScene["_scene"] = testScene;
         editorScene.removeLastVertex();
         expect(editorScene["_lastVertex"]).toEqual(vertex1);
+    });
+
+    it("should create a connection between two points", ()  => {
+        const vertex0: Mesh = new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
+        const vertex1: Mesh = new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
+        vertex0.position.set(0, 0, 0 );
+        vertex1.position.set(0, 0, 0 );
+        editorScene.addConnection(vertex0, vertex1);
+        expect(editorScene["_scene"].getChildByName("connection0")).toBeDefined();
+    });
+
+    it("should remove the last connection added to the scene", ()  => {
+        const LINE_GEOMETRY: Geometry = new Geometry();
+        console.log(editorScene["_scene"].children);
+        LINE_GEOMETRY.vertices.push(new Vector3(0, 0, 0));
+        LINE_GEOMETRY.vertices.push(new Vector3(1, 1, 0));
+        const connection: Line = new Line(LINE_GEOMETRY, SIMPLE_LINE_MATERIAL);
+        editorScene["_connections"].push(connection);
+        const testScene: Scene = new Scene();
+        testScene.add(connection);
+        editorScene["_scene"] = testScene;
+        editorScene.removeLastVertex();
+        expect(editorScene["_scene"].children.length).toBeFalsy();
+    });
+
+    it("should update the position of a dragged point", ()  => {
+        const vertex: Mesh = new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
+        vertex.position.set(0, 0, 0 );
+        vertex.name = "vertex0";
+        editorScene["_vertices"].push(vertex);
+        const testScene: Scene = new Scene();
+        testScene.add(vertex);
+        editorScene["_scene"] = testScene;
+        const VXY: number = 2;
+        editorScene.setVertexPosition(editorScene["_scene"].getObjectByName("vertex0") as Mesh, new Vector3(VXY, VXY, 0));
+        expect(editorScene["_scene"].getObjectByName("vertex0").position).toEqual(new Vector3(VXY, VXY, 0));
     });
 });
