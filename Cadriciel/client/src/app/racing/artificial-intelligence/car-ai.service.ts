@@ -106,6 +106,7 @@ export class CarAiService {
 
     private updateCarDirection(lineDistance: number): void {
         if (Math.abs(lineDistance) > this._aiConfig.distanceBeforeReplacement) {
+            this.accelerate();
             if (lineDistance < 0) {
                 this.goLeft();
             } else {
@@ -113,11 +114,15 @@ export class CarAiService {
             }
         } else {
             this.goForward();
-            this.releaseSteering();
         }
     }
 
     private goForward(): void {
+        this.accelerate();
+        this.releaseSteering();
+    }
+
+    private accelerate(): void {
         this._aiControl.command = new GoFoward(this._car);
         this._aiControl.execute();
     }

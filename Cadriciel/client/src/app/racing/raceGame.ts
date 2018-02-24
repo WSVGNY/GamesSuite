@@ -10,13 +10,14 @@ import { ElementRef } from "@angular/core";
 import { Track } from "../../../../common/racing/track";
 import { SkyBox } from "./skybox";
 
-const AI_CARS_NUMBER: number = 3;
+const AI_CARS_NUMBER: number = 6;
 const FAR_CLIPPING_PLANE: number = 1000;
 const NEAR_CLIPPING_PLANE: number = 1;
 const FIELD_OF_VIEW: number = 70;
 const INITIAL_CAMERA_POSITION_Z: number = 10;
 const INITIAL_CAMERA_POSITION_Y: number = 5;
 const PLAYER_CAMERA: string = "PLAYER_CAMERA";
+const START_POSITION_OFFSET: number = 4;
 
 export class RaceGame {
     private _camera: PerspectiveCamera;
@@ -66,23 +67,32 @@ export class RaceGame {
 
     private async initializePlayerCar(): Promise<void> {
         this._playerCar = new Car();
-        await this._playerCar.init(this._trackPoints.first.coordinates, this.findFirstTrackSegmentAngle());
+        const startPos: Vector3 = new Vector3(this._trackPoints.first.coordinates.x + START_POSITION_OFFSET,
+                                              this._trackPoints.first.coordinates.y,
+                                              this._trackPoints.first.coordinates.z + START_POSITION_OFFSET);
+        await this._playerCar.init(startPos, this.findFirstTrackSegmentAngle());
         this._playerCar.attachCamera(this._camera);
     }
 
     private async initializeAICars(): Promise<void> {
         for (let i: number = 0; i < AI_CARS_NUMBER; ++i) {
-            let diff: Difficulty = Difficulty.Hard;
-            if (i === 1) {
-                diff = Difficulty.Medium;
-            } else if (i === 2) {
-                diff = Difficulty.Easy;
-            }
             this._aiCars.push(new Car());
-            this._aiCarService.push(new CarAiService(this._aiCars[i], this._trackPoints.pointVectors, diff));
+            this._aiCarService.push(new CarAiService(this._aiCars[i],
+                                                     this._trackPoints.pointVectors,
+                                                     this.isPair(i) ? Difficulty.Hard : Difficulty.Easy));
             this._aiCarsDebug.add(this._aiCarService[i].debugGroup);
-            await this._aiCars[i].init(this._trackPoints.first.coordinates, this.findFirstTrackSegmentAngle());
+
+            const startPos: Vector3 = new Vector3(this._trackPoints.first.coordinates.x - i * START_POSITION_OFFSET,
+                                                  this._trackPoints.first.coordinates.y,
+                                                  this._trackPoints.first.coordinates.z - i * START_POSITION_OFFSET);
+
+            await this._aiCars[i].init(startPos, this.findFirstTrackSegmentAngle());
         }
+    }
+
+    private isPair(num: number): boolean {
+        // tslint:disable-next-line:no-magic-numbers
+        return num % 2 === 0;
     }
 
     private findFirstTrackSegmentAngle(): number {
@@ -124,7 +134,6 @@ export class RaceGame {
     public get playerCar(): Car {
         return this._playerCar;
     }
-
 
     public set isDay(isDay: boolean) {
         if (isDay) {
