@@ -50,8 +50,4 @@ export class RacingComponent implements AfterViewInit {
         return this.renderService.playerCar;
     }
 
-    public hider(): void {
-        document.getElementById("image1").style.display = "none";
-        document.getElementById("image2").style.display = "none";
-    }
 }

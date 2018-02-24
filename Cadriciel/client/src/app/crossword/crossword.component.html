@@ -1,3 +1,4 @@
+
 <div (mousedown)="deselectWords()">
   <h2> Crossword Game </h2>
   <div *ngIf="!isConfigurationDone()">
@@ -49,7 +50,7 @@
   <div *ngIf="configurationService.grid !== undefined">
     <div *ngFor="let line of configurationService.grid.boxes">
       <div *ngFor="let gridBox of line" (mouseup)="highlightWordOfBox(gridBox)">
-        <div [ngClass]="{filledGridBox : gridBox._isBlack, selectedGridBox: gridBox._isColored, emptyGridBox : !gridBox._isBlack}">
+        <div (mousedown)="deselectWords()" [ngClass]="{filledGridBox : gridBox._isBlack, selectedGridBox: gridBox._isColored, emptyGridBox : !gridBox._isBlack}">
           <div>{{getGridBoxID(gridBox)}}</div>
         </div>
       </div>
