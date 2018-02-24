@@ -17,7 +17,7 @@ describe("Car", () => {
 
     beforeEach(async (done: () => void) => {
         car = new Car(new MockEngine());
-        await car.init();
+        await car.init(new Vector3(0, 0, 0), 0);
 
         car.accelerate();
         car.update(MS_BETWEEN_FRAMES);

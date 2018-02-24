@@ -1,15 +1,15 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { TestBed, inject } from "@angular/core/testing";
 
-import { CarAiService } from './car-ai.service';
+import { CarAiService } from "./car-ai.service";
 
-describe('CarAiService', () => {
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [CarAiService]
+describe("CarAiService", () => {
+    beforeEach(() => {
+        TestBed.configureTestingModule({
+            providers: [CarAiService]
+        });
     });
-  });
 
-  it('should be created', inject([CarAiService], (service: CarAiService) => {
-    expect(service).toBeTruthy();
-  }));
+    it("should be created", inject([CarAiService], (service: CarAiService) => {
+        expect(service).toBeTruthy();
+    }));
 });
