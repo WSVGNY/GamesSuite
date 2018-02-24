@@ -6,11 +6,11 @@ export class WordConstraint {
     private _originalValue: string = "";
     constructor(word: Word, grid: GridBox[][]) {
 
-        for (let i: number = 0; i < word._length; ++i) {
+        for (let i: number = 0; i < word.length; ++i) {
             let charToAdd: string;
-            word._isHorizontal ?
-                charToAdd = grid[word._startPosition._y][word._startPosition._x + i]._char._value :
-                charToAdd = grid[word._startPosition._y + i][word._startPosition._x]._char._value;
+            word.isHorizontal ?
+                charToAdd = grid[word.startPosition.y][word.startPosition.x + i]._char._value :
+                charToAdd = grid[word.startPosition.y + i][word.startPosition.x]._char._value;
             this._originalValue += charToAdd;
             if (charToAdd === "?") {
                 charToAdd = "%3f";

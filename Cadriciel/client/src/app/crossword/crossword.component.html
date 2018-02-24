@@ -16,7 +16,7 @@
     </div>
 
     <div id="input">
-      Enter Name : 
+      Enter Name :
       <input #player value="Player name" />
       <button (click)="playerName = player.value" (click)="hideModeSelector()">Submit</button>
     </div>
@@ -31,23 +31,23 @@
     <h2 id="title">Definitions</h2>
     <h3 *ngIf="words !== undefined"> Horizontal : </h3>
     <div *ngFor="let word of words">
-      <li *ngIf="word._isHorizontal">{{word._definitionID}})
+      <li *ngIf="word.isHorizontal">{{word.definitionID}})
         <span *ngIf="isInCheatMode">
           <div [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}" (mouseup)="highlightWord(word)">{{getWordValue(word)}}</div>
         </span>
         <span *ngIf="!isInCheatMode">
-          <div [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}" (mouseup)="highlightWord(word)">{{word._definition}}</div>
+          <div [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}" (mouseup)="highlightWord(word)">{{word.definition}}</div>
         </span>
       </li>
     </div>
     <h3 *ngIf="words !== undefined"> Vertical : </h3>
     <div *ngFor="let word of words">
-      <li *ngIf="!word._isHorizontal">{{word._definitionID}})
+      <li *ngIf="!word.isHorizontal">{{word.definitionID}})
         <span *ngIf="isInCheatMode">
           <div [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}" (mouseup)="highlightWord(word)">{{getWordValue(word)}}</div>
         </span>
         <span *ngIf="!isInCheatMode">
-          <div [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}" (mouseup)="highlightWord(word)">{{word._definition}}</div>
+          <div [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}" (mouseup)="highlightWord(word)">{{word.definition}}</div>
         </span>
       </li>
     </div>

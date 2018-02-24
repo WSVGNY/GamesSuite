@@ -3,7 +3,7 @@ import {
     MeshBasicMaterial, LineBasicMaterial, Geometry, BackSide
 } from "three";
 import { WHITE, PINK, BLUE } from "../constants";
-import { CommonCoordinate } from "../../../../../common/commonCoordinate";
+import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
 import { ConstraintValidator } from "./constraints/constraintValidator";
 
 const RADIUS: number = 12;
@@ -31,10 +31,10 @@ export class EditorScene {
         this._connections = new Array();
     }
 
-    public importTrackVertices(trackVertices: Array<CommonCoordinate>): void {
+    public importTrackVertices(trackVertices: Array<CommonCoordinate3D>): void {
         this.clear();
         for (const entry of trackVertices) {
-            this.addVertex(new Vector3(entry._x, entry._y, 0));
+            this.addVertex(new Vector3(entry.x, entry.y, 0));
         }
         if (trackVertices.length !== 0) {
             this.completeTrack();
@@ -52,10 +52,10 @@ export class EditorScene {
         this._connections = [];
     }
 
-    public exportTrackVertices(): Array<CommonCoordinate> {
-        const trackVertices: Array<CommonCoordinate> = new Array();
+    public exportTrackVertices(): Array<CommonCoordinate3D> {
+        const trackVertices: Array<CommonCoordinate3D> = new Array();
         for (const entry of this.vertices) {
-            trackVertices.push(new CommonCoordinate(entry.position.x, entry.position.y));
+            trackVertices.push(new CommonCoordinate3D(entry.position.x, entry.position.y, entry.position.z));
         }
 
         return trackVertices;
