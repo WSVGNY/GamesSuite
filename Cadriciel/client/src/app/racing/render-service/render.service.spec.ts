@@ -4,7 +4,7 @@ import { TrackPointList } from "./trackPoint";
 import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
 // import { Object3D } from "three";
 import assert = require("assert");
-import { Object3D, Mesh } from "three";
+import { Object3D, Mesh, Scene, PlaneGeometry, MeshPhongMaterial, BackSide, Vector3 } from "three";
 
 describe("RenderService", () => {
     const render: RenderService = new RenderService();
@@ -46,6 +46,26 @@ describe("RenderService", () => {
         const points: TrackPointList = new TrackPointList(new Array<CommonCoordinate3D>());
         const shape: Mesh = render.createTrackMesh(points);
         expect(shape).toBeTruthy();
+    });
+
+    it("should create a different track from the ground (OFF PISTE)", () => {
+        const scene: Scene = new Scene();
+        const groundGeometry: PlaneGeometry = new PlaneGeometry(10000, 10000, 1, 1);
+        const groundMaterial: MeshPhongMaterial =
+            new MeshPhongMaterial({ side: BackSide, color: 0xFFFF00 });
+        const ground: Mesh = new Mesh(groundGeometry, groundMaterial);
+        scene.add(ground);
+        const points: CommonCoordinate3D[] = Array<CommonCoordinate3D>();
+        const trackPoint1: Vector3 = new Vector3(0, 0, 0);
+        const trackPoint2: Vector3 = new Vector3(1, 0, 0);
+        const trackPoint3: Vector3 = new Vector3(0, 0, 1);
+        points.push(trackPoint3);
+        points.push(trackPoint2);
+        points.push(trackPoint1);
+        const trackList: TrackPointList = new TrackPointList(points);
+        const track: Mesh = render.createTrackMesh(trackList);
+        scene.add(track);
+        expect(track).not.toEqual(ground);
     });
 
 });
