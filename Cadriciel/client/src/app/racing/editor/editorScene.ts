@@ -8,17 +8,16 @@ import { ConstraintValidator } from "./constraints/constraintValidator";
 
 const RADIUS: number = 2.5;
 const OUTLINE_TO_VERTEX_RATIO: number = 1.25;
+const AMBIENT_LIGHT_OPACITY: number = 0.5;
 export const VERTEX_GEOMETRY: SphereGeometry = new SphereGeometry(RADIUS);
 export const SIMPLE_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: WHITE });
 export const START_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: PINK });
 export const SIMPLE_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: BLUE });
-const AMBIENT_LIGHT_OPACITY: number = 0.5;
 
 export class EditorScene {
     private _scene: Scene;
     private _vertices: Array<Mesh>;
     private _connections: Array<Line>;
-
     private _firstVertex: Mesh;
     private _lastVertex: Mesh;
     private _selectedVertex: Mesh;
