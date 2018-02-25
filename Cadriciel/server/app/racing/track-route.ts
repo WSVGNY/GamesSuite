@@ -41,10 +41,10 @@ export class TrackRoute {
                     "track": {
                         "name": req.params.name,
                         "vertices": [
-                            { x: 500, y: 0, z: 0 },
-                            { x: 0, y: 0, z: 500 },
-                            { x: 0, y: 0, z: -500 },
-                            { x: -500, y: 0, z: 0 },
+                            { x: 0, y: 0, z: 50 },
+                            { x: 50, y: 0, z: 0 },
+                            { x: 0, y: 0, z: -50 },
+                            { x: -50, y: 0, z: 0 },
                         ],
                         "type": TrackType.Default
                     }
