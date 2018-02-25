@@ -1,5 +1,17 @@
-<button (click)="goBack()"> Go back </button>
-<input #trackName type="text" [value]="currentTrackName" (keyup.enter)="saveTrackName(trackName.value)" (blur)="saveTrackName(trackName.value)">
-<button id="saveButton" (click)="saveTrack()" (click)="goBack()"> Save and go back </button>
+<P>
+    <button (click)="goBack()"> Go back </button>
+</P>
+<P>
+    Track name:
+    <input #trackName type="text" [value]="currentTrackName" (keyup.enter)="saveTrackName(trackName.value)" (blur)="saveTrackName(trackName.value)">
+</P>
+<P>
+    Description:
+    <input #trackDescription type="text" [value]="currentTrackDescription" (keyup.enter)="saveTrackDescription(trackDescription.value)"
+        (blur)="saveTrackDescription(trackDescription.value)">
+</P>
+<P>
+    <button id="saveButton" (click)="saveTrack()" (click)="goBack()"> Save and go back </button>
+</P>
 <div #containerEditor>
 </div>
