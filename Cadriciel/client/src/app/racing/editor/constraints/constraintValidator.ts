@@ -1,5 +1,5 @@
 import { Line, Geometry, Vector3, LineBasicMaterial } from "three";
-import { RED, PI_OVER_4, HALF, PI_OVER_2, TRACK_WIDTH } from "../../constants";
+import { RED, PI_OVER_4, PI_OVER_2, TRACK_WIDTH } from "../../constants";
 
 const UNAUTHORIZED_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: RED });
 
