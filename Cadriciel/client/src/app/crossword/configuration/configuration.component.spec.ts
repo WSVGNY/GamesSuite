@@ -1,7 +1,9 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
-import { AppModule } from "../../app.module";
 import { ConfigurationComponent } from "./configuration.component";
 import assert = require("assert");
+import { GridService } from "../grid.service";
+import { HttpClient, HttpHandler } from "@angular/common/http";
+import { ConfigurationService } from "../configuration.service";
 
 describe("ConfigurationComponent", () => {
   let component: ConfigurationComponent;
@@ -9,12 +11,17 @@ describe("ConfigurationComponent", () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [AppModule],
-      declarations: [ ConfigurationComponent ]
+      declarations: [ConfigurationComponent],
+      providers: [
+        GridService,
+        HttpClient,
+        HttpHandler,
+        ConfigurationService
+      ]
     })
-    .compileComponents()
-    .then()
-    .catch((e: Error) => console.error(e.message));
+      .compileComponents()
+      .then()
+      .catch((e: Error) => console.error(e.message));
   }));
 
   beforeEach(() => {
@@ -28,37 +35,37 @@ describe("ConfigurationComponent", () => {
   });
 
   it("When the user chose 'new game' he is asked to choose the number of players", () => {
-    assert(true);
+    assert(false);
   });
 
   it("When the user chose the number of players he is asked to choose the difficulty", () => {
-    assert(true);
+    assert(false);
   });
 
   it("When the user chose the difficulty he is asked to enter his name", () => {
-    assert(true);
+    assert(false);
   });
 
   it("When the user chose the difficulty the grid starts to load", () => {
-    assert(true);
-});
+    assert(false);
+  });
 
   it("When the user submit his name, the game configuration is over", () => {
-    assert(true);
-});
+    assert(false);
+  });
 
   describe("tests for the difficulty", () => {
-  it("if the difficulty chosen is easy, the returned grid is easy", () => {
-       assert(true);
-  });
+    it("if the difficulty chosen is easy, the returned grid is easy", () => {
+      assert(false);
+    });
 
-  it("if the difficulty chosen is medium, the returned grid is medium", () => {
-      assert(true);
-  });
+    it("if the difficulty chosen is medium, the returned grid is medium", () => {
+      assert(false);
+    });
 
-  it("if the difficulty chosen is hard, the returned grid is hard", () => {
-      assert(true);
+    it("if the difficulty chosen is hard, the returned grid is hard", () => {
+      assert(false);
+    });
   });
-});
 
 });

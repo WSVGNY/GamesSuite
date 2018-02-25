@@ -1,24 +1,23 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { CrosswordComponent } from "./crossword.component";
-import { GridService } from "./grid.service";
-import { HttpClientModule, HttpClient } from "@angular/common/http";
 import assert = require("assert");
+import { ConfigurationService } from "./configuration.service";
+import { NO_ERRORS_SCHEMA } from "@angular/core";
 
 describe("CrosswordComponent", () => {
     let component: CrosswordComponent;
     let fixture: ComponentFixture<CrosswordComponent>;
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            schemas: [NO_ERRORS_SCHEMA],
             declarations: [CrosswordComponent],
-            imports: [HttpClientModule],
             providers: [
-                GridService,
-                HttpClient
+                ConfigurationService
             ]
         })
-        .compileComponents()
-        .then()
-        .catch((e: Error) => console.error(e.message));
+            .compileComponents()
+            .then()
+            .catch((e: Error) => console.error(e.message));
     }));
 
     beforeEach(() => {
@@ -32,39 +31,39 @@ describe("CrosswordComponent", () => {
     });
 
     it("the view contains a grid", () => {
-         assert(true);
+        assert(false);
     });
 
     it("the view contains definitions", () => {
-        assert(true);
+        assert(false);
     });
 
     it("the view contains game informations", () => {
-        assert(true);
+        expect(component.correctWordCount).toEqual(0);
     });
 
     it("if there's 2 players, the game info div display two players ", () => {
-        assert(true);
+        assert(false);
     });
 
     it("if there's one player, the game info div display one player ", () => {
-        assert(true);
+        assert(false);
     });
 
     it("the name entered by the player is the one displayed ", () => {
-        assert(true);
+        assert(false);
     });
 
     it("the letters in the grid are uppercase", () => {
-        assert(true);
+        assert(false);
     });
 
     it("the definitions in the horizontal section are those of horizontal words ", () => {
-        assert(true);
+        assert(false);
     });
 
     it("the definitions in the vertical section are those of vertical words ", () => {
-        assert(true);
+        assert(false);
     });
 
 });

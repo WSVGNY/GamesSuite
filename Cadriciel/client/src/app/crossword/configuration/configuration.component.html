@@ -20,12 +20,10 @@
     <button (click)="configurationService.playerName = player.value" (click)="submitName()">Submit</button>
   </div>
 
-  <div id="selectedOptions">
-  <div *ngIf="configurationService.isTwoPlayerGame === false"> Chosen : One player </div>
-  <div *ngIf="configurationService.isTwoPlayerGame === true"> Chosen : Two player </div>
-  <div *ngIf="difficultySetter === 0"> Chosen : EASY </div>
-  <div *ngIf="difficultySetter === 1"> Chosen : MEDIUM </div>
-  <div *ngIf="difficultySetter === 2"> Chosen : HARD </div>
+  <div *ngIf="configurationService.isTwoPlayerGame !== undefined" id="selectedOptions">
+  <div *ngIf="!configurationService.isTwoPlayerGame"> Chosen : One player </div>
+  <div *ngIf="configurationService.isTwoPlayerGame"> Chosen : Two player </div>
+  <div *ngIf="difficulty !== undefined"> Chosen : {{difficulty}} </div>
   </div>
 
 
