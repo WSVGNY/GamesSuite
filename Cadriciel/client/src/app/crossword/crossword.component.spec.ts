@@ -7,6 +7,7 @@ import { NO_ERRORS_SCHEMA } from "@angular/core";
 describe("CrosswordComponent", () => {
     let component: CrosswordComponent;
     let fixture: ComponentFixture<CrosswordComponent>;
+    const timeout: number = 30000;
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             schemas: [NO_ERRORS_SCHEMA],
@@ -31,11 +32,22 @@ describe("CrosswordComponent", () => {
     });
 
     it("the view contains a grid", () => {
-        assert(false);
+        it("contains a grid", (done: () => void) => {
+            setTimeout(() => {
+                done();
+            },         timeout);
+            expect(component.configurationService.grid).toBeTruthy();
+        });
+
     });
 
     it("the view contains definitions", () => {
-        assert(false);
+        it("contains definitions", (done: () => void) => {
+            setTimeout(() => {
+                done();
+            },         timeout);
+            expect(component.configurationService.grid.words[0].definition).toBeTruthy();
+        });
     });
 
     it("the view contains game informations", () => {
@@ -43,6 +55,7 @@ describe("CrosswordComponent", () => {
     });
 
     it("if there's 2 players, the game info div display two players ", () => {
+
         assert(false);
     });
 
