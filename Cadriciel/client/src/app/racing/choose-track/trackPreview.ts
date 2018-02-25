@@ -4,8 +4,9 @@ import { Vector3, PerspectiveCamera } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { ElementRef } from "@angular/core";
 import { Track } from "../../../../../common/racing/track";
-import { SkyBox } from "./../skybox";
 import { TrackPreviewConfig } from "./TrackPreviewConfig";
+import { SkyBox } from "../render-service/skybox";
+import { TrackLights } from "../render-service/light";
 
 export class TrackPreview {
     private _camera: PerspectiveCamera;
@@ -18,7 +19,7 @@ export class TrackPreview {
         if (containerRef) {
             this.initializeCamera(containerRef.nativeElement);
             await
-            this.renderService.initialize(containerRef.nativeElement, this._camera);
+                this.renderService.initialize(containerRef.nativeElement, this._camera);
             this.renderService.setupRenderer();
         }
     }
@@ -34,6 +35,7 @@ export class TrackPreview {
 
     private addObjectsToRenderScene(): void {
         this.renderService.addObjectToScene(this.renderService.createTrackMesh(this._trackPoints));
+        this.renderService.addObjectToScene(new TrackLights(TrackType.Default));
     }
 
     private initializeCamera(containerRef: HTMLDivElement): void {
