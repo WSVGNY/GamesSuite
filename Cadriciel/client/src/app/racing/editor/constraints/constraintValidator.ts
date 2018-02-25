@@ -77,8 +77,8 @@ export class ConstraintValidator {
             for (let j: number = 0; j < limit; j++) {
                 if (j > i + 1) {
                     const line2: Line = connections[j];
-                    const vectors1: Array<Vector3[]> = this.generateTrackWidth(line1, TRACK_WIDTH * HALF);
-                    const vectors2: Array<Vector3[]> = this.generateTrackWidth(line2, TRACK_WIDTH * HALF);
+                    const vectors1: Array<Vector3[]> = this.generateTrackWidth(line1, TRACK_WIDTH);
+                    const vectors2: Array<Vector3[]> = this.generateTrackWidth(line2, TRACK_WIDTH);
                     const isIntersecting: boolean = this.checkIntersectionWithOffset(vectors1, vectors2);
                     if (isIntersecting) {
                         line1.material = UNAUTHORIZED_LINE_MATERIAL;

@@ -206,7 +206,7 @@ export class EditorScene {
 
         const lengthOk: boolean = ConstraintValidator.checkLength(this._connections);
         const angleOk: boolean = ConstraintValidator.checkAngle(this._connections, this._isComplete);
-        const intersectionOk: boolean = ConstraintValidator.checkIntersection(this._connections, this._isComplete)
+        const intersectionOk: boolean = ConstraintValidator.checkIntersection(this._connections, this._isComplete);
 
         return lengthOk && angleOk && intersectionOk && this._isComplete;
     }
