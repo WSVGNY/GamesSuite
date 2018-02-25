@@ -1,6 +1,5 @@
 import { RenderService } from "./../render-service/render.service";
 import { TrackPointList } from "./../render-service/trackPoint";
-import { MOCK_TRACK } from "./../render-service/mock-track";
 import { Vector3, PerspectiveCamera } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { ElementRef } from "@angular/core";
