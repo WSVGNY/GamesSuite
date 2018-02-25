@@ -2,7 +2,7 @@
 <ul class="tracks">
   <li class="track" *ngFor="let track of tracks; let i = index">
     <a routerLink="/admin/{{track.key}}">
-      <span class="badge">{{i+1}}</span> {{track.value._name}}
+      <span class="badge">{{i+1}}</span> {{track.value.name}}
     </a>
     <button (click)="deleteTrack(track.key)">Delete</button>
   </li>

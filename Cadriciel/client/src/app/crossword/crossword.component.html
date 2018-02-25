@@ -1,4 +1,3 @@
-
 <div (mousedown)="deselectWords()">
   <h2> Crossword Game </h2>
   <div *ngIf="!isConfigurationDone()">
@@ -12,23 +11,25 @@
     <div *ngIf="configurationService.grid !== undefined">
       <h3> Horizontal : </h3>
       <div *ngFor="let word of configurationService.grid.words">
-        <li  *ngIf="word._isHorizontal">{{word._definitionID}})
+        <li *ngIf="word.isHorizontal">{{word.definitionID}})
           <span *ngIf="isInCheatMode">
             <div [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}" (mouseup)="highlightWord(word)">{{getWordValue(word)}}</div>
           </span>
           <span *ngIf="!isInCheatMode">
-            <div id="textDefinition" [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}" (mouseup)="highlightWord(word)">{{word._definition}}</div>
+            <div id="textDefinition" [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}"
+              (mouseup)="highlightWord(word)">{{word.definition}}</div>
           </span>
         </li>
       </div>
       <h3> Vertical : </h3>
       <div *ngFor="let word of configurationService.grid.words">
-        <li *ngIf="!word._isHorizontal">{{word._definitionID}})
+        <li *ngIf="!word.isHorizontal">{{word.definitionID}})
           <span *ngIf="isInCheatMode">
             <div [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}" (mouseup)="highlightWord(word)">{{getWordValue(word)}}</div>
           </span>
           <span *ngIf="!isInCheatMode">
-            <div id="textDefinition" [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}" (mouseup)="highlightWord(word)">{{word._definition}}</div>
+            <div id="textDefinition" [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}"
+              (mouseup)="highlightWord(word)">{{word.definition}}</div>
           </span>
         </li>
       </div>

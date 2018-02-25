@@ -1,4 +1,4 @@
-import { Coordinate } from "./coordinate";
+import { Coordinate2D } from "./coordinate2D";
 import { CommonWord } from "../../../common/crossword/commonWord";
 
 export class Word extends CommonWord {
@@ -8,13 +8,13 @@ export class Word extends CommonWord {
         definitionID: number,
         isHorizontal: boolean,
         length: number,
-        startPosition: Coordinate) {
+        startPosition: Coordinate2D) {
         super(id, definitionID, isHorizontal, length, startPosition);
     }
 
     public addConstraint(word: Word): void {
-        this._constraints[this._difficulty] = word;
-        this._difficulty++;
+        this.constraints[this.difficulty] = word;
+        this.difficulty++;
     }
 
 }
