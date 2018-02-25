@@ -10,8 +10,8 @@ describe("EditorComponent", () => {
             declarations: [EditorComponent],
             providers: [ActivatedRoute]
         }).compileComponents()
-        .then()
-        .catch((e: Error) => console.error(e.message));
+            .then()
+            .catch((e: Error) => console.error(e.message));
     }));
 
     beforeEach(() => {

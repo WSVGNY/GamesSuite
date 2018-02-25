@@ -1,6 +1,6 @@
 // tslint:disable:no-magic-numbers
 import { Line, Geometry, Vector3, LineBasicMaterial } from "three";
-import { WHITE, PI_OVER_2, TRACK_WIDTH } from "../../constants";
+import { WHITE, PI_OVER_2, HALF_TRACK_WIDTH } from "../../constants";
 import { ConstraintValidator } from "./constraintValidator";
 
 const LINE_GEOMETRY1: Geometry = new Geometry();
@@ -146,7 +146,7 @@ describe("Constraints Validator", () => {
     it("should be long enough", () => {
         const lineGeomerty: Geometry = new Geometry();
         lineGeomerty.vertices.push(new Vector3(0, 0, 0));
-        lineGeomerty.vertices.push(new Vector3(0, TRACK_WIDTH, 0));
+        lineGeomerty.vertices.push(new Vector3(0, HALF_TRACK_WIDTH, 0));
         const line1: Line = new Line(lineGeomerty, SIMPLE_LINE_MATERIAL);
         const lines: Array<Line> = [line1];
         expect(ConstraintValidator.checkLength(lines)).toEqual(true);
@@ -155,7 +155,7 @@ describe("Constraints Validator", () => {
     it("should be to short", () => {
         const lineGeomerty: Geometry = new Geometry();
         lineGeomerty.vertices.push(new Vector3(0, 0, 0));
-        lineGeomerty.vertices.push(new Vector3(0, TRACK_WIDTH - 1, 0));
+        lineGeomerty.vertices.push(new Vector3(0, HALF_TRACK_WIDTH - 1, 0));
         const line1: Line = new Line(lineGeomerty, SIMPLE_LINE_MATERIAL);
         const lines: Array<Line> = [line1];
         expect(ConstraintValidator.checkLength(lines)).toEqual(false);

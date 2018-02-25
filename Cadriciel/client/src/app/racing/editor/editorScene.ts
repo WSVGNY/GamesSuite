@@ -6,23 +6,21 @@ import { WHITE, PINK, BLUE } from "../constants";
 import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
 import { ConstraintValidator } from "./constraints/constraintValidator";
 
-const RADIUS: number = 12;
+const RADIUS: number = 2.5;
 const OUTLINE_TO_VERTEX_RATIO: number = 1.25;
-const VERTEX_GEOMETRY: SphereGeometry = new SphereGeometry(RADIUS, RADIUS, RADIUS);
-const SIMPLE_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: WHITE });
-const START_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: PINK });
-const SIMPLE_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: BLUE });
 const AMBIENT_LIGHT_OPACITY: number = 0.5;
+export const VERTEX_GEOMETRY: SphereGeometry = new SphereGeometry(RADIUS);
+export const SIMPLE_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: WHITE });
+export const START_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: PINK });
+export const SIMPLE_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: BLUE });
 
 export class EditorScene {
     private _scene: Scene;
     private _vertices: Array<Mesh>;
     private _connections: Array<Line>;
-
     private _firstVertex: Mesh;
     private _lastVertex: Mesh;
     private _selectedVertex: Mesh;
-    private _nbVertices: number = 0;
     private _isComplete: boolean = false;
 
     public constructor() {
@@ -35,7 +33,7 @@ export class EditorScene {
     public importTrackVertices(trackVertices: Array<CommonCoordinate3D>): void {
         this.clear();
         for (const entry of trackVertices) {
-            this.addVertex(new Vector3(entry.x, entry.y, 0));
+            this.addVertex(new Vector3(entry.z, entry.x, 0));
         }
         if (trackVertices.length !== 0) {
             this.completeTrack();
@@ -56,7 +54,7 @@ export class EditorScene {
     public exportTrackVertices(): Array<CommonCoordinate3D> {
         const trackVertices: Array<CommonCoordinate3D> = new Array();
         for (const entry of this.vertices) {
-            trackVertices.push(new CommonCoordinate3D(entry.position.x, entry.position.y, entry.position.z));
+            trackVertices.push(new CommonCoordinate3D(entry.position.y, entry.position.z, entry.position.x));
         }
 
         return trackVertices;
@@ -98,20 +96,16 @@ export class EditorScene {
         return this._connections;
     }
 
-    public get nbVertices(): number {
-        return this._nbVertices;
-    }
-
     public get isComplete(): boolean {
         return this._isComplete;
     }
 
     private createVertex(position: Vector3): Mesh {
-        const vertex: Mesh = (this._nbVertices === 0) ?
+        const vertex: Mesh = (this._vertices.length === 0) ?
             new Mesh(VERTEX_GEOMETRY, START_VERTEX_MATERIAL) :
             new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
         vertex.position.set(position.x, position.y, 0);
-        vertex.name = (this._nbVertices) ? "vertex" + this._nbVertices : "Start";
+        vertex.name = (this._vertices.length) ? "vertex" + this._vertices.length : "Start";
 
         const outlineMaterial: MeshBasicMaterial = new MeshBasicMaterial({ color: WHITE, side: BackSide });
         const outlineMesh: Mesh = new Mesh(VERTEX_GEOMETRY, outlineMaterial);
@@ -130,7 +124,6 @@ export class EditorScene {
         } else {
             this.addConnection(this._lastVertex, vertex);
         }
-        this._nbVertices++;
         this._lastVertex = vertex;
     }
 
@@ -155,19 +148,16 @@ export class EditorScene {
         const connection: Line = this.createConnection(firstVertex, secondVertex);
         this._connections.push(connection);
         this._scene.add(connection);
-        this.checkConstraints();
     }
 
     public removeLastVertex(): void {
         this._scene.remove(this._vertices.pop());
         this._scene.remove(this._connections.pop());
-        this._nbVertices--;
-        this._lastVertex = this._vertices[this._nbVertices - 1];
+        this._lastVertex = (this._vertices.length === 0) ? undefined : this._vertices[this._vertices.length - 1];
         if (this._isComplete) {
             this._isComplete = false;
             this._scene.remove(this._connections.pop());
         }
-        this.checkConstraints();
     }
 
     public moveSelectedVertex(newPosition: Vector3): void {
@@ -188,7 +178,6 @@ export class EditorScene {
         this._scene.remove(this._connections[this._vertices.indexOf(vertex1)]);
         this._connections[this._vertices.indexOf(vertex1)] = new Line(LINE_GEOMETRY, SIMPLE_LINE_MATERIAL);
         this._scene.add(this._connections[this._vertices.indexOf(vertex1)]);
-        this.checkConstraints();
     }
 
     public updateFollowingConnection(entry: Mesh): void {
@@ -209,26 +198,16 @@ export class EditorScene {
         }
     }
 
-    private checkConstraints(): boolean {
-        let constraintsPass: boolean = true;
+    public checkConstraints(): boolean {
         for (const connection of this._connections) {
             connection.material = SIMPLE_LINE_MATERIAL;
         }
-        constraintsPass = ConstraintValidator.checkLength(this._connections);
-        if (constraintsPass) {
-            constraintsPass = ConstraintValidator.checkAngle(this._connections, this._isComplete);
-        }
-        if (constraintsPass) {
-            constraintsPass = ConstraintValidator.checkIntersection(this._connections, this._isComplete);
-        }
-        if (constraintsPass) {
-            constraintsPass = this._isComplete;
-        }
-        constraintsPass ?
-            (document.getElementById("saveButton") as HTMLInputElement).disabled = false :
-            (document.getElementById("saveButton") as HTMLInputElement).disabled = true;
 
-        return constraintsPass;
+        const lengthOk: boolean = ConstraintValidator.checkLength(this._connections);
+        const angleOk: boolean = ConstraintValidator.checkAngle(this._connections, this._isComplete);
+        const intersectionOk: boolean = ConstraintValidator.checkIntersection(this._connections, this._isComplete);
+
+        return lengthOk && angleOk && intersectionOk && this._isComplete;
     }
 
 }

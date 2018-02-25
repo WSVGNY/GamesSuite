@@ -17,7 +17,7 @@ describe("Car", () => {
 
     beforeEach(async (done: () => void) => {
         car = new Car(new MockEngine());
-        await car.init();
+        await car.init(new Vector3(0, 0, 0), Math.PI);
 
         car.accelerate();
         car.update(MS_BETWEEN_FRAMES);
@@ -71,7 +71,7 @@ describe("Car", () => {
         car.accelerate();
         car.steerLeft();
         car.update(MS_BETWEEN_FRAMES * 2);
-        expect(car.angle).toBeLessThan(initialAngle);
+        expect(car.angle).toBeGreaterThan(initialAngle);
     });
 
     it("should turn right when right turn key is pressed", () => {

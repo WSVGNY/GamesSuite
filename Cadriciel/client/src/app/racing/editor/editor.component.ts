@@ -9,9 +9,9 @@ import { EditorRenderService } from "./editor-render-service/editor-render.servi
 import { MouseEventHandlerService } from "../event-handlers/mouse-event-handler.service";
 import { Vector3 } from "three";
 
-const CAMERA_Y_POSITION: number = 480;
-const CAMERA_POSITION: Vector3 = new Vector3(0, CAMERA_Y_POSITION, 0);
-const VIEW_SIZE: number = 1000;
+const CAMERA_Z_POSITION: number = 480;
+const CAMERA_POSITION: Vector3 = new Vector3(0, 0, CAMERA_Z_POSITION);
+const VIEW_SIZE: number = 500;
 
 @Component({
     selector: "app-editor",
@@ -25,6 +25,7 @@ export class EditorComponent implements AfterViewInit {
     private containerRef: ElementRef;
     @Input()
     private currentTrackName: string = "New Track";
+    private currentTrackDescription: string = "New Description";
     private currentTrackId: string = "";
     private trackChosenFromAdmin: Track;
 
@@ -65,12 +66,14 @@ export class EditorComponent implements AfterViewInit {
                 const iTrack: TrackDocument = JSON.parse(JSON.stringify(trackFromServer));
                 this.trackChosenFromAdmin = new Track(iTrack);
                 this.currentTrackName = this.trackChosenFromAdmin.name;
+                this.currentTrackDescription = this.trackChosenFromAdmin.description;
                 this.editorScene.importTrackVertices(this.trackChosenFromAdmin.vertices);
             });
     }
 
     public saveTrack(): void {
         this.trackChosenFromAdmin.name = this.currentTrackName;
+        this.trackChosenFromAdmin.description = this.currentTrackDescription;
         this.trackChosenFromAdmin.vertices = this.editorScene.exportTrackVertices();
         this.trackService.putTrack(this.currentTrackId, this.trackChosenFromAdmin)
             .subscribe((trackFromServer: string) => {
@@ -81,6 +84,10 @@ export class EditorComponent implements AfterViewInit {
 
     public saveTrackName(trackName: string): void {
         this.currentTrackName = trackName;
+    }
+
+    public saveTrackDescription(trackDescription: string): void {
+        this.currentTrackDescription = trackDescription;
     }
 
     public goBack(): void {

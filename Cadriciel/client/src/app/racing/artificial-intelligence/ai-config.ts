@@ -18,22 +18,24 @@ export class AIConfig {
     }
 
     public get distanceFromVehicule(): number {
-        if (this._difficulty === Difficulty.Hard) {
-            return this.DISTANCE_FROM_VEHICULE_HARD;
-        } else if (this._difficulty === Difficulty.Medium) {
-            return this.DISTANCE_FROM_VEHICULE_MEDIUM;
-        } else {
-            return this.DISTANCE_FROM_VEHICULE_EASY;
+        switch (this._difficulty) {
+            case Difficulty.Hard:
+                return this.DISTANCE_FROM_VEHICULE_HARD;
+            case Difficulty.Medium:
+                return this.DISTANCE_FROM_VEHICULE_MEDIUM;
+            default:
+                return this.DISTANCE_FROM_VEHICULE_EASY;
         }
     }
 
     public get distanceBeforeReplacement(): number {
-        if (this._difficulty === Difficulty.Hard) {
-            return this.DISTANCE_BEFORE_REPLACEMENT_HARD;
-        } else if (this._difficulty === Difficulty.Medium) {
-            return this.DISTANCE_BEFORE_REPLACEMENT_MEDIUM;
-        } else {
-            return this.DISTANCE_BEFORE_REPLACEMENT_EASY;
+        switch (this._difficulty) {
+            case Difficulty.Hard:
+                return this.DISTANCE_BEFORE_REPLACEMENT_HARD;
+            case Difficulty.Medium:
+                return this.DISTANCE_BEFORE_REPLACEMENT_MEDIUM;
+            default:
+                return this.DISTANCE_BEFORE_REPLACEMENT_EASY;
         }
     }
 }

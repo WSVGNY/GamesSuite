@@ -61,11 +61,11 @@ export class MouseEventHandlerService {
     }
 
     private convertToWorldCoordinates(position: Vector3): void {
-        this._mouseWorldCoordinates.z =
+        this._mouseWorldCoordinates.x =
             (position.x - this._divOffset.x - this._centerOffset.x) *
             this._viewSize / this._containerEditor.clientHeight;
 
-        this._mouseWorldCoordinates.x =
+        this._mouseWorldCoordinates.y =
             -(position.y - this._divOffset.y - this._centerOffset.y) *
             this._viewSize / this._containerEditor.clientHeight;
     }
@@ -111,12 +111,10 @@ export class MouseEventHandlerService {
             this._editorControl.command = new PlaceVertex(editorScene, this._mouseWorldCoordinates);
             this._editorControl.execute();
         } else if (this.clickOnVertex(editorScene)) {
-            if (this.clickOnFirstVertex(editorScene) && editorScene.nbVertices >= REQUIRED_VERTEX_COUNT) {
-                if (editorScene.isComplete) {
-                    this._editorControl.command = new SelectVertex(editorScene, this.clickedVertexName(editorScene));
-                } else {
-                    this._editorControl.command = new CloseLoop(editorScene);
-                }
+            if (this.clickOnFirstVertex(editorScene) && editorScene.vertices.length >= REQUIRED_VERTEX_COUNT) {
+                this._editorControl.command = editorScene.isComplete ?
+                    new SelectVertex(editorScene, this.clickedVertexName(editorScene)) :
+                    new CloseLoop(editorScene);
             } else {
                 this._editorControl.command = new SelectVertex(editorScene, this.clickedVertexName(editorScene));
             }

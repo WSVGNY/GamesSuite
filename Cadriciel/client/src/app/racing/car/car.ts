@@ -1,19 +1,21 @@
-import { Vector3, Matrix4, Object3D, ObjectLoader, Quaternion, Camera, SpotLight, Color } from "three";
+import {
+    Vector3, Matrix4, Object3D, ObjectLoader, Quaternion, Camera,
+    SpotLight, Mesh, BoxGeometry, MeshBasicMaterial, Group
+} from "three";
 import { Engine } from "./engine";
-import { MS_TO_SECONDS, GRAVITY, RAD_TO_DEG, CAR_TEXTURE } from "../constants";
+import { MS_TO_SECONDS, GRAVITY, RAD_TO_DEG, CAR_TEXTURE, RED, YELLOW, WHITE } from "../constants";
 import { Wheel } from "./wheel";
 
 export const DEFAULT_WHEELBASE: number = 2.78;
 export const DEFAULT_MASS: number = 1515;
 export const DEFAULT_DRAG_COEFFICIENT: number = 0.35;
 
-const MAXIMUM_STEERING_ANGLE: number = 0.05;
-// const INITIAL_MODEL_ROTATION: Euler = new Euler(0, PI_OVER_2, 0);
+const MAXIMUM_STEERING_ANGLE: number = 0.15;
 const INITIAL_WEIGHT_DISTRIBUTION: number = 0.5;
 const MINIMUM_SPEED: number = 0.05;
 const NUMBER_REAR_WHEELS: number = 2;
 const NUMBER_WHEELS: number = 4;
-const YELLOW: number = 0xFFFF00;
+const TARGET_DISTANCE_FROM_CAR: number = 30;
 
 export class Car extends Object3D {
 
@@ -31,10 +33,8 @@ export class Car extends Object3D {
     private _steeringWheelDirection: number;
     private _weightRear: number;
     private _initialDirection: Vector3 = new Vector3(0, 0, -1);
-    private _frontLight1: SpotLight;
-    private _frontLight2: SpotLight;
-    private _backLight1: SpotLight;
-    private _backLight2: SpotLight;
+    private _spotlights: SpotLight[] = new Array();
+    private _lightGroup: Group = new Group();
 
     public get speed(): Vector3 {
         return this._speed.clone();
@@ -65,35 +65,47 @@ export class Car extends Object3D {
     }
 
     private createLights(): void {
-        this._frontLight1 = new SpotLight(YELLOW, 5, 300, -Math.PI / 2, 1);
-        this._frontLight2 = new SpotLight(YELLOW, 5, 300, -Math.PI / 2, 1);
-        this._backLight1 = new SpotLight(YELLOW, 5, 300, Math.PI / 2, 1);
-        this._backLight2 = new SpotLight(YELLOW, 5, 300, Math.PI / 2, 1);
-        this._frontLight1.position.set(-10, 0, 1);
-        this._frontLight2.position.set(-10, 0, 1);
-        this._backLight1.position.set(0, 0, 1);
-        this._backLight2.position.set(0, 0, 1);
+        this.createSpotlight(WHITE, -1, 1, -1, -TARGET_DISTANCE_FROM_CAR);
+        this.createSpotlight(WHITE, 1, 1, -1, -TARGET_DISTANCE_FROM_CAR);
+        this.createSpotlight(RED, -1, 1, 1, TARGET_DISTANCE_FROM_CAR);
+        this.createSpotlight(RED, 1, 1, 1, TARGET_DISTANCE_FROM_CAR);
+    }
+
+    private createSpotlight(color: number, positionX: number, positionY: number, positionZ: number, targetDistance: number): void {
+        const spotLight: SpotLight = new SpotLight(color, 1, 100, Math.PI / 5, 0.5, 1);
+        spotLight.position.set(positionX, positionY, positionZ);
+        spotLight.target = this.attachTarget(targetDistance);
+        this._spotlights.push(spotLight);
+        this._lightGroup.add(this._spotlights[this._spotlights.length - 1]);
+    }
+
+    private turnBackLightsOn(): void {
+        this._lightGroup.add(this._spotlights[2]);
+        this._lightGroup.add(this._spotlights[3]);
+    }
+
+    private turnBackLightsOff(): void {
+        this._lightGroup.remove(this._spotlights[2]);
+        this._lightGroup.remove(this._spotlights[3]);
     }
 
     public attachLights(): void {
-        this._mesh.add(this._frontLight1);
-        this._mesh.add(this._frontLight2);
-        this._mesh.add(this._backLight1);
-        this._mesh.add(this._backLight2);
+        this._mesh.add(this._lightGroup);
     }
 
     public dettachLights(): void {
-        this._mesh.remove(this._frontLight1);
-        this._mesh.remove(this._frontLight2);
-        this._mesh.remove(this._backLight1);
-        this._mesh.remove(this._backLight2);
+        this._mesh.remove(this._lightGroup);
     }
 
-    public setBackLightColor(color: number): void {
-        this._backLight1.color = new Color(color);
-        this._backLight2.color = new Color(color);
-    }
+    public attachTarget(distance: number): Mesh {
+        const geometry: BoxGeometry = new BoxGeometry(0, 0, 0);
+        const material: MeshBasicMaterial = new MeshBasicMaterial({ color: YELLOW });
+        const cube: Mesh = new Mesh(geometry, material);
+        cube.position.set(0, 0, distance);
+        this._mesh.add(cube);
 
+        return cube;
+    }
     public attachCube(cube: Object3D): void {
         this._mesh.add(cube);
     }
@@ -142,7 +154,6 @@ export class Car extends Object3D {
         this._weightRear = INITIAL_WEIGHT_DISTRIBUTION;
         this._speed = new Vector3(0, 0, 0);
         this.position.add(new Vector3(0, 0, 0));
-        // this.rotateX(Math.PI);
     }
 
     private async load(): Promise<Object3D> {
@@ -176,10 +187,12 @@ export class Car extends Object3D {
 
     public releaseBrakes(): void {
         this._isBraking = false;
+        this.turnBackLightsOff();
     }
 
     public brake(): void {
         this._isBraking = true;
+        this.turnBackLightsOn();
     }
 
     public reverse(): void {
@@ -208,7 +221,6 @@ export class Car extends Object3D {
         rotationQuaternion.setFromRotationMatrix(rotationMatrix);
         this._speed.applyMatrix4(rotationMatrix);
 
-        // Physics calculations
         this.physicsUpdate(deltaTime);
 
         // Move back to world coordinates

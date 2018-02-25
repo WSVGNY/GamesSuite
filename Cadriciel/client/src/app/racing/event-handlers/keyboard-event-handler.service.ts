@@ -63,7 +63,7 @@ export class KeyboardEventHandlerService {
     public handleKeyUp(event: KeyboardEvent, raceGame: RaceGame): void {
         switch (event.keyCode) {
             case ACCELERATE_KEYCODE:
-                this._carControl.command =new ReleaseAccelerator(raceGame.playerCar);
+                this._carControl.command = new ReleaseAccelerator(raceGame.playerCar);
                 this._carControl.execute();
                 break;
             case LEFT_KEYCODE:
