@@ -10,7 +10,10 @@
 Pour accéder à l'API Datamuse: Par exemple, si on veut les détails pour un mot de 4 lettres ayant un r à la 2e position https://api.datamuse.com/words?sp=%3fr%3f%3f&md=df
 
 
-il faut toujours partir le serveur avant de runner le code.
+Dans tous les cas, il faut toujours partir le serveur avant de runner le code.
 
 
 ca arrive souvent qu'il y a des mots étranges ex: tau, xiii, rh qui apparaissent dans la grille. malgré ce quon pense ces mots existent réellement sur datamuse. ex : tau ---> the 19th letter of the Greek alphabet 
+
+
+Dans le jeu de course, quand tu appuie sur la touche 0 ca fait afficher les vecteurs pour voir comment les AI fonctionnent.

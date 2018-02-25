@@ -5,7 +5,7 @@ import { KeyboardEventHandlerService } from "./event-handlers/keyboard-event-han
 import { Track, ITrack } from "../../../../common/racing/track";
 import { TrackService } from "./track-service/track.service";
 import { ActivatedRoute } from "@angular/router";
-import { RaceGame } from "./raceGame";
+import { RaceGame } from "./game-loop/raceGame";
 
 @Component({
     moduleId: module.id,
@@ -76,8 +76,4 @@ export class RacingComponent implements AfterViewInit {
         return this._raceGame.playerCar;
     }
 
-    public hider(): void {
-        document.getElementById("image1").style.display = "none";
-        document.getElementById("image2").style.display = "none";
-    }
 }

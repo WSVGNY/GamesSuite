@@ -2,14 +2,12 @@ import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import {
     PerspectiveCamera, WebGLRenderer, Scene, Mesh, Shape, ShapeGeometry, Path, BackSide, TextureLoader, Texture, RepeatWrapping,
-    PlaneGeometry, MeshLambertMaterial, DirectionalLight, DirectionalLightHelper, AmbientLight, Group, Object3D, CubeTexture,
-    CubeTextureLoader
+    PlaneGeometry, Group, Object3D, CubeTexture,
+    CubeTextureLoader,
+    MeshPhongMaterial
 } from "three";
-import { PI_OVER_2, LOWER_GROUND } from "../constants";
+import { PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE } from "../constants";
 import { TrackPointList } from "./trackPoint";
-
-const WHITE: number = 0xFFFFFF;
-const AMBIENT_LIGHT_OPACITY: number = 0.1;
 
 @Injectable()
 export class RenderService {
@@ -45,30 +43,7 @@ export class RenderService {
     }
 
     private async createScene(): Promise<void> {
-        this.lighting();
         this.renderGround();
-    }
-
-    public lighting(): void {
-
-        this._scene.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
-        const dirLight: DirectionalLight = new DirectionalLight(0xffffff, 0.8);
-        dirLight.color.setHSL(0.1, 1, 0.95);
-        dirLight.position.set(-1, 0.8, 1);
-        dirLight.position.multiplyScalar(30);
-        this._scene.add(dirLight);
-        dirLight.castShadow = true;
-        dirLight.shadow.mapSize.width = 2048;
-        dirLight.shadow.mapSize.height = 2048;
-        const d: number = 50;
-        dirLight.shadow.camera.left = -d;
-        dirLight.shadow.camera.right = d;
-        dirLight.shadow.camera.top = d;
-        dirLight.shadow.camera.bottom = -d;
-        dirLight.shadow.camera.far = 3500;
-        dirLight.shadow.bias = -0.0001;
-        const dirLightHeper: DirectionalLightHelper = new DirectionalLightHelper(dirLight, 10)
-        this._scene.add(dirLightHeper);
     }
 
     public setupRenderer(): void {
@@ -101,8 +76,8 @@ export class RenderService {
         this.drillHoleInTrackShape(shape, trackPoints);
 
         const geometry: ShapeGeometry = new ShapeGeometry(shape);
-        const trackMaterial: MeshLambertMaterial =
-            new MeshLambertMaterial({ side: BackSide, map: this.loadRepeatingTexture("assets/textures/asphalte.jpg", 0.045) });
+        const trackMaterial: MeshPhongMaterial =
+            new MeshPhongMaterial({ side: BackSide, map: this.loadRepeatingTexture(ASPHALT_TEXTURE, GROUND_TEXTURE_FACTOR) });
 
         const trackMesh: Mesh = new Mesh(geometry, trackMaterial);
         trackMesh.rotateX(PI_OVER_2);
@@ -129,9 +104,9 @@ export class RenderService {
     }
 
     private renderGround(): void {
-        const groundGeometry: PlaneGeometry = new PlaneGeometry(10000, 10000, 1, 1);
-        const groundMaterial: MeshLambertMaterial =
-            new MeshLambertMaterial({ side: BackSide, map: this.loadRepeatingTexture("assets/textures/green-grass-texture.jpg", 1000) });
+        const groundGeometry: PlaneGeometry = new PlaneGeometry(GROUND_SIZE, GROUND_SIZE, 1, 1);
+        const groundMaterial: MeshPhongMaterial =
+            new MeshPhongMaterial({ side: BackSide, map: this.loadRepeatingTexture(GRASS_TEXTURE, 1000) });
 
         const ground: Mesh = new Mesh(groundGeometry, groundMaterial);
         ground.rotateX(PI_OVER_2);
@@ -171,5 +146,13 @@ export class RenderService {
 
     public removeDebugObject(object: Object3D): void {
         this._group.remove(object);
+    }
+
+    public async resetScene(): Promise<void> {
+        this._group = new Group();
+        this._scene = new Scene();
+        this._scene.background = this._skyBoxTexture;
+        this._scene.add(this._group);
+        await this.createScene();
     }
 }

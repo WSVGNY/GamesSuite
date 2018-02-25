@@ -1,5 +1,5 @@
-import { TrackType } from "../../../../common/racing/trackType";
-import { NIGHT_SKYBOX, DEFAULT_SKYBOX } from "./constants";
+import { NIGHT_SKYBOX, DEFAULT_SKYBOX } from "../constants";
+import { TrackType } from "../../../../../common/racing/trackType";
 
 export class SkyBox {
     public static getPath(trackType: TrackType): string {

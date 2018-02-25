@@ -1,5 +1,8 @@
 <button (click)="goBack()"> Go back </button>
 <input #trackName type="text" [value]="currentTrackName" (keyup.enter)="saveTrackName(trackName.value)" (blur)="saveTrackName(trackName.value)">
-<button id="saveButton" (click)="saveTrack()" (click)="goBack()"> Save and go back </button>
+<span *ngIf="editorScene!==undefined">
+  <button *ngIf="!editorScene.checkConstraints()" id="saveButton" disabled> Save and go back </button>
+  <button *ngIf="editorScene.checkConstraints()" id="saveButton" (click)="saveTrack()" (click)="goBack()"> Save and go back </button>
+</span>
 <div #containerEditor>
 </div>

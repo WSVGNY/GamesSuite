@@ -16,6 +16,7 @@
     "@types/mongodb": "^3.0.5",
     "@types/request-promise-native": "^1.0.12",
     "body-parser": "~1.16.0",
+    "bootstrap": "^4.0.0",
     "bson": "^1.0.4",
     "cookie-parser": "~1.4.0",
     "cors": "~2.8.1",
