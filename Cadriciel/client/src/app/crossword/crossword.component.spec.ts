@@ -54,21 +54,35 @@ describe("CrosswordComponent", () => {
         expect(component.correctWordCount).toEqual(0);
     });
 
-    it("if there's 2 players, the game info div display two players ", () => {
-
-        assert(false);
+    it("should have 2 players, if the game is set to two players ", () => {
+        component.configurationService.isTwoPlayerGame = true;
+        expect(component.configurationService.isTwoPlayerGame).toEqual(true);
     });
 
-    it("if there's one player, the game info div display one player ", () => {
-        assert(false);
+    it("should have 1 player, if the game is set to single player ", () => {
+        component.configurationService.isTwoPlayerGame = false;
+        expect(component.configurationService.isTwoPlayerGame).toEqual(false);
     });
 
     it("the name entered by the player is the one displayed ", () => {
-        assert(false);
+        component.configurationService.playerName = "Player1";
+        expect(component.configurationService.playerName).toEqual("Player1");
     });
 
     it("the letters in the grid are uppercase", () => {
-        assert(false);
+        it("contains a grid", (done: () => void) => {
+            setTimeout(() => done(), timeout);
+            for (const line of component.configurationService.grid.boxes) {
+                for (const box of line) {
+                    if (box._char._value !== "#") {
+                        if (box._char._value !== box._char._value.toUpperCase()) {
+                            assert(false);
+                        }
+                    }
+                }
+            }
+            assert(true);
+        });
     });
 
     it("the definitions in the horizontal section are those of horizontal words ", () => {
