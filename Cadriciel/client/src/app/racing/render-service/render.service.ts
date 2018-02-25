@@ -5,11 +5,7 @@ import {
     PlaneGeometry, MeshLambertMaterial, DirectionalLight, DirectionalLightHelper, AmbientLight, Group, Object3D, CubeTexture,
     CubeTextureLoader
 } from "three";
-<<<<<<< HEAD
-import { PI_OVER_2, LOWER_GROUND, WHITE, GROUND_SIZE, GROUND_TEXTURE_FACTOR } from "../constants";
-=======
-import { PI_OVER_2, LOWER_GROUND, ASPHALT_TEXTURE, GRASS_TEXTURE } from "../constants";
->>>>>>> 055c631d8b8a9c438672fae490d584fcac5915b6
+import { PI_OVER_2, LOWER_GROUND, WHITE, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE } from "../constants";
 import { TrackPointList } from "./trackPoint";
 
 
@@ -106,13 +102,7 @@ export class RenderService {
 
         const geometry: ShapeGeometry = new ShapeGeometry(shape);
         const trackMaterial: MeshLambertMaterial =
-<<<<<<< HEAD
-            new MeshLambertMaterial({
-                side: BackSide, map: this.loadRepeatingTexture("assets/textures/asphalte.jpg", GROUND_TEXTURE_FACTOR)
-            });
-=======
-            new MeshLambertMaterial({ side: BackSide, map: this.loadRepeatingTexture(ASPHALT_TEXTURE, 0.045) });
->>>>>>> 055c631d8b8a9c438672fae490d584fcac5915b6
+            new MeshLambertMaterial({ side: BackSide, map: this.loadRepeatingTexture(ASPHALT_TEXTURE, GROUND_TEXTURE_FACTOR) });
 
         const trackMesh: Mesh = new Mesh(geometry, trackMaterial);
         trackMesh.rotateX(PI_OVER_2);
