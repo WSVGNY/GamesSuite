@@ -54,22 +54,11 @@
     visibility: visible;
 }
 
-#buttongroupp{
+#buttongroupDifficulty{
     visibility: visible;
     position: absolute;
     left: 35px;
     top:270px;
-}
-
-#gridHider {
-    width: 604px;
-    min-height: 602px;
-    border: 2px solid rgba(44, 107, 97, 0.233);
-    position: absolute;
-    margin-left: 750px;
-    margin-bottom: 10px;
-    background:rgba(255, 255, 255);
-    visibility: hidden;
 }
 
 #button {
@@ -89,7 +78,7 @@
     border:black;
 }
 
-#buttonDifficulty:hover {
+#button:hover {
     color: #0b4941;
     background-color: rgb(186, 209, 207);
     box-shadow: none;

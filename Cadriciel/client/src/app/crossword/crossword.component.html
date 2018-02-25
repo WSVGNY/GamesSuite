@@ -6,7 +6,7 @@
   </div>
 
   <div id="loader" *ngIf="isConfigurationDone() && configurationService.grid===undefined"></div>
-  <div id="defs" (mousedown)="deselectWords()">
+  <div id="definitions" (mousedown)="deselectWords()">
     <button id="CheatButton" (click)="changeMode()"> Cheat mode </button>
     <h2 id="title">Definitions</h2>
     <div *ngIf="configurationService.grid !== undefined">

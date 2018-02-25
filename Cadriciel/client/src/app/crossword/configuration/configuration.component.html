@@ -6,7 +6,7 @@
     <button id="button" (click)="configurationService.isTwoPlayerGame = true" class="btn btn-primary">Two players</button>
   </div>
 
-  <div *ngIf="configurationService.isTwoPlayerGame !== undefined" id="buttongroupp" class="btn-group">
+  <div *ngIf="configurationService.isTwoPlayerGame !== undefined" id="buttongroupDifficulty" class="btn-group">
     <button id="button" (click)="makeEasyGrid()" class="btn btn-primary">EASY</button>
     <button id="button" (click)="makeMediumGrid()" class="btn btn-primary">MEDIUM</button>
     <button id="button" (click)="makeHardGrid()" class="btn btn-primary">HARD</button>
