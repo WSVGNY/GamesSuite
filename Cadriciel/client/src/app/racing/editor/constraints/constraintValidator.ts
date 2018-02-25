@@ -1,5 +1,5 @@
 import { Line, Geometry, Vector3, LineBasicMaterial } from "three";
-import { RED, PI_OVER_4, HALF, PI_OVER_2, TRACK_WIDTH } from "../../constants";
+import { RED, PI_OVER_4, PI_OVER_2, TRACK_WIDTH } from "../../constants";
 
 const UNAUTHORIZED_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: RED });
 
@@ -77,8 +77,8 @@ export class ConstraintValidator {
             for (let j: number = 0; j < limit; j++) {
                 if (j > i + 1) {
                     const line2: Line = connections[j];
-                    const vectors1: Array<Vector3[]> = this.generateTrackWidth(line1, TRACK_WIDTH * HALF);
-                    const vectors2: Array<Vector3[]> = this.generateTrackWidth(line2, TRACK_WIDTH * HALF);
+                    const vectors1: Array<Vector3[]> = this.generateTrackWidth(line1, TRACK_WIDTH);
+                    const vectors2: Array<Vector3[]> = this.generateTrackWidth(line2, TRACK_WIDTH);
                     const isIntersecting: boolean = this.checkIntersectionWithOffset(vectors1, vectors2);
                     if (isIntersecting) {
                         line1.material = UNAUTHORIZED_LINE_MATERIAL;
