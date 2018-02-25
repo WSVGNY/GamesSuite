@@ -13,6 +13,7 @@ export class ConfigurationComponent {
     public isNewGame: boolean = false;
     public isJoinGame: boolean = false;
     public difficulty: Difficulty;
+    public difficultySetter: number;
     public choseGridDifficulty: boolean = false;
     public constructor(private gridService: GridService, public configurationService: ConfigurationService) {
     }
@@ -33,25 +34,25 @@ export class ConfigurationComponent {
 
     private makeGrid(): void {
         this.choseGridDifficulty = true;
-        document.getElementsByName("buttonDifficulty").item(0).setAttribute("disabled", "disabled"); //a changer
-        document.getElementsByName("buttonDifficulty").item(1).setAttribute("disabled", "disabled");
-        document.getElementsByName("buttonDifficulty").item(2).setAttribute("disabled", "disabled");
         this.createGrid();
     }
 
     public makeEasyGrid(): void {
         this.difficulty = Difficulty.Easy;
         this.makeGrid();
+        this.difficultySetter = 0;
     }
 
     public makeMediumGrid(): void {
         this.difficulty = Difficulty.Medium;
         this.makeGrid();
+        this.difficultySetter = 1;
     }
 
     public makeHardGrid(): void {
         this.difficulty = Difficulty.Hard;
         this.makeGrid();
+        this.difficultySetter = 2;
     }
 
     public submitName(): void {
