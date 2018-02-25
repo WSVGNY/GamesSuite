@@ -6,6 +6,7 @@ import { ElementRef } from "@angular/core";
 import { Track } from "../../../../../common/racing/track";
 import { TrackPreviewConfig } from "./TrackPreviewConfig";
 import { SkyBox } from "../render-service/skybox";
+import { TrackLights } from "../render-service/light";
 
 export class TrackPreview {
     private _camera: PerspectiveCamera;
@@ -34,6 +35,7 @@ export class TrackPreview {
 
     private addObjectsToRenderScene(): void {
         this.renderService.addObjectToScene(this.renderService.createTrackMesh(this._trackPoints));
+        this.renderService.addObjectToScene(new TrackLights(TrackType.Default));
     }
 
     private initializeCamera(containerRef: HTMLDivElement): void {
