@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import {
     PerspectiveCamera, WebGLRenderer, Scene, Mesh, Shape, ShapeGeometry, Path, BackSide, TextureLoader, Texture, RepeatWrapping,
-    PlaneGeometry, MeshLambertMaterial, DirectionalLight, DirectionalLightHelper, AmbientLight, Group, Object3D, CubeTexture,
+    PlaneGeometry, MeshLambertMaterial, DirectionalLight, /*DirectionalLightHelper,*/ AmbientLight, Group, Object3D, CubeTexture,
     CubeTextureLoader
 } from "three";
 import { PI_OVER_2, LOWER_GROUND } from "../constants";
@@ -67,8 +67,9 @@ export class RenderService {
         dirLight.shadow.camera.bottom = -d;
         dirLight.shadow.camera.far = 3500;
         dirLight.shadow.bias = -0.0001;
-        const dirLightHeper: DirectionalLightHelper = new DirectionalLightHelper(dirLight, 10)
-        this._scene.add(dirLightHeper);
+        // TODO: Remove light helper upon release
+        // const dirLightHeper: DirectionalLightHelper = new DirectionalLightHelper(dirLight, 10);
+        // this._scene.add(dirLightHeper);
     }
 
     public setupRenderer(): void {
@@ -171,5 +172,13 @@ export class RenderService {
 
     public removeDebugObject(object: Object3D): void {
         this._group.remove(object);
+    }
+
+    public async resetScene(): Promise<void> {
+        this._group = new Group();
+        this._scene = new Scene();
+        this._scene.background = this._skyBoxTexture;
+        this._scene.add(this._group);
+        await this.createScene();
     }
 }
