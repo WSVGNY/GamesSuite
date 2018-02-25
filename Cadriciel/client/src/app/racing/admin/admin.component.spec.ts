@@ -12,8 +12,8 @@ describe("AdminComponent", () => {
             imports: [AppModule],
             providers: [{ provide: APP_BASE_HREF, useValue: "/" }]
         }).compileComponents()
-        .then()
-        .catch((e: Error) => console.error(e.message));
+            .then()
+            .catch((e: Error) => console.error(e.message));
         await component["getTracksFromServer"];
     });
 

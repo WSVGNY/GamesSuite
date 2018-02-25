@@ -42,7 +42,6 @@ export class CrosswordComponent {
         document.getElementById("modeSelection").style.display = "none";
     }
 
-
     private makeGrid(): void {
         this.showLoader = true;
         document.getElementById("gridHider").style.visibility = "visible";

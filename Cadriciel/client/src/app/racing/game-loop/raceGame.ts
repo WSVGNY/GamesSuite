@@ -1,6 +1,6 @@
 import { RenderService } from "./../render-service/render.service";
 import { Car } from "./../car/car";
-import { CarAiService } from "./../artificial-intelligence/car-ai.service";
+import { AICarService } from "./../artificial-intelligence/ai-car.service";
 import { TrackPointList, TrackPoint } from "./../render-service/trackPoint";
 import { MOCK_TRACK } from "./../render-service/mock-track";
 import { Vector3, PerspectiveCamera, Group, LineBasicMaterial, Line, Geometry } from "three";
@@ -14,7 +14,7 @@ import { RaceGameConfig } from "./raceGameConfig";
 export class RaceGame {
     private _camera: PerspectiveCamera;
     private _playerCar: Car = new Car();
-    private _aiCarService: CarAiService[] = [];
+    private _aiCarService: AICarService[] = [];
     private _aiCars: Car[] = [];
     private _aiCarsDebug: Group = new Group();
     private _trackType: TrackType;
@@ -59,9 +59,10 @@ export class RaceGame {
 
     private async initializePlayerCar(): Promise<void> {
         this._playerCar = new Car();
-        const startPos: Vector3 = new Vector3(this._trackPoints.first.coordinates.x + RaceGameConfig.START_POSITION_OFFSET,
-                                              this._trackPoints.first.coordinates.y,
-                                              this._trackPoints.first.coordinates.z + RaceGameConfig.START_POSITION_OFFSET);
+        const startPos: Vector3 = new Vector3(
+            this._trackPoints.first.coordinates.x + RaceGameConfig.START_POSITION_OFFSET,
+            this._trackPoints.first.coordinates.y,
+            this._trackPoints.first.coordinates.z + RaceGameConfig.START_POSITION_OFFSET);
         await this._playerCar.init(startPos, this.findFirstTrackSegmentAngle());
         this._playerCar.attachCamera(this._camera);
     }
@@ -69,14 +70,16 @@ export class RaceGame {
     private async initializeAICars(): Promise<void> {
         for (let i: number = 0; i < RaceGameConfig.AI_CARS_NUMBER; ++i) {
             this._aiCars.push(new Car());
-            this._aiCarService.push(new CarAiService(this._aiCars[i],
-                                                     this._trackPoints.pointVectors,
-                                                     this.isPair(i) ? Difficulty.Hard : Difficulty.Easy));
+            this._aiCarService.push(new AICarService(
+                this._aiCars[i],
+                this._trackPoints.pointVectors,
+                this.isPair(i) ? Difficulty.Hard : Difficulty.Easy));
             this._aiCarsDebug.add(this._aiCarService[i].debugGroup);
 
-            const startPos: Vector3 = new Vector3(this._trackPoints.first.coordinates.x - i * RaceGameConfig.START_POSITION_OFFSET,
-                                                  this._trackPoints.first.coordinates.y,
-                                                  this._trackPoints.first.coordinates.z - i * RaceGameConfig.START_POSITION_OFFSET);
+            const startPos: Vector3 = new Vector3(
+                this._trackPoints.first.coordinates.x - i * RaceGameConfig.START_POSITION_OFFSET,
+                this._trackPoints.first.coordinates.y,
+                this._trackPoints.first.coordinates.z - i * RaceGameConfig.START_POSITION_OFFSET);
 
             await this._aiCars[i].init(startPos, this.findFirstTrackSegmentAngle());
         }

@@ -5,7 +5,11 @@ import {
     PlaneGeometry, MeshLambertMaterial, DirectionalLight, DirectionalLightHelper, AmbientLight, Group, Object3D, CubeTexture,
     CubeTextureLoader
 } from "three";
+<<<<<<< HEAD
 import { PI_OVER_2, LOWER_GROUND, WHITE, GROUND_SIZE, GROUND_TEXTURE_FACTOR } from "../constants";
+=======
+import { PI_OVER_2, LOWER_GROUND, ASPHALT_TEXTURE, GRASS_TEXTURE } from "../constants";
+>>>>>>> 055c631d8b8a9c438672fae490d584fcac5915b6
 import { TrackPointList } from "./trackPoint";
 
 
@@ -67,7 +71,7 @@ export class RenderService {
         dirLight.shadow.camera.bottom = -d;
         dirLight.shadow.camera.far = 3500;
         dirLight.shadow.bias = -0.0001;
-        const dirLightHeper: DirectionalLightHelper = new DirectionalLightHelper(dirLight, 10)
+        const dirLightHeper: DirectionalLightHelper = new DirectionalLightHelper(dirLight, 10);
         this._scene.add(dirLightHeper);
     }
 
@@ -102,9 +106,13 @@ export class RenderService {
 
         const geometry: ShapeGeometry = new ShapeGeometry(shape);
         const trackMaterial: MeshLambertMaterial =
+<<<<<<< HEAD
             new MeshLambertMaterial({
                 side: BackSide, map: this.loadRepeatingTexture("assets/textures/asphalte.jpg", GROUND_TEXTURE_FACTOR)
             });
+=======
+            new MeshLambertMaterial({ side: BackSide, map: this.loadRepeatingTexture(ASPHALT_TEXTURE, 0.045) });
+>>>>>>> 055c631d8b8a9c438672fae490d584fcac5915b6
 
         const trackMesh: Mesh = new Mesh(geometry, trackMaterial);
         trackMesh.rotateX(PI_OVER_2);
@@ -133,7 +141,7 @@ export class RenderService {
     private renderGround(): void {
         const groundGeometry: PlaneGeometry = new PlaneGeometry(GROUND_SIZE, GROUND_SIZE, 1, 1);
         const groundMaterial: MeshLambertMaterial =
-            new MeshLambertMaterial({ side: BackSide, map: this.loadRepeatingTexture("assets/textures/green-grass-texture.jpg", 1000) });
+            new MeshLambertMaterial({ side: BackSide, map: this.loadRepeatingTexture(GRASS_TEXTURE, 1000) });
 
         const ground: Mesh = new Mesh(groundGeometry, groundMaterial);
         ground.rotateX(PI_OVER_2);

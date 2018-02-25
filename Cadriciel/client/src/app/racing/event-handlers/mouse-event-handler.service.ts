@@ -112,11 +112,9 @@ export class MouseEventHandlerService {
             this._editorControl.execute();
         } else if (this.clickOnVertex(editorScene)) {
             if (this.clickOnFirstVertex(editorScene) && editorScene.nbVertices >= REQUIRED_VERTEX_COUNT) {
-                if (editorScene.isComplete) {
-                    this._editorControl.command = new SelectVertex(editorScene, this.clickedVertexName(editorScene));
-                } else {
-                    this._editorControl.command = new CloseLoop(editorScene);
-                }
+                this._editorControl.command = editorScene.isComplete ?
+                    new SelectVertex(editorScene, this.clickedVertexName(editorScene)) :
+                    new CloseLoop(editorScene);
             } else {
                 this._editorControl.command = new SelectVertex(editorScene, this.clickedVertexName(editorScene));
             }
