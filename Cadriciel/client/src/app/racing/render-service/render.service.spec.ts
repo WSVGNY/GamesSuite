@@ -1,6 +1,6 @@
 import { TestBed, inject } from "@angular/core/testing";
 import { RenderService } from "./render.service";
-import { TrackPoint, TrackPointList } from "./trackPoint";
+import { TrackPointList } from "./trackPoint";
 import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
 // import { Object3D } from "three";
 import assert = require("assert");
