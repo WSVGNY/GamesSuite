@@ -12,7 +12,7 @@ export const PI_OVER_2: number = Math.PI / 2;
 export const PI_OVER_4: number = Math.PI / 4;
 export const SQUARED: number = 2;
 
-export const TRACK_WIDTH: number = 10;
+export const HALF_TRACK_WIDTH: number = 10;
 export const LOWER_GROUND: number = 0.01;
 export const SKYBOX_SIZE: number = 700;
 

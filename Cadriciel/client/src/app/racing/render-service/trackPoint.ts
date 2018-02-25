@@ -1,5 +1,5 @@
 import { Vector3 } from "three";
-import { HALF, TRACK_WIDTH } from "../constants";
+import { HALF, HALF_TRACK_WIDTH } from "../constants";
 import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
 
 export class TrackPoint {
@@ -24,7 +24,7 @@ export class TrackPoint {
                 -this._smallAngle * HALF;
         const vectorToInteriorPoint: Vector3 = this.vectorToNextCenterPoint.clone().normalize()
             .applyAxisAngle(new Vector3(0, 1, 0), angle)
-            .multiplyScalar(TRACK_WIDTH / Math.sin(angle));
+            .multiplyScalar(HALF_TRACK_WIDTH / Math.sin(angle));
 
         if (this.vectorToNextCenterPoint.cross(vectorToInteriorPoint).y < 0) {
             this._interior = new Vector3(
