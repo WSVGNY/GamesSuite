@@ -33,9 +33,7 @@ describe("CrosswordComponent", () => {
 
     it("the view contains a grid", () => {
         it("contains a grid", (done: () => void) => {
-            setTimeout(() => {
-                done();
-            },         timeout);
+            setTimeout(() => done(), timeout);
             expect(component.configurationService.grid).toBeTruthy();
         });
 
@@ -43,9 +41,7 @@ describe("CrosswordComponent", () => {
 
     it("the view contains definitions", () => {
         it("contains definitions", (done: () => void) => {
-            setTimeout(() => {
-                done();
-            },         timeout);
+            setTimeout(() => done(), timeout);
             expect(component.configurationService.grid.words[0].definition).toBeTruthy();
         });
     });
