@@ -86,12 +86,4 @@ describe("CrosswordComponent", () => {
         });
     });
 
-    it("the definitions in the horizontal section are those of horizontal words ", () => {
-        assert(false);
-    });
-
-    it("the definitions in the vertical section are those of vertical words ", () => {
-        assert(false);
-    });
-
 });
