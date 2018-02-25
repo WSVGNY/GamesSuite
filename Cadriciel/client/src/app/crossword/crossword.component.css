@@ -10,6 +10,11 @@
     margin-top:200px;
 }
 
+#textDefinition::first-letter{
+    font-size: 130%;
+    color: rgb(27, 76, 109);
+    text-transform: uppercase;
+}
 
 #gameInformations {
     width: 630px;

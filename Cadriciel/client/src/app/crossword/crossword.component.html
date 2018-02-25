@@ -12,12 +12,12 @@
     <div *ngIf="configurationService.grid !== undefined">
       <h3> Horizontal : </h3>
       <div *ngFor="let word of configurationService.grid.words">
-        <li *ngIf="word._isHorizontal">{{word._definitionID}})
+        <li  *ngIf="word._isHorizontal">{{word._definitionID}})
           <span *ngIf="isInCheatMode">
             <div [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}" (mouseup)="highlightWord(word)">{{getWordValue(word)}}</div>
           </span>
           <span *ngIf="!isInCheatMode">
-            <div [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}" (mouseup)="highlightWord(word)">{{word._definition}}</div>
+            <div id="textDefinition" [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}" (mouseup)="highlightWord(word)">{{word._definition}}</div>
           </span>
         </li>
       </div>
@@ -28,7 +28,7 @@
             <div [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}" (mouseup)="highlightWord(word)">{{getWordValue(word)}}</div>
           </span>
           <span *ngIf="!isInCheatMode">
-            <div [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}" (mouseup)="highlightWord(word)">{{word._definition}}</div>
+            <div id="textDefinition" [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}" (mouseup)="highlightWord(word)">{{word._definition}}</div>
           </span>
         </li>
       </div>
