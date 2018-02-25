@@ -1,4 +1,4 @@
-import { TestBed} from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { TrackPoint, TrackPointList } from "./trackPoint";
 // import { Object3D } from "three";
 // import assert = require("assert");
@@ -58,7 +58,7 @@ describe("TrackPoint", () => {
         expect(trackList).toBeTruthy();
     });
 
-    it("a track list of points should be created in the invert clock direction", () => {
+    it("a track list of points should be created in the clock direction", () => {
         const points: CommonCoordinate3D[] = Array<CommonCoordinate3D>();
         const trackPoint1: Vector3 = new Vector3(0, 0, 0);
         const trackPoint2: Vector3 = new Vector3(1, 0, 0);
