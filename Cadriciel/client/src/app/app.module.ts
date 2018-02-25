@@ -12,8 +12,10 @@ import { RacingComponent } from "./racing/racing.component";
 import { TrackService } from "./racing/track-service/track.service";
 import { EditorComponent } from "./racing/editor/editor.component";
 import { MouseEventHandlerService } from "./racing/event-handlers/mouse-event-handler.service";
+import { ConfigurationComponent } from "./crossword/configuration/configuration.component";
 import { AICarService } from "./racing/artificial-intelligence/ai-car.service";
 import { KeyboardEventHandlerService } from "./racing/event-handlers/keyboard-event-handler.service";
+import { ConfigurationService } from "./crossword/configuration.service";
 import { ChooseTrackComponent } from "./racing/choose-track/choose-track.component";
 import { RenderService } from "./racing/render-service/render.service";
 
@@ -24,22 +26,24 @@ import { RenderService } from "./racing/render-service/render.service";
         RacingComponent,
         CrosswordComponent,
         EditorComponent,
-        ChooseTrackComponent
+        ChooseTrackComponent,
+        ConfigurationComponent
     ],
     imports: [
         BrowserModule,
         HttpClientModule,
         AppRoutingModule,
-        FormsModule,
+        FormsModule
     ],
     providers: [
         GridService,
         TrackService,
-        EditorRenderService,
+        ConfigurationService,
         MouseEventHandlerService,
         AICarService,
         KeyboardEventHandlerService,
-        RenderService
+        RenderService,
+        EditorRenderService
     ],
     bootstrap: [AppComponent]
 })
