@@ -11,7 +11,6 @@ import { ConfigurationService } from "./configuration.service";
 export class CrosswordComponent {
 
     public selectedGridBox: CommonGridBox;
-    public defs: CommonWord;
     public correctWordCount: number = 0;
     private isInCheatMode: boolean = false;
 
