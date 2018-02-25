@@ -3,61 +3,30 @@ import { Car } from "../car/car";
 import { CommandController } from "../commands/commandController";
 import { TurnLeft } from "../commands/carAICommands/turnLeft";
 import { TurnRight } from "../commands/carAICommands/turnRight";
+import { GoFoward } from "../commands/carAICommands/goFoward";
 import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";
-import { Vector3, BoxHelper, Group } from "three";
-import { VectorHelper } from "./vectorHelper";
-import { PINK, WHITE, RED, GREEN, BLUE, SQUARED } from "../constants";
+import { Vector3, Group } from "three";
+import { SQUARED } from "../constants";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { Line } from "./line";
-import { GoFoward } from "../commands/carAICommands/goFoward";
 import { AIConfig } from "./ai-config";
+import { AIDebug } from "./ai-debug";
 
 @Injectable()
-export class CarAiService {
+export class AICarService {
 
-    private _debugGroup: Group;
     private _aiControl: CommandController;
     private _trackPortionIndex: number;
     private _trackVectors: Line[];
     private _aiConfig: AIConfig;
-
-    // HELPER
-    private _carHelper: BoxHelper;
-    private _axisX: VectorHelper;
-    private _axisY: VectorHelper;
-    private _axisZ: VectorHelper;
-    private _carVectorHelper: VectorHelper;
-    private _distanceVectorHelper: VectorHelper;
-    private _turningVectorHelper: VectorHelper;
-    private readonly AXIS_LENGTH: number = 5;
+    private _aiDebug: AIDebug;
 
     public constructor(private _car: Car, private _trackVertices: Vector3[], difficulty: Difficulty) {
         this._aiControl = new CommandController();
         this.createVectorTrackFromPoints(_trackVertices);
-        this.initializeDebugMode();
+        this._aiDebug = new AIDebug(this._car);
         this._aiConfig = new AIConfig(difficulty);
         this._trackPortionIndex = AIConfig.START_INDEX;
-    }
-
-    private initializeDebugMode(): void {
-        this._debugGroup = new Group;
-        this._axisX = new VectorHelper(RED);
-        this._axisY = new VectorHelper(GREEN);
-        this._axisZ = new VectorHelper(BLUE);
-
-        this._carVectorHelper = new VectorHelper(PINK);
-        this._distanceVectorHelper = new VectorHelper(WHITE);
-        this._turningVectorHelper = new VectorHelper(PINK);
-        this._carHelper = new BoxHelper(this._car);
-
-        this._debugGroup.add(this._carHelper);
-        this._debugGroup.add(this._axisX);
-        this._debugGroup.add(this._axisY);
-        this._debugGroup.add(this._axisZ);
-        this._debugGroup.add(this._carVectorHelper);
-        this._debugGroup.add(this._distanceVectorHelper);
-        this._debugGroup.add(this._turningVectorHelper);
-
     }
 
     public update(): void {
@@ -70,26 +39,10 @@ export class CarAiService {
         const pointOnLine: Vector3 = this.projectPointOnLine(projection);
         const turningPoint: Vector3 = this.projectTurningPoint();
 
-        this.updateDebugMode(carPosition, projection, pointOnLine, turningPoint);
+        this._aiDebug.updateDebugMode(carPosition, projection, pointOnLine, turningPoint, this._trackVertices[this._trackPortionIndex]);
 
         this.updateTrackPortionIndex(pointOnLine, turningPoint);
         this.updateCarDirection(lineDistance);
-    }
-
-    private updateDebugMode(carPosition: Vector3, projection: Vector3, pointOnLine: Vector3, turningPoint: Vector3): void {
-        this._axisX.update(carPosition, carPosition.clone().add(new Vector3(this.AXIS_LENGTH, 0, 0)));
-        this._axisY.update(carPosition, carPosition.clone().add(new Vector3(0, this.AXIS_LENGTH, 0)));
-        this._axisZ.update(carPosition, carPosition.clone().add(new Vector3(0, 0, this.AXIS_LENGTH)));
-        this._carHelper.update();
-        this._carVectorHelper.update(carPosition, projection);
-        this._distanceVectorHelper.update(projection, pointOnLine);
-        this._turningVectorHelper.update(
-            new Vector3(
-                this._trackVertices[this._trackPortionIndex].x,
-                0,
-                this._trackVertices[this._trackPortionIndex].z),
-            turningPoint
-        );
     }
 
     private updateTrackPortionIndex(pointOnLine: Vector3, turningPoint: Vector3): void {
@@ -205,6 +158,6 @@ export class CarAiService {
     }
 
     public get debugGroup(): Group {
-        return this._debugGroup;
+        return this._aiDebug.debugGroup;
     }
 }

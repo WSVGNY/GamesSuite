@@ -12,7 +12,7 @@ import { RacingComponent } from "./racing/racing.component";
 import { TrackService } from "./racing/track-service/track.service";
 import { EditorComponent } from "./racing/editor/editor.component";
 import { MouseEventHandlerService } from "./racing/event-handlers/mouse-event-handler.service";
-import { CarAiService } from "./racing/artificial-intelligence/car-ai.service";
+import { AICarService } from "./racing/artificial-intelligence/ai-car.service";
 import { KeyboardEventHandlerService } from "./racing/event-handlers/keyboard-event-handler.service";
 import { ChooseTrackComponent } from "./racing/choose-track/choose-track.component";
 import { RenderService } from "./racing/render-service/render.service";
@@ -37,7 +37,7 @@ import { RenderService } from "./racing/render-service/render.service";
         TrackService,
         EditorRenderService,
         MouseEventHandlerService,
-        CarAiService,
+        AICarService,
         KeyboardEventHandlerService,
         RenderService
     ],
