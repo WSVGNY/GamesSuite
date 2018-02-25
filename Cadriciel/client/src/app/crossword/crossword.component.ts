@@ -1,9 +1,7 @@
 import { Component } from "@angular/core";
 import { CommonGridBox } from "../../../../common/crossword/commonGridBox";
-import { Grid } from "../../../../common/crossword/grid";
 import { CommonWord } from "../../../../common/crossword/commonWord";
-import { GridService } from "./grid.service";
-import { Difficulty } from "../../../../common/crossword/difficulty";
+import { ConfigurationService } from "./configuration.service";
 
 @Component({
     selector: "app-crossword",
@@ -14,53 +12,14 @@ export class CrosswordComponent {
 
     public selectedGridBox: CommonGridBox;
     public defs: CommonWord;
-    private grid: Grid;
-    public boxes: CommonGridBox[][];
-    public words: CommonWord[];
-    private difficulty: Difficulty;
-    private isInCheatMode: boolean = false;
-    public showLoader: boolean = false;
-    public playerName: string = "";
     public correctWordCount: number = 0;
+    private isInCheatMode: boolean = false;
 
-    public constructor(private gridService: GridService) {
+    public constructor(public configurationService: ConfigurationService) {
     }
 
-    public createGrid(): void {
-        document.getElementById("input").style.visibility = "visible";
-        this.words = undefined;
-        this.gridService.gridGet(this.difficulty).subscribe((grid: Grid) => {
-            this.grid = grid;
-            this.boxes = this.grid.boxes;
-            this.words = this.grid.words;
-            this.showLoader = false;
-            document.getElementById("gridHider").style.visibility = "hidden";
-        });
-    }
-
-    public hideModeSelector(): void {
-        document.getElementById("modeSelection").style.display = "none";
-    }
-
-    private makeGrid(): void {
-        this.showLoader = true;
-        document.getElementById("gridHider").style.visibility = "visible";
-        this.createGrid();
-    }
-
-    public makeEasyGrid(): void {
-        this.difficulty = Difficulty.Easy;
-        this.makeGrid();
-    }
-
-    public makeMediumGrid(): void {
-        this.difficulty = Difficulty.Medium;
-        this.makeGrid();
-    }
-
-    public makeHardGrid(): void {
-        this.difficulty = Difficulty.Hard;
-        this.makeGrid();
+    public isConfigurationDone(): boolean {
+        return this.configurationService.configurationDone;
     }
 
     public changeMode(): void {
@@ -71,15 +30,15 @@ export class CrosswordComponent {
 
     public highlightedWord(word: CommonWord): boolean {
         if (word.isHorizontal) {
-            if (this.grid.boxes[word.startPosition.y][word.startPosition.x]._isColored &&
-                this.grid.boxes[word.startPosition.y][word.startPosition.x + 1]._isColored) {
+            if (this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x]._isColored &&
+                this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + 1]._isColored) {
                 return true;
             }
 
             return false;
         } else {
-            if (this.grid.boxes[word.startPosition.y][word.startPosition.x]._isColored &&
-                this.grid.boxes[word.startPosition.y + 1][word.startPosition.x]._isColored) {
+            if (this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x]._isColored &&
+                this.configurationService.grid.boxes[word.startPosition.y + 1][word.startPosition.x]._isColored) {
                 return true;
             }
 
@@ -98,36 +57,19 @@ export class CrosswordComponent {
             this.deselectWords();
             if (word.isHorizontal) {
                 for (let i: number = 0; i < word.length; i++) {
-                    this.grid.boxes[word.startPosition.y][i + word.startPosition.x]._isColored = true;
+                    this.configurationService.grid.boxes[word.startPosition.y][i + word.startPosition.x]._isColored = true;
                 }
             } else {
                 for (let i: number = 0; i < word.length; i++) {
-                    this.grid.boxes[word.startPosition.y + i][word.startPosition.x]._isColored = true;
+                    this.configurationService.grid.boxes[word.startPosition.y + i][word.startPosition.x]._isColored = true;
                 }
             }
         }
     }
 
-    public newGame(): void {
-        document.getElementById("buttongroup").style.visibility = "visible";
-    }
-
-    public joinGame(): void {
-        document.getElementById("buttongroup").style.visibility = "hidden";
-    }
-
-    public play(): void {
-        document.getElementById("buttongroupp").style.visibility = "visible";
-        document.getElementById("secondPlayer").style.visibility = "visible";
-    }
-
-    public playAlone(): void {
-        document.getElementById("secondPlayer").style.visibility = "hidden";
-    }
-
     public deselectWords(): void {
-        if (this.grid !== undefined) {
-            for (const line of this.grid.boxes) {
+        if (this.configurationService.grid !== undefined) {
+            for (const line of this.configurationService.grid.boxes) {
                 for (const box of line) {
                     box._isColored = false;
                 }
@@ -139,11 +81,11 @@ export class CrosswordComponent {
         let value: string = "";
         if (word.isHorizontal) {
             for (let i: number = 0; i < word.length; i++) {
-                value += this.grid.boxes[word.startPosition.y][i + word.startPosition.x]._char._value;
+                value += this.configurationService.grid.boxes[word.startPosition.y][i + word.startPosition.x]._char._value;
             }
         } else {
             for (let i: number = 0; i < word.length; i++) {
-                value += this.grid.boxes[word.startPosition.y + i][word.startPosition.x]._char._value;
+                value += this.configurationService.grid.boxes[word.startPosition.y + i][word.startPosition.x]._char._value;
             }
         }
 
