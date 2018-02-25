@@ -33,9 +33,6 @@ export class ConfigurationComponent {
 
     private makeGrid(): void {
         this.choseGridDifficulty = true;
-        document.getElementsByName("buttonDifficulty").item(0).setAttribute("disabled", "disabled"); //a changer
-        document.getElementsByName("buttonDifficulty").item(1).setAttribute("disabled", "disabled");
-        document.getElementsByName("buttonDifficulty").item(2).setAttribute("disabled", "disabled");
         this.createGrid();
     }
 

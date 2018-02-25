@@ -8,21 +8,27 @@ export interface ITrack {
     track: {
         name: string;
         description: string;
+        timesPlayed: number;
         vertices: Array<CommonCoordinate3D>;
         type: TrackType;
+        times: number[];
     };
 }
 
 export class Track {
     public name: string;
     public description: string;
+    public timesPlayed: number;
     public vertices: Array<CommonCoordinate3D>;
     public type: TrackType;
+    public times: number[];
 
     public constructor(rawTrack: ITrack) {
         this.name = rawTrack.track.name;
         this.description = rawTrack.track.description;
+        this.timesPlayed = rawTrack.track.timesPlayed;
         this.vertices = rawTrack.track.vertices;
         this.type = rawTrack.track.type;
+        this.times = rawTrack.track.times;
     };
 }

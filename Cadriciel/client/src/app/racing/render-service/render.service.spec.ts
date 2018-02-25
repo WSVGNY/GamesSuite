@@ -1,10 +1,10 @@
 import { TestBed, inject } from "@angular/core/testing";
 import { RenderService } from "./render.service";
-import { /*TrackPoint,*/ TrackPointList } from "./trackPoint";
 import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
-// import { Object3D } from "three";
-import assert = require("assert");
-import { Object3D, Mesh, Vector3, Geometry, Scene, Group } from "three";
+import { TrackPointList } from "./trackPoint";
+import { Object3D, Mesh, PlaneGeometry, MeshPhongMaterial,
+         BackSide, Vector3, Scene, Geometry, Group
+       } from "three";
 
 describe("RenderService", () => {
 
@@ -62,6 +62,27 @@ describe("RenderService", () => {
         renderService.resetScene();
 
         expect(renderService["_group"].getChildByName("mockObject")).toBeUndefined();
+    }));
+
+    it("should create a different track from the ground (OFF PISTE)", 
+       inject([RenderService], (renderService: RenderService) => {
+        const scene: Scene = new Scene();
+        const groundGeometry: PlaneGeometry = new PlaneGeometry(10000, 10000, 1, 1);
+        const groundMaterial: MeshPhongMaterial =
+            new MeshPhongMaterial({ side: BackSide, color: 0xFFFF00 });
+        const ground: Mesh = new Mesh(groundGeometry, groundMaterial);
+        scene.add(ground);
+        const points: CommonCoordinate3D[] = Array<CommonCoordinate3D>();
+        const trackPoint1: Vector3 = new Vector3(0, 0, 0);
+        const trackPoint2: Vector3 = new Vector3(1, 0, 0);
+        const trackPoint3: Vector3 = new Vector3(0, 0, 1);
+        points.push(trackPoint3);
+        points.push(trackPoint2);
+        points.push(trackPoint1);
+        const trackList: TrackPointList = new TrackPointList(points);
+        const track: Mesh = renderService.createTrackMesh(trackList);
+        scene.add(track);
+        expect(track).not.toEqual(ground);
     }));
 
 });
