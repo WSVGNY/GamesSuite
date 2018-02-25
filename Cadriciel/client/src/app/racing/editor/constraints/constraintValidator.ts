@@ -13,7 +13,7 @@ export class ConstraintValidator {
     // https://stackoverflow.com/questions/17763392/how-to-calculate-in-javascript-angle-between-3-points
     private static calculateAngle(line1: Line, line2: Line): number {
         const vector1: Vector3[] = ((line1.geometry) as Geometry).vertices;
-        const vector2: Vector3[] = ((line1.geometry) as Geometry).vertices;
+        const vector2: Vector3[] = ((line2.geometry) as Geometry).vertices;
 
         const vertex1: number = Math.sqrt((vector2[0].x - vector1[0].x) * (vector2[0].x - vector1[0].x)
             + (vector2[0].y - vector1[0].y) * (vector2[0].y - vector1[0].y));
@@ -124,7 +124,7 @@ export class ConstraintValidator {
     }
 
     private static isIntersecting(lambda: number, gamma: number): boolean {
-        return (lambda > 0 && lambda < 1) && (gamma > 0 && gamma < 1);
+        return (lambda >= 0 && lambda <= 1) && (gamma >= 0 && gamma <= 1);
     }
 
     private static calculateDeterminant(vectorToCheck1: Vector3[], vectorToCheck2: Vector3[]): number {
