@@ -8,8 +8,9 @@ import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { ElementRef } from "@angular/core";
 import { Track } from "../../../../../common/racing/track";
-import { SkyBox } from "./../skybox";
 import { RaceGameConfig } from "./raceGameConfig";
+import { SkyBox } from "../render-service/skybox";
+import { TrackLights } from "../render-service/light";
 
 export class RaceGame {
     private _camera: PerspectiveCamera;
@@ -22,6 +23,7 @@ export class RaceGame {
     private _lastDate: number;
     private _debug: boolean;
     private _centerLine: Line;
+    private _lighting: TrackLights;
 
     public constructor(private renderService: RenderService) { }
 
@@ -31,6 +33,7 @@ export class RaceGame {
         this.initializeCamera(containerRef.nativeElement);
         await this.initializePlayerCar();
         await this.initializeAICars();
+        this.initializeLights(this._trackType);
         this.setCenterLine();
         this.addObjectsToRenderScene();
         this.setSkyBox(this._trackType);
@@ -42,6 +45,7 @@ export class RaceGame {
         this.renderService.addObjectToScene(this._playerCar);
         this._aiCars.forEach((aiCar: Car) => this.renderService.addObjectToScene(aiCar));
         this.renderService.addObjectToScene(this.renderService.createTrackMesh(this._trackPoints));
+        this.renderService.addObjectToScene(this._lighting);
     }
 
     private initializeCamera(containerRef: HTMLDivElement): void {
@@ -104,6 +108,14 @@ export class RaceGame {
         this.renderService.loadSkyBox(SkyBox.getPath(trackType));
     }
 
+    private initializeLights(trackType: TrackType): void {
+        this._lighting = new TrackLights(trackType);
+    }
+
+    private setLights(trackType: TrackType): void {
+        this._lighting.update(trackType);
+    }
+
     public startGameLoop(): void {
         this._lastDate = Date.now();
         this.renderService.setupRenderer();
@@ -133,9 +145,11 @@ export class RaceGame {
     public set isDay(isDay: boolean) {
         if (isDay) {
             this.setSkyBox(this._trackType);
+            this.setLights(this._trackType);
             this._playerCar.dettachLights();
         } else {
             this.setSkyBox(TrackType.Night);
+            this.setLights(TrackType.Night);
             this._playerCar.attachLights();
         }
     }
