@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import Stats = require("stats.js");
 import {
     PerspectiveCamera, WebGLRenderer, Scene, Mesh, Shape, ShapeGeometry, Path, BackSide, TextureLoader, Texture, RepeatWrapping,
-    PlaneGeometry, MeshLambertMaterial, Group, Object3D, CubeTexture,
+    PlaneGeometry, Group, Object3D, CubeTexture,
     CubeTextureLoader,
     MeshPhongMaterial
 } from "three";

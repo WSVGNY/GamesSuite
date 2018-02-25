@@ -74,11 +74,6 @@ export class RaceGame {
     private async initializeAICars(): Promise<void> {
         for (let i: number = 0; i < RaceGameConfig.AI_CARS_NUMBER; ++i) {
             this._aiCars.push(new Car());
-            this._aiCarService.push(new AICarService(
-                this._aiCars[i],
-                this._trackPoints.pointVectors,
-                this.isPair(i) ? Difficulty.Hard : Difficulty.Easy));
-            this._aiCarsDebug.add(this._aiCarService[i].debugGroup);
 
             const startPos: Vector3 = new Vector3(
                 this._trackPoints.first.coordinates.x - i * RaceGameConfig.START_POSITION_OFFSET,
@@ -86,6 +81,11 @@ export class RaceGame {
                 this._trackPoints.first.coordinates.z - i * RaceGameConfig.START_POSITION_OFFSET);
 
             await this._aiCars[i].init(startPos, this.findFirstTrackSegmentAngle());
+            this._aiCarService.push(new AICarService(
+                this._aiCars[i],
+                this._trackPoints.pointVectors,
+                this.isPair(i) ? Difficulty.Hard : Difficulty.Easy));
+            this._aiCarsDebug.add(this._aiCarService[i].debugGroup);
         }
     }
 

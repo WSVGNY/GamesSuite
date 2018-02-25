@@ -1,9 +1,9 @@
 import {
     Vector3, Matrix4, Object3D, ObjectLoader, Quaternion, Camera,
-    SpotLight, Mesh, BoxGeometry, MeshBasicMaterial, Group, SpotLightHelper
+    SpotLight, Mesh, BoxGeometry, MeshBasicMaterial, Group
 } from "three";
 import { Engine } from "./engine";
-import { MS_TO_SECONDS, GRAVITY, RAD_TO_DEG, CAR_TEXTURE, RED, YELLOW, PI_OVER_4 } from "../constants";
+import { MS_TO_SECONDS, GRAVITY, RAD_TO_DEG, CAR_TEXTURE, RED, YELLOW, WHITE } from "../constants";
 import { Wheel } from "./wheel";
 
 export const DEFAULT_WHEELBASE: number = 2.78;
@@ -15,7 +15,7 @@ const INITIAL_WEIGHT_DISTRIBUTION: number = 0.5;
 const MINIMUM_SPEED: number = 0.05;
 const NUMBER_REAR_WHEELS: number = 2;
 const NUMBER_WHEELS: number = 4;
-const DISTANCE_FROM_CAR: number = 30;
+const TARGET_DISTANCE_FROM_CAR: number = 30;
 
 export class Car extends Object3D {
 
@@ -33,6 +33,7 @@ export class Car extends Object3D {
     private _steeringWheelDirection: number;
     private _weightRear: number;
     private _initialDirection: Vector3 = new Vector3(0, 0, -1);
+    private _spotlights: SpotLight[] = new Array();
     private _lightGroup: Group = new Group();
 
     public get speed(): Vector3 {
@@ -64,17 +65,28 @@ export class Car extends Object3D {
     }
 
     private createLights(): void {
-        this.createSpotlight(YELLOW, -1, 1, -1, -DISTANCE_FROM_CAR);
-        this.createSpotlight(YELLOW, 1, 1, -1, -DISTANCE_FROM_CAR);
-        this.createSpotlight(RED, -1, 1, 1, DISTANCE_FROM_CAR);
-        this.createSpotlight(RED, 1, 1, 1, DISTANCE_FROM_CAR);
+        this.createSpotlight(WHITE, -1, 1, -1, -TARGET_DISTANCE_FROM_CAR);
+        this.createSpotlight(WHITE, 1, 1, -1, -TARGET_DISTANCE_FROM_CAR);
+        this.createSpotlight(RED, -1, 1, 1, TARGET_DISTANCE_FROM_CAR);
+        this.createSpotlight(RED, 1, 1, 1, TARGET_DISTANCE_FROM_CAR);
     }
 
     private createSpotlight(color: number, positionX: number, positionY: number, positionZ: number, targetDistance: number): void {
-        const spotLight: SpotLight = new SpotLight(color, 1, 100, PI_OVER_4, 0.5, 0.2);
+        const spotLight: SpotLight = new SpotLight(color, 1, 100, Math.PI / 5, 0.5, 1);
         spotLight.position.set(positionX, positionY, positionZ);
         spotLight.target = this.attachTarget(targetDistance);
-        this._lightGroup.add(spotLight);
+        this._spotlights.push(spotLight);
+        this._lightGroup.add(this._spotlights[this._spotlights.length - 1]);
+    }
+
+    private turnBackLightsOn(): void {
+        this._lightGroup.add(this._spotlights[2]);
+        this._lightGroup.add(this._spotlights[3]);
+    }
+
+    private turnBackLightsOff(): void {
+        this._lightGroup.remove(this._spotlights[2]);
+        this._lightGroup.remove(this._spotlights[3]);
     }
 
     public attachLights(): void {
@@ -175,12 +187,12 @@ export class Car extends Object3D {
 
     public releaseBrakes(): void {
         this._isBraking = false;
-        // this.setBackLightColor(YELLOW);
+        this.turnBackLightsOff();
     }
 
     public brake(): void {
         this._isBraking = true;
-        // this.setBackLightColor(RED);
+        this.turnBackLightsOn();
     }
 
     public reverse(): void {
