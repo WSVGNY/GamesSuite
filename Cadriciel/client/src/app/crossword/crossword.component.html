@@ -1,71 +1,59 @@
-<div (mouseenter)="hide()" (mousedown)="deselectWords()">
+<div (mousedown)="deselectWords()">
   <h2> Crossword Game </h2>
-
-  <div id="modeSelection">
-    <a (click)="newGame()" class="push_button">New game</a>
-    <a (click)="joinGame()"class="push_button">Join game</a>
-    <div id="buttongroup" class="btn-group">
-        <button id="buttonDifficulty" (click)="play()" (click)="playAlone()" class="btn btn-primary">One player</button>
-        <button id="buttonDifficulty"  (click)="play()"class="btn btn-primary">Two players</button>
-    </div>
-    
-    <div id="buttongroupp" class="btn-group">
-      <button id="buttonDifficulty" (click)="makeEasyGrid()" class="btn btn-primary">EASY</button>
-      <button id="buttonDifficulty" (click)="makeMediumGrid()" class="btn btn-primary">MEDIUM</button>
-      <button id="buttonDifficulty" (click)="makeHardGrid()" class="btn btn-primary">HARD</button>
-   </div>
-
-   <form id="input" (submit)="hideModeSelector()">
-    Enter name: <input type="text" name="playerName" value="Player Name">
-    <input type="submit" value="Submit">
-  </form>
-
+  <div *ngIf="!isConfigurationDone()">
+    <app-configuration></app-configuration>
   </div>
 
- 
-
-  <div id="loader" *ngIf="showLoader"></div>
-
-  <div id="defs" (mousedown)="deselectWords()">
+  <div id="loader" *ngIf="isConfigurationDone() && configurationService.grid===undefined"></div>
+  <div id="definitions" (mousedown)="deselectWords()">
     <button id="CheatButton" (click)="changeMode()"> Cheat mode </button>
     <h2 id="title">Definitions</h2>
-    <h3 *ngIf="words !== undefined"> Horizontal : </h3>
-    <div *ngFor="let word of words">
-      <li *ngIf="word._isHorizontal">{{word._definitionID}})
-        <span *ngIf="isInCheatMode">
-          <div [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}" (mouseup)="highlightWord(word)">{{getWordValue(word)}}</div>
-        </span>
-        <span *ngIf="!isInCheatMode">
-          <div [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}" (mouseup)="highlightWord(word)">{{word._definition}}</div>
-        </span>
-      </li>
-    </div>
-    <h3 *ngIf="words !== undefined"> Vertical : </h3>
-    <div *ngFor="let word of words">
-      <li *ngIf="!word._isHorizontal">{{word._definitionID}})
-        <span *ngIf="isInCheatMode">
-          <div [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}" (mouseup)="highlightWord(word)">{{getWordValue(word)}}</div>
-        </span>
-        <span *ngIf="!isInCheatMode">
-          <div [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}" (mouseup)="highlightWord(word)">{{word._definition}}</div>
-        </span>
-      </li>
+    <div *ngIf="configurationService.grid !== undefined">
+      <h3> Horizontal : </h3>
+      <div *ngFor="let word of configurationService.grid.words">
+        <li *ngIf="word.isHorizontal">{{word.definitionID}})
+          <span *ngIf="isInCheatMode">
+            <div [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}" (mouseup)="highlightWord(word)">{{getWordValue(word)}}</div>
+          </span>
+          <span *ngIf="!isInCheatMode">
+            <div id="textDefinition" [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}"
+              (mouseup)="highlightWord(word)">{{word.definition}}</div>
+          </span>
+        </li>
+      </div>
+      <h3> Vertical : </h3>
+      <div *ngFor="let word of configurationService.grid.words">
+        <li *ngIf="!word.isHorizontal">{{word.definitionID}})
+          <span *ngIf="isInCheatMode">
+            <div [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}" (mouseup)="highlightWord(word)">{{getWordValue(word)}}</div>
+          </span>
+          <span *ngIf="!isInCheatMode">
+            <div id="textDefinition" [ngClass]="{selectedDefinition : highlightedWord(word), clearDefinition: !highlightedWord(word)}"
+              (mouseup)="highlightWord(word)">{{word.definition}}</div>
+          </span>
+        </li>
+      </div>
     </div>
   </div>
 </div>
 
-<div id="gameInformations">
-  <h3> Player 1 : <h4> 0 words found</h4> </h3>
-    
-  <h3 id="secondPlayer"> Player 2 : <h4> 0 words found</h4> </h3>
-    
+<div id="gameInformations" (mousedown)="deselectWords()">
+  <h3> {{configurationService.playerName}} :
+    <h4> {{correctWordCount}} words found</h4>
+  </h3>
+
+  <h3 *ngIf="configurationService.isTwoPlayerGame" id="secondPlayer"> Player 2 :
+    <h4> {{correctWordCount}} words found</h4>
+  </h3>
+
 </div>
-<div id="gridHider"></div>
 <div id="grid">
-  <div *ngFor="let line of boxes">
-    <div *ngFor="let gridBox of line" (mouseup)="highlightWordOfBox(gridBox)">
-      <div [ngClass]="{filledGridBox : gridBox._isBlack, selectedGridBox: gridBox._isColored, emptyGridBox : !gridBox._isBlack}">
-        <div>{{getGridBoxID(gridBox)}}</div>
+  <div *ngIf="configurationService.grid !== undefined">
+    <div *ngFor="let line of configurationService.grid.boxes">
+      <div *ngFor="let gridBox of line" (mouseup)="highlightWordOfBox(gridBox)">
+        <div (mousedown)="deselectWords()" [ngClass]="{filledGridBox : gridBox._isBlack, selectedGridBox: gridBox._isColored, emptyGridBox : !gridBox._isBlack}">
+          <div>{{getGridBoxID(gridBox)}}</div>
+        </div>
       </div>
     </div>
   </div>

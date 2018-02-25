@@ -1,6 +1,11 @@
 import { AfterViewInit, Component, ElementRef, ViewChild, HostListener } from "@angular/core";
 import { RenderService } from "./render-service/render.service";
 import { Car } from "./car/car";
+import { KeyboardEventHandlerService } from "./event-handlers/keyboard-event-handler.service";
+import { Track, ITrack } from "../../../../common/racing/track";
+import { TrackService } from "./track-service/track.service";
+import { ActivatedRoute } from "@angular/router";
+import { RaceGame } from "./game-loop/raceGame";
 
 @Component({
     moduleId: module.id,
@@ -12,9 +17,17 @@ import { Car } from "./car/car";
 export class RacingComponent implements AfterViewInit {
 
     @ViewChild("container")
-    private containerRef: ElementRef;
+    private _containerRef: ElementRef;
+    private _currentTrackId: string = "";
+    private _chosenTrack: Track;
+    private _raceGame: RaceGame;
 
-    public constructor(private renderService: RenderService) { }
+    public constructor(
+        private renderService: RenderService,
+        private route: ActivatedRoute,
+        private keyboardEventHandlerService: KeyboardEventHandlerService,
+        private trackService: TrackService
+    ) { }
 
     @HostListener("window:resize", ["$event"])
     public onResize(): void {
@@ -23,27 +36,44 @@ export class RacingComponent implements AfterViewInit {
 
     @HostListener("window:keydown", ["$event"])
     public onKeyDown(event: KeyboardEvent): void {
-        this.renderService.handleKeyDown(event);
+        if (this._raceGame !== undefined) {
+            this.keyboardEventHandlerService.handleKeyDown(event, this._raceGame);
+        }
     }
 
     @HostListener("window:keyup", ["$event"])
     public onKeyUp(event: KeyboardEvent): void {
-        this.renderService.handleKeyUp(event);
+        if (this._raceGame !== undefined) {
+            this.keyboardEventHandlerService.handleKeyUp(event, this._raceGame);
+        }
     }
 
-    public ngAfterViewInit(): void {
-        this.renderService
-            .initialize(this.containerRef.nativeElement)
+    public async ngAfterViewInit(): Promise<void> {
+        this.getTrack();
+
+        this.keyboardEventHandlerService
+            .initialize()
             .then(/* do nothing */)
             .catch((err) => console.error(err));
     }
 
-    public get car(): Car {
-        return this.renderService.playerCar;
+    public getTrack(): void {
+        this._currentTrackId = this.route.snapshot.paramMap.get("id");
+        this.trackService.getTrackFromId(this._currentTrackId)
+            .subscribe((trackFromServer: string) => {
+                const iTrack: ITrack = JSON.parse(JSON.stringify(trackFromServer));
+                this._chosenTrack = new Track(iTrack);
+                this.initializeGame();
+            });
     }
 
-    public hider(): void {
-        document.getElementById("image1").style.display = "none";
-        document.getElementById("image2").style.display = "none";
+    private async initializeGame(): Promise<void> {
+        this._raceGame = new RaceGame(this.renderService);
+        await this._raceGame.initialize(this._chosenTrack, this._containerRef);
     }
+
+    public get car(): Car {
+        return this._raceGame.playerCar;
+    }
+
 }

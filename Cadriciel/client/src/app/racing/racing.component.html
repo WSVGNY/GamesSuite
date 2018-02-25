@@ -1,10 +1,9 @@
-<div (mouseenter)="hider()">
-  <h2> Racing Game </h2>
+
+<!-- <h2> Racing Game </h2> -->
 <div #container>
-  <ul>
-    <li>Speed: {{this.renderService._playerCar.speed.length() * 3.6 | number :'2.2-2'}} km/h</li>
-    <li>Gear: {{this.renderService._playerCar.currentGear + 1}}</li>
-    <li>RPM: {{this.renderService._playerCar.rpm | number:'2.0-0'}}</li>
+  <ul *ngIf="this._raceGame !== undefined">
+    <li>Speed: {{this.car.speed.length() * 3.6 | number :'2.2-2'}} km/h</li>
+    <li>Gear: {{this.car.currentGear + 1}}</li>
+    <li>RPM: {{this.car.rpm | number:'2.0-0'}}</li>
   </ul>
-</div>
 </div>

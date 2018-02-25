@@ -1,26 +1,37 @@
 import { Vector3 } from "three";
 
+// tslint:disable:no-magic-numbers
 export const MOCK_TRACK: Vector3[] = [
-    // new Vector3(-59.375, 0, 332.5),
-    // new Vector3(134.375, 0, 333.75),
-    // new Vector3(313.125, 0, 332.5),
-    // new Vector3(446.875, 0, 283.75),
-    // new Vector3(505.625, 0, 173.75),
-    // new Vector3(536.875, 0, 71.25),
-    // new Vector3(480.625, 0, -15),
-    // new Vector3(335.625, 0, -65),
-    // new Vector3(135.625, 0, -68.75),
-    // new Vector3(-28.125, 0, -95),
-    // new Vector3(-135.625, 0, -246.25),
-    // new Vector3(-233.125, 0, -311.25),
-    // new Vector3(-343.125, 0, -321.25),
-    // new Vector3(-420.625, 0, -235),
-    // new Vector3(-450.625, 0, -95),
-    // new Vector3(-450.625, 0, 17.5),
-    // new Vector3(-429.375, 0, 120),
-    // new Vector3(-391.875, 0, 222.5),
-    // new Vector3(-263.125, 0, 317.5)
 
+    // // TRACK 1
+    // new Vector3(0, 0, 0),
+    // new Vector3(100, 0, 0),
+    // new Vector3(0, 0, -100),
+    // new Vector3(-100, 0, 0),
+    // new Vector3(0, 0, 100),
+
+    // // TRACK 2
+    new Vector3(-59.375, 0, 332.5),
+    new Vector3(134.375, 0, 333.75),
+    new Vector3(313.125, 0, 332.5),
+    new Vector3(446.875, 0, 283.75),
+    new Vector3(505.625, 0, 173.75),
+    new Vector3(536.875, 0, 71.25),
+    new Vector3(480.625, 0, -15),
+    new Vector3(335.625, 0, -65),
+    new Vector3(135.625, 0, -68.75),
+    new Vector3(-28.125, 0, -95),
+    new Vector3(-135.625, 0, -246.25),
+    new Vector3(-233.125, 0, -311.25),
+    new Vector3(-343.125, 0, -321.25),
+    new Vector3(-420.625, 0, -235),
+    new Vector3(-450.625, 0, -95),
+    new Vector3(-450.625, 0, 17.5),
+    new Vector3(-429.375, 0, 120),
+    new Vector3(-391.875, 0, 222.5),
+    new Vector3(-263.125, 0, 317.5)
+
+    // // TRACK 3
     // new Vector3(-464.375, 0, 371.25),
     // new Vector3(120.625, 0, 370),
     // new Vector3(374.375, 0, -63.75),
@@ -50,10 +61,11 @@ export const MOCK_TRACK: Vector3[] = [
     // new Vector3(-840.625, 0, 68.75),
     // new Vector3(-715.625, 0, 195),
 
-    new Vector3(-48, 0, -27),
-    new Vector3(-55, 0, 17),
-    new Vector3(9, 0, 34),
-    new Vector3(74, 0, 7),
-    new Vector3(70, 0, -26)
+    // // TRACK 4
+    // new Vector3(-48, 0, -27),
+    // new Vector3(-55, 0, 17),
+    // new Vector3(9, 0, 34),
+    // new Vector3(74, 0, 7),
+    // new Vector3(70, 0, -26)
 
 ];

@@ -13,16 +13,16 @@ h1 {
 }
 
 #image1, #image2 {
-    width:300px;
-    height:200px;
+    width:450px;
+    height:290px;
     padding-top: 2%;
-    margin-left:300px;
-    display:inline-block;
+    margin-left:220px;
+    display:none;
     size:80%;
 }
 
 #image2 {
-    margin-left: 205px;
+    margin-left: 80px;
 }
 
 nav a {
@@ -39,7 +39,6 @@ nav a {
     text-align: center;
     width:130px;
     font-size: 18px;
-    
 }
 
 nav a:hover {
@@ -47,7 +46,6 @@ nav a:hover {
     background-color: rgb(186, 209, 207);
     box-shadow: none;
 }
-
 
 .fa-home {
     font-size:40px;color:rgb(58, 107, 106);

@@ -1,25 +1,26 @@
-import { Coordinate } from "../../server/app/crossword/coordinate";
+import { Coordinate2D } from "../../server/app/crossword/coordinate2D";
 import { Word } from "../../server/app/crossword/word";
 
 export class CommonWord {
 
-    public _value: string;
-    public _definition: string;
-    public _constraints: Word[] = new Array<Word>();
-    public _difficulty: number = 0;
-    public _parentCaller: Word;
+    public _isComplete: boolean = false;
+    public value: string;
+    public definition: string;
+    public constraints: Word[] = new Array<Word>();
+    public difficulty: number = 0;
+    public parentCaller: Word;
 
     public constructor(
-        public _id: number,
-        public _definitionID: number,
-        public _isHorizontal: boolean,
-        public _length: number,
-        public _startPosition: Coordinate) {
+        public id: number,
+        public definitionID: number,
+        public isHorizontal: boolean,
+        public length: number,
+        public startPosition: Coordinate2D) {
     }
 
     public addConstraint(word: Word): void {
-        this._constraints[this._difficulty] = word;
-        this._difficulty++;
+        this.constraints[this.difficulty] = word;
+        this.difficulty++;
     }
-    
+
 }
