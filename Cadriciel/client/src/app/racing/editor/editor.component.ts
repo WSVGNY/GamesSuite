@@ -11,7 +11,7 @@ import { Vector3 } from "three";
 
 const CAMERA_Z_POSITION: number = 480;
 const CAMERA_POSITION: Vector3 = new Vector3(0, 0, CAMERA_Z_POSITION);
-const VIEW_SIZE: number = 600;
+const VIEW_SIZE: number = 500;
 
 @Component({
     selector: "app-editor",
