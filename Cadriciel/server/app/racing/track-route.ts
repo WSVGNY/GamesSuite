@@ -41,6 +41,7 @@ export class TrackRoute {
                     "track": {
                         "name": req.params.name,
                         "description": "",
+                        "timesPlayed": 0,
                         "vertices": [
                             { x: 0, y: 0, z: 50 },
                             { x: 50, y: 0, z: 0 },

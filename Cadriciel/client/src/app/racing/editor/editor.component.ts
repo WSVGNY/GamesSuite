@@ -27,6 +27,7 @@ export class EditorComponent implements AfterViewInit {
     private currentTrackName: string = "New Track";
     private currentTrackDescription: string = "New Description";
     private currentTrackId: string = "";
+    private currentTrackTimesPlayed: number = 0;
     private trackChosenFromAdmin: Track;
 
     private editorCamera: EditorCamera;
@@ -67,6 +68,7 @@ export class EditorComponent implements AfterViewInit {
                 this.trackChosenFromAdmin = new Track(iTrack);
                 this.currentTrackName = this.trackChosenFromAdmin.name;
                 this.currentTrackDescription = this.trackChosenFromAdmin.description;
+                this.currentTrackTimesPlayed = this.trackChosenFromAdmin.timesPlayed;
                 this.editorScene.importTrackVertices(this.trackChosenFromAdmin.vertices);
             });
     }
@@ -75,11 +77,7 @@ export class EditorComponent implements AfterViewInit {
         this.trackChosenFromAdmin.name = this.currentTrackName;
         this.trackChosenFromAdmin.description = this.currentTrackDescription;
         this.trackChosenFromAdmin.vertices = this.editorScene.exportTrackVertices();
-        this.trackService.putTrack(this.currentTrackId, this.trackChosenFromAdmin)
-            .subscribe((trackFromServer: string) => {
-                const iTrack: ITrack = JSON.parse(JSON.stringify(trackFromServer));
-                this.trackChosenFromAdmin = new Track(iTrack);
-            });
+        this.trackService.putTrack(this.currentTrackId, this.trackChosenFromAdmin).subscribe();
     }
 
     public saveTrackName(trackName: string): void {

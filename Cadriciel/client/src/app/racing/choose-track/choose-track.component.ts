@@ -51,4 +51,13 @@ export class ChooseTrackComponent implements OnInit, AfterViewInit {
     public displayTrackPreview(track: Track): void {
         this._trackPreview.loadTrack(track);
     }
+
+    public incrementTimesPlayed(track: TrackMapElement): void {
+        track.value.timesPlayed++;
+        this.saveTrack(track);
+    }
+
+    private saveTrack(track: TrackMapElement): void {
+        this.trackService.putTrack(track.key, track.value).subscribe();
+    }
 }

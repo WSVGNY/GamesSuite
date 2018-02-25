@@ -2,10 +2,13 @@
 count: {{count}}
 <ul class="tracks">
   <li class="track" *ngFor="let track of tracks; let i = index">
-    <a routerLink="/race/{{track.key}}" (mouseover)="displayTrackPreview(track.value)">
+    <a routerLink="/race/{{track.key}}" (mouseover)="displayTrackPreview(track.value) " (click)=incrementTimesPlayed(track)>
       <span class="badge">{{i+1}}</span> {{track.value.name}}
     </a>
-    {{track.value.description}}
+    <pre>Description: {{track.value.description}}</pre>
+
+    <pre>Times Played: {{track.value.timesPlayed}}</pre>
+
   </li>
 </ul>
 <div #preview></div>
