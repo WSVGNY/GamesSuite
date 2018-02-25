@@ -79,7 +79,7 @@ describe("Car", () => {
         car.accelerate();
         car.steerRight();
         car.update(MS_BETWEEN_FRAMES * 2);
-        expect(car.angle).toBeLessThan(initialAngle);
+        expect(car.angle).toBeGreaterThan(initialAngle);
     });
 
     it("should not turn when steering keys are released", () => {
