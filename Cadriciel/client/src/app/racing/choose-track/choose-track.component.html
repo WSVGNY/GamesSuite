@@ -9,7 +9,10 @@
     <pre>Times Played: {{track.value.timesPlayed}}</pre>
 
     <pre>Type: {{track.value.type}}</pre>
-
+    <pre>Best times:
+    <li *ngFor="let time of track.value.times;">
+        {{time}}
+    </pre>
   </li>
 </ul>
 <div #preview></div>

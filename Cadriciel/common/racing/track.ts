@@ -11,6 +11,7 @@ export interface ITrack {
         timesPlayed: number;
         vertices: Array<CommonCoordinate3D>;
         type: TrackType;
+        times: number[];
     };
 }
 
@@ -20,6 +21,7 @@ export class Track {
     public timesPlayed: number;
     public vertices: Array<CommonCoordinate3D>;
     public type: TrackType;
+    public times: number[];
 
     public constructor(rawTrack: ITrack) {
         this.name = rawTrack.track.name;
@@ -27,5 +29,6 @@ export class Track {
         this.timesPlayed = rawTrack.track.timesPlayed;
         this.vertices = rawTrack.track.vertices;
         this.type = rawTrack.track.type;
+        this.times = rawTrack.track.times;
     };
 }

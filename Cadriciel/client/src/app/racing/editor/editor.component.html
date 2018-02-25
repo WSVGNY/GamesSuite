@@ -14,6 +14,17 @@
     Times played: {{currentTrackTimesPlayed}}
 </P>
 <P>
+    Track Types :
+    <button (click)="chooseTrackType()"> {{currentTrackType}} </button>
+</P>
+
+<P>
+    Best times:
+    <li *ngFor="let time of currentTrackTimes;">
+        {{time}}
+    </li>
+</P>
+<P>
     <span *ngIf="editorScene!==undefined">
         <button *ngIf="!editorScene.checkConstraints()" id="saveButton" disabled> Save and go back </button>
         <button *ngIf="editorScene.checkConstraints()" id="saveButton" (click)="saveTrack()" (click)="goBack()"> Save and go back </button>
