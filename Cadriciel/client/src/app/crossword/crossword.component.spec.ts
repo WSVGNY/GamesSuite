@@ -50,7 +50,12 @@ describe("CrosswordComponent", () => {
         });
     });
 
-    it("the view contains game informations", () => {
+    it("the game information view contain the name of the player", () => {
+        component.configurationService.playerName = "Player1";
+        expect(component.configurationService.playerName).toBeTruthy();
+    });
+
+    it("the game information view contain the numer of words found", () => {
         expect(component.correctWordCount).toEqual(0);
     });
 
