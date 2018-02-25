@@ -6,7 +6,7 @@ import { WHITE, PINK, BLUE } from "../constants";
 import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
 import { ConstraintValidator } from "./constraints/constraintValidator";
 
-const RADIUS: number = 2;
+const RADIUS: number = 2.5;
 const OUTLINE_TO_VERTEX_RATIO: number = 1.25;
 export const VERTEX_GEOMETRY: SphereGeometry = new SphereGeometry(RADIUS);
 export const SIMPLE_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: WHITE });

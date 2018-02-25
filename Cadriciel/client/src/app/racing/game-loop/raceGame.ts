@@ -27,7 +27,7 @@ export class RaceGame {
 
     public async initialize(track: Track, containerRef: ElementRef): Promise<void> {
         this._trackType = track.type;
-        this._trackPoints = new TrackPointList(MOCK_TRACK);
+        this._trackPoints = new TrackPointList(track.vertices);
         this.initializeCamera(containerRef.nativeElement);
         await this.initializePlayerCar();
         await this.initializeAICars();
