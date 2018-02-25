@@ -8,7 +8,6 @@ import {
 import { PI_OVER_2, LOWER_GROUND, WHITE, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE } from "../constants";
 import { TrackPointList } from "./trackPoint";
 
-
 const AMBIENT_LIGHT_OPACITY: number = 0.1;
 
 @Injectable()
