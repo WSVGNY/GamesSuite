@@ -149,7 +149,6 @@ export class EditorScene {
         const connection: Line = this.createConnection(firstVertex, secondVertex);
         this._connections.push(connection);
         this._scene.add(connection);
-        this.checkConstraints();
     }
 
     public removeLastVertex(): void {
@@ -160,7 +159,6 @@ export class EditorScene {
             this._isComplete = false;
             this._scene.remove(this._connections.pop());
         }
-        this.checkConstraints();
     }
 
     public moveSelectedVertex(newPosition: Vector3): void {
@@ -181,7 +179,6 @@ export class EditorScene {
         this._scene.remove(this._connections[this._vertices.indexOf(vertex1)]);
         this._connections[this._vertices.indexOf(vertex1)] = new Line(LINE_GEOMETRY, SIMPLE_LINE_MATERIAL);
         this._scene.add(this._connections[this._vertices.indexOf(vertex1)]);
-        this.checkConstraints();
     }
 
     public updateFollowingConnection(entry: Mesh): void {
@@ -202,27 +199,16 @@ export class EditorScene {
         }
     }
 
-    private checkConstraints(): boolean {
-        let constraintsPass: boolean = true;
+    public checkConstraints(): boolean {
         for (const connection of this._connections) {
             connection.material = SIMPLE_LINE_MATERIAL;
         }
-        constraintsPass = ConstraintValidator.checkLength(this._connections);
-        if (constraintsPass) {
-            constraintsPass = ConstraintValidator.checkAngle(this._connections, this._isComplete);
-        }
-        if (constraintsPass) {
-            constraintsPass = ConstraintValidator.checkIntersection(this._connections, this._isComplete);
-        }
-        if (constraintsPass) {
-            constraintsPass = this._isComplete;
-        }
-        // TODO: Check the constranints with Charles to figure out a better way to talk with saveButton
-        // constraintsPass ?
-        //     (document.getElementById("saveButton") as HTMLInputElement).disabled = false :
-        //     (document.getElementById("saveButton") as HTMLInputElement).disabled = true;
 
-        return constraintsPass;
+        const lengthOk: boolean = ConstraintValidator.checkLength(this._connections);
+        const angleOk: boolean = ConstraintValidator.checkAngle(this._connections, this._isComplete);
+        const intersectionOk: boolean = ConstraintValidator.checkIntersection(this._connections, this._isComplete)
+
+        return lengthOk && angleOk && intersectionOk && this._isComplete;
     }
 
 }
