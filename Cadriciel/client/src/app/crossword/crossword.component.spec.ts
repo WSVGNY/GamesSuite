@@ -33,9 +33,7 @@ describe("CrosswordComponent", () => {
 
     it("the view contains a grid", () => {
         it("contains a grid", (done: () => void) => {
-            setTimeout(() => {
-                done();
-            },         timeout);
+            setTimeout(() => done(), timeout);
             expect(component.configurationService.grid).toBeTruthy();
         });
 
@@ -43,14 +41,17 @@ describe("CrosswordComponent", () => {
 
     it("the view contains definitions", () => {
         it("contains definitions", (done: () => void) => {
-            setTimeout(() => {
-                done();
-            },         timeout);
+            setTimeout(() => done(), timeout);
             expect(component.configurationService.grid.words[0].definition).toBeTruthy();
         });
     });
 
-    it("the view contains game informations", () => {
+    it("the game information view contain the name of the player", () => {
+        component.configurationService.playerName = "Player1";
+        expect(component.configurationService.playerName).toBeTruthy();
+    });
+
+    it("the game information view contain the numer of words found", () => {
         expect(component.correctWordCount).toEqual(0);
     });
 
