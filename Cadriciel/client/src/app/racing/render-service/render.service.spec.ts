@@ -1,13 +1,13 @@
 import { TestBed, inject } from "@angular/core/testing";
 import { RenderService } from "./render.service";
-import { TrackPoint, TrackPointList } from "./trackPoint";
+import { /*TrackPoint,*/ TrackPointList } from "./trackPoint";
 import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
 // import { Object3D } from "three";
 import assert = require("assert");
-import { Object3D, Mesh } from "three";
+import { Object3D, Mesh, Vector3, Geometry, Scene, Group } from "three";
 
 describe("RenderService", () => {
-    const render: RenderService = new RenderService();
+
     beforeEach(() => {
 
         TestBed.configureTestingModule({
@@ -19,33 +19,49 @@ describe("RenderService", () => {
         expect(service).toBeTruthy();
     }));
 
-    it("camera should be a child of _playerCar", inject([RenderService], (done: () => void) => {
-        assert(false);
+    it("should add an object to group", inject([RenderService], (renderService: RenderService) => {
+        const object: Object3D = new Object3D();
+        object.name = "testObject";
+        renderService.addObjectToScene(object);
+        expect(renderService["_group"].getChildByName("testObject")).toBeDefined();
     }));
 
-    it("should the 3D object to the scene", () => {
-        const object: Object3D = new Object3D();
-        object.name = "myObject";
-        render.addObjectToScene(object);
-        expect(render["_group"].getChildByName("myObject")).toBe(object);
-    });
+    it("should create a track Mesh from trackPoints", inject([RenderService], (renderService: RenderService) => {
+        const MOCK_TRACK: Vector3[] = [
+            new Vector3(0, 0, 0),
+            new Vector3(100, 0, 0),
+            new Vector3(100, 0, 100),
+            new Vector3(0, 0, 100),
+        ];
+        const points: TrackPointList = new TrackPointList(MOCK_TRACK);
+        const shape: Mesh = renderService.createTrackMesh(points);
+        const EXPECTED_MOCK_TRACK: Vector3[] = [
+            new Vector3(-10, -10, 0),
+            new Vector3(-10, 110, 0),
+            new Vector3(110, 110, 0),
+            new Vector3(110, -10, 0),
+            new Vector3(10, 10, 0),
+            new Vector3(90, 10, 0),
+            new Vector3(90, 90, 0),
+            new Vector3(10, 90, 0),
+        ];
+        expect((shape.geometry as Geometry )["vertices"]).toEqual(EXPECTED_MOCK_TRACK);
+    }));
 
-    it("should create a track Mesh from trackPoints", () => {
-        const points: TrackPointList = new TrackPointList(new Array<CommonCoordinate3D>());
-        const shape: Mesh = render.createTrackMesh(points);
-        expect(shape).toBeTruthy(); // Not sure for this one. Like we want to know is shape is created.
-    });
+    it("should reset the scene to a blank state", inject([RenderService], (renderService: RenderService) => {
+        const mockGroup: Group = new Group();
+        const mockObject: Object3D = new Object3D();
+        const mockScene: Scene = new Scene();
 
-    it("should create a Shape(trackMesh) from trackPoints", () => {
-        const points: TrackPointList = new TrackPointList(new Array<CommonCoordinate3D>());
-        const shape: Mesh = render.createTrackMesh(points);
-        expect(shape).toBeTruthy();
-    });
+        mockObject.name = "mockObject";
+        mockGroup.add(mockObject);
+        mockScene.add(mockGroup);
+        renderService["_scene"] = mockScene;
+        renderService["_group"] = mockGroup;
 
-    it("should create a Shape(trackMesh) from trackPoints", () => {
-        const points: TrackPointList = new TrackPointList(new Array<CommonCoordinate3D>());
-        const shape: Mesh = render.createTrackMesh(points);
-        expect(shape).toBeTruthy();
-    });
+        renderService.resetScene();
+
+        expect(renderService["_group"].getChildByName("mockObject")).toBeUndefined();
+    }));
 
 });
