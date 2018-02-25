@@ -17,7 +17,7 @@ h1 {
     height:290px;
     padding-top: 2%;
     margin-left:220px;
-    display:none;
+    display:inline-block;
     size:80%;
 }
 
