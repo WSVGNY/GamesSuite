@@ -80,7 +80,7 @@ export class CarAiService {
         this._axisX.update(carPosition, carPosition.clone().add(new Vector3(this.AXIS_LENGTH, 0, 0)));
         this._axisY.update(carPosition, carPosition.clone().add(new Vector3(0, this.AXIS_LENGTH, 0)));
         this._axisZ.update(carPosition, carPosition.clone().add(new Vector3(0, 0, this.AXIS_LENGTH)));
-        this._carHelper.update(this._car);
+        this._carHelper.update();
         this._carVectorHelper.update(carPosition, projection);
         this._distanceVectorHelper.update(projection, pointOnLine);
         this._turningVectorHelper.update(
