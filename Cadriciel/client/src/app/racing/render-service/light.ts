@@ -1,4 +1,4 @@
-import { Group, AmbientLight, DirectionalLight, DirectionalLightHelper } from "three";
+import { Group, AmbientLight, DirectionalLight } from "three";
 import { WHITE } from "../constants";
 import { AbstractLightingConfig } from "./lighting-config/abstractConfig";
 import { TrackType } from "../../../../../common/racing/trackType";
