@@ -46,7 +46,7 @@
 #input {
     visibility: visible;
     position: absolute;
-    top: 350px;
+    top: 270px;
     left: 50px;
 }
 
@@ -89,3 +89,9 @@ button:hover {
     box-shadow: none;
 }
 
+#selectedOptions{
+    background:rgba(63, 110, 96, 0.425);
+    position: absolute;
+    top: 250px;
+    left: 550px;
+}
