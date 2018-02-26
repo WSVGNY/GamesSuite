@@ -1,7 +1,7 @@
 import { Component, AfterViewInit, HostListener, ElementRef, ViewChild, Input } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
-import { Track, ITrack } from "../../../../../common/racing/track";
+import { TrackStructure } from "../../../../../common/racing/track";
 import { TrackService } from "../track-service/track.service";
 import { EditorCamera } from "./editorCamera";
 import { EditorScene } from "./editorScene";
@@ -9,6 +9,7 @@ import { EditorRenderService } from "./editor-render-service/editor-render.servi
 import { MouseEventHandlerService } from "../event-handlers/mouse-event-handler.service";
 import { Vector3 } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
+import { Track } from "../track";
 
 const CAMERA_Z_POSITION: number = 480;
 const CAMERA_POSITION: Vector3 = new Vector3(0, 0, CAMERA_Z_POSITION);
@@ -25,7 +26,7 @@ export class EditorComponent implements AfterViewInit {
     @ViewChild("containerEditor")
     private containerRef: ElementRef;
     @Input()
-    private currentTrack: { id: string, track: Track };
+    private currentTrack: Track;
     private trackChosenFromAdmin: Track;
 
     private editorCamera: EditorCamera;
@@ -38,21 +39,7 @@ export class EditorComponent implements AfterViewInit {
         private editorRenderService: EditorRenderService,
         private mouseEventHandlerService: MouseEventHandlerService) {
 
-        const id: string = "";
-        const track: Track = new Track(
-            {
-                "_id": "",
-                "track": {
-                    "name": "New Track",
-                    "description": "New Description",
-                    "timesPlayed": 0,
-                    "vertices": [],
-                    "type": TrackType.Default,
-                    "times": [0, 0, 0]
-                }
-            }
-        );
-        this.currentTrack = { id, track };
+        this.currentTrack = new Track(TrackStructure.getNewDefaultTrackStructure());
     }
 
     public ngAfterViewInit(): void {
@@ -75,34 +62,40 @@ export class EditorComponent implements AfterViewInit {
     }
 
     public getTrack(): void {
-        this.currentTrack.id = this.route.snapshot.paramMap.get("id");
-        this.trackService.getTrackFromId(this.currentTrack.id)
+        this.trackService.getTrackFromId(this.route.snapshot.paramMap.get("id"))
             .subscribe((trackFromServer: string) => {
-                const iTrack: ITrack = JSON.parse(JSON.stringify(trackFromServer));
+                const iTrack: TrackStructure = JSON.parse(JSON.stringify(trackFromServer));
                 this.trackChosenFromAdmin = new Track(iTrack);
-                this.currentTrack.track.name = this.trackChosenFromAdmin.name;
-                this.currentTrack.track.description = this.trackChosenFromAdmin.description;
-                this.currentTrack.track.timesPlayed = this.trackChosenFromAdmin.timesPlayed;
-                this.currentTrack.track.type = this.trackChosenFromAdmin.type;
-                this.currentTrack.track.times = this.trackChosenFromAdmin.times;
+                this.currentTrack.name = this.trackChosenFromAdmin.name;
+                this.currentTrack.description = this.trackChosenFromAdmin.description;
+                this.currentTrack.timesPlayed = this.trackChosenFromAdmin.timesPlayed;
+                this.currentTrack.type = this.trackChosenFromAdmin.type;
+                this.currentTrack.bestTimes = this.trackChosenFromAdmin.bestTimes;
                 this.editorScene.importTrackVertices(this.trackChosenFromAdmin.vertices);
             });
     }
 
     public saveTrack(): void {
-        this.trackChosenFromAdmin.name = this.currentTrack.track.name;
-        this.trackChosenFromAdmin.description = this.currentTrack.track.description;
+        this.trackChosenFromAdmin.name = this.currentTrack.name;
+        this.trackChosenFromAdmin.description = this.currentTrack.description;
         this.trackChosenFromAdmin.vertices = this.editorScene.exportTrackVertices();
-        this.trackChosenFromAdmin.type = this.currentTrack.track.type;
-        this.trackService.putTrack(this.currentTrack.id, this.trackChosenFromAdmin).subscribe();
+        this.trackChosenFromAdmin.type = this.currentTrack.type;
+        this.trackService.putTrack(this.trackChosenFromAdmin.id, this.trackChosenFromAdmin.toTrackStructure())
+            .subscribe(
+                (trackFromServer: string) => {
+                    const iTrack: TrackStructure = JSON.parse(JSON.stringify(trackFromServer));
+                    this.trackChosenFromAdmin = new Track(iTrack);
+                },
+                (error: Error) => console.error(error)
+            );
     }
 
     public saveTrackName(trackName: string): void {
-        this.currentTrack.track.name = trackName;
+        this.currentTrack.name = trackName;
     }
 
     public saveTrackDescription(trackDescription: string): void {
-        this.currentTrack.track.description = trackDescription;
+        this.currentTrack.description = trackDescription;
     }
 
     public goBack(): void {
@@ -110,7 +103,7 @@ export class EditorComponent implements AfterViewInit {
     }
 
     public chooseTrackType(): void {
-        this.currentTrack.track.type = this.currentTrack.track.type === TrackType.Default ? TrackType.Night : TrackType.Default;
+        this.currentTrack.type = this.currentTrack.type === TrackType.Default ? TrackType.Night : TrackType.Default;
     }
 
     @HostListener("window:mousedown", ["$event"])
@@ -136,10 +129,4 @@ export class EditorComponent implements AfterViewInit {
     public onContextMenu(event: MouseEvent): void {
         this.mouseEventHandlerService.onContextMenu(event);
     }
-    /*
-        @HostListener("window:resize", ["$event"])
-        public onResize(): void {
-            this.editorRenderService.onResize();
-        }
-        */
 }

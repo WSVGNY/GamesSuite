@@ -128,7 +128,7 @@ export class WordFiller {
             state = Token.Pass;
             await this.getWordFromAPI(wordConstraints).then(
                 (result: ResponseWordFromAPI) => {
-                    if (this.verifyWordAlreadyThere(result._word) || result._word === "") {
+                    if (this.verifyWordAlreadyThere(result.word) || result.word === "") {
                         state = Token.BackTrack;
                     }
                     if (state === Token.Pass) {
@@ -137,8 +137,8 @@ export class WordFiller {
                             this.backTrackingWord = undefined;
                         }
 
-                        word.value = result._word;
-                        word.definition = result._definition;
+                        word.value = result.word;
+                        word.definition = result.definition;
                         this.updateCharGrid(word);
                         this.filledWords.push(word);
                     }
@@ -205,8 +205,8 @@ export class WordFiller {
         await requestPromise(this.URL_WORD_API + constraints + "/" + this.gridDifficulty).then(
             (result: string) => {
                 result = JSON.parse(result);
-                responseWord._word = result["_word"];
-                responseWord._definition = result["_definition"];
+                responseWord.word = result["word"];
+                responseWord.definition = result["definition"];
             }
         ).catch((e: Error) => {
             console.error(e);

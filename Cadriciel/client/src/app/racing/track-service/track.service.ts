@@ -5,12 +5,12 @@ import { Observable } from "rxjs/Observable";
 import { catchError } from "rxjs/operators";
 import { of } from "rxjs/observable/of";
 
-import { Track } from "../../../../../common/racing/track";
+import { TrackStructure } from "../../../../../common/racing/track";
 
 @Injectable()
 export class TrackService {
 
-    private readonly BASE_URL: string = "http://localhost:3000/admin";
+    private readonly BASE_URL: string = "http://localhost:3000/track";
     private readonly httpOptions: { headers: HttpHeaders; } = {
         headers: new HttpHeaders({
         })
@@ -31,12 +31,15 @@ export class TrackService {
     }
 
     public newTrack(trackName: string): Observable<string> {
-        return this.http.post<string>(this.BASE_URL + "/new/" + trackName, this.httpOptions).pipe(
+        const newTrack: TrackStructure = TrackStructure.getNewDefaultTrackStructure();
+        newTrack.name = trackName;
+
+        return this.http.post<string>(this.BASE_URL + "/new", newTrack, this.httpOptions).pipe(
             catchError(this.handleError<string>("newTrack"))
         );
     }
 
-    public putTrack(trackId: string, track: Track): Observable<string> {
+    public putTrack(trackId: string, track: TrackStructure): Observable<string> {
         return this.http.put<string>(this.BASE_URL + "/put/" + trackId, track, this.httpOptions).pipe(
             catchError(this.handleError<string>("putTrack"))
         );
