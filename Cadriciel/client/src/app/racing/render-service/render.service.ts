@@ -19,8 +19,7 @@ export class RenderService {
     private _camera: PerspectiveCamera;
     private _skyBoxTexture: CubeTexture;
 
-    public constructor() {
-    }
+    public constructor() { }
 
     public async initialize(container: HTMLDivElement, camera: PerspectiveCamera): Promise<void> {
         this._container = container;
@@ -81,6 +80,7 @@ export class RenderService {
 
         const trackMesh: Mesh = new Mesh(geometry, trackMaterial);
         trackMesh.rotateX(PI_OVER_2);
+        trackMesh.name = "track";
 
         return trackMesh;
     }
@@ -111,6 +111,7 @@ export class RenderService {
         const ground: Mesh = new Mesh(groundGeometry, groundMaterial);
         ground.rotateX(PI_OVER_2);
         ground.translateZ(LOWER_GROUND);
+        ground.name = "ground";
         this._scene.add(ground);
     }
 

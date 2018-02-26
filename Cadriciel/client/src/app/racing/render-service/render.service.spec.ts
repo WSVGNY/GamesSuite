@@ -1,17 +1,18 @@
 import { TestBed, inject } from "@angular/core/testing";
 import { RenderService } from "./render.service";
-import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
 import { TrackPointList } from "./trackPoint";
 import {
-    Object3D, Mesh, PlaneGeometry, MeshPhongMaterial,
-    BackSide, Vector3, Scene, Geometry, Group
+    Object3D, Mesh, MeshPhongMaterial,
+    Vector3, Scene, Geometry, Group
 } from "three";
+import { RaceGame } from "../game-loop/raceGame";
+import { TrackStructure } from "../../../../../common/racing/track";
+import { ElementRef } from "@angular/core";
 
 // tslint:disable:no-magic-numbers
 describe("RenderService", () => {
 
     beforeEach(() => {
-
         TestBed.configureTestingModule({
             providers: [RenderService]
         });
@@ -66,23 +67,10 @@ describe("RenderService", () => {
             .catch(() => expect(false).toEqual(true));
     }));
 
-    it("should create a different track from the ground (OFF PISTE)", inject([RenderService], (renderService: RenderService) => {
-        const scene: Scene = new Scene();
-        const groundGeometry: PlaneGeometry = new PlaneGeometry(10000, 10000, 1, 1);
-        const groundMaterial: MeshPhongMaterial = new MeshPhongMaterial({ side: BackSide, color: 0xFFFF00 });
-        const ground: Mesh = new Mesh(groundGeometry, groundMaterial);
-        scene.add(ground);
-        const points: CommonCoordinate3D[] = Array<CommonCoordinate3D>();
-        const trackPoint1: Vector3 = new Vector3(0, 0, 0);
-        const trackPoint2: Vector3 = new Vector3(1, 0, 0);
-        const trackPoint3: Vector3 = new Vector3(0, 0, 1);
-        points.push(trackPoint3);
-        points.push(trackPoint2);
-        points.push(trackPoint1);
-        const trackList: TrackPointList = new TrackPointList(points);
-        const track: Mesh = renderService.createTrackMesh(trackList);
-        scene.add(track);
-        expect(track).not.toEqual(ground);
+    it("should create a different track from the ground (OFF PISTE)", inject([RenderService], async (renderService: RenderService) => {
+        new RaceGame(renderService).initialize(TrackStructure.getNewDefaultTrackStructure(), new ElementRef(undefined));
+        const track: Mesh = renderService["_scene"].getObjectByName("track") as Mesh;
+        const ground: Mesh = renderService["_scene"].getObjectByName("ground") as Mesh;
+        expect((track.material as MeshPhongMaterial).map).not.toEqual((ground.material as MeshPhongMaterial).map);
     }));
-
 });
