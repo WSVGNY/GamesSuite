@@ -1,29 +1,11 @@
 import {
-    Vector3, Matrix4, Object3D, ObjectLoader, Quaternion, Camera,
-    SpotLight, Mesh, BoxGeometry, MeshBasicMaterial, Group
+    Vector3, Matrix4, Object3D, ObjectLoader, Quaternion, Camera
 } from "three";
 import { Engine } from "./engine";
-import { MS_TO_SECONDS, GRAVITY, RAD_TO_DEG, CAR_TEXTURE, RED, YELLOW, WHITE } from "../constants";
+import { MS_TO_SECONDS, GRAVITY, RAD_TO_DEG, CAR_TEXTURE } from "../constants";
 import { Wheel } from "./wheel";
-
-export const DEFAULT_WHEELBASE: number = 2.78;
-export const DEFAULT_MASS: number = 1515;
-export const DEFAULT_DRAG_COEFFICIENT: number = 0.35;
-
-const MAXIMUM_STEERING_ANGLE: number = 0.15;
-const INITIAL_WEIGHT_DISTRIBUTION: number = 0.5;
-const MINIMUM_SPEED: number = 0.05;
-const NUMBER_REAR_WHEELS: number = 2;
-const NUMBER_WHEELS: number = 4;
-const TARGET_DISTANCE_FROM_CAR: number = 30;
-const SPOTLIGHT_MAX_DISTANCE: number = 100;
-const SPOTLIGHT_OPENING: number = 5;
-const SPOTLIGHT_ANGLE: number = Math.PI / SPOTLIGHT_OPENING;
-const SPOTLIGHT_PENUMBRA: number = 0.5;
-const SPOTLIGHT_FRONT_LEFT: number = 0;
-const SPOTLIGHT_FRONT_RIGHT: number = 1;
-const SPOTLIGHT_BACK_LEFT: number = 2;
-const SPOTLIGHT_BACK_RIGHT: number = 3;
+import { CarConfig } from "./carConfig";
+import { CarLights } from "./carLights";
 
 export class Car extends Object3D {
 
@@ -41,8 +23,7 @@ export class Car extends Object3D {
     private _steeringWheelDirection: number;
     private _weightRear: number;
     private _initialDirection: Vector3 = new Vector3(0, 0, -1);
-    private _spotlights: SpotLight[] = new Array();
-    private _lightGroup: Group = new Group();
+    private _lights: CarLights;
 
     public get speed(): Vector3 {
         return this._speed.clone();
@@ -72,50 +53,12 @@ export class Car extends Object3D {
         this._mesh.add(camera);
     }
 
-    private createLights(): void {
-        this.createSpotlight(WHITE, -1, 1, -1, -TARGET_DISTANCE_FROM_CAR);
-        this.createSpotlight(WHITE, 1, 1, -1, -TARGET_DISTANCE_FROM_CAR);
-        this.createSpotlight(RED, -1, 1, 1, TARGET_DISTANCE_FROM_CAR);
-        this.createSpotlight(RED, 1, 1, 1, TARGET_DISTANCE_FROM_CAR);
-    }
-
-    private createSpotlight(color: number, positionX: number, positionY: number, positionZ: number, targetDistance: number): void {
-        const spotLight: SpotLight = new SpotLight(color, 1, SPOTLIGHT_MAX_DISTANCE, SPOTLIGHT_ANGLE, SPOTLIGHT_PENUMBRA, 1);
-        spotLight.position.set(positionX, positionY, positionZ);
-        spotLight.target = this.attachTarget(targetDistance);
-        this._spotlights.push(spotLight);
-        this._lightGroup.add(this._spotlights[this._spotlights.length - 1]);
-    }
-
-    private turnBackLightsOn(): void {
-        this._lightGroup.add(this._spotlights[SPOTLIGHT_BACK_LEFT]);
-        this._lightGroup.add(this._spotlights[SPOTLIGHT_BACK_RIGHT]);
-    }
-
-    private turnBackLightsOff(): void {
-        this._lightGroup.remove(this._spotlights[SPOTLIGHT_BACK_LEFT]);
-        this._lightGroup.remove(this._spotlights[SPOTLIGHT_BACK_RIGHT]);
-    }
-
     public attachLights(): void {
-        this._mesh.add(this._lightGroup);
+        this._mesh.add(this._lights);
     }
 
     public dettachLights(): void {
-        this._mesh.remove(this._lightGroup);
-    }
-
-    public attachTarget(distance: number): Mesh {
-        const geometry: BoxGeometry = new BoxGeometry(0, 0, 0);
-        const material: MeshBasicMaterial = new MeshBasicMaterial({ color: YELLOW });
-        const cube: Mesh = new Mesh(geometry, material);
-        cube.position.set(0, 0, distance);
-        this._mesh.add(cube);
-
-        return cube;
-    }
-    public attachCube(cube: Object3D): void {
-        this._mesh.add(cube);
+        this._mesh.remove(this._lights);
     }
 
     public get direction(): Vector3 {
@@ -131,24 +74,24 @@ export class Car extends Object3D {
     public constructor(
         engine: Engine = new Engine(),
         rearWheel: Wheel = new Wheel(),
-        wheelbase: number = DEFAULT_WHEELBASE,
-        mass: number = DEFAULT_MASS,
-        dragCoefficient: number = DEFAULT_DRAG_COEFFICIENT) {
+        wheelbase: number = CarConfig.DEFAULT_WHEELBASE,
+        mass: number = CarConfig.DEFAULT_MASS,
+        dragCoefficient: number = CarConfig.DEFAULT_DRAG_COEFFICIENT) {
         super();
 
         if (wheelbase <= 0) {
             console.error("Wheelbase should be greater than 0.");
-            wheelbase = DEFAULT_WHEELBASE;
+            wheelbase = CarConfig.DEFAULT_WHEELBASE;
         }
 
         if (mass <= 0) {
             console.error("Mass should be greater than 0.");
-            mass = DEFAULT_MASS;
+            mass = CarConfig.DEFAULT_MASS;
         }
 
         if (dragCoefficient <= 0) {
             console.error("Drag coefficient should be greater than 0.");
-            dragCoefficient = DEFAULT_DRAG_COEFFICIENT;
+            dragCoefficient = CarConfig.DEFAULT_DRAG_COEFFICIENT;
         }
 
         this._engine = engine;
@@ -159,7 +102,7 @@ export class Car extends Object3D {
 
         this._isBraking = false;
         this._steeringWheelDirection = 0;
-        this._weightRear = INITIAL_WEIGHT_DISTRIBUTION;
+        this._weightRear = CarConfig.INITIAL_WEIGHT_DISTRIBUTION;
         this._speed = new Vector3(0, 0, 0);
         this.position.add(new Vector3(0, 0, 0));
     }
@@ -177,16 +120,16 @@ export class Car extends Object3D {
         this._mesh = await this.load();
         this._mesh.position.add(startPoint);
         this._mesh.setRotationFromAxisAngle(new Vector3(0, 1, 0), rotationAngle);
-        this.createLights();
+        this._lights = new CarLights();
         this.add(this._mesh);
     }
 
     public steerLeft(): void {
-        this._steeringWheelDirection = MAXIMUM_STEERING_ANGLE;
+        this._steeringWheelDirection = CarConfig.MAXIMUM_STEERING_ANGLE;
     }
 
     public steerRight(): void {
-        this._steeringWheelDirection = -MAXIMUM_STEERING_ANGLE;
+        this._steeringWheelDirection = -CarConfig.MAXIMUM_STEERING_ANGLE;
     }
 
     public releaseSteering(): void {
@@ -195,12 +138,12 @@ export class Car extends Object3D {
 
     public releaseBrakes(): void {
         this._isBraking = false;
-        this.turnBackLightsOff();
+        this._lights.turnBackLightsOff();
     }
 
     public brake(): void {
         this._isBraking = true;
-        this.turnBackLightsOn();
+        this._lights.turnBackLightsOn();
     }
 
     public reverse(): void {
@@ -235,7 +178,7 @@ export class Car extends Object3D {
         this._speed = this.speed.applyQuaternion(rotationQuaternion.inverse());
 
         // Angular rotation of the car
-        const R: number = DEFAULT_WHEELBASE / Math.sin(this._steeringWheelDirection * deltaTime);
+        const R: number = CarConfig.DEFAULT_WHEELBASE / Math.sin(this._steeringWheelDirection * deltaTime);
         const omega: number = this._speed.length() / R;
         this._mesh.rotateY(omega);
     }
@@ -245,7 +188,7 @@ export class Car extends Object3D {
         this._engine.update(this._speed.length(), this._rearWheel.radius);
         this._weightRear = this.getWeightDistribution();
         this._speed.add(this.getDeltaSpeed(deltaTime));
-        this._speed.setLength(this._speed.length() <= MINIMUM_SPEED ? 0 : this._speed.length());
+        this._speed.setLength(this._speed.length() <= CarConfig.MINIMUM_SPEED ? 0 : this._speed.length());
         this._mesh.position.add(this.getDeltaPosition(deltaTime));
         this._rearWheel.update(this._speed.length());
     }
@@ -263,7 +206,7 @@ export class Car extends Object3D {
     private getLongitudinalForce(): Vector3 {
         const resultingForce: Vector3 = new Vector3();
 
-        if (this._speed.length() >= MINIMUM_SPEED) {
+        if (this._speed.length() >= CarConfig.MINIMUM_SPEED) {
             const dragForce: Vector3 = this.getDragForce();
             const rollingResistance: Vector3 = this.getRollingResistance();
             resultingForce.add(dragForce).add(rollingResistance);
@@ -310,13 +253,13 @@ export class Car extends Object3D {
         const force: number = this.getEngineForce();
         const maxForce: number =
             this._rearWheel.frictionCoefficient * this._mass *
-            GRAVITY * this._weightRear * NUMBER_REAR_WHEELS / NUMBER_WHEELS;
+            GRAVITY * this._weightRear * CarConfig.NUMBER_REAR_WHEELS / CarConfig.NUMBER_WHEELS;
 
         return -Math.min(force, maxForce);
     }
 
     private getAngularAcceleration(): number {
-        return this.getTotalTorque() / (this._rearWheel.inertia * NUMBER_REAR_WHEELS);
+        return this.getTotalTorque() / (this._rearWheel.inertia * CarConfig.NUMBER_REAR_WHEELS);
     }
 
     private getBrakeForce(): Vector3 {
@@ -332,7 +275,7 @@ export class Car extends Object3D {
     }
 
     private getTotalTorque(): number {
-        return this.getTractionTorque() * NUMBER_REAR_WHEELS + this.getBrakeTorque();
+        return this.getTractionTorque() * CarConfig.NUMBER_REAR_WHEELS + this.getBrakeTorque();
     }
 
     private getEngineForce(): number {
