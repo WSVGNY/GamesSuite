@@ -16,7 +16,6 @@ const MINIMUM_SPEED: number = 0.05;
 const NUMBER_REAR_WHEELS: number = 2;
 const NUMBER_WHEELS: number = 4;
 const TARGET_DISTANCE_FROM_CAR: number = 30;
-const PERFORMANCE_FACTOR: number = 3;
 
 export class Car extends Object3D {
 
@@ -302,7 +301,7 @@ export class Car extends Object3D {
     private getTractionForce(): number {
         const force: number = this.getEngineForce();
         const maxForce: number =
-            this._rearWheel.frictionCoefficient * this._mass * PERFORMANCE_FACTOR *
+            this._rearWheel.frictionCoefficient * this._mass *
             GRAVITY * this._weightRear * NUMBER_REAR_WHEELS / NUMBER_WHEELS;
 
         return -Math.min(force, maxForce);
@@ -313,7 +312,7 @@ export class Car extends Object3D {
     }
 
     private getBrakeForce(): Vector3 {
-        return this.direction.multiplyScalar(this._rearWheel.frictionCoefficient * PERFORMANCE_FACTOR * this._mass * GRAVITY);
+        return this.direction.multiplyScalar(this._rearWheel.frictionCoefficient * this._mass * GRAVITY);
     }
 
     private getBrakeTorque(): number {
