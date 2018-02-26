@@ -171,7 +171,6 @@ export class Car extends Object3D {
         const rotationQuaternion: Quaternion = new Quaternion();
         rotationQuaternion.setFromRotationMatrix(rotationMatrix);
         this._speed.applyMatrix4(rotationMatrix);
-
         this.physicsUpdate(deltaTime);
 
         // Move back to world coordinates
@@ -233,7 +232,6 @@ export class Car extends Object3D {
     private getRollingResistance(): Vector3 {
         const tirePressure: number = 1;
         // formula taken from: https://www.engineeringtoolbox.com/rolling-friction-resistance-d_1303.html
-
         // tslint:disable-next-line:no-magic-numbers
         const rollingCoefficient: number = (1 / tirePressure) * (Math.pow(this.speed.length() * 3.6 / 100, 2) * 0.0095 + 0.01) + 0.005;
 
