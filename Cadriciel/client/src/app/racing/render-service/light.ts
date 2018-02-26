@@ -5,6 +5,14 @@ import { TrackType } from "../../../../../common/racing/trackType";
 import { NightConfig } from "./lighting-config/nightConfig";
 import { DefaultConfig } from "./lighting-config/defaultConfig";
 
+const DIRECTIONAL_LIGHT_HUE: number = 0.1;
+const DIRECTIONAL_LIGHT_SATURATION: number = 1;
+const DIRECTIONAL_LIGHT_LUMINANCE: number = 0.95;
+
+const DIRECTIONAL_LIGHT_POSITION_X: number = -1;
+const DIRECTIONAL_LIGHT_POSITION_Y: number = 0.8;
+const DIRECTIONAL_LIGHT_POSITION_Z: number = 1;
+
 export class TrackLights extends Group {
     private lightingConfig: AbstractLightingConfig;
     private ambiantLight: AmbientLight;
@@ -12,35 +20,32 @@ export class TrackLights extends Group {
 
     public constructor(trackType: TrackType) {
         super();
-        this.update(trackType);
+        this.updateLightsToTrackType(trackType);
     }
 
-    public update(trackType: TrackType): void {
+    public updateLightsToTrackType(trackType: TrackType): void {
         this.chooseConfig(trackType);
+
+        this.setAmbiantLight();
+        this.setDirectionalLight();
+    }
+
+    private setAmbiantLight(): void {
         if (this.ambiantLight !== undefined) {
             this.remove(this.ambiantLight);
-            this.remove(this.directionalLight);
         }
         this.ambiantLight = new AmbientLight(WHITE, this.lightingConfig.AMBIENT_LIGHT_INTENSITY);
-        this.directionalLight = new DirectionalLight(WHITE, this.lightingConfig.DIRECTIONAL_LIGHT_INTENSITY);
-
         this.add(this.ambiantLight);
+    }
+
+    private setDirectionalLight(): void {
+        if (this.directionalLight !== undefined) {
+            this.remove(this.directionalLight);
+        }
+        this.directionalLight = new DirectionalLight(WHITE, this.lightingConfig.DIRECTIONAL_LIGHT_INTENSITY);
+        this.directionalLight.color.setHSL(DIRECTIONAL_LIGHT_HUE, DIRECTIONAL_LIGHT_SATURATION, DIRECTIONAL_LIGHT_LUMINANCE);
+        this.directionalLight.position.set(DIRECTIONAL_LIGHT_POSITION_X, DIRECTIONAL_LIGHT_POSITION_Y, DIRECTIONAL_LIGHT_POSITION_Z);
         this.add(this.directionalLight);
-        this.directionalLight.color.setHSL(0.1, 1, 0.95);
-        this.directionalLight.position.set(-1, 0.8, 1);
-        this.directionalLight.position.multiplyScalar(30);
-        this.directionalLight.castShadow = true;
-        this.directionalLight.shadow.mapSize.width = 2048;
-        this.directionalLight.shadow.mapSize.height = 2048;
-        const d: number = 50;
-        this.directionalLight.shadow.camera.left = -d;
-        this.directionalLight.shadow.camera.right = d;
-        this.directionalLight.shadow.camera.top = d;
-        this.directionalLight.shadow.camera.bottom = -d;
-        this.directionalLight.shadow.camera.far = 3500;
-        this.directionalLight.shadow.bias = -0.0001;
-        // const dirLightHeper: DirectionalLightHelper = new DirectionalLightHelper(this.directionalLight, 10);
-        // this.add(dirLightHeper);
     }
 
     private chooseConfig(trackType: TrackType): void {

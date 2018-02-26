@@ -5,6 +5,7 @@ import { TrackPoint, TrackPointList } from "./trackPoint";
 import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
 import { Vector3 } from "three";
 
+// tslint:disable:no-magic-numbers
 describe("TrackPoint", () => {
     let trackPoint: TrackPoint;
     let trackList: TrackPointList;

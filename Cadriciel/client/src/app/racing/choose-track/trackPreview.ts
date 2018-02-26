@@ -25,7 +25,7 @@ export class TrackPreview {
     }
 
     public loadTrack(track: Track): void {
-        this.renderService.resetScene();
+        this.renderService.resetScene().then().catch((error: Error) => console.error(error));
         this._trackType = track.type;
         this._trackPoints = new TrackPointList(track.vertices);
         this.addObjectsToRenderScene();

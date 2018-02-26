@@ -3,23 +3,23 @@ import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { ChooseTrackComponent } from "./choose-track.component";
 
 describe("ChooseTrackComponent", () => {
-  let component: ChooseTrackComponent;
-  let fixture: ComponentFixture<ChooseTrackComponent>;
+    let component: ChooseTrackComponent;
+    let fixture: ComponentFixture<ChooseTrackComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ChooseTrackComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            declarations: [ChooseTrackComponent]
+        })
+            .compileComponents().catch((error: Error) => console.error(error));
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ChooseTrackComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(ChooseTrackComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
 
-  it("should create", () => {
-    expect(component).toBeTruthy();
-  });
+    it("should create", () => {
+        expect(component).toBeTruthy();
+    });
 });

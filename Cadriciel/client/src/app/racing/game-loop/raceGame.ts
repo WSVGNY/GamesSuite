@@ -113,7 +113,7 @@ export class RaceGame {
     }
 
     private setLights(trackType: TrackType): void {
-        this._lighting.update(trackType);
+        this._lighting.updateLightsToTrackType(trackType);
     }
 
     public startGameLoop(): void {

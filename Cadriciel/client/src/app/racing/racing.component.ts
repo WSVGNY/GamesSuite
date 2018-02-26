@@ -63,7 +63,7 @@ export class RacingComponent implements AfterViewInit {
             .subscribe((trackFromServer: string) => {
                 const iTrack: ITrack = JSON.parse(JSON.stringify(trackFromServer));
                 this._chosenTrack = new Track(iTrack);
-                this.initializeGame();
+                this.initializeGame().then().catch((error: Error) => console.error(error));
             });
     }
 

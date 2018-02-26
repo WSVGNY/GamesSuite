@@ -14,7 +14,6 @@ describe("AdminComponent", () => {
         }).compileComponents()
             .then()
             .catch((e: Error) => console.error(e.message));
-        await component["getTracksFromServer"];
     });
 
     beforeEach(() => {

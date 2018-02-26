@@ -16,6 +16,14 @@ const MINIMUM_SPEED: number = 0.05;
 const NUMBER_REAR_WHEELS: number = 2;
 const NUMBER_WHEELS: number = 4;
 const TARGET_DISTANCE_FROM_CAR: number = 30;
+const SPOTLIGHT_MAX_DISTANCE: number = 100;
+const SPOTLIGHT_OPENING: number = 5;
+const SPOTLIGHT_ANGLE: number = Math.PI / SPOTLIGHT_OPENING;
+const SPOTLIGHT_PENUMBRA: number = 0.5;
+const SPOTLIGHT_FRONT_LEFT: number = 0;
+const SPOTLIGHT_FRONT_RIGHT: number = 1;
+const SPOTLIGHT_BACK_LEFT: number = 2;
+const SPOTLIGHT_BACK_RIGHT: number = 3;
 
 export class Car extends Object3D {
 
@@ -72,7 +80,7 @@ export class Car extends Object3D {
     }
 
     private createSpotlight(color: number, positionX: number, positionY: number, positionZ: number, targetDistance: number): void {
-        const spotLight: SpotLight = new SpotLight(color, 1, 100, Math.PI / 5, 0.5, 1);
+        const spotLight: SpotLight = new SpotLight(color, 1, SPOTLIGHT_MAX_DISTANCE, SPOTLIGHT_ANGLE, SPOTLIGHT_PENUMBRA, 1);
         spotLight.position.set(positionX, positionY, positionZ);
         spotLight.target = this.attachTarget(targetDistance);
         this._spotlights.push(spotLight);
@@ -80,13 +88,13 @@ export class Car extends Object3D {
     }
 
     private turnBackLightsOn(): void {
-        this._lightGroup.add(this._spotlights[2]);
-        this._lightGroup.add(this._spotlights[3]);
+        this._lightGroup.add(this._spotlights[SPOTLIGHT_BACK_LEFT]);
+        this._lightGroup.add(this._spotlights[SPOTLIGHT_BACK_RIGHT]);
     }
 
     private turnBackLightsOff(): void {
-        this._lightGroup.remove(this._spotlights[2]);
-        this._lightGroup.remove(this._spotlights[3]);
+        this._lightGroup.remove(this._spotlights[SPOTLIGHT_BACK_LEFT]);
+        this._lightGroup.remove(this._spotlights[SPOTLIGHT_BACK_RIGHT]);
     }
 
     public attachLights(): void {

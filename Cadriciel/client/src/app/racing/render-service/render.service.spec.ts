@@ -2,10 +2,12 @@ import { TestBed, inject } from "@angular/core/testing";
 import { RenderService } from "./render.service";
 import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
 import { TrackPointList } from "./trackPoint";
-import { Object3D, Mesh, PlaneGeometry, MeshPhongMaterial,
-         BackSide, Vector3, Scene, Geometry, Group
-       } from "three";
+import {
+    Object3D, Mesh, PlaneGeometry, MeshPhongMaterial,
+    BackSide, Vector3, Scene, Geometry, Group
+} from "three";
 
+// tslint:disable:no-magic-numbers
 describe("RenderService", () => {
 
     beforeEach(() => {
@@ -45,7 +47,7 @@ describe("RenderService", () => {
             new Vector3(90, 90, 0),
             new Vector3(10, 90, 0),
         ];
-        expect((shape.geometry as Geometry )["vertices"]).toEqual(EXPECTED_MOCK_TRACK);
+        expect((shape.geometry as Geometry)["vertices"]).toEqual(EXPECTED_MOCK_TRACK);
     }));
 
     it("should reset the scene to a blank state", inject([RenderService], (renderService: RenderService) => {
@@ -59,17 +61,15 @@ describe("RenderService", () => {
         renderService["_scene"] = mockScene;
         renderService["_group"] = mockGroup;
 
-        renderService.resetScene();
-
-        expect(renderService["_group"].getChildByName("mockObject")).toBeUndefined();
+        renderService.resetScene()
+            .then(() => expect(renderService["_group"].getChildByName("mockObject")).toBeUndefined())
+            .catch(() => expect(false).toEqual(true));
     }));
 
-    it("should create a different track from the ground (OFF PISTE)", 
-       inject([RenderService], (renderService: RenderService) => {
+    it("should create a different track from the ground (OFF PISTE)", inject([RenderService], (renderService: RenderService) => {
         const scene: Scene = new Scene();
         const groundGeometry: PlaneGeometry = new PlaneGeometry(10000, 10000, 1, 1);
-        const groundMaterial: MeshPhongMaterial =
-            new MeshPhongMaterial({ side: BackSide, color: 0xFFFF00 });
+        const groundMaterial: MeshPhongMaterial = new MeshPhongMaterial({ side: BackSide, color: 0xFFFF00 });
         const ground: Mesh = new Mesh(groundGeometry, groundMaterial);
         scene.add(ground);
         const points: CommonCoordinate3D[] = Array<CommonCoordinate3D>();
