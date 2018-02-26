@@ -1,8 +1,9 @@
 import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from "@angular/core";
 import { TrackService } from "../track-service/track.service";
-import { TrackMapElement, TrackDocument, Track } from "../../../../../common/racing/track";
+import { TrackStructure } from "../../../../../common/racing/track";
 import { RenderService } from "../render-service/render.service";
 import { TrackPreview } from "./trackPreview";
+import { Track } from "../track";
 
 @Component({
     selector: "app-choose-track",
@@ -14,7 +15,7 @@ export class ChooseTrackComponent implements OnInit, AfterViewInit {
     @ViewChild("preview")
     private containerRef: ElementRef;
 
-    private tracks: TrackMapElement[] = new Array();
+    private tracks: Track[] = new Array();
     private _trackPreview: TrackPreview;
 
     public constructor(
@@ -39,16 +40,14 @@ export class ChooseTrackComponent implements OnInit, AfterViewInit {
             .subscribe((tracksFromServer: string) => {
                 this.tracks = [];
                 JSON.parse(tracksFromServer).forEach((document: string) => {
-                    const iTrack: TrackDocument = JSON.parse(JSON.stringify(document));
-                    this.tracks.push({
-                        "key": iTrack._id,
-                        "value": new Track(iTrack)
-                    });
+                    const iTrack: TrackStructure = JSON.parse(JSON.stringify(document));
+                    this.tracks.push(new Track(iTrack));
                 });
+                console.log(this.tracks);
             });
     }
 
-    public displayTrackPreview(track: Track): void {
+    public displayTrackPreview(track: TrackStructure): void {
         this._trackPreview.loadTrack(track);
     }
 }

@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import "reflect-metadata";
 import { injectable, } from "inversify";
-import { TrackDocument } from "../../../common/racing/track";
-import { MongoClient, InsertOneWriteOpResult } from "mongodb";
+import { TrackStructure } from "../../../common/racing/track";
+import { MongoClient, InsertOneWriteOpResult, UpdateWriteOpResult } from "mongodb";
 import { ObjectId } from "bson";
 
 @injectable()
@@ -16,7 +16,7 @@ export class TrackRoute {
         MongoClient.connect(this.DATABASE_URL).then((dbConnection: MongoClient) => {
             dbConnection.db(this.DATABASE).collection(this.COLLECTION).find().toArray().then((tracksCollection: string[]) => {
                 const noTestTracks: string[] = tracksCollection.filter(
-                    (document: string) => (JSON.parse(JSON.stringify(document)) as TrackDocument).track._isTestTrack === false);
+                    (document: string) => (JSON.parse(JSON.stringify(document)) as TrackStructure)._isTestTrack === false);
                 res.json(JSON.stringify(noTestTracks));
                 dbConnection.close();
             }).catch((e: Error) => console.error(e));
@@ -24,10 +24,12 @@ export class TrackRoute {
     }
 
     public getTrackFromID(req: Request, res: Response): void {
+        console.log("2 " + req.params.id);
         MongoClient.connect(this.DATABASE_URL).then((dbConnection: MongoClient) => {
             dbConnection.db("log2990").collection(this.COLLECTION)
                 .findOne({ "_id": new ObjectId(req.params.id) }).then((document: string) => {
-                    const iTrack: TrackDocument = JSON.parse(JSON.stringify(document));
+                    console.log(document);
+                    const iTrack: TrackStructure = JSON.parse(JSON.stringify(document));
                     res.send(JSON.stringify(iTrack));
                     dbConnection.close();
                 }).catch((e: Error) => res.send(e));
@@ -36,19 +38,20 @@ export class TrackRoute {
 
     public newTrack(req: Request, res: Response): void {
         MongoClient.connect(this.DATABASE_URL).then((dbConnection: MongoClient) => {
-            console.log(req.body);
             dbConnection.db("log2990").collection(this.COLLECTION)
                 .insertOne(req.body).then((result: InsertOneWriteOpResult) => {
                     req.params.id = result.insertedId;
+                    console.log("1 " + req.params.id);
                     dbConnection.close().then(() => this.getTrackFromID(req, res));
                 }).catch((e: Error) => res.send(e));
         }).catch((e: Error) => res.send(e));
     }
 
     public editTrack(req: Request, res: Response): void {
+        delete req.body._id;
         MongoClient.connect(this.DATABASE_URL).then((dbConnection: MongoClient) => {
             dbConnection.db("log2990").collection(this.COLLECTION)
-                .updateOne({ "_id": new ObjectId(req.params.id) }, { $set: { ["track"]: req.body } }).then(() => {
+                .updateOne({ "_id": new ObjectId(req.params.id) }, { $set: req.body }).then((result: UpdateWriteOpResult) => {
                     dbConnection.close().then(() => this.getTrackFromID(req, res));
                 }).catch((e: Error) => res.send(e));
         }).catch((e: Error) => res.send(e));

@@ -3,7 +3,7 @@ import { TrackPointList } from "./../render-service/trackPoint";
 import { Vector3, PerspectiveCamera } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { ElementRef } from "@angular/core";
-import { Track } from "../../../../../common/racing/track";
+import { TrackStructure } from "../../../../../common/racing/track";
 import { TrackPreviewConfig } from "./TrackPreviewConfig";
 import { SkyBox } from "../render-service/skybox";
 import { TrackLights } from "../render-service/light";
@@ -24,7 +24,7 @@ export class TrackPreview {
         }
     }
 
-    public loadTrack(track: Track): void {
+    public loadTrack(track: TrackStructure): void {
         this.renderService.resetScene();
         this._trackType = track.type;
         this._trackPoints = new TrackPointList(track.vertices);

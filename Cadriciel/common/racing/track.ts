@@ -1,32 +1,23 @@
 import { CommonCoordinate3D } from "./commonCoordinate3D";
 import { TrackType } from "./trackType";
 
-export type TrackMapElement = { "key": string, "value": Track };
+export class TrackStructure {
+    public _id: string;
+    public _isTestTrack: boolean = false;
+    public name: string = "New Track";
+    public description: string = "";
+    public vertices: Array<CommonCoordinate3D> = new Array();
+    public type: TrackType = TrackType.Default;
 
-export interface TrackDocument {
-    _id: string;
-    track: {
-        name: string;
-        _isTestTrack: boolean;
-        description: string;
-        vertices: Array<CommonCoordinate3D>;
-        type: TrackType;
-    };
-}
+    public static getNewDefaultTrackStructure(): TrackStructure {
+        const newTrack: TrackStructure = new TrackStructure();
+        newTrack._id = undefined;
+        newTrack._isTestTrack = false;
+        newTrack.description = "";
+        newTrack.name = "New Track";
+        newTrack.type = TrackType.Default;
+        newTrack.vertices = [];
 
-export class Track {
-    public name: string;
-    public description: string;
-    public vertices: Array<CommonCoordinate3D>;
-    public type: TrackType;
-
-    private _isTestTrack: boolean;
-
-    public constructor(rawTrack: TrackDocument) {
-        this.name = rawTrack.track.name;
-        this._isTestTrack = rawTrack.track._isTestTrack;
-        this.description = rawTrack.track.description;
-        this.vertices = rawTrack.track.vertices;
-        this.type = rawTrack.track.type;
-    };
+        return newTrack;
+    }
 }

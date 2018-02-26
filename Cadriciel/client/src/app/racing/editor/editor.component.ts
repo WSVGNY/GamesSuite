@@ -1,13 +1,14 @@
 import { Component, AfterViewInit, HostListener, ElementRef, ViewChild, Input } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
-import { Track, TrackDocument } from "../../../../../common/racing/track";
+import { TrackStructure } from "../../../../../common/racing/track";
 import { TrackService } from "../track-service/track.service";
 import { EditorCamera } from "./editorCamera";
 import { EditorScene } from "./editorScene";
 import { EditorRenderService } from "./editor-render-service/editor-render.service";
 import { MouseEventHandlerService } from "../event-handlers/mouse-event-handler.service";
 import { Vector3 } from "three";
+import { Track } from "../track";
 
 const CAMERA_Z_POSITION: number = 480;
 const CAMERA_POSITION: Vector3 = new Vector3(0, 0, CAMERA_Z_POSITION);
@@ -62,24 +63,33 @@ export class EditorComponent implements AfterViewInit {
     public getTrack(): void {
         this.currentTrackId = this.route.snapshot.paramMap.get("id");
         this.trackService.getTrackFromId(this.currentTrackId)
-            .subscribe((trackFromServer: string) => {
-                const iTrack: TrackDocument = JSON.parse(JSON.stringify(trackFromServer));
-                this.trackChosenFromAdmin = new Track(iTrack);
-                this.currentTrackName = this.trackChosenFromAdmin.name;
-                this.currentTrackDescription = this.trackChosenFromAdmin.description;
-                this.editorScene.importTrackVertices(this.trackChosenFromAdmin.vertices);
-            });
+            .subscribe(
+                (trackFromServer: string) => {
+                    const iTrack: TrackStructure = JSON.parse(JSON.stringify(trackFromServer));
+                    this.trackChosenFromAdmin = new Track(iTrack);
+                    this.currentTrackName = this.trackChosenFromAdmin.name;
+                    this.currentTrackDescription = this.trackChosenFromAdmin.description;
+                    this.editorScene.importTrackVertices(this.trackChosenFromAdmin.vertices);
+                },
+                (error: Error) => console.error(error)
+            );
     }
 
     public saveTrack(): void {
         this.trackChosenFromAdmin.name = this.currentTrackName;
         this.trackChosenFromAdmin.description = this.currentTrackDescription;
         this.trackChosenFromAdmin.vertices = this.editorScene.exportTrackVertices();
-        this.trackService.putTrack(this.currentTrackId, this.trackChosenFromAdmin)
-            .subscribe((trackFromServer: string) => {
-                const iTrack: TrackDocument = JSON.parse(JSON.stringify(trackFromServer));
-                this.trackChosenFromAdmin = new Track(iTrack);
-            });
+        this.trackService.putTrack(this.currentTrackId, this.trackChosenFromAdmin.toTrackStructure())
+            .subscribe(
+                (trackFromServer: string) => {
+                    console.log(this.trackChosenFromAdmin);
+                    console.log(this.trackChosenFromAdmin.toTrackStructure());
+                    console.log(trackFromServer);
+                    const iTrack: TrackStructure = JSON.parse(JSON.stringify(trackFromServer));
+                    this.trackChosenFromAdmin = new Track(iTrack);
+                },
+                (error: Error) => console.error(error)
+            );
     }
 
     public saveTrackName(trackName: string): void {

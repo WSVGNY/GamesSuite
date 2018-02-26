@@ -5,8 +5,7 @@ import { Observable } from "rxjs/Observable";
 import { catchError } from "rxjs/operators";
 import { of } from "rxjs/observable/of";
 
-import { Track, TrackDocument } from "../../../../../common/racing/track";
-import { TrackType } from "../../../../../common/racing/trackType";
+import { TrackStructure } from "../../../../../common/racing/track";
 
 @Injectable()
 export class TrackService {
@@ -32,28 +31,15 @@ export class TrackService {
     }
 
     public newTrack(trackName: string): Observable<string> {
-        const newTrack: TrackDocument = {
-            "_id": "",
-            "track": {
-                "name": trackName,
-                "_isTestTrack": false,
-                "description": "",
-                "vertices": [
-                    { x: 0, y: 0, z: 50 },
-                    { x: 50, y: 0, z: 0 },
-                    { x: 0, y: 0, z: -50 },
-                    { x: -50, y: 0, z: 0 },
-                ],
-                "type": TrackType.Default
-            }
-        };
+        const newTrack: TrackStructure = TrackStructure.getNewDefaultTrackStructure();
+        newTrack.name = trackName;
 
         return this.http.post<string>(this.BASE_URL + "/new", newTrack, this.httpOptions).pipe(
             catchError(this.handleError<string>("newTrack"))
         );
     }
 
-    public putTrack(trackId: string, track: Track): Observable<string> {
+    public putTrack(trackId: string, track: TrackStructure): Observable<string> {
         return this.http.put<string>(this.BASE_URL + "/put/" + trackId, track, this.httpOptions).pipe(
             catchError(this.handleError<string>("putTrack"))
         );
