@@ -31,7 +31,12 @@ describe("KeyboardEventHandlerService", () => {
             (service: KeyboardEventHandlerService, renderService: RenderService) => {
                 const raceGame: RaceGame = new RaceGame(renderService);
                 service.handleKeyDown(new KeyboardEvent("87"), raceGame);
-                expect(raceGame.playerCar["_isAcceleratorPressed"]);
+                const car: Car = new Car();
+                car.init(new Vector3(0, 0, 0), 0).then(() => {
+                    raceGame["_playerCar"] = car;
+                    raceGame.playerCar.update(MS_BETWEEN_FRAMES);
+                    expect(raceGame.playerCar["_isAcceleratorPressed"]).toEqual(true);
+                });
             }
         )
     );
@@ -43,7 +48,12 @@ describe("KeyboardEventHandlerService", () => {
             (service: KeyboardEventHandlerService, renderService: RenderService) => {
                 const raceGame: RaceGame = new RaceGame(renderService);
                 service.handleKeyDown(new KeyboardEvent("83"), raceGame);
-                expect(raceGame.playerCar["_isBraking"]);
+                const car: Car = new Car();
+                car.init(new Vector3(0, 0, 0), 0).then(() => {
+                    raceGame["_playerCar"] = car;
+                    raceGame.playerCar.update(MS_BETWEEN_FRAMES);
+                    expect(raceGame.playerCar["_isBraking"]).toEqual(true);
+                });
             }
         )
     );
