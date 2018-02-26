@@ -27,7 +27,6 @@ export class KeyboardEventHandlerService {
         this._carControl = new CommandController();
     }
 
-    // tslint:disable-next-line:max-func-body-length
     public handleKeyDown(event: KeyboardEvent, raceGame: RaceGame): void {
         switch (event.keyCode) {
             case ACCELERATE_KEYCODE:
