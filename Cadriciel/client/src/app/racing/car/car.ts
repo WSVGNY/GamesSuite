@@ -14,62 +14,16 @@ export class Car extends Object3D {
     private readonly _rearWheel: Wheel;
     private readonly _wheelbase: number;
     private readonly _dragCoefficient: number;
+    private _mesh: Object3D;
+    private _weightRear: number;
+    private _lights: CarLights;
 
     private _isAcceleratorPressed: boolean;
     private _speed: Vector3;
     private _isBraking: boolean;
     private _isReversing: boolean;
-    private _mesh: Object3D;
     private _steeringWheelDirection: number;
-    private _weightRear: number;
     private _initialDirection: Vector3 = new Vector3(0, 0, -1);
-    private _lights: CarLights;
-
-    public get speed(): Vector3 {
-        return this._speed.clone();
-    }
-
-    public get currentGear(): number {
-        return this._engine.currentGear;
-    }
-
-    public get rpm(): number {
-        return this._engine.rpm;
-    }
-
-    public get angle(): number {
-        return this._mesh.rotation.y * RAD_TO_DEG;
-    }
-
-    public get currentPosition(): Vector3 {
-        return this._mesh.position;
-    }
-
-    public getChild(childName: string): Object3D {
-        return this._mesh.getObjectByName(childName);
-    }
-
-    public attachCamera(camera: Camera): void {
-        this._mesh.add(camera);
-    }
-
-    public attachLights(): void {
-        this._mesh.add(this._lights);
-    }
-
-    public dettachLights(): void {
-        this._mesh.remove(this._lights);
-    }
-
-    public get direction(): Vector3 {
-        const rotationMatrix: Matrix4 = new Matrix4();
-        const carDirection: Vector3 = this._initialDirection.clone();
-
-        rotationMatrix.extractRotation(this._mesh.matrix);
-        carDirection.applyMatrix4(rotationMatrix);
-
-        return carDirection;
-    }
 
     public constructor(
         engine: Engine = new Engine(),
@@ -122,6 +76,52 @@ export class Car extends Object3D {
         this._mesh.setRotationFromAxisAngle(new Vector3(0, 1, 0), rotationAngle);
         this._lights = new CarLights();
         this.add(this._mesh);
+    }
+
+    public get speed(): Vector3 {
+        return this._speed.clone();
+    }
+
+    public get currentGear(): number {
+        return this._engine.currentGear;
+    }
+
+    public get rpm(): number {
+        return this._engine.rpm;
+    }
+
+    public get angle(): number {
+        return this._mesh.rotation.y * RAD_TO_DEG;
+    }
+
+    public get currentPosition(): Vector3 {
+        return this._mesh.position;
+    }
+
+    public getChild(childName: string): Object3D {
+        return this._mesh.getObjectByName(childName);
+    }
+
+    public attachCamera(camera: Camera): void {
+        this._mesh.add(camera);
+    }
+
+    public attachLights(): void {
+        this._mesh.add(this._lights);
+    }
+
+    public dettachLights(): void {
+        this._mesh.remove(this._lights);
+    }
+
+    public get direction(): Vector3 {
+        const rotationMatrix: Matrix4 = new Matrix4();
+        const carDirection: Vector3 = this._initialDirection.clone();
+
+        rotationMatrix.extractRotation(this._mesh.matrix);
+        carDirection.applyMatrix4(rotationMatrix);
+
+        return carDirection;
     }
 
     public steerLeft(): void {
