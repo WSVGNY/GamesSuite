@@ -63,7 +63,7 @@ describe("TRACK SERVICE TESTS", () => {
     });
 
     // tslint:disable-next-line:max-func-body-length
-    it.only("should create a new track then delete it", (done: MochaDone) => {
+    it("should create a new track then delete it", (done: MochaDone) => {
         const trackName: string = "New Test Track 2394758329673294932865";
         const newTrack: TrackStructure = TrackStructure.getNewDefaultTrackStructure();
         delete newTrack._id;
