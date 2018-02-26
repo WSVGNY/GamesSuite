@@ -10,7 +10,7 @@ describe("TRACK SERVICE TESTS", () => {
         requestPromise(SERVICE_BASE_URL).then((response: string) => {
             for (const document of JSON.parse(JSON.parse(response)) as string[]) {
                 const iTrack: TrackStructure = JSON.parse(JSON.stringify(document));
-                if (iTrack._isTestTrack === true) {
+                if (iTrack._isTestTrack) {
                     assert(false);
                     done();
                 }
@@ -29,7 +29,7 @@ describe("TRACK SERVICE TESTS", () => {
         requestPromise(SERVICE_BASE_URL + "5a933c16883f6e3d48ec81fe").then((response: string) => {
             const iTrack: TrackStructure = JSON.parse(response);
             assert(iTrack._id === "5a933c16883f6e3d48ec81fe");
-            assert(iTrack._isTestTrack === true);
+            assert(iTrack._isTestTrack);
             done();
         }).catch((e: Error) => {
             console.error(e.message);
