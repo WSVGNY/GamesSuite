@@ -1,6 +1,6 @@
 import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from "@angular/core";
 import { TrackService } from "../track-service/track.service";
-import { TrackMapElement, ITrack, Track } from "../../../../../common/racing/track";
+import { TrackMapElement, TrackDocument, Track } from "../../../../../common/racing/track";
 import { RenderService } from "../render-service/render.service";
 import { TrackPreview } from "./trackPreview";
 
@@ -39,7 +39,7 @@ export class ChooseTrackComponent implements OnInit, AfterViewInit {
             .subscribe((tracksFromServer: string) => {
                 this.tracks = [];
                 JSON.parse(tracksFromServer).forEach((document: string) => {
-                    const iTrack: ITrack = JSON.parse(JSON.stringify(document));
+                    const iTrack: TrackDocument = JSON.parse(JSON.stringify(document));
                     this.tracks.push({
                         "key": iTrack._id,
                         "value": new Track(iTrack)

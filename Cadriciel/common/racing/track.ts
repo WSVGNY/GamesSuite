@@ -7,6 +7,7 @@ export interface TrackDocument {
     _id: string;
     track: {
         name: string;
+        _isTestTrack: boolean;
         description: string;
         vertices: Array<CommonCoordinate3D>;
         type: TrackType;
@@ -19,8 +20,11 @@ export class Track {
     public vertices: Array<CommonCoordinate3D>;
     public type: TrackType;
 
+    private _isTestTrack: boolean;
+
     public constructor(rawTrack: TrackDocument) {
         this.name = rawTrack.track.name;
+        this._isTestTrack = rawTrack.track._isTestTrack;
         this.description = rawTrack.track.description;
         this.vertices = rawTrack.track.vertices;
         this.type = rawTrack.track.type;

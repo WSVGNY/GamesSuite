@@ -1,10 +1,9 @@
 import { Request, Response } from "express";
 import "reflect-metadata";
 import { injectable, } from "inversify";
-import { Track, TrackDocument } from "../../../common/racing/track";
-import { MongoClient } from "mongodb";
+import { TrackDocument } from "../../../common/racing/track";
+import { MongoClient, InsertOneWriteOpResult } from "mongodb";
 import { ObjectId } from "bson";
-import { TrackType } from "../../../common/racing/trackType";
 
 @injectable()
 export class TrackRoute {
@@ -16,7 +15,9 @@ export class TrackRoute {
     public getTrackList(req: Request, res: Response): void {
         MongoClient.connect(this.DATABASE_URL).then((dbConnection: MongoClient) => {
             dbConnection.db(this.DATABASE).collection(this.COLLECTION).find().toArray().then((tracksCollection: string[]) => {
-                res.json(JSON.stringify(tracksCollection));
+                const noTestTracks: string[] = tracksCollection.filter(
+                    (document: string) => (JSON.parse(JSON.stringify(document)) as TrackDocument).track._isTestTrack === false);
+                res.json(JSON.stringify(noTestTracks));
                 dbConnection.close();
             }).catch((e: Error) => console.error(e));
         }).catch((e: Error) => console.error(e));
@@ -35,25 +36,11 @@ export class TrackRoute {
 
     public newTrack(req: Request, res: Response): void {
         MongoClient.connect(this.DATABASE_URL).then((dbConnection: MongoClient) => {
-            const track: Track = new Track(
-                {
-                    "_id": "",
-                    "track": {
-                        "name": req.params.name,
-                        "description": "",
-                        "vertices": [
-                            { x: 0, y: 0, z: 50 },
-                            { x: 50, y: 0, z: 0 },
-                            { x: 0, y: 0, z: -50 },
-                            { x: -50, y: 0, z: 0 },
-                        ],
-                        "type": TrackType.Default
-                    }
-                }
-            );
+            console.log(req.body);
             dbConnection.db("log2990").collection(this.COLLECTION)
-                .insertOne({ track }).then(() => {
-                    dbConnection.close().then(() => this.getTrackList(req, res));
+                .insertOne(req.body).then((result: InsertOneWriteOpResult) => {
+                    req.params.id = result.insertedId;
+                    dbConnection.close().then(() => this.getTrackFromID(req, res));
                 }).catch((e: Error) => res.send(e));
         }).catch((e: Error) => res.send(e));
     }

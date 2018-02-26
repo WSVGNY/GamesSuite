@@ -33,14 +33,12 @@ export class AdminComponent implements OnInit {
 
     public newTrack(trackName: string): void {
         this.trackService.newTrack(trackName)
-            .subscribe((tracksFromServer: string) => {
-                this.tracks = [];
-                JSON.parse(tracksFromServer).forEach((document: string) => {
-                    const iTrack: TrackDocument = JSON.parse(JSON.stringify(document));
-                    this.tracks.push({
-                        "key": iTrack._id,
-                        "value": new Track(iTrack)
-                    });
+            .subscribe((trackFromServer: string) => {
+                const iTrack: TrackDocument = JSON.parse(JSON.stringify(trackFromServer));
+                console.log(trackFromServer);
+                this.tracks.push({
+                    "key": iTrack._id,
+                    "value": new Track(iTrack)
                 });
             });
     }

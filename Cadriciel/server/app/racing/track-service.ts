@@ -23,7 +23,7 @@ export class TrackService extends AbstractService {
             this.trackRoute.getTrackFromID(req, res)
         );
 
-        router.post("/new/:name", (req: Request, res: Response) => {
+        router.post("/new", (req: Request, res: Response) => {
             this.trackRoute.newTrack(req, res);
         });
 
