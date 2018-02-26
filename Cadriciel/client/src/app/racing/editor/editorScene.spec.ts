@@ -73,7 +73,7 @@ describe("Editor Scene", () => {
         const vertex0: Mesh = new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
         const vertex1: Mesh = new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
         vertex0.position.set(0, 0, 0);
-        vertex1.position.set(0, 0, 0);
+        vertex1.position.set(1, 1, 0);
         editorScene.addConnection(vertex0, vertex1);
         expect(editorScene["_scene"].getChildByName("connection0")).toBeDefined();
     });
@@ -102,5 +102,31 @@ describe("Editor Scene", () => {
         const VXY: number = 2;
         editorScene.setVertexPosition(editorScene["_scene"].getObjectByName("vertex0") as Mesh, new Vector3(VXY, VXY, 0));
         expect(editorScene["_scene"].getObjectByName("vertex0").position).toEqual(new Vector3(VXY, VXY, 0));
+    });
+
+    it("should set _isComplete to true upon completition of the track", () => {
+        const vertex0: Mesh = new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
+        const vertex1: Mesh = new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
+        vertex0.position.set(0, 0, 0);
+        vertex1.position.set(0, 20, 0);
+        editorScene["_vertices"].push(vertex0);
+        editorScene["_vertices"].push(vertex1);
+        editorScene["_firstVertex"] = vertex0;
+        editorScene["_lastVertex"] = vertex1;
+        editorScene.completeTrack();
+        expect(editorScene["_isComplete"]).toEqual(true);
+    });
+
+    it("should create a connection between the last and first vertex upon completition of the track", () => {
+        const vertex0: Mesh = new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
+        const vertex1: Mesh = new Mesh(VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL);
+        vertex0.position.set(0, 0, 0);
+        vertex1.position.set(0, 20, 0);
+        editorScene["_vertices"].push(vertex0);
+        editorScene["_vertices"].push(vertex1);
+        editorScene["_firstVertex"] = vertex0;
+        editorScene["_lastVertex"] = vertex1;
+        editorScene.completeTrack();
+        expect(editorScene["_scene"].getChildByName("connection0")).toBeDefined();
     });
 });
