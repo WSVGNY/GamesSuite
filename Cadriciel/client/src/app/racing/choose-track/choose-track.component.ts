@@ -1,8 +1,9 @@
 import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from "@angular/core";
 import { TrackService } from "../track-service/track.service";
-import { TrackMapElement, ITrack, Track } from "../../../../../common/racing/track";
+import { TrackStructure } from "../../../../../common/racing/track";
 import { RenderService } from "../render-service/render.service";
 import { TrackPreview } from "./trackPreview";
+import { Track } from "../track";
 
 @Component({
     selector: "app-choose-track",
@@ -14,7 +15,7 @@ export class ChooseTrackComponent implements OnInit, AfterViewInit {
     @ViewChild("preview")
     private containerRef: ElementRef;
 
-    private tracks: TrackMapElement[] = new Array();
+    private tracks: Track[] = new Array();
     private _trackPreview: TrackPreview;
 
     public constructor(
@@ -39,11 +40,8 @@ export class ChooseTrackComponent implements OnInit, AfterViewInit {
             .subscribe((tracksFromServer: string) => {
                 this.tracks = [];
                 JSON.parse(tracksFromServer).forEach((document: string) => {
-                    const iTrack: ITrack = JSON.parse(JSON.stringify(document));
-                    this.tracks.push({
-                        "key": iTrack._id,
-                        "value": new Track(iTrack)
-                    });
+                    const iTrack: TrackStructure = JSON.parse(JSON.stringify(document));
+                    this.tracks.push(new Track(iTrack));
                 });
             });
     }
@@ -52,12 +50,12 @@ export class ChooseTrackComponent implements OnInit, AfterViewInit {
         this._trackPreview.loadTrack(track);
     }
 
-    public incrementTimesPlayed(track: TrackMapElement): void {
-        track.value.timesPlayed++;
+    public incrementTimesPlayed(track: Track): void {
+        track.timesPlayed++;
         this.saveTrack(track);
     }
 
-    private saveTrack(track: TrackMapElement): void {
-        this.trackService.putTrack(track.key, track.value).subscribe();
+    private saveTrack(track: Track): void {
+        this.trackService.putTrack(track.id, track.toTrackStructure()).subscribe();
     }
 }

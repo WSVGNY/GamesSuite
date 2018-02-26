@@ -7,7 +7,7 @@ import { Vector3, PerspectiveCamera, Group, LineBasicMaterial, Line, Geometry } 
 import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { ElementRef } from "@angular/core";
-import { Track } from "../../../../../common/racing/track";
+import { TrackStructure } from "../../../../../common/racing/track";
 import { RaceGameConfig } from "./raceGameConfig";
 import { SkyBox } from "../render-service/skybox";
 import { TrackLights } from "../render-service/light";
@@ -27,7 +27,7 @@ export class RaceGame {
 
     public constructor(private renderService: RenderService) { }
 
-    public async initialize(track: Track, containerRef: ElementRef): Promise<void> {
+    public async initialize(track: TrackStructure, containerRef: ElementRef): Promise<void> {
         this._trackType = track.type;
         this._trackPoints = new TrackPointList(track.vertices);
         this.initializeCamera(containerRef.nativeElement);

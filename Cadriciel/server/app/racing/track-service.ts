@@ -6,9 +6,9 @@ import { AbstractService } from "../AbstractService";
 
 @injectable()
 export class TrackService extends AbstractService {
-    public readonly baseRoute: string = "/admin";
+    public readonly baseRoute: string = "/track";
 
-    public constructor( @inject(Types.TrackRoute) private trackRoute: TrackRoute) {
+    public constructor(@inject(Types.TrackRoute) private trackRoute: TrackRoute) {
         super();
     }
 
@@ -23,7 +23,7 @@ export class TrackService extends AbstractService {
             this.trackRoute.getTrackFromID(req, res)
         );
 
-        router.post("/new/:name", (req: Request, res: Response) => {
+        router.post("/new", (req: Request, res: Response) => {
             this.trackRoute.newTrack(req, res);
         });
 

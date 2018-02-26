@@ -2,10 +2,11 @@ import { AfterViewInit, Component, ElementRef, ViewChild, HostListener } from "@
 import { RenderService } from "./render-service/render.service";
 import { Car } from "./car/car";
 import { KeyboardEventHandlerService } from "./event-handlers/keyboard-event-handler.service";
-import { Track, ITrack } from "../../../../common/racing/track";
+import { TrackStructure } from "../../../../common/racing/track";
 import { TrackService } from "./track-service/track.service";
 import { ActivatedRoute } from "@angular/router";
 import { RaceGame } from "./game-loop/raceGame";
+import { Track } from "./track";
 
 @Component({
     moduleId: module.id,
@@ -61,7 +62,7 @@ export class RacingComponent implements AfterViewInit {
         this._currentTrackId = this.route.snapshot.paramMap.get("id");
         this.trackService.getTrackFromId(this._currentTrackId)
             .subscribe((trackFromServer: string) => {
-                const iTrack: ITrack = JSON.parse(JSON.stringify(trackFromServer));
+                const iTrack: TrackStructure = JSON.parse(JSON.stringify(trackFromServer));
                 this._chosenTrack = new Track(iTrack);
                 this.initializeGame().then().catch((error: Error) => console.error(error));
             });
@@ -69,7 +70,7 @@ export class RacingComponent implements AfterViewInit {
 
     private async initializeGame(): Promise<void> {
         this._raceGame = new RaceGame(this.renderService);
-        await this._raceGame.initialize(this._chosenTrack, this._containerRef);
+        await this._raceGame.initialize(this._chosenTrack.toTrackStructure(), this._containerRef);
     }
 
     public get car(): Car {

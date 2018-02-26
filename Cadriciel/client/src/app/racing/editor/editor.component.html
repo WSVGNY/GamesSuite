@@ -3,24 +3,24 @@
 </P>
 <P>
     Track name:
-    <input #trackName type="text" [value]="currentTrack.track.name" (keyup.enter)="saveTrackName(trackName.value)" (blur)="saveTrackName(trackName.value)">
+    <input #trackName type="text" [value]="currentTrack.name" (keyup.enter)="saveTrackName(trackName.value)" (blur)="saveTrackName(trackName.value)">
 </P>
 <P>
     Description:
-    <input #trackDescription type="text" [value]="currentTrack.track.description" (keyup.enter)="saveTrackDescription(trackDescription.value)"
+    <input #trackDescription type="text" [value]="currentTrack.description" (keyup.enter)="saveTrackDescription(trackDescription.value)"
         (blur)="saveTrackDescription(trackDescription.value)">
 </P>
 <P>
-    Times played: {{currentTrack.track.timesPlayed}}
+    Times played: {{currentTrack.timesPlayed}}
 </P>
 <P>
     Track Types :
-    <button (click)="chooseTrackType()"> {{currentTrack.track.type}} </button>
+    <button (click)="chooseTrackType()"> {{currentTrack.type}} </button>
 </P>
 
 <P>
     Best times:
-    <li *ngFor="let time of currentTrack.track.times;">
+    <li *ngFor="let time of currentTrack.times;">
         {{time}}
     </li>
 </P>
