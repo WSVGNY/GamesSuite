@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, HostListener, ElementRef, ViewChild, Input } from "@angular/core";
+import { Component, AfterViewInit, HostListener, ElementRef, ViewChild, Input, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
 import { TrackStructure } from "../../../../../common/racing/track";
@@ -21,7 +21,7 @@ const VIEW_SIZE: number = 500;
     styleUrls: ["./editor.component.css"]
 })
 
-export class EditorComponent implements AfterViewInit {
+export class EditorComponent implements AfterViewInit, OnInit {
 
     @ViewChild("containerEditor")
     private _containerRef: ElementRef;
@@ -42,11 +42,14 @@ export class EditorComponent implements AfterViewInit {
         this.currentTrack = new Track(TrackStructure.getNewDefaultTrackStructure());
     }
 
+    public ngOnInit(): void {
+        this._editorScene = new EditorScene();
+    }
+
     public ngAfterViewInit(): void {
         this.getTrack();
         this._editorCamera = new EditorCamera(this.computeAspectRatio(), VIEW_SIZE);
         this._editorCamera.setPosition(CAMERA_POSITION);
-        this._editorScene = new EditorScene();
         this._editorRenderService
             .initialize(this._containerRef.nativeElement, this._editorScene.scene, this._editorCamera.camera)
             .then(/* do nothing */)
