@@ -25,9 +25,9 @@
   </li>
 </P>
 <P>
-  <span *ngIf="editorScene!==undefined">
-    <button *ngIf="!editorScene.checkConstraints()" id="saveButton" disabled> Save and go back </button>
-    <button *ngIf="editorScene.checkConstraints()" id="saveButton" (click)="saveTrack()" (click)="goBack()"> Save and go back </button>
+  <span *ngIf="_editorScene!==undefined">
+    <button *ngIf="!_editorScene.checkConstraints()" id="saveButton" disabled> Save and go back </button>
+    <button *ngIf="_editorScene.checkConstraints()" id="saveButton" (click)="saveTrack()" (click)="goBack()"> Save and go back </button>
   </span>
 </P>
 <div #containerEditor>
