@@ -9,9 +9,7 @@ export class TrackPoint {
     public next: TrackPoint;
     public previous: TrackPoint;
 
-    public constructor(
-        private _coordinates: Vector3 = new Vector3(0, 0, 0),
-    ) {
+    public constructor(private _coordinates: Vector3 = new Vector3(0, 0, 0)) {
     }
 
     public findInteriorExteriorPoints(): void {

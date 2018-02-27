@@ -4,7 +4,7 @@ h1 {
     color: rgb(58, 107, 106);
 }
 
-#logo{
+#logo {
     width: 300px;
     position: absolute;
     left:600px;
@@ -53,5 +53,3 @@ nav a:hover {
     top:20px;
     left:10px;
 }
-
-
