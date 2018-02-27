@@ -32,7 +32,6 @@ export class Application {
     }
 
     private configMiddleware(): void {
-        // Middlewares configuration
         this.app.use(logger("dev"));
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({ extended: true }));

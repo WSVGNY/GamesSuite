@@ -14,7 +14,7 @@ const ERROR_STATUS_CODE: number = 500;
 export class Lexicon {
 
     private readonly BASE_URL: string = "https://api.datamuse.com/words?";
-    private difficulty: Difficulty = Difficulty.Easy;
+    private _difficulty: Difficulty = Difficulty.Easy;
 
     private getDefinition(word: string): string {
         const definitions: string = word["defs"];
@@ -34,7 +34,7 @@ export class Lexicon {
             }
         }
 
-        if (this.difficulty === Difficulty.Easy) {
+        if (this._difficulty === Difficulty.Easy) {
             return definitions[0];
         } else {
             if (definitions.length >= MIN_NUMBER_OF_DEFINITION) {
@@ -47,7 +47,7 @@ export class Lexicon {
 
     private checkFrequency(word: string): boolean {
         const frequency: number = word["tags"][0].substring(UNWANTED_CHARACTERS_LENGTH);
-        if (this.difficulty === Difficulty.Hard) {
+        if (this._difficulty === Difficulty.Hard) {
             if (frequency < FREQUENCY_DELIMITER) {
                 return true;
             } else {
@@ -117,7 +117,7 @@ export class Lexicon {
     }
 
     public getWordFromConstraint(req: Request, res: Response): void {
-        this.difficulty = req.params.difficulty.toUpperCase();
+        this._difficulty = req.params.difficulty.toUpperCase();
         requestPromise(this.BASE_URL + "sp=" + this.removeAccent(req.params.constraints) + "&md=fd").then(
             (result: string) => {
                 const words: string[] = JSON.parse(result.toString());
