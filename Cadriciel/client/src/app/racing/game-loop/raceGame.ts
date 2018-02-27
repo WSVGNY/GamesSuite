@@ -11,6 +11,7 @@ import { TrackStructure } from "../../../../../common/racing/track";
 import { RaceGameConfig } from "./raceGameConfig";
 import { SkyBox } from "../render-service/skybox";
 import { TrackLights } from "../render-service/light";
+import { GREEN } from "../constants";
 
 export class RaceGame {
     private _camera: PerspectiveCamera;
@@ -25,7 +26,7 @@ export class RaceGame {
     private _centerLine: Line;
     private _lighting: TrackLights;
 
-    public constructor(private renderService: RenderService) { }
+    public constructor(private _renderService: RenderService) { }
 
     public async initialize(track: TrackStructure, containerRef: ElementRef): Promise<void> {
         this._trackType = track.type;
@@ -37,15 +38,15 @@ export class RaceGame {
         this.setCenterLine();
         this.addObjectsToRenderScene();
         this.setSkyBox(this._trackType);
-        await this.renderService.initialize(containerRef.nativeElement, this._camera);
+        await this._renderService.initialize(containerRef.nativeElement, this._camera);
         this.startGameLoop();
     }
 
     private addObjectsToRenderScene(): void {
-        this.renderService.addObjectToScene(this._playerCar);
-        this._aiCars.forEach((aiCar: Car) => this.renderService.addObjectToScene(aiCar));
-        this.renderService.addObjectToScene(this.renderService.createTrackMesh(this._trackPoints));
-        this.renderService.addObjectToScene(this._lighting);
+        this._renderService.addObjectToScene(this._playerCar);
+        this._aiCars.forEach((aiCar: Car) => this._renderService.addObjectToScene(aiCar));
+        this._renderService.addObjectToScene(this._renderService.createTrackMesh(this._trackPoints));
+        this._renderService.addObjectToScene(this._lighting);
     }
 
     private initializeCamera(containerRef: HTMLDivElement): void {
@@ -84,12 +85,12 @@ export class RaceGame {
             this._aiCarService.push(new AICarService(
                 this._aiCars[i],
                 this._trackPoints.pointVectors,
-                this.isPair(i) ? Difficulty.Hard : Difficulty.Easy));
+                this.isEven(i) ? Difficulty.Hard : Difficulty.Easy));
             this._aiCarsDebug.add(this._aiCarService[i].debugGroup);
         }
     }
 
-    private isPair(num: number): boolean {
+    private isEven(num: number): boolean {
         // tslint:disable-next-line:no-magic-numbers
         return num % 2 === 0;
     }
@@ -105,7 +106,7 @@ export class RaceGame {
     }
 
     private setSkyBox(trackType: TrackType): void {
-        this.renderService.loadSkyBox(SkyBox.getPath(trackType));
+        this._renderService.loadSkyBox(SkyBox.getPath(trackType));
     }
 
     private initializeLights(trackType: TrackType): void {
@@ -118,7 +119,7 @@ export class RaceGame {
 
     public startGameLoop(): void {
         this._lastDate = Date.now();
-        this.renderService.setupRenderer();
+        this._renderService.setupRenderer();
         this.update();
     }
 
@@ -127,7 +128,7 @@ export class RaceGame {
             const timeSinceLastFrame: number = Date.now() - this._lastDate;
             this._lastDate = Date.now();
 
-            this.renderService.render();
+            this._renderService.render();
             this._playerCar.update(timeSinceLastFrame);
             for (let i: number = 0; i < RaceGameConfig.AI_CARS_NUMBER; ++i) {
                 this._aiCars[i].update(timeSinceLastFrame);
@@ -147,10 +148,12 @@ export class RaceGame {
             this.setSkyBox(this._trackType);
             this.setLights(this._trackType);
             this._playerCar.dettachLights();
+            this._aiCars.forEach((aiCar: Car) => aiCar.dettachLights());
         } else {
             this.setSkyBox(TrackType.Night);
             this.setLights(TrackType.Night);
             this._playerCar.attachLights();
+            this._aiCars.forEach((aiCar: Car) => aiCar.attachLights());
         }
     }
 
@@ -161,11 +164,11 @@ export class RaceGame {
     public set debug(debug: boolean) {
         this._debug = debug;
         if (debug) {
-            this.renderService.addDebugObject(this._aiCarsDebug);
-            this.renderService.addDebugObject(this._centerLine);
+            this._renderService.addDebugObject(this._aiCarsDebug);
+            this._renderService.addDebugObject(this._centerLine);
         } else {
-            this.renderService.removeDebugObject(this._aiCarsDebug);
-            this.renderService.removeDebugObject(this._centerLine);
+            this._renderService.removeDebugObject(this._aiCarsDebug);
+            this._renderService.removeDebugObject(this._centerLine);
         }
     }
 
@@ -174,6 +177,6 @@ export class RaceGame {
         this._trackPoints.points.forEach((currentPoint: TrackPoint) => geometryPoints.vertices.push(currentPoint.coordinates));
         geometryPoints.vertices.push(this._trackPoints.points[0].coordinates);
 
-        this._centerLine = new Line(geometryPoints, new LineBasicMaterial({ color: 0x00FF00, linewidth: 3 }));
+        this._centerLine = new Line(geometryPoints, new LineBasicMaterial({ color: GREEN, linewidth: 3 }));
     }
 }

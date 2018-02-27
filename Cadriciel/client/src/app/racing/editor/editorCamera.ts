@@ -7,21 +7,21 @@ const NEAR_CLIPPING_PLANE: number = 1;
 export class EditorCamera {
 
     private _camera: OrthographicCamera;
-    private aspectRatio: number = 0;
-    private viewSize: number = 0;
+    private _aspectRatio: number = 0;
+    private _viewSize: number = 0;
 
     public constructor(aspectRatio: number, viewSize: number) {
-        this.aspectRatio = aspectRatio;
-        this.viewSize = viewSize;
+        this._aspectRatio = aspectRatio;
+        this._viewSize = viewSize;
         this.initialise();
     }
 
     private initialise(): void {
         this._camera = new OrthographicCamera(
-            -this.aspectRatio * this.viewSize * HALF,
-            this.aspectRatio * this.viewSize * HALF,
-            this.viewSize * HALF,
-            -this.viewSize * HALF,
+            -this._aspectRatio * this._viewSize * HALF,
+            this._aspectRatio * this._viewSize * HALF,
+            this._viewSize * HALF,
+            -this._viewSize * HALF,
             NEAR_CLIPPING_PLANE,
             FAR_CLIPPING_PLANE);
     }

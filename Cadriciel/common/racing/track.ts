@@ -20,7 +20,12 @@ export class TrackStructure {
         newTrack.bestTimes = [0, 0, 0];
         newTrack.timesPlayed = 0;
         newTrack.type = TrackType.Default;
-        newTrack.vertices = [];
+        newTrack.vertices = [
+            new CommonCoordinate3D(0, 0, 0),
+            new CommonCoordinate3D(100, 0, 0),
+            new CommonCoordinate3D(100, 0, 100),
+            new CommonCoordinate3D(0, 0, 100)
+        ];
 
         return newTrack;
     }

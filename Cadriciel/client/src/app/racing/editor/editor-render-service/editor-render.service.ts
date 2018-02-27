@@ -12,29 +12,27 @@ export enum Action {
 @Injectable()
 export class EditorRenderService {
 
-    private containerEditor: HTMLDivElement;
-    private renderer: WebGLRenderer;
-
-    public constructor() {}
+    private _containerEditor: HTMLDivElement;
+    private _renderer: WebGLRenderer;
 
     public async initialize(containerEditor: HTMLDivElement, scene: Scene, camera: Camera): Promise<void> {
         if (containerEditor) {
-            this.containerEditor = containerEditor;
+            this._containerEditor = containerEditor;
         }
         await this.initialiseRenderer();
         this.render(scene, camera);
     }
 
     private async initialiseRenderer(): Promise<void> {
-        this.renderer = new WebGLRenderer();
-        this.renderer.setPixelRatio(devicePixelRatio);
-        this.renderer.setSize(this.containerEditor.clientWidth, this.containerEditor.clientHeight);
-        this.containerEditor.appendChild(this.renderer.domElement);
+        this._renderer = new WebGLRenderer();
+        this._renderer.setPixelRatio(devicePixelRatio);
+        this._renderer.setSize(this._containerEditor.clientWidth, this._containerEditor.clientHeight);
+        this._containerEditor.appendChild(this._renderer.domElement);
     }
 
     private render(scene: Scene, camera: Camera): void {
         requestAnimationFrame(() => this.render(scene, camera));
-        this.renderer.render(scene, camera);
+        this._renderer.render(scene, camera);
     }
 
 }
