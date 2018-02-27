@@ -147,10 +147,12 @@ export class RaceGame {
             this.setSkyBox(this._trackType);
             this.setLights(this._trackType);
             this._playerCar.dettachLights();
+            this._aiCars.forEach((aiCar: Car) => aiCar.dettachLights());
         } else {
             this.setSkyBox(TrackType.Night);
             this.setLights(TrackType.Night);
             this._playerCar.attachLights();
+            this._aiCars.forEach((aiCar: Car) => aiCar.attachLights());
         }
     }
 
