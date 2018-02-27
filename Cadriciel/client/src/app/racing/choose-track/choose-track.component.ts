@@ -13,14 +13,13 @@ import { Track } from "../track";
 export class ChooseTrackComponent implements OnInit, AfterViewInit {
 
     @ViewChild("preview")
-    private containerRef: ElementRef;
-
-    private tracks: Track[] = new Array();
+    private _containerRef: ElementRef;
+    public tracks: Track[] = new Array();
     private _trackPreview: TrackPreview;
 
     public constructor(
-        private trackService: TrackService,
-        private renderService: RenderService
+        private _trackService: TrackService,
+        private _renderService: RenderService
     ) { }
 
     public ngOnInit(): void {
@@ -28,15 +27,15 @@ export class ChooseTrackComponent implements OnInit, AfterViewInit {
     }
 
     public ngAfterViewInit(): void {
-        this._trackPreview = new TrackPreview(this.renderService);
+        this._trackPreview = new TrackPreview(this._renderService);
         this._trackPreview
-            .initialize(this.containerRef)
+            .initialize(this._containerRef)
             .then(/* do nothing */)
             .catch((err) => console.error(err));
     }
 
     private getTracksFromServer(): void {
-        this.trackService.getTrackList()
+        this._trackService.getTrackList()
             .subscribe((tracksFromServer: string) => {
                 this.tracks = [];
                 JSON.parse(tracksFromServer).forEach((document: string) => {
@@ -56,6 +55,6 @@ export class ChooseTrackComponent implements OnInit, AfterViewInit {
     }
 
     private saveTrack(track: Track): void {
-        this.trackService.putTrack(track.id, track.toTrackStructure()).subscribe();
+        this._trackService.putTrack(track.id, track.toTrackStructure()).subscribe();
     }
 }

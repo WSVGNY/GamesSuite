@@ -9,6 +9,4 @@ export class ConfigurationService {
     public isTwoPlayerGame: boolean;
     public playerName: string;
 
-    public constructor() { }
-
 }

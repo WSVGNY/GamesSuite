@@ -9,11 +9,11 @@ import { PlaceVertex } from "../commands/editorCommands/placeVertex";
 import { RemoveVertex } from "../commands/editorCommands/removeVertex";
 import { MoveVertex } from "../commands/editorCommands/moveVertex";
 import { DeselectVertex } from "../commands/editorCommands/deselectVertex";
+import { HALF } from "../constants";
 
 const LEFT_CLICK_KEYCODE: number = 1;
 const RIGHT_CLICK_KEYCODE: number = 3;
 const REQUIRED_VERTEX_COUNT: number = 3;
-const HALF: number = 0.5;
 
 @Injectable()
 export class MouseEventHandlerService {
@@ -28,8 +28,6 @@ export class MouseEventHandlerService {
     private _centerOffset: Vector3;
     private _selectedVertexName: string = "";
     private _isMouseDown: boolean = false;
-
-    public constructor() { }
 
     public async initialize(containerEditor: HTMLDivElement, viewSize: number): Promise<void> {
         if (containerEditor) {
@@ -92,8 +90,8 @@ export class MouseEventHandlerService {
     private setRaycaster(editorCamera: EditorCamera): void {
         const direction: Vector3 = this._mouseWorldCoordinates.clone().sub(editorCamera.camera.position).normalize();
         this._raycaster.set(editorCamera.camera.position, direction);
-
     }
+
     private clickOnVertex(editorScene: EditorScene): boolean {
         return (this._raycaster.intersectObjects(editorScene.vertices, true).length) ? true : false;
     }

@@ -36,7 +36,7 @@ describe("KeyboardEventHandlerService", () => {
                     raceGame["_playerCar"] = car;
                     raceGame.playerCar.update(MS_BETWEEN_FRAMES);
                     expect(raceGame.playerCar["_isAcceleratorPressed"]).toEqual(true);
-                });
+                }).catch((e: Error) => console.error(e));
             }
         )
     );
@@ -53,7 +53,7 @@ describe("KeyboardEventHandlerService", () => {
                     raceGame["_playerCar"] = car;
                     raceGame.playerCar.update(MS_BETWEEN_FRAMES);
                     expect(raceGame.playerCar["_isBraking"]).toEqual(true);
-                });
+                }).catch((e: Error) => console.error(e));
             }
         )
     );
@@ -70,7 +70,7 @@ describe("KeyboardEventHandlerService", () => {
                     raceGame["_playerCar"] = car;
                     raceGame.playerCar.update(MS_BETWEEN_FRAMES);
                     expect(raceGame.playerCar["_steeringWheelDirection"]).toBeGreaterThan(0);
-                });
+                }).catch((e: Error) => console.error(e));
             }
         )
     );
@@ -88,7 +88,7 @@ describe("KeyboardEventHandlerService", () => {
                     raceGame["_playerCar"] = car;
                     raceGame.playerCar.update(MS_BETWEEN_FRAMES);
                     expect(raceGame.playerCar.speed.length()).toBeGreaterThan(initialSpeed);
-                });
+                }).catch((e: Error) => console.error(e));
             }
         )
     );
