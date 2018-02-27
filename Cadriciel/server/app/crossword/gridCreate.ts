@@ -9,18 +9,18 @@ import { Difficulty } from "../../../common/crossword/difficulty";
 @injectable()
 export class GridCreate {
 
-    private grid: Grid;
-    private difficulty: Difficulty;
+    private _grid: Grid;
+    private _difficulty: Difficulty;
 
     public gridCreate(req: Request, res: Response, next: NextFunction): void {
-        this.difficulty = req.params.difficulty;
+        this._difficulty = req.params.difficulty;
         this.newGrid().then(() => {
-            for (const row of this.grid.boxes) {
+            for (const row of this._grid.boxes) {
                 for (const box of row) {
                     box.eliminateConstraints();
                 }
             }
-            res.send(this.grid);
+            res.send(this._grid);
         }).catch((e: Error) => console.error(e.message));
     }
 
@@ -30,17 +30,17 @@ export class GridCreate {
             isRestartNeeded = false;
             const isValidGrid: boolean = false;
             while (!isValidGrid) {
-                this.grid = new Grid();
-                this.grid.difficulty = this.difficulty;
-                const blackTiledGrid: BlackTiledGrid = new BlackTiledGrid(this.grid.SIZE_GRID_X, this.grid.SIZE_GRID_Y, this.grid.boxes);
+                this._grid = new Grid();
+                this._grid.difficulty = this._difficulty;
+                const blackTiledGrid: BlackTiledGrid = new BlackTiledGrid(this._grid.SIZE_GRID_X, this._grid.SIZE_GRID_Y, this._grid.boxes);
 
                 if (blackTiledGrid.words !== undefined) {
-                    this.grid.words = blackTiledGrid.words;
+                    this._grid.words = blackTiledGrid.words;
                     break;
                 }
             }
             const wordFiller: WordFiller =
-                new WordFiller(this.grid.SIZE_GRID_X, this.grid.SIZE_GRID_Y, this.grid.difficulty, this.grid.boxes, this.grid.words);
+                new WordFiller(this._grid.SIZE_GRID_X, this._grid.SIZE_GRID_Y, this._grid.difficulty, this._grid.boxes, this._grid.words);
             await wordFiller.wordFillControler().then(
                 (hasPassed: boolean) => {
                     if (!hasPassed) {

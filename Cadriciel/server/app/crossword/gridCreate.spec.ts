@@ -14,8 +14,8 @@ describe("GRID CREATE TESTS", () => {
         gridCreate = new GridCreate();
         gridCreate["difficulty"] = Difficulty.Easy;
         gridCreate["newGrid"]().then(() => {
-            grid = gridCreate["grid"];
-            assert(gridCreate["grid"] !== undefined);
+            grid = gridCreate["_grid"];
+            assert(gridCreate["_grid"] !== undefined);
             done();
         }).catch((e: Error) => {
             assert(false);
@@ -34,7 +34,7 @@ describe("GRID CREATE TESTS", () => {
         let numBlackTiles: number = 0;
         for (let i: number = 0; i < grid.SIZE_GRID_X; i++) {
             for (let j: number = 0; j < grid.SIZE_GRID_Y; j++) {
-                if (blackGrid["grid"][i][j]._char._value === "#") {
+                if (blackGrid["_grid"][i][j]._char._value === "#") {
                     numBlackTiles++;
                 }
             }

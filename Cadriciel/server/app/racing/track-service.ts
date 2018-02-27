@@ -8,7 +8,7 @@ import { AbstractService } from "../AbstractService";
 export class TrackService extends AbstractService {
     public readonly baseRoute: string = "/track";
 
-    public constructor(@inject(Types.TrackRoute) private trackRoute: TrackRoute) {
+    public constructor( @inject(Types.TrackRoute) private _trackRoute: TrackRoute) {
         super();
     }
 
@@ -16,23 +16,23 @@ export class TrackService extends AbstractService {
         const router: Router = Router();
 
         router.get("/", (req: Request, res: Response) =>
-            this.trackRoute.getTrackList(req, res)
+            this._trackRoute.getTrackList(req, res)
         );
 
         router.get("/:id", (req: Request, res: Response) =>
-            this.trackRoute.getTrackFromID(req, res)
+            this._trackRoute.getTrackFromID(req, res)
         );
 
         router.post("/new", (req: Request, res: Response) => {
-            this.trackRoute.newTrack(req, res);
+            this._trackRoute.newTrack(req, res);
         });
 
         router.delete("/delete/:id", (req: Request, res: Response) => {
-            this.trackRoute.deleteTrack(req, res);
+            this._trackRoute.deleteTrack(req, res);
         });
 
         router.put("/put/:id", (req: Request, res: Response) => {
-            this.trackRoute.editTrack(req, res);
+            this._trackRoute.editTrack(req, res);
         });
 
         return router;

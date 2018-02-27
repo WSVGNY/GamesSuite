@@ -2,7 +2,6 @@ import { RenderService } from "./../render-service/render.service";
 import { Car } from "./../car/car";
 import { AICarService } from "./../artificial-intelligence/ai-car.service";
 import { TrackPointList, TrackPoint } from "./../render-service/trackPoint";
-import { MOCK_TRACK } from "./../render-service/mock-track";
 import { Vector3, PerspectiveCamera, Group, LineBasicMaterial, Line, Geometry } from "three";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { TrackType } from "../../../../../common/racing/trackType";
@@ -20,7 +19,7 @@ export class RaceGame {
     private _aiCars: Car[] = [];
     private _aiCarsDebug: Group = new Group();
     private _trackType: TrackType;
-    private _trackPoints: TrackPointList = new TrackPointList(MOCK_TRACK);
+    private _trackPoints: TrackPointList;
     private _lastDate: number;
     private _debug: boolean;
     private _centerLine: Line;

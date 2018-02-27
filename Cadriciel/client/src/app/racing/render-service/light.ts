@@ -14,9 +14,9 @@ const DIRECTIONAL_LIGHT_POSITION_Y: number = 0.8;
 const DIRECTIONAL_LIGHT_POSITION_Z: number = 1;
 
 export class TrackLights extends Group {
-    private lightingConfig: AbstractLightingConfig;
-    private ambiantLight: AmbientLight;
-    private directionalLight: DirectionalLight;
+    private _lightingConfig: AbstractLightingConfig;
+    private _ambiantLight: AmbientLight;
+    private _directionalLight: DirectionalLight;
 
     public constructor(trackType: TrackType) {
         super();
@@ -25,37 +25,36 @@ export class TrackLights extends Group {
 
     public updateLightsToTrackType(trackType: TrackType): void {
         this.chooseConfig(trackType);
-
         this.setAmbiantLight();
         this.setDirectionalLight();
     }
 
     private setAmbiantLight(): void {
-        if (this.ambiantLight !== undefined) {
-            this.remove(this.ambiantLight);
+        if (this._ambiantLight !== undefined) {
+            this.remove(this._ambiantLight);
         }
-        this.ambiantLight = new AmbientLight(WHITE, this.lightingConfig.AMBIENT_LIGHT_INTENSITY);
-        this.add(this.ambiantLight);
+        this._ambiantLight = new AmbientLight(WHITE, this._lightingConfig.AMBIENT_LIGHT_INTENSITY);
+        this.add(this._ambiantLight);
     }
 
     private setDirectionalLight(): void {
-        if (this.directionalLight !== undefined) {
-            this.remove(this.directionalLight);
+        if (this._directionalLight !== undefined) {
+            this.remove(this._directionalLight);
         }
-        this.directionalLight = new DirectionalLight(WHITE, this.lightingConfig.DIRECTIONAL_LIGHT_INTENSITY);
-        this.directionalLight.color.setHSL(DIRECTIONAL_LIGHT_HUE, DIRECTIONAL_LIGHT_SATURATION, DIRECTIONAL_LIGHT_LUMINANCE);
-        this.directionalLight.position.set(DIRECTIONAL_LIGHT_POSITION_X, DIRECTIONAL_LIGHT_POSITION_Y, DIRECTIONAL_LIGHT_POSITION_Z);
-        this.add(this.directionalLight);
+        this._directionalLight = new DirectionalLight(WHITE, this._lightingConfig.DIRECTIONAL_LIGHT_INTENSITY);
+        this._directionalLight.color.setHSL(DIRECTIONAL_LIGHT_HUE, DIRECTIONAL_LIGHT_SATURATION, DIRECTIONAL_LIGHT_LUMINANCE);
+        this._directionalLight.position.set(DIRECTIONAL_LIGHT_POSITION_X, DIRECTIONAL_LIGHT_POSITION_Y, DIRECTIONAL_LIGHT_POSITION_Z);
+        this.add(this._directionalLight);
     }
 
     private chooseConfig(trackType: TrackType): void {
         switch (trackType) {
             case TrackType.Night:
-                this.lightingConfig = new NightConfig();
+                this._lightingConfig = new NightConfig();
                 break;
             case TrackType.Default:
             default:
-                this.lightingConfig = new DefaultConfig();
+                this._lightingConfig = new DefaultConfig();
                 break;
         }
     }

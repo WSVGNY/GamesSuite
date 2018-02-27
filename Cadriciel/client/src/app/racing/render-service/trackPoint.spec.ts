@@ -25,8 +25,6 @@ describe("TrackPoint", () => {
         trackPoint.previous = new TrackPoint(new Vector3(1, 0, 0));
         trackPoint.next = new TrackPoint(new Vector3(0, 0, 1));
         trackPoint.findInteriorExteriorPoints();
-        // const intPoints: Vector3 = trackPoint.interior;
-
         expect(trackPoint.interior).toEqual(new Vector3(-10.000000000000002, 0, -10));
     });
 
@@ -34,7 +32,6 @@ describe("TrackPoint", () => {
         trackPoint.next = new TrackPoint(new Vector3(1, 0, 0));
         trackPoint.previous = new TrackPoint(new Vector3(0, 0, 1));
         trackPoint.findInteriorExteriorPoints();
-        // const extPoints: Vector3 = trackPoint.exterior;
         expect(trackPoint.interior).toEqual(new Vector3(10, 0, 10.000000000000002));
     });
 
@@ -42,8 +39,6 @@ describe("TrackPoint", () => {
         trackPoint.previous = new TrackPoint(new Vector3(1, 0, 0));
         trackPoint.next = new TrackPoint(new Vector3(0, 0, 1));
         trackPoint.findInteriorExteriorPoints();
-        // const intPoints: Vector3 = trackPoint.interior;
-
         expect(trackPoint.exterior).toEqual(new Vector3(10.000000000000002, 0, 10));
     });
 
@@ -51,7 +46,6 @@ describe("TrackPoint", () => {
         trackPoint.next = new TrackPoint(new Vector3(1, 0, 0));
         trackPoint.previous = new TrackPoint(new Vector3(0, 0, 1));
         trackPoint.findInteriorExteriorPoints();
-        // const extPoints: Vector3 = trackPoint.exterior;
         expect(trackPoint.exterior).toEqual(new Vector3(-10, 0, -10.000000000000002));
     });
 

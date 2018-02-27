@@ -3,14 +3,17 @@ import * as http from "http";
 import Types from "./types";
 import { injectable, inject } from "inversify";
 
+const PIPE: string = "Pipe ";
+const PORT: string = "Port ";
+
 @injectable()
 export class Server {
 
-    private readonly appPort: string|number|boolean = this.normalizePort(process.env.PORT || "3000");
+    private readonly appPort: string | number | boolean = this.normalizePort(process.env.PORT || "3000");
     private readonly baseDix: number = 10;
     private server: http.Server;
 
-    constructor(@inject(Types.Application) private application: Application) { }
+    constructor( @inject(Types.Application) private application: Application) { }
 
     public init(): void {
         this.application.app.set("port", this.appPort);
@@ -34,7 +37,7 @@ export class Server {
 
     private onError(error: NodeJS.ErrnoException): void {
         if (error.syscall !== "listen") { throw error; }
-        const bind: string = (typeof this.appPort === "string") ? "Pipe " + this.appPort : "Port " + this.appPort;
+        const bind: string = (typeof this.appPort === "string") ? PIPE + this.appPort : PORT + this.appPort;
         switch (error.code) {
             case "EACCES":
                 console.error(`${bind} requires elevated privileges`);

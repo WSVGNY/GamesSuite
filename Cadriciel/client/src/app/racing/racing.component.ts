@@ -24,43 +24,43 @@ export class RacingComponent implements AfterViewInit {
     private _raceGame: RaceGame;
 
     public constructor(
-        private renderService: RenderService,
-        private route: ActivatedRoute,
-        private keyboardEventHandlerService: KeyboardEventHandlerService,
-        private trackService: TrackService
+        private _renderService: RenderService,
+        private _route: ActivatedRoute,
+        private _keyboardEventHandlerService: KeyboardEventHandlerService,
+        private _trackService: TrackService
     ) { }
 
     @HostListener("window:resize", ["$event"])
     public onResize(): void {
-        this.renderService.onResize();
+        this._renderService.onResize();
     }
 
     @HostListener("window:keydown", ["$event"])
     public onKeyDown(event: KeyboardEvent): void {
         if (this._raceGame !== undefined) {
-            this.keyboardEventHandlerService.handleKeyDown(event, this._raceGame);
+            this._keyboardEventHandlerService.handleKeyDown(event, this._raceGame);
         }
     }
 
     @HostListener("window:keyup", ["$event"])
     public onKeyUp(event: KeyboardEvent): void {
         if (this._raceGame !== undefined) {
-            this.keyboardEventHandlerService.handleKeyUp(event, this._raceGame);
+            this._keyboardEventHandlerService.handleKeyUp(event, this._raceGame);
         }
     }
 
     public async ngAfterViewInit(): Promise<void> {
         this.getTrack();
 
-        this.keyboardEventHandlerService
+        this._keyboardEventHandlerService
             .initialize()
             .then(/* do nothing */)
             .catch((err) => console.error(err));
     }
 
     public getTrack(): void {
-        this._currentTrackId = this.route.snapshot.paramMap.get("id");
-        this.trackService.getTrackFromId(this._currentTrackId)
+        this._currentTrackId = this._route.snapshot.paramMap.get("id");
+        this._trackService.getTrackFromId(this._currentTrackId)
             .subscribe((trackFromServer: string) => {
                 const iTrack: TrackStructure = JSON.parse(JSON.stringify(trackFromServer));
                 this._chosenTrack = new Track(iTrack);
@@ -69,7 +69,7 @@ export class RacingComponent implements AfterViewInit {
     }
 
     private async initializeGame(): Promise<void> {
-        this._raceGame = new RaceGame(this.renderService);
+        this._raceGame = new RaceGame(this._renderService);
         await this._raceGame.initialize(this._chosenTrack.toTrackStructure(), this._containerRef);
     }
 
