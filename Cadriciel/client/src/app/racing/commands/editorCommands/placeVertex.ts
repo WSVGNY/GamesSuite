@@ -4,14 +4,14 @@ import { EditorScene } from "../../editor/editorScene";
 
 export class PlaceVertex extends AbstractEditorCommand {
 
-    private position: Vector3;
+    private _position: Vector3;
 
     public constructor(editorScene: EditorScene, position: Vector3) {
         super(editorScene);
-        this.position = position;
+        this._position = position;
     }
 
     public execute(): void {
-        this._editorScene.addVertex(this.position);
+        this._editorScene.addVertex(this._position);
     }
 }

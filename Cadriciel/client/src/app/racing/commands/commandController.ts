@@ -4,15 +4,13 @@ export class CommandController {
 
     private _command: AbstractCommand;
 
-    public constructor() {}
-
-    public set command (command: AbstractCommand) {
-      this._command = command;
+    public set command(command: AbstractCommand) {
+        this._command = command;
     }
 
     public execute(): void {
-      if (this._command !== undefined) {
-        this._command.execute();
-      }
+        if (this._command !== undefined) {
+            this._command.execute();
+        }
     }
-  }
+}

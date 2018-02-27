@@ -10,9 +10,7 @@
     <button name="buttonDifficulty" (click)="makeEasyGrid()" class="btn btn-primary">EASY</button>
     <button name="buttonDifficulty" (click)="makeMediumGrid()" class="btn btn-primary">MEDIUM</button>
     <button name="buttonDifficulty" (click)="makeHardGrid()" class="btn btn-primary">HARD</button>
-   
   </div>
-  
 
   <div *ngIf="difficulty !== undefined" id="input">
     Enter Name :
@@ -25,6 +23,4 @@
   <div *ngIf="configurationService.isTwoPlayerGame"> Chosen : Two player </div>
   <div *ngIf="difficulty !== undefined"> Chosen : {{difficulty}} </div>
   </div>
-
-
 </div>

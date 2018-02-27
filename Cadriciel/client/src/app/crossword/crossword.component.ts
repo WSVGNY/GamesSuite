@@ -12,7 +12,7 @@ export class CrosswordComponent {
 
     public selectedGridBox: CommonGridBox;
     public correctWordCount: number = 0;
-    private isInCheatMode: boolean = false;
+    public isInCheatMode: boolean = false;
 
     public constructor(public configurationService: ConfigurationService) {
     }
@@ -56,7 +56,7 @@ export class CrosswordComponent {
             this.deselectWords();
             if (word.isHorizontal) {
                 for (let i: number = 0; i < word.length; i++) {
-                    this.configurationService.grid.boxes[word.startPosition.y][i + word.startPosition.x]._isColored = true;
+                    this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + i]._isColored = true;
                 }
             } else {
                 for (let i: number = 0; i < word.length; i++) {
@@ -80,7 +80,7 @@ export class CrosswordComponent {
         let value: string = "";
         if (word.isHorizontal) {
             for (let i: number = 0; i < word.length; i++) {
-                value += this.configurationService.grid.boxes[word.startPosition.y][i + word.startPosition.x]._char._value;
+                value += this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + i]._char._value;
             }
         } else {
             for (let i: number = 0; i < word.length; i++) {
@@ -94,22 +94,21 @@ export class CrosswordComponent {
     public getGridBoxID(gridBox: CommonGridBox): number {
         if (gridBox._constraints[0] !== undefined) {
             if (gridBox._constraints[1] !== undefined) {
-                if (gridBox._id.x === gridBox._constraints[1].startPosition.x
-                    && gridBox._id.y === gridBox._constraints[1].startPosition.y) {
+                if (this.isStartingBox(gridBox, 1)) {
                     return gridBox._constraints[1].definitionID;
                 }
-                if (gridBox._id.x === gridBox._constraints[0].startPosition.x
-                    && gridBox._id.y === gridBox._constraints[0].startPosition.y) {
-                    return gridBox._constraints[0].definitionID;
-                }
             }
-            if (gridBox._id.x === gridBox._constraints[0].startPosition.x
-                && gridBox._id.y === gridBox._constraints[0].startPosition.y) {
+            if (this.isStartingBox(gridBox, 0)) {
                 return gridBox._constraints[0].definitionID;
             }
         }
 
         return undefined;
+    }
+
+    private isStartingBox(gridBox: CommonGridBox, index: number): boolean {
+        return gridBox._id.x === gridBox._constraints[index].startPosition.x
+            && gridBox._id.y === gridBox._constraints[index].startPosition.y;
     }
 
     public isCompletedWord(word: CommonWord, wordEntered: string): boolean {

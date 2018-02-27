@@ -75,10 +75,8 @@ describe("CrosswordComponent", () => {
             setTimeout(() => done(), timeout);
             for (const line of component.configurationService.grid.boxes) {
                 for (const box of line) {
-                    if (box._char._value !== "#") {
-                        if (box._char._value !== box._char._value.toUpperCase()) {
-                            assert(false);
-                        }
+                    if (box._char._value !== "#" && box._char._value !== box._char._value.toUpperCase()) {
+                        assert(false);
                     }
                 }
             }

@@ -14,7 +14,7 @@ export class ConfigurationComponent {
     public isJoinGame: boolean = false;
     public difficulty: Difficulty;
     public choseGridDifficulty: boolean = false;
-    public constructor(private gridService: GridService, public configurationService: ConfigurationService) {
+    public constructor(private _gridService: GridService, public configurationService: ConfigurationService) {
     }
 
     public setNewGame(): void {
@@ -26,7 +26,7 @@ export class ConfigurationComponent {
     }
 
     public createGrid(): void {
-        this.gridService.gridGet(this.difficulty).subscribe((grid: Grid) => {
+        this._gridService.gridGet(this.difficulty).subscribe((grid: Grid) => {
             this.configurationService.grid = grid;
         });
     }

@@ -6,6 +6,7 @@ import { TurnRight } from "../commands/carAICommands/turnRight";
 import { Brake } from "../commands/carAICommands/brake";
 import { ReleaseAccelerator } from "../commands/carAICommands/releaseAccelerator";
 import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";
+import { ReleaseBrakes } from "../commands/carAICommands/releaseBrakes";
 import { RaceGame } from "../game-loop/raceGame";
 
 const ACCELERATE_KEYCODE: number = 87;  // w
@@ -20,8 +21,6 @@ const DEBUG_KEYCODE: number = 48;       // 0
 export class KeyboardEventHandlerService {
 
     private _carControl: CommandController;
-
-    public constructor() { }
 
     public async initialize(): Promise<void> {
         this._carControl = new CommandController();
@@ -71,9 +70,8 @@ export class KeyboardEventHandlerService {
                 this._carControl.execute();
                 break;
             case BRAKE_KEYCODE:
-                this._carControl.command = new Brake(raceGame.playerCar);
+                this._carControl.command = new ReleaseBrakes(raceGame.playerCar);
                 this._carControl.execute();
-                // this._playerCar.setBackLightColor(YELLOW);
                 break;
             default:
                 break;

@@ -1,34 +1,34 @@
 <P>
-    <button (click)="goBack()"> Go back </button>
+  <button (click)="goBack()"> Go back </button>
 </P>
 <P>
-    Track name:
-    <input #trackName type="text" [value]="currentTrack.name" (keyup.enter)="saveTrackName(trackName.value)" (blur)="saveTrackName(trackName.value)">
+  Track name:
+  <input #trackName type="text" [value]="currentTrack.name" (keyup.enter)="saveTrackName(trackName.value)" (blur)="saveTrackName(trackName.value)">
 </P>
 <P>
-    Description:
-    <input #trackDescription type="text" [value]="currentTrack.description" (keyup.enter)="saveTrackDescription(trackDescription.value)"
-        (blur)="saveTrackDescription(trackDescription.value)">
+  Description:
+  <input #trackDescription type="text" [value]="currentTrack.description" (keyup.enter)="saveTrackDescription(trackDescription.value)"
+    (blur)="saveTrackDescription(trackDescription.value)">
 </P>
 <P>
-    Times played: {{currentTrack.timesPlayed}}
+  Times played: {{currentTrack.timesPlayed}}
 </P>
 <P>
-    Track Types :
-    <button (click)="chooseTrackType()"> {{currentTrack.type}} </button>
+  Track Types :
+  <button (click)="chooseTrackType()"> {{currentTrack.type}} </button>
 </P>
 
 <P>
-    Best times:
-    <li *ngFor="let time of currentTrack.times;">
-        {{time}}
-    </li>
+  Best times:
+  <li *ngFor="let time of currentTrack.times;">
+    {{time}}
+  </li>
 </P>
 <P>
-    <span *ngIf="editorScene!==undefined">
-        <button *ngIf="!editorScene.checkConstraints()" id="saveButton" disabled> Save and go back </button>
-        <button *ngIf="editorScene.checkConstraints()" id="saveButton" (click)="saveTrack()" (click)="goBack()"> Save and go back </button>
-    </span>
+  <span *ngIf="editorScene!==undefined">
+    <button *ngIf="!editorScene.checkConstraints()" id="saveButton" disabled> Save and go back </button>
+    <button *ngIf="editorScene.checkConstraints()" id="saveButton" (click)="saveTrack()" (click)="goBack()"> Save and go back </button>
+  </span>
 </P>
 <div #containerEditor>
 </div>

@@ -23,6 +23,6 @@ describe("Track Preview", () => {
         const trackPreview: TrackPreview = new TrackPreview(renderService);
         const mockTrack: Track = new Track(TrackStructure.getNewDefaultTrackStructure());
         trackPreview.loadTrack(mockTrack);
-        expect(trackPreview["renderService"]["_scene"].getChildByName("track")).toBeDefined();
+        expect(trackPreview["_renderService"]["_scene"].getChildByName("track")).toBeDefined();
     }));
 });
