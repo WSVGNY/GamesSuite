@@ -1,17 +1,9 @@
-import { Group, AmbientLight, DirectionalLight } from "three";
+import { Group, AmbientLight, DirectionalLight, DirectionalLightHelper } from "three";
 import { WHITE } from "../constants";
 import { AbstractLightingConfig } from "./lighting-config/abstractConfig";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { NightConfig } from "./lighting-config/nightConfig";
 import { DefaultConfig } from "./lighting-config/defaultConfig";
-
-const DIRECTIONAL_LIGHT_HUE: number = 0.1;
-const DIRECTIONAL_LIGHT_SATURATION: number = 1;
-const DIRECTIONAL_LIGHT_LUMINANCE: number = 0.95;
-
-const DIRECTIONAL_LIGHT_POSITION_X: number = -1;
-const DIRECTIONAL_LIGHT_POSITION_Y: number = 0.8;
-const DIRECTIONAL_LIGHT_POSITION_Z: number = 1;
 
 export class TrackLights extends Group {
     private _lightingConfig: AbstractLightingConfig;
@@ -42,9 +34,19 @@ export class TrackLights extends Group {
             this.remove(this._directionalLight);
         }
         this._directionalLight = new DirectionalLight(WHITE, this._lightingConfig.DIRECTIONAL_LIGHT_INTENSITY);
-        this._directionalLight.color.setHSL(DIRECTIONAL_LIGHT_HUE, DIRECTIONAL_LIGHT_SATURATION, DIRECTIONAL_LIGHT_LUMINANCE);
-        this._directionalLight.position.set(DIRECTIONAL_LIGHT_POSITION_X, DIRECTIONAL_LIGHT_POSITION_Y, DIRECTIONAL_LIGHT_POSITION_Z);
+        this._directionalLight.color.setHSL(
+            this._lightingConfig.DIRECTIONAL_LIGHT_HUE,
+            this._lightingConfig.DIRECTIONAL_LIGHT_SATURATION,
+            this._lightingConfig.DIRECTIONAL_LIGHT_LUMINANCE
+        );
+        this._directionalLight.position.set(
+            this._lightingConfig.DIRECTIONAL_LIGHT_POSITION_X,
+            this._lightingConfig.DIRECTIONAL_LIGHT_POSITION_Y,
+            this._lightingConfig.DIRECTIONAL_LIGHT_POSITION_Z
+        );
         this.add(this._directionalLight);
+        const helpME: DirectionalLightHelper = new DirectionalLightHelper(this._directionalLight, 20);
+        this.add(helpME);
     }
 
     private chooseConfig(trackType: TrackType): void {

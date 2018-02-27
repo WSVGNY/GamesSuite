@@ -144,8 +144,8 @@ export class RaceGame {
 
     public set isDay(isDay: boolean) {
         if (isDay) {
-            this.setSkyBox(this._trackType);
-            this.setLights(this._trackType);
+            this.setSkyBox(TrackType.Default);
+            this.setLights(TrackType.Default);
             this._playerCar.dettachLights();
             this._aiCars.forEach((aiCar: Car) => aiCar.dettachLights());
         } else {
