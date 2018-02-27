@@ -35,4 +35,7 @@ export class EditorRenderService {
         this._renderer.render(scene, camera);
     }
 
+    public onResize(): void {
+        this._renderer.setSize(this._containerEditor.clientWidth, this._containerEditor.clientHeight);
+    }
 }

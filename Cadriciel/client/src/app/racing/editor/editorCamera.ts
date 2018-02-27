@@ -33,4 +33,8 @@ export class EditorCamera {
     public get camera(): OrthographicCamera {
         return this._camera;
     }
+
+    public onResize(): void {
+        this._camera.updateProjectionMatrix();
+    }
 }
