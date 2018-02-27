@@ -50,9 +50,10 @@ export class ChooseTrackComponent implements OnInit, AfterViewInit {
         this._trackPreview.loadTrack(track);
     }
 
-    public incrementTimesPlayed(track: Track): void {
+    public updateSelectedTrack(track: Track): void {
         track.timesPlayed++;
         this.saveTrack(track);
+        this.renderService.resetScene();
     }
 
     private saveTrack(track: Track): void {
