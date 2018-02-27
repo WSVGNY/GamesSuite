@@ -13,19 +13,18 @@ export class TrackPreview {
     private _trackType: TrackType;
     private _trackPoints: TrackPointList;
 
-    public constructor(private renderService: RenderService) { }
+    public constructor(private _renderService: RenderService) { }
 
     public async initialize(containerRef: ElementRef): Promise<void> {
         if (containerRef) {
             this.initializeCamera(containerRef.nativeElement);
-            await
-                this.renderService.initialize(containerRef.nativeElement, this._camera);
-            this.renderService.setupRenderer();
+            await this._renderService.initialize(containerRef.nativeElement, this._camera);
+            this._renderService.setupRenderer();
         }
     }
 
     public loadTrack(track: Track): void {
-        this.renderService.resetScene().catch((error: Error) => console.error(error));
+        this._renderService.resetScene().catch((error: Error) => console.error(error));
         this._trackType = track.type;
         this._trackPoints = new TrackPointList(track.vertices);
         this.addObjectsToRenderScene();
@@ -34,8 +33,8 @@ export class TrackPreview {
     }
 
     private addObjectsToRenderScene(): void {
-        this.renderService.addObjectToScene(this.renderService.createTrackMesh(this._trackPoints));
-        this.renderService.addObjectToScene(new TrackLights(TrackType.Default));
+        this._renderService.addObjectToScene(this._renderService.createTrackMesh(this._trackPoints));
+        this._renderService.addObjectToScene(new TrackLights(TrackType.Default));
     }
 
     private initializeCamera(containerRef: HTMLDivElement): void {
@@ -54,7 +53,7 @@ export class TrackPreview {
     }
 
     private setSkyBox(trackType: TrackType): void {
-        this.renderService.loadSkyBox(SkyBox.getPath(trackType));
+        this._renderService.loadSkyBox(SkyBox.getPath(trackType));
     }
 
     public startGameLoop(): void {
@@ -63,7 +62,7 @@ export class TrackPreview {
 
     private update(): void {
         requestAnimationFrame(() => {
-            this.renderService.render();
+            this._renderService.render();
             this.update();
         });
     }

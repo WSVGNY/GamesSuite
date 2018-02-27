@@ -43,6 +43,7 @@ export class CarLights extends Group {
 
         return cube;
     }
+
     public attachCube(cube: Object3D): void {
         this.add(cube);
     }

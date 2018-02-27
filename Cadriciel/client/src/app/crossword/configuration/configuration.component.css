@@ -38,7 +38,7 @@
     z-index: 2;
 }
 
-#modeButton{
+#modeButton {
     background : rgb(53, 83, 74);
     color: rgb(190, 216, 210);
 }
@@ -50,14 +50,14 @@
     left: 50px;
 }
 
-#buttongroup{
+#buttongroup {
     position: absolute;
     left: 35px;
     top:200px;
     visibility: visible;
 }
 
-#buttongroupDifficulty{
+#buttongroupDifficulty {
     visibility: visible;
     position: absolute;
     left: 35px;
@@ -89,7 +89,7 @@ button:hover {
     box-shadow: none;
 }
 
-#selectedOptions{
+#selectedOptions {
     background:rgba(63, 110, 96, 0.425);
     position: absolute;
     top: 250px;

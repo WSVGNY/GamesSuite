@@ -24,69 +24,69 @@ const VIEW_SIZE: number = 500;
 export class EditorComponent implements AfterViewInit {
 
     @ViewChild("containerEditor")
-    private containerRef: ElementRef;
+    private _containerRef: ElementRef;
     @Input()
-    private currentTrack: Track;
-    private trackChosenFromAdmin: Track;
+    public currentTrack: Track;
+    private _trackChosenFromAdmin: Track;
 
-    private editorCamera: EditorCamera;
-    private editorScene: EditorScene;
+    private _editorCamera: EditorCamera;
+    private _editorScene: EditorScene;
 
     public constructor(
-        private route: ActivatedRoute,
-        private trackService: TrackService,
-        private location: Location,
-        private editorRenderService: EditorRenderService,
-        private mouseEventHandlerService: MouseEventHandlerService) {
+        private _route: ActivatedRoute,
+        private _trackService: TrackService,
+        private _location: Location,
+        private _editorRenderService: EditorRenderService,
+        private _mouseEventHandlerService: MouseEventHandlerService) {
 
         this.currentTrack = new Track(TrackStructure.getNewDefaultTrackStructure());
     }
 
     public ngAfterViewInit(): void {
         this.getTrack();
-        this.editorCamera = new EditorCamera(this.computeAspectRatio(), VIEW_SIZE);
-        this.editorCamera.setPosition(CAMERA_POSITION);
-        this.editorScene = new EditorScene();
-        this.editorRenderService
-            .initialize(this.containerRef.nativeElement, this.editorScene.scene, this.editorCamera.camera)
+        this._editorCamera = new EditorCamera(this.computeAspectRatio(), VIEW_SIZE);
+        this._editorCamera.setPosition(CAMERA_POSITION);
+        this._editorScene = new EditorScene();
+        this._editorRenderService
+            .initialize(this._containerRef.nativeElement, this._editorScene.scene, this._editorCamera.camera)
             .then(/* do nothing */)
             .catch((err) => console.error(err));
-        this.mouseEventHandlerService
-            .initialize(this.containerRef.nativeElement, VIEW_SIZE)
+        this._mouseEventHandlerService
+            .initialize(this._containerRef.nativeElement, VIEW_SIZE)
             .then(/* do nothing */)
             .catch((err) => console.error(err));
     }
 
     private computeAspectRatio(): number {
-        return this.containerRef.nativeElement.clientWidth / this.containerRef.nativeElement.clientHeight;
+        return this._containerRef.nativeElement.clientWidth / this._containerRef.nativeElement.clientHeight;
     }
 
     public getTrack(): void {
-        this.trackService.getTrackFromId(this.route.snapshot.paramMap.get("id"))
+        this._trackService.getTrackFromId(this._route.snapshot.paramMap.get("id"))
             .subscribe((trackFromServer: string) => {
                 const iTrack: TrackStructure = JSON.parse(JSON.stringify(trackFromServer));
-                this.trackChosenFromAdmin = new Track(iTrack);
-                this.currentTrack.name = this.trackChosenFromAdmin.name;
-                this.currentTrack.description = this.trackChosenFromAdmin.description;
-                this.currentTrack.timesPlayed = this.trackChosenFromAdmin.timesPlayed;
-                this.currentTrack.type = this.trackChosenFromAdmin.type;
-                this.currentTrack.bestTimes = this.trackChosenFromAdmin.bestTimes;
-                this.editorScene.importTrackVertices(this.trackChosenFromAdmin.vertices);
+                this._trackChosenFromAdmin = new Track(iTrack);
+                this.currentTrack.name = this._trackChosenFromAdmin.name;
+                this.currentTrack.description = this._trackChosenFromAdmin.description;
+                this.currentTrack.timesPlayed = this._trackChosenFromAdmin.timesPlayed;
+                this.currentTrack.type = this._trackChosenFromAdmin.type;
+                this.currentTrack.bestTimes = this._trackChosenFromAdmin.bestTimes;
+                this._editorScene.importTrackVertices(this._trackChosenFromAdmin.vertices);
             });
     }
 
     public saveTrack(): void {
-        this.trackChosenFromAdmin.name = this.currentTrack.name;
-        this.trackChosenFromAdmin.description = this.currentTrack.description;
-        this.trackChosenFromAdmin.vertices = this.editorScene.exportTrackVertices();
-        this.trackChosenFromAdmin.type = this.currentTrack.type;
-        this.trackService.putTrack(this.trackChosenFromAdmin.id, this.trackChosenFromAdmin.toTrackStructure())
+        this._trackChosenFromAdmin.name = this.currentTrack.name;
+        this._trackChosenFromAdmin.description = this.currentTrack.description;
+        this._trackChosenFromAdmin.vertices = this._editorScene.exportTrackVertices();
+        this._trackChosenFromAdmin.type = this.currentTrack.type;
+        this._trackService.putTrack(this._trackChosenFromAdmin.id, this._trackChosenFromAdmin.toTrackStructure())
             .subscribe(
-                (trackFromServer: string) => {
-                    const iTrack: TrackStructure = JSON.parse(JSON.stringify(trackFromServer));
-                    this.trackChosenFromAdmin = new Track(iTrack);
-                },
-                (error: Error) => console.error(error)
+            (trackFromServer: string) => {
+                const iTrack: TrackStructure = JSON.parse(JSON.stringify(trackFromServer));
+                this._trackChosenFromAdmin = new Track(iTrack);
+            },
+            (error: Error) => console.error(error)
             );
     }
 
@@ -99,7 +99,7 @@ export class EditorComponent implements AfterViewInit {
     }
 
     public goBack(): void {
-        this.location.back();
+        this._location.back();
     }
 
     public chooseTrackType(): void {
@@ -108,25 +108,25 @@ export class EditorComponent implements AfterViewInit {
 
     @HostListener("window:mousedown", ["$event"])
     public onMouseDown(event: MouseEvent): void {
-        this.mouseEventHandlerService.handleMouseDown(
+        this._mouseEventHandlerService.handleMouseDown(
             event,
-            this.editorCamera,
-            this.editorScene
+            this._editorCamera,
+            this._editorScene
         );
     }
 
     @HostListener("window:mousemove", ["$event"])
     public onMouseMove(event: MouseEvent): void {
-        this.mouseEventHandlerService.handleMouseMove(event, this.editorScene);
+        this._mouseEventHandlerService.handleMouseMove(event, this._editorScene);
     }
 
     @HostListener("window:mouseup", ["$event"])
     public onMouseUp(event: MouseEvent): void {
-        this.mouseEventHandlerService.handleMouseUp(event, this.editorScene);
+        this._mouseEventHandlerService.handleMouseUp(event, this._editorScene);
     }
 
     @HostListener("window:contextmenu", ["$event"])
     public onContextMenu(event: MouseEvent): void {
-        this.mouseEventHandlerService.onContextMenu(event);
+        this._mouseEventHandlerService.onContextMenu(event);
     }
 }

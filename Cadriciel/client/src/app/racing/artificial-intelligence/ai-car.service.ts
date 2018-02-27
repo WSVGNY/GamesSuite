@@ -48,7 +48,6 @@ export class AICarService {
     private updateTrackPortionIndex(pointOnLine: Vector3, turningPoint: Vector3): void {
         if (this._trackVertices[this._trackPortionIndex].distanceTo(pointOnLine) > AIConfig.TURNING_POINT_BUFFER &&
             pointOnLine.distanceTo(turningPoint) < AIConfig.TURNING_POINT_BUFFER) {
-
             if (this._trackPortionIndex + 1 >= this._trackVectors.length) {
                 this._trackPortionIndex = 0;
             } else {
@@ -100,7 +99,6 @@ export class AICarService {
         const positionInFront: Vector3 = new Vector3(
             this._car.position.x + this._car.currentPosition.x, 0,
             this._car.position.z + this._car.currentPosition.z);
-
         positionInFront.x += dir.x * this._aiConfig.distanceFromVehicule;
         positionInFront.z += dir.z * this._aiConfig.distanceFromVehicule;
 
@@ -111,12 +109,10 @@ export class AICarService {
         this._trackVectors = [];
         for (let i: number = 0; i < track.length; ++i) {
             const nextVertex: Vector3 = i === track.length - 1 ? track[0] : track[i + 1];
-
             const a: number = track[i].x - nextVertex.x;
             const b: number = nextVertex.z - track[i].z;
             const c: number = track[i].z * nextVertex.x - nextVertex.z * track[i].x;
             const line: Line = new Line(a, b, c);
-
             this._trackVectors.push(line);
         }
     }
@@ -131,12 +127,11 @@ export class AICarService {
 
     private projectPointOnLine(point: Vector3): Vector3 {
         const line: Line = this._trackVectors[this._trackPortionIndex];
-
         const a: number = -this._trackVectors[this._trackPortionIndex].b;
         const b: number = this._trackVectors[this._trackPortionIndex].a;
         const c: number = -a * point.z - b * point.x;
-
         const pointOnLine: Vector3 = new Vector3();
+
         pointOnLine.x = b !== 0 ? (line.c * a - line.a * c) / (line.a * b - a * line.b) : this._trackVertices[this._trackPortionIndex].x;
         pointOnLine.z = a !== 0 ? (-c - b * pointOnLine.x) / a : this._trackVertices[this._trackPortionIndex].z;
 

@@ -22,8 +22,6 @@ export class KeyboardEventHandlerService {
 
     private _carControl: CommandController;
 
-    public constructor() { }
-
     public async initialize(): Promise<void> {
         this._carControl = new CommandController();
     }
@@ -74,7 +72,6 @@ export class KeyboardEventHandlerService {
             case BRAKE_KEYCODE:
                 this._carControl.command = new ReleaseBrakes(raceGame.playerCar);
                 this._carControl.execute();
-                // this._playerCar.setBackLightColor(YELLOW);
                 break;
             default:
                 break;
