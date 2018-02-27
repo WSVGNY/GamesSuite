@@ -3,7 +3,8 @@
 import { TestBed, inject } from "@angular/core/testing";
 import { RenderService } from "../render-service/render.service";
 import { TrackPreview } from "./trackPreview";
-import { ITrack, Track, TrackStructure } from "../../../../../common/racing/track";
+import { TrackStructure } from "../../../../../common/racing/track";
+import { Track } from "../track";
 
 describe("Track Preview", () => {
 
@@ -18,10 +19,10 @@ describe("Track Preview", () => {
         expect(trackPreview).toBeTruthy();
     }));
 
-    it("should display the desired track", inject([RenderService], (renderService: RenderService) => {
+    it("should add the desired track to the preview", inject([RenderService], (renderService: RenderService) => {
         const trackPreview: TrackPreview = new TrackPreview(renderService);
         const mockTrack: Track = new Track(TrackStructure.getNewDefaultTrackStructure());
         trackPreview.loadTrack(mockTrack);
-        expect(trackPreview["renderService"]["_scene"].getChildByName()).toBeDefined();
+        expect(trackPreview["renderService"]["_scene"].getChildByName("track")).toBeDefined();
     }));
 });
