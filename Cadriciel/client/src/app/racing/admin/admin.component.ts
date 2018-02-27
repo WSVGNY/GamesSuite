@@ -10,50 +10,49 @@ import { Track } from "../track";
 })
 export class AdminComponent implements OnInit {
 
-    private tracks: Track[] = new Array();
-
-    public constructor(private trackService: TrackService) { }
+    private _tracks: Track[] = new Array();
+    public constructor(private _trackService: TrackService) { }
 
     public ngOnInit(): void {
         this.getTracksFromServer();
     }
 
     private getTracksFromServer(): void {
-        this.trackService.getTrackList()
+        this._trackService.getTrackList()
             .subscribe(
-                (tracksFromServer: string) => {
-                    this.tracks = [];
-                    JSON.parse(tracksFromServer).forEach((document: string) => {
-                        const iTrack: TrackStructure = JSON.parse(JSON.stringify(document));
-                        this.tracks.push(new Track(iTrack));
-                    });
-                },
-                (error: Error) => console.error(error)
+            (tracksFromServer: string) => {
+                this._tracks = [];
+                JSON.parse(tracksFromServer).forEach((document: string) => {
+                    const iTrack: TrackStructure = JSON.parse(JSON.stringify(document));
+                    this._tracks.push(new Track(iTrack));
+                });
+            },
+            (error: Error) => console.error(error)
             );
     }
 
     public newTrack(trackName: string): void {
-        this.trackService.newTrack(trackName)
+        this._trackService.newTrack(trackName)
             .subscribe(
-                (trackFromServer: string) => {
-                    const iTrack: TrackStructure = JSON.parse(JSON.stringify(trackFromServer));
-                    this.tracks.push(new Track(iTrack));
-                },
-                (error: Error) => console.error(error)
+            (trackFromServer: string) => {
+                const iTrack: TrackStructure = JSON.parse(JSON.stringify(trackFromServer));
+                this._tracks.push(new Track(iTrack));
+            },
+            (error: Error) => console.error(error)
             );
     }
 
     public deleteTrack(id: string): void {
-        this.trackService.deleteTrack(id)
+        this._trackService.deleteTrack(id)
             .subscribe(
-                (tracksFromServer: string) => {
-                    this.tracks = [];
-                    JSON.parse(tracksFromServer).forEach((document: string) => {
-                        const iTrack: TrackStructure = JSON.parse(JSON.stringify(document));
-                        this.tracks.push(new Track(iTrack));
-                    });
-                },
-                (error: Error) => console.error(error)
+            (tracksFromServer: string) => {
+                this._tracks = [];
+                JSON.parse(tracksFromServer).forEach((document: string) => {
+                    const iTrack: TrackStructure = JSON.parse(JSON.stringify(document));
+                    this._tracks.push(new Track(iTrack));
+                });
+            },
+            (error: Error) => console.error(error)
             );
     }
 }

@@ -1,13 +1,11 @@
 <h2>Track list</h2>
 <ul class="tracks">
-  <li class="track" *ngFor="let track of tracks; let i = index">
+  <li class="track" *ngFor="let track of _tracks; let i = index">
     <a routerLink="/race/{{track.id}}" (mouseover)="displayTrackPreview(track) " (click)=incrementTimesPlayed(track)>
       <span class="badge">{{i+1}}</span> {{track.name}}
     </a>
     <pre>Description: {{track.description}}</pre>
-
     <pre>Times Played: {{track.timesPlayed}}</pre>
-
     <pre>Type: {{track.type}}</pre>
     <pre>Best times:
     <pre *ngFor="let time of track.times;">
