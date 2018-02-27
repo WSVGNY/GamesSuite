@@ -1,19 +1,22 @@
---  http://localhost:4200/mot-croise :  affiche le jeu du mot croisÈ
+--  http://localhost:4200/mot-croise :  affiche le jeu du mot croisÔøΩ
 --  http://localhost:4200/course : affiche le jeu de course
---  http://localhost:4200/admin : affiche la liste des pistes en donnant l'option d'en crÈer ou d'en deleter
---  http://localhost:4200/admin/:id : ouvre l'editeur de la piste dont l'id est celui entrÈ
---  http://localhost:3000/grid/gridGet: retourne un JSON contenant tous les dÈtails d'une grille de mot croisÈ
+--  http://localhost:4200/admin : affiche la liste des pistes en donnant l'option d'en crÔøΩer ou d'en deleter
+--  http://localhost:4200/admin/:id : ouvre l'editeur de la piste dont l'id est celui entrÔøΩ
+--  http://localhost:3000/grid/gridGet: retourne un JSON contenant tous les dÔøΩtails d'une grille de mot croisÔøΩ
 -- http://localhost:3000/grid:
--- http://localhost:3000/lexicon/:constraints/:difficulty : affiche un JSON contenant le mot retournÈ ainsi que sa dÈfinition. :constraints est la contrainte du mot dÈsirÈ ex : r%3f%3f serait un mot de 3 lettre commencant par r. :difficulty est la difficultÈ dÈsirÈe entre EASY, MEDIUM ou HARD
+-- http://localhost:3000/lexicon/:constraints/:difficulty : affiche un JSON contenant le mot retournÔøΩ ainsi que sa dÔøΩfinition. :constraints est la contrainte du mot dÔøΩsirÔøΩ ex : r%3f%3f serait un mot de 3 lettre commencant par r. :difficulty est la difficultÔøΩ dÔøΩsirÔøΩe entre EASY, MEDIUM ou HARD
 
 
-Pour accÈder ‡ l'API Datamuse: Par exemple, si on veut les dÈtails pour un mot de 4 lettres ayant un r ‡ la 2e position https://api.datamuse.com/words?sp=%3fr%3f%3f&md=df
+Pour accÔøΩder ÔøΩ l'API Datamuse: Par exemple, si on veut les dÔøΩtails pour un mot de 4 lettres ayant un r ÔøΩ la 2e position https://api.datamuse.com/words?sp=%3fr%3f%3f&md=df
 
 
 Dans tous les cas, il faut toujours partir le serveur avant de runner le code.
 
 
-ca arrive souvent qu'il y a des mots Ètranges ex: tau, xiii, rh qui apparaissent dans la grille. malgrÈ ce quon pense ces mots existent rÈellement sur datamuse. ex : tau ---> the 19th letter of the Greek alphabet 
+ca arrive souvent qu'il y a des mots ÔøΩtranges ex: tau, xiii, rh qui apparaissent dans la grille. malgrÔøΩ ce quon pense ces mots existent rÔøΩellement sur datamuse. ex : tau ---> the 19th letter of the Greek alphabet 
 
 
 Dans le jeu de course, quand tu appuie sur la touche 0 ca fait afficher les vecteurs pour voir comment les AI fonctionnent.
+
+Parfois, il arrive que certains test semblent ne pas passer sur l`interface, cependant ils passent. En effet, une fois qu`on clique dessus, on voit que les tests ont pass√©s.
+
