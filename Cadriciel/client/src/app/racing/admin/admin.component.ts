@@ -10,7 +10,7 @@ import { Track } from "../track";
 })
 export class AdminComponent implements OnInit {
 
-    private _tracks: Track[] = new Array();
+    public tracks: Track[] = new Array();
     public constructor(private _trackService: TrackService) { }
 
     public ngOnInit(): void {
@@ -21,10 +21,10 @@ export class AdminComponent implements OnInit {
         this._trackService.getTrackList()
             .subscribe(
             (tracksFromServer: string) => {
-                this._tracks = [];
+                this.tracks = [];
                 JSON.parse(tracksFromServer).forEach((document: string) => {
                     const iTrack: TrackStructure = JSON.parse(JSON.stringify(document));
-                    this._tracks.push(new Track(iTrack));
+                    this.tracks.push(new Track(iTrack));
                 });
             },
             (error: Error) => console.error(error)
@@ -36,7 +36,7 @@ export class AdminComponent implements OnInit {
             .subscribe(
             (trackFromServer: string) => {
                 const iTrack: TrackStructure = JSON.parse(JSON.stringify(trackFromServer));
-                this._tracks.push(new Track(iTrack));
+                this.tracks.push(new Track(iTrack));
             },
             (error: Error) => console.error(error)
             );
@@ -46,10 +46,10 @@ export class AdminComponent implements OnInit {
         this._trackService.deleteTrack(id)
             .subscribe(
             (tracksFromServer: string) => {
-                this._tracks = [];
+                this.tracks = [];
                 JSON.parse(tracksFromServer).forEach((document: string) => {
                     const iTrack: TrackStructure = JSON.parse(JSON.stringify(document));
-                    this._tracks.push(new Track(iTrack));
+                    this.tracks.push(new Track(iTrack));
                 });
             },
             (error: Error) => console.error(error)

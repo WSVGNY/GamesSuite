@@ -3,14 +3,14 @@ import { EditorScene } from "../../editor/editorScene";
 
 export class SelectVertex extends AbstractEditorCommand {
 
-    private vertexName: string;
+    private _vertexName: string;
 
     public constructor(editorScene: EditorScene, vertex: string) {
         super(editorScene);
-        this.vertexName = vertex;
+        this._vertexName = vertex;
     }
 
     public execute(): void {
-        this._editorScene.setSelectedVertex(this.vertexName);
+        this._editorScene.setSelectedVertex(this._vertexName);
     }
 }
