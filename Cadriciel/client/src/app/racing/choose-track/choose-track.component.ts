@@ -52,7 +52,7 @@ export class ChooseTrackComponent implements OnInit, AfterViewInit {
     public updateSelectedTrack(track: Track): void {
         track.timesPlayed++;
         this.saveTrack(track);
-        this.renderService.resetScene();
+        this._renderService.resetScene();
     }
 
     private saveTrack(track: Track): void {
