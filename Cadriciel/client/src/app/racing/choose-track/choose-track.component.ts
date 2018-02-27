@@ -15,7 +15,7 @@ export class ChooseTrackComponent implements OnInit, AfterViewInit {
     @ViewChild("preview")
     private containerRef: ElementRef;
 
-    private tracks: Track[] = new Array();
+    private _tracks: Track[] = new Array();
     private _trackPreview: TrackPreview;
 
     public constructor(
@@ -38,10 +38,10 @@ export class ChooseTrackComponent implements OnInit, AfterViewInit {
     private getTracksFromServer(): void {
         this.trackService.getTrackList()
             .subscribe((tracksFromServer: string) => {
-                this.tracks = [];
+                this._tracks = [];
                 JSON.parse(tracksFromServer).forEach((document: string) => {
                     const iTrack: TrackStructure = JSON.parse(JSON.stringify(document));
-                    this.tracks.push(new Track(iTrack));
+                    this._tracks.push(new Track(iTrack));
                 });
             });
     }
