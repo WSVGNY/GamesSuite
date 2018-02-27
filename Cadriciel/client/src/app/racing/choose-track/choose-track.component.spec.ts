@@ -35,26 +35,26 @@ describe("ChooseTrackComponent", () => {
     });
 
     it("track should have a name", () => {
-        component["_tracks"].forEach((track: Track) => expect(track.name).toBeDefined());
+        component["tracks"].forEach((track: Track) => expect(track.name).toBeDefined());
     });
 
     it("track should have the number of times played", () => {
-        component["_tracks"].forEach((track: Track) => expect(track.timesPlayed).toBeDefined());
+        component["tracks"].forEach((track: Track) => expect(track.timesPlayed).toBeDefined());
     });
 
     it("track should have a description", () => {
-        component["_tracks"].forEach((track: Track) => expect(track.description).toBeDefined());
+        component["tracks"].forEach((track: Track) => expect(track.description).toBeDefined());
     });
 
     it("track should have best times", () => {
-        component["_tracks"].forEach((track: Track) => expect(track.bestTimes).toBeDefined());
+        component["tracks"].forEach((track: Track) => expect(track.bestTimes).toBeDefined());
     });
 
     it("track should have verticies", () => {
-        component["_tracks"].forEach((track: Track) => expect(track.vertices).toBeDefined());
+        component["tracks"].forEach((track: Track) => expect(track.vertices).toBeDefined());
     });
 
     it("track should have a type", () => {
-        component["_tracks"].forEach((track: Track) => expect(track.type).toBeDefined());
+        component["tracks"].forEach((track: Track) => expect(track.type).toBeDefined());
     });
 });
