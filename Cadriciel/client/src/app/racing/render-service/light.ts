@@ -1,4 +1,4 @@
-import { Group, AmbientLight, DirectionalLight, DirectionalLightHelper } from "three";
+import { Group, AmbientLight, DirectionalLight } from "three";
 import { WHITE } from "../constants";
 import { AbstractLightingConfig } from "./lighting-config/abstractConfig";
 import { TrackType } from "../../../../../common/racing/trackType";
@@ -45,8 +45,6 @@ export class TrackLights extends Group {
             this._lightingConfig.DIRECTIONAL_LIGHT_POSITION_Z
         );
         this.add(this._directionalLight);
-        const helpME: DirectionalLightHelper = new DirectionalLightHelper(this._directionalLight, 20);
-        this.add(helpME);
     }
 
     private chooseConfig(trackType: TrackType): void {
