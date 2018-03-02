@@ -3,18 +3,10 @@ import { injectable, } from "inversify";
 import { GridBox } from "./gridBox";
 import { Word } from "./word";
 import { Coordinate2D } from "./coordinate2D";
-
-const IS_HORIZONTAL: boolean = true;
-const IS_VERTICAL: boolean = false;
-const MAX_DIFFICULTY: number = 99;
-const BLACK_TILES_RATIO: number = 0.45;
-const MIN_WORD_LENGTH: number = 2;
+import { NUM_BLACK_TILES, MAX_DIFFICULTY, MIN_WORD_LENGTH, IS_HORIZONTAL, IS_VERTICAL } from "./configuration";
 
 @injectable()
 export class BlackTiledGrid {
-
-    public readonly NUMBER_OF_TILES: number = this.SIZE_GRID_X * this.SIZE_GRID_Y;
-    public readonly NUM_BLACK_TILES: number = this.NUMBER_OF_TILES * BLACK_TILES_RATIO;
 
     private _wordId: number = 0;
     private _wordDefinitionID: number;
@@ -33,7 +25,7 @@ export class BlackTiledGrid {
 
     public placeBlackGridTiles(): Word[] {
         const array: Coordinate2D[] = this.createShuffledArray();
-        for (let i: number = 0; i < this.NUM_BLACK_TILES; i++) {
+        for (let i: number = 0; i < NUM_BLACK_TILES; i++) {
             const randomTileId: Coordinate2D = array[i];
             this.findMatchingTileById(randomTileId)._isBlack = true;
         }

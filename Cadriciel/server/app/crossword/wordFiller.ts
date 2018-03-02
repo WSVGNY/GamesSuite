@@ -7,9 +7,8 @@ import * as requestPromise from "request-promise-native";
 import { Difficulty } from "../../../common/crossword/difficulty";
 import { ResponseWordFromAPI } from "../../../common/communication/responseWordFromAPI";
 import { WordConstraint } from "./wordConstraint";
+import { IS_HORIZONTAL, IS_VERTICAL, URL_WORD_API } from "./configuration";
 
-const IS_VERTICAL: boolean = false;
-const IS_HORIZONTAL: boolean = true;
 const MAX_REQUEST_TRIES: number = 2;
 const MAX_TRIES_TO_BACKTRACK: number = 4;
 
@@ -22,7 +21,6 @@ enum Token {
 @injectable()
 export class WordFiller {
 
-    private readonly URL_WORD_API: string = "http://localhost:3000/lexicon/";
     private _longestWord: Word;
     private _filledWords: Word[];
     private _backTrackCounter: number = 0;
@@ -202,7 +200,7 @@ export class WordFiller {
 
     private async getWordFromAPI(constraints: string): Promise<ResponseWordFromAPI> {
         const responseWord: ResponseWordFromAPI = new ResponseWordFromAPI();
-        await requestPromise(this.URL_WORD_API + constraints + "/" + this._gridDifficulty).then(
+        await requestPromise(URL_WORD_API + constraints + "/" + this._gridDifficulty).then(
             (result: string) => {
                 result = JSON.parse(result);
                 responseWord.word = result["word"];

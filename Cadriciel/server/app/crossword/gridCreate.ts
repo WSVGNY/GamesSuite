@@ -5,6 +5,7 @@ import { Grid } from "../../../common/crossword/grid";
 import { WordFiller } from "./wordFiller";
 import { BlackTiledGrid } from "./blackTiledGrid";
 import { Difficulty } from "../../../common/crossword/difficulty";
+import { SIZE_GRID_X, SIZE_GRID_Y } from "./configuration";
 
 @injectable()
 export class GridCreate {
@@ -32,7 +33,7 @@ export class GridCreate {
             while (!isValidGrid) {
                 this._grid = new Grid();
                 this._grid.difficulty = this._difficulty;
-                const blackTiledGrid: BlackTiledGrid = new BlackTiledGrid(this._grid.SIZE_GRID_X, this._grid.SIZE_GRID_Y, this._grid.boxes);
+                const blackTiledGrid: BlackTiledGrid = new BlackTiledGrid(SIZE_GRID_X, SIZE_GRID_Y, this._grid.boxes);
 
                 if (blackTiledGrid.words !== undefined) {
                     this._grid.words = blackTiledGrid.words;
@@ -40,7 +41,7 @@ export class GridCreate {
                 }
             }
             const wordFiller: WordFiller =
-                new WordFiller(this._grid.SIZE_GRID_X, this._grid.SIZE_GRID_Y, this._grid.difficulty, this._grid.boxes, this._grid.words);
+                new WordFiller(SIZE_GRID_X, SIZE_GRID_Y, this._grid.difficulty, this._grid.boxes, this._grid.words);
             await wordFiller.wordFillControler().then(
                 (hasPassed: boolean) => {
                     if (!hasPassed) {
