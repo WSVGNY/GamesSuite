@@ -2,7 +2,7 @@ import { RenderService } from "./../render-service/render.service";
 import { Car } from "./../car/car";
 import { AICarService } from "./../artificial-intelligence/ai-car.service";
 import { TrackPointList, TrackPoint } from "./../render-service/trackPoint";
-import { Vector3, PerspectiveCamera, Group, LineBasicMaterial, Line, Geometry } from "three";
+import { Vector3, PerspectiveCamera, Group, LineBasicMaterial, Line, Geometry, Audio, Object3D, AudioLoader } from "three";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { ElementRef } from "@angular/core";
@@ -178,4 +178,41 @@ export class RaceGame {
 
         this._centerLine = new Line(geometryPoints, new LineBasicMaterial({ color: GREEN, linewidth: 3 }));
     }
+
+    // public createSound(): void {
+    //     // create an AudioListener and add it to the camera
+    //     /*const listener: AudioListener = new AudioListener();
+    //     const object = new Object3D();
+    //     const sound: Audio = new Audio(listener);
+    //     this._camera.add(listener);*/
+    //     const audioLoader: AudioLoader = new AudioLoader();
+    //     const listener: AudioListener = new AudioListener();
+    //     const audio: Audio = new Audio(listener);
+    //     audioLoader.load('sounds/376737_Skullbeatz___Bad_Cat_Maste.mp3', function (buffer) {
+    //         audio.setBuffer(buffer);
+    //         audio.setLoop(true);
+    //         audio.play();
+    //     });
+    //     /*
+    //     // create the PositionalAudio object (passing in the listener)
+    //     const sound = new Audio(listener);
+
+    //     // load a sound and set it as the PositionalAudio object's buffer
+    //     var audioLoader = new THREE.AudioLoader();
+    //     audioLoader.load('sounds/song.ogg', function (buffer) {
+    //         sound.setBuffer(buffer);
+    //         sound.setRefDistance(20);
+    //         sound.play();
+    //     });
+
+    //     // create an object for the sound to play from
+    //     var sphere = new THREE.SphereGeometry(20, 32, 16);
+    //     var material = new THREE.MeshPhongMaterial({ color: 0xff2200 });
+    //     var mesh = new THREE.Mesh(sphere, material);
+    //     scene.add(mesh);
+
+    //     // finally add the sound to the mesh
+    //     mesh.add(sound);
+    //     */
+    // }
 }
