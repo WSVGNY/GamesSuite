@@ -1,10 +1,8 @@
 import { CommonChar } from "../../../common/crossword/commonChar";
 
-export class Char extends CommonChar {
+export class Char implements CommonChar {
 
-    public constructor(char: string) {
-        super(char);
-    }
+    public constructor(public _value: string) { }
 
     public set value(char: string) {
         if (char.length !== 1) {

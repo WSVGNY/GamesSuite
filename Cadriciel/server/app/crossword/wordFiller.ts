@@ -7,7 +7,7 @@ import * as requestPromise from "request-promise-native";
 import { Difficulty } from "../../../common/crossword/difficulty";
 import { ResponseWordFromAPI } from "../../../common/communication/responseWordFromAPI";
 import { WordConstraint } from "./wordConstraint";
-import { IS_HORIZONTAL, IS_VERTICAL, URL_WORD_API } from "./configuration";
+import { IS_HORIZONTAL, IS_VERTICAL, URL_WORD_API, SIZE_GRID_X, SIZE_GRID_Y } from "./configuration";
 
 const MAX_REQUEST_TRIES: number = 2;
 const MAX_TRIES_TO_BACKTRACK: number = 4;
@@ -28,8 +28,6 @@ export class WordFiller {
     public isGenerated: boolean = false;
 
     public constructor(
-        private SIZE_GRID_X: number,
-        private SIZE_GRID_Y: number,
         private _gridDifficulty: Difficulty,
         private _grid: GridBox[][],
         private _words: Word[]) {
@@ -62,8 +60,8 @@ export class WordFiller {
     }
 
     private createCharGrid(): void {
-        for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
-            for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
+        for (let i: number = 0; i < SIZE_GRID_Y; i++) {
+            for (let j: number = 0; j < SIZE_GRID_X; j++) {
                 this._grid[i][j]._isBlack ? this._grid[i][j]._char = new Char("#") : this._grid[i][j]._char = new Char("?");
             }
         }
@@ -71,6 +69,7 @@ export class WordFiller {
 
     private generateConstraints(): void {
         let maxWordLength: number = 0;
+        console.log(this._words.length);
         for (const word of this._words) {
             if (word.length > maxWordLength) {
                 maxWordLength = word.length;
@@ -214,8 +213,8 @@ export class WordFiller {
     }
 
     private gridContainsIncompleteWord(): Word {
-        for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
-            for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
+        for (let i: number = 0; i < SIZE_GRID_Y; i++) {
+            for (let j: number = 0; j < SIZE_GRID_X; j++) {
                 if (this._grid[i][j]._char._value === "?") {
                     return this._grid[i][j]._constraints[0];
                 }

@@ -3,7 +3,8 @@ import { injectable, } from "inversify";
 import { GridBox } from "./gridBox";
 import { Word } from "./word";
 import { Coordinate2D } from "./coordinate2D";
-import { NUM_BLACK_TILES, MAX_DIFFICULTY, MIN_WORD_LENGTH, IS_HORIZONTAL, IS_VERTICAL } from "./configuration";
+import { NUM_BLACK_TILES, MAX_DIFFICULTY, MIN_WORD_LENGTH, IS_HORIZONTAL, IS_VERTICAL, SIZE_GRID_X, SIZE_GRID_Y } from "./configuration";
+import { CommonGridBox } from "../../../common/crossword/commonGridBox";
 
 @injectable()
 export class BlackTiledGrid {
@@ -17,8 +18,6 @@ export class BlackTiledGrid {
     }
 
     public constructor(
-        private SIZE_GRID_X: number,
-        private SIZE_GRID_Y: number,
         private _grid: GridBox[][]) {
         this._words = this.placeBlackGridTiles();
     }
@@ -58,7 +57,7 @@ export class BlackTiledGrid {
                 minLengthWordQuantity++;
             }
         }
-        totalDifficulty += this.SIZE_GRID_X - maxWordLength + minLengthWordQuantity;
+        totalDifficulty += SIZE_GRID_X - maxWordLength + minLengthWordQuantity;
 
         return totalDifficulty;
     }
@@ -66,8 +65,8 @@ export class BlackTiledGrid {
     private createShuffledArray(): Array<Coordinate2D> {
         const array: Array<Coordinate2D> = [];
         let arrayIndex: number = 0;
-        for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
-            for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
+        for (let i: number = 0; i < SIZE_GRID_Y; i++) {
+            for (let j: number = 0; j < SIZE_GRID_X; j++) {
                 array[arrayIndex++] = new Coordinate2D(j, i);
             }
         }
@@ -80,9 +79,9 @@ export class BlackTiledGrid {
         return array;
     }
 
-    private findMatchingTileById(id: Coordinate2D): GridBox {
-        for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
-            for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
+    private findMatchingTileById(id: Coordinate2D): CommonGridBox {
+        for (let i: number = 0; i < SIZE_GRID_Y; i++) {
+            for (let j: number = 0; j < SIZE_GRID_X; j++) {
                 if (this._grid[i][j]._id.equals(id)) {
                     return this._grid[i][j];
                 }
@@ -103,10 +102,11 @@ export class BlackTiledGrid {
         return isValid;
     }
 
+    // tslint:disable-next-line:max-func-body-length
     private createWordsInGridHorizontally(): boolean {
         let wordCount: number = 0;
-        for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
-            for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
+        for (let i: number = 0; i < SIZE_GRID_Y; i++) {
+            for (let j: number = 0; j < SIZE_GRID_X; j++) {
                 if (this._grid[i][j]._isBlack) {
                     continue;
                 }
@@ -134,7 +134,7 @@ export class BlackTiledGrid {
     }
 
     private verifyVertically(i: number, j: number): boolean {
-        if (i + 1 < this.SIZE_GRID_Y) {
+        if (i + 1 < SIZE_GRID_Y) {
             return !this._grid[i + 1][j]._isBlack;
         }
         if (i - 1 > 0) {
@@ -146,8 +146,8 @@ export class BlackTiledGrid {
 
     private createWordsInGridVertically(): boolean {
         let wordCount: number = 0;
-        for (let i: number = 0; i < this.SIZE_GRID_X; i++) {
-            for (let j: number = 0; j < this.SIZE_GRID_Y; j++) {
+        for (let i: number = 0; i < SIZE_GRID_X; i++) {
+            for (let j: number = 0; j < SIZE_GRID_Y; j++) {
                 if (this._grid[j][i]._isBlack) {
                     continue;
                 }
@@ -174,11 +174,11 @@ export class BlackTiledGrid {
     private calculateWordLength(isHorizontal: boolean, i: number, j: number): number {
         let wordLength: number = 1;
         if (isHorizontal) {
-            while (j + wordLength < this.SIZE_GRID_X && !this._grid[i][j + wordLength]._isBlack) {
+            while (j + wordLength < SIZE_GRID_X && !this._grid[i][j + wordLength]._isBlack) {
                 wordLength++;
             }
         } else {
-            while (j + wordLength < this.SIZE_GRID_Y && !this._grid[j + wordLength][i]._isBlack) {
+            while (j + wordLength < SIZE_GRID_Y && !this._grid[j + wordLength][i]._isBlack) {
                 wordLength++;
             }
         }

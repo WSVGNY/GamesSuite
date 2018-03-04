@@ -1,5 +1,5 @@
 import assert = require("assert");
-import { Grid } from "../../../common/crossword/grid";
+import { Grid } from "./grid";
 import { BlackTiledGrid } from "./blackTiledGrid";
 import { GridCreate } from "./gridCreate";
 import { Difficulty } from "../../../common/crossword/difficulty";
@@ -26,7 +26,7 @@ describe("GRID CREATE TESTS", () => {
     });
 
     it("Grid contains appropriate number of tiles", (done: MochaDone) => {
-        blackGrid = new BlackTiledGrid(SIZE_GRID_X, SIZE_GRID_Y, grid["boxes"]);
+        blackGrid = new BlackTiledGrid(grid["boxes"]);
         assert(NUMBER_OF_TILES === SIZE_GRID_X * SIZE_GRID_Y);
         done();
     });

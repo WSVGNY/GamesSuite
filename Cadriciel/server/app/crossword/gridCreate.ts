@@ -1,11 +1,10 @@
 import { Request, Response, NextFunction } from "express";
 import "reflect-metadata";
 import { injectable, } from "inversify";
-import { Grid } from "../../../common/crossword/grid";
+import { Grid } from "./grid";
 import { WordFiller } from "./wordFiller";
 import { BlackTiledGrid } from "./blackTiledGrid";
 import { Difficulty } from "../../../common/crossword/difficulty";
-import { SIZE_GRID_X, SIZE_GRID_Y } from "./configuration";
 
 @injectable()
 export class GridCreate {
@@ -33,15 +32,14 @@ export class GridCreate {
             while (!isValidGrid) {
                 this._grid = new Grid();
                 this._grid.difficulty = this._difficulty;
-                const blackTiledGrid: BlackTiledGrid = new BlackTiledGrid(SIZE_GRID_X, SIZE_GRID_Y, this._grid.boxes);
-
+                const blackTiledGrid: BlackTiledGrid = new BlackTiledGrid(this._grid.boxes);
                 if (blackTiledGrid.words !== undefined) {
                     this._grid.words = blackTiledGrid.words;
                     break;
                 }
             }
             const wordFiller: WordFiller =
-                new WordFiller(SIZE_GRID_X, SIZE_GRID_Y, this._grid.difficulty, this._grid.boxes, this._grid.words);
+                new WordFiller(this._grid.difficulty, this._grid.boxes, this._grid.words);
             await wordFiller.wordFillControler().then(
                 (hasPassed: boolean) => {
                     if (!hasPassed) {
