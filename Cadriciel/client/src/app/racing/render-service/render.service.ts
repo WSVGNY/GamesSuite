@@ -4,8 +4,7 @@ import {
     PerspectiveCamera, WebGLRenderer, Scene, Mesh, Shape, ShapeGeometry, Path, BackSide, TextureLoader, Texture, RepeatWrapping,
     PlaneGeometry, Group, Object3D, CubeTexture,
     CubeTextureLoader,
-    MeshPhongMaterial,
-    PositionalAudio
+    MeshPhongMaterial
 } from "three";
 import { PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE, MS_TO_SECONDS } from "../constants";
 import { TrackPointList } from "./trackPoint";

@@ -37,5 +37,5 @@ export const CLOUD_SKYBOX: string = SKYBOX_PATH + "clouds/";
 export const ROME_SKYBOX: string = SKYBOX_PATH + "rome/";
 export const GROUND_SIZE: number = 10000;
 export const GROUND_TEXTURE_FACTOR: number = 0.045;
-export const ASPHALT_TEXTURE: string = BASE_TEXTURE_PATH + "asphalte.jpg";
-export const GRASS_TEXTURE: string = BASE_TEXTURE_PATH + "green-grass-texture.jpg";
+export const ASPHALT_TEXTURE: string = BASE_TEXTURE_PATH + "rainbow.png";
+export const GRASS_TEXTURE: string = BASE_TEXTURE_PATH + "space.jpg";
