@@ -27,6 +27,8 @@ export class RaceGame {
     private _debug: boolean;
     private _centerLine: Line;
     private _lighting: TrackLights;
+    private _music: Audio;
+    private _isPlaying: boolean = true;
 
     public constructor(private _renderService: RenderService) { }
 
@@ -204,8 +206,18 @@ export class RaceGame {
             }
         );
         this._playerCar.add(sound);
+        this._music = sound;
         /*for (let i: number = 0; i < RaceGameConfig.AI_CARS_NUMBER; ++i) { // Pour ajouter aux IA
             this._aiCars[i].add(sound);
         }*/
     }
+
+    public stopMusic(): void {
+        this._music.stop();
+    }
+
+    public playMusic(): void {
+        this._music.play();
+    }
+    public isPlaying(): boolean { return this._isPlaying; }
 }
