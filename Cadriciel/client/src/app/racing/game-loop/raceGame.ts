@@ -1,7 +1,7 @@
 import { RenderService } from "./../render-service/render.service";
 import { Car } from "./../car/car";
 import { AICarService } from "./../artificial-intelligence/ai-car.service";
-import { TrackPointList, TrackPoint } from "./../render-service/trackPoint";
+import { TrackPoint } from "./../render-service/trackPoint";
 import { Vector3, PerspectiveCamera, Group, LineBasicMaterial, Line, Geometry } from "three";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { TrackType } from "../../../../../common/racing/trackType";
@@ -11,6 +11,7 @@ import { RaceGameConfig } from "./raceGameConfig";
 import { SkyBox } from "../render-service/skybox";
 import { TrackLights } from "../render-service/light";
 import { GREEN } from "../constants";
+import { TrackPointList } from "../render-service/trackPointList";
 
 export class RaceGame {
     private _camera: PerspectiveCamera;

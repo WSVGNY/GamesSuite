@@ -1,5 +1,4 @@
 import { RenderService } from "./../render-service/render.service";
-import { TrackPointList } from "./../render-service/trackPoint";
 import { Vector3, PerspectiveCamera } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { ElementRef } from "@angular/core";
@@ -7,6 +6,7 @@ import { TrackPreviewConfig } from "./TrackPreviewConfig";
 import { SkyBox } from "../render-service/skybox";
 import { TrackLights } from "../render-service/light";
 import { Track } from "../track";
+import { TrackPointList } from "../render-service/trackPointList";
 
 export class TrackPreview {
     private _camera: PerspectiveCamera;

@@ -7,7 +7,7 @@ import {
     MeshPhongMaterial
 } from "three";
 import { PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE, MS_TO_SECONDS } from "../constants";
-import { TrackPointList } from "./trackPoint";
+import { TrackPointList } from "./trackPointList";
 
 @Injectable()
 export class RenderService {
