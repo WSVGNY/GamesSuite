@@ -12,32 +12,36 @@ export class TrackPoint {
     }
 
     public findInteriorExteriorPoints(): void {
+        const vectorToInteriorPoint: Vector3 = this.findVectorToInteriorPoint();
+
+        if (this.vectorToNextCenterPoint.cross(vectorToInteriorPoint).y < 0) {
+            this.generatePointsFromVector(vectorToInteriorPoint);
+        } else {
+            this.generatePointsFromVector(vectorToInteriorPoint.negate());
+        }
+    }
+
+    private generatePointsFromVector(interiorVector: Vector3): void {
+        this._interior = this._coordinates.clone().add(interiorVector);
+        this._exterior = this._coordinates.clone().sub(interiorVector);
+    }
+
+    private findVectorToInteriorPoint(): Vector3 {
+        const halfOfSmallAngle: number = this.findHalfOfSmallAngle();
+
+        return this.vectorToNextCenterPoint.clone().normalize()
+            .applyAxisAngle(new Vector3(0, 1, 0), halfOfSmallAngle)
+            .multiplyScalar(HALF_TRACK_WIDTH / Math.sin(halfOfSmallAngle));
+    }
+
+    private findHalfOfSmallAngle(): number {
         if (this.next !== undefined && this.previous !== undefined) {
             this._smallAngle = this.vectorToNextCenterPoint.angleTo(this.vectorToPreviousCenterPoint);
         }
-        const angle: number =
-            this.vectorToNextCenterPoint.cross(this.vectorToPreviousCenterPoint).y > 0 ?
-                this._smallAngle * HALF :
-                -this._smallAngle * HALF;
-        const vectorToInteriorPoint: Vector3 = this.vectorToNextCenterPoint.clone().normalize()
-            .applyAxisAngle(new Vector3(0, 1, 0), angle)
-            .multiplyScalar(HALF_TRACK_WIDTH / Math.sin(angle));
 
-        if (this.vectorToNextCenterPoint.cross(vectorToInteriorPoint).y < 0) {
-            this._interior = new Vector3(
-                this._coordinates.x + vectorToInteriorPoint.x, 0, this._coordinates.z + vectorToInteriorPoint.z
-            );
-            this._exterior = new Vector3(
-                this._coordinates.x - vectorToInteriorPoint.x, 0, this._coordinates.z - vectorToInteriorPoint.z
-            );
-        } else {
-            this._interior = new Vector3(
-                this._coordinates.x - vectorToInteriorPoint.x, 0, this._coordinates.z - vectorToInteriorPoint.z
-            );
-            this._exterior = new Vector3(
-                this._coordinates.x + vectorToInteriorPoint.x, 0, this._coordinates.z + vectorToInteriorPoint.z
-            );
-        }
+        return this.vectorToNextCenterPoint.cross(this.vectorToPreviousCenterPoint).y > 0 ?
+            this._smallAngle * HALF :
+            -this._smallAngle * HALF;
     }
 
     public get vectorToPreviousCenterPoint(): Vector3 {
