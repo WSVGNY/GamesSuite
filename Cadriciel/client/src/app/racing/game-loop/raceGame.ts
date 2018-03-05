@@ -28,6 +28,7 @@ export class RaceGame {
     private _centerLine: Line;
     private _lighting: TrackLights;
     private _music: Audio;
+    private _soundEffect: Audio;
     private _isPlaying: boolean = true;
 
     public constructor(private _renderService: RenderService) { }
@@ -219,5 +220,37 @@ export class RaceGame {
     public playMusic(): void {
         this._music.play();
     }
+
+    public createAccelerationEffect(effectName: string): void {
+        const listener: AudioListener = new AudioListener();
+        this._camera.add(listener); // On peut soit l ajouter à la caméra ou à la voiture en fonction de ce qu on veut
+        const soundEffect: Audio = new Audio(listener); // Maybe positionnal audio
+        const loader: AudioLoader = new AudioLoader();
+
+        loader.load(
+            effectName,
+            function (audioBuffer: AudioBuffer) {
+                soundEffect.setBuffer(audioBuffer);
+                soundEffect.play();
+            },
+            function (xhr: XMLHttpRequest) {
+                console.log((xhr.LOADING) + "% loaded");
+            },
+            function (err: Event) {
+                console.log("An error happened");
+            }
+        );
+        this._playerCar.add(soundEffect);
+        this._soundEffect = soundEffect;
+        this._isPlaying = false;
+    }
+    public stopAccelerationEffect(): void {
+        this._soundEffect.stop();
+    }
+
+    public playAccelerationEffect(): void {
+        this._soundEffect.play();
+    }
+
     public isPlaying(): boolean { return this._isPlaying; }
 }

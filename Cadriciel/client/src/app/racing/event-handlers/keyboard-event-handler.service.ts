@@ -8,6 +8,7 @@ import { ReleaseAccelerator } from "../commands/carAICommands/releaseAccelerator
 import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";
 import { ReleaseBrakes } from "../commands/carAICommands/releaseBrakes";
 import { RaceGame } from "../game-loop/raceGame";
+import { race } from "rxjs/operators";
 
 const ACCELERATE_KEYCODE: number = 87;  // w
 const LEFT_KEYCODE: number = 65;        // a
@@ -33,6 +34,9 @@ export class KeyboardEventHandlerService {
             case ACCELERATE_KEYCODE:
                 this._carControl.command = new GoFoward(raceGame.playerCar);
                 this._carControl.execute();
+                if (raceGame.isPlaying() === true) {
+                raceGame.createAccelerationEffect("../../../assets/sounds/carAcceleration.mp3"); }
+                raceGame.playAccelerationEffect();
                 break;
             case LEFT_KEYCODE:
                 this._carControl.command = new TurnLeft(raceGame.playerCar);
@@ -41,7 +45,7 @@ export class KeyboardEventHandlerService {
             case RIGHT_KEYCODE:
                 this._carControl.command = new TurnRight(raceGame.playerCar);
                 this._carControl.execute();
-                raceGame.createSound("../../../assets/sounds/luigi.mp3");
+                // raceGame.createSound("../../../assets/sounds/luigi.mp3");
                 break;
             case BRAKE_KEYCODE:
                 this._carControl.command = new Brake(raceGame.playerCar);
@@ -72,6 +76,7 @@ export class KeyboardEventHandlerService {
             case ACCELERATE_KEYCODE:
                 this._carControl.command = new ReleaseAccelerator(raceGame.playerCar);
                 this._carControl.execute();
+                raceGame.stopAccelerationEffect();
                 break;
             case LEFT_KEYCODE:
             case RIGHT_KEYCODE:
