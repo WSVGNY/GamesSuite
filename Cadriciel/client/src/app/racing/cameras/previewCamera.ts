@@ -8,7 +8,7 @@ const INITIAL_CAMERA_POSITION_Z: number = 50;
 const INITIAL_CAMERA_POSITION_Y: number = 100;
 const INITIAL_CAMERA_POSITION_X: number = 50;
 
-export class EditorCamera extends PerspectiveCamera {
+export class PreviewCamera extends PerspectiveCamera {
 
     public constructor(aspectRatio: number) {
         super( FIELD_OF_VIEW,
