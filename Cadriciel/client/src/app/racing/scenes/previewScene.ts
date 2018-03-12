@@ -12,26 +12,27 @@ export class PreviewScene extends AbstractScene {
 
     private _trackType: TrackType;
     private _trackPoints: TrackPointList;
+    private _track: Mesh;
     private _group: Group = new Group();
     private _skyBoxTexture: CubeTexture;
 
     public constructor() {
         super();
         this.addGround();
+        this._group.add(new TrackLights(TrackType.Default));
+        this.add(this._group);
     }
 
     public loadTrack(track: Track): void {
         this._trackType = track.type;
         this._trackPoints = new TrackPointList(track.vertices);
-        this._group.add(this.createTrackMesh(this._trackPoints));
-        this._group.add(new TrackLights(TrackType.Default));
+        this._track = this.createTrackMesh(this._trackPoints);
+        this._group.add(this._track);
         this.setSkyBox(track.type);
     }
 
-    public resetScene(): void {
-        this._group = new Group();
-        this.background = this._skyBoxTexture;
-        this.add(this._group);
+    public clearTrack(): void {
+        this._group.remove(this._track);
     }
 
     private addGround(): void {
