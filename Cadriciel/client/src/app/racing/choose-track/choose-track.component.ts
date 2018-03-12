@@ -1,9 +1,10 @@
 import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from "@angular/core";
 import { TrackService } from "../track-service/track.service";
 import { TrackStructure } from "../../../../../common/racing/track";
-import { RenderService } from "../render-service/render.service";
-import { TrackPreview } from "./trackPreview";
+import { EditorRenderService } from "../editor/editor-render-service/editor-render.service";
 import { Track } from "../track";
+import { PreviewCamera } from "../cameras/previewCamera";
+import { PreviewScene } from "../scenes/previewScene";
 
 @Component({
     selector: "app-choose-track",
@@ -16,23 +17,29 @@ export class ChooseTrackComponent implements OnInit, AfterViewInit {
     private _containerRef: ElementRef;
     public tracks: Track[] = new Array();
 
-    private _trackPreview: TrackPreview;
+    private _previewCamera: PreviewCamera;
+    private _previewScene: PreviewScene;
 
     public constructor(
         private _trackService: TrackService,
-        private _renderService: RenderService
+        private _renderService: EditorRenderService
     ) { }
 
     public ngOnInit(): void {
         this.getTracksFromServer();
+        this._previewScene = new PreviewScene();
     }
 
     public ngAfterViewInit(): void {
-        this._trackPreview = new TrackPreview(this._renderService);
-        this._trackPreview
-            .initialize(this._containerRef)
+        this._previewCamera = new PreviewCamera(this.computeAspectRatio());
+        this._renderService
+            .initialize(this._containerRef.nativeElement, this._previewScene, this._previewCamera)
             .then(/* do nothing */)
             .catch((err) => console.error(err));
+    }
+
+    private computeAspectRatio(): number {
+        return this._containerRef.nativeElement.clientWidth / this._containerRef.nativeElement.clientHeight;
     }
 
     private getTracksFromServer(): void {
@@ -47,13 +54,13 @@ export class ChooseTrackComponent implements OnInit, AfterViewInit {
     }
 
     public displayTrackPreview(track: Track): void {
-        this._trackPreview.loadTrack(track);
+        this._previewScene.clearTrack();
+        this._previewScene.loadTrack(track);
     }
 
     public updateSelectedTrack(track: Track): void {
         track.timesPlayed++;
         this.saveTrack(track);
-        this._renderService.resetScene();
     }
 
     private saveTrack(track: Track): void {
