@@ -1,6 +1,6 @@
 import { AbstractScene } from "./abstractScene";
 import {
-    Vector3, /*Scene ,*/ AmbientLight, Mesh, Line, SphereGeometry,
+    Vector3, AmbientLight, Mesh, Line, SphereGeometry,
     MeshBasicMaterial, LineBasicMaterial, Geometry, BackSide
 } from "three";
 import { WHITE, PINK, BLUE } from "../constants";
