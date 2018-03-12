@@ -1,7 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Vector3, Raycaster } from "three";
-import { EditorScene } from "../editor/editorScene";
-import { EditorCamera } from "../editor/editorCamera";
+import { Vector3, Raycaster, OrthographicCamera } from "three";
 import { CommandController } from "../commands/commandController";
 import { SelectVertex } from "../commands/editorCommands/selectVertex";
 import { CloseLoop } from "../commands/editorCommands/closeLoop";
@@ -10,6 +8,7 @@ import { RemoveVertex } from "../commands/editorCommands/removeVertex";
 import { MoveVertex } from "../commands/editorCommands/moveVertex";
 import { DeselectVertex } from "../commands/editorCommands/deselectVertex";
 import { HALF } from "../constants";
+import { EditorScene } from "../scenes/editorScene";
 
 const LEFT_CLICK_KEYCODE: number = 1;
 const RIGHT_CLICK_KEYCODE: number = 3;
@@ -87,9 +86,9 @@ export class MouseEventHandlerService {
         return (position.x > this._divOffset.x && position.y > this._divOffset.y) ? true : false;
     }
 
-    private setRaycaster(editorCamera: EditorCamera): void {
-        const direction: Vector3 = this._mouseWorldCoordinates.clone().sub(editorCamera.camera.position).normalize();
-        this._raycaster.set(editorCamera.camera.position, direction);
+    private setRaycaster(camera: OrthographicCamera): void {
+        const direction: Vector3 = this._mouseWorldCoordinates.clone().sub(camera.position).normalize();
+        this._raycaster.set(camera.position, direction);
     }
 
     private clickOnVertex(editorScene: EditorScene): boolean {
@@ -123,14 +122,14 @@ export class MouseEventHandlerService {
         }
     }
 
-    public handleMouseDown(event: MouseEvent, editorCamera: EditorCamera, editorScene: EditorScene): void {
+    public handleMouseDown(event: MouseEvent, camera: OrthographicCamera, editorScene: EditorScene): void {
         const mouseScreenCoordinates: Vector3 = new Vector3(event.clientX, event.clientY, 0);
         if (this.isMouseOnScene(mouseScreenCoordinates)) {
             this.convertToWorldCoordinates(mouseScreenCoordinates);
             this._isMouseDown = true;
             switch (event.which) {
                 case LEFT_CLICK_KEYCODE:
-                    this.setRaycaster(editorCamera);
+                    this.setRaycaster(camera);
                     this.handleLeftClick(editorScene);
                     break;
                 case RIGHT_CLICK_KEYCODE:
