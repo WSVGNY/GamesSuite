@@ -3,8 +3,8 @@ import { ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
 import { TrackStructure } from "../../../../../common/racing/track";
 import { TrackService } from "../track-service/track.service";
-import { EditorCamera } from "./editorCamera";
-import { EditorScene } from "./editorScene";
+import { EditorCamera } from "../cameras/editorCamera";
+import { EditorScene } from "../scenes/editorScene";
 import { EditorRenderService } from "./editor-render-service/editor-render.service";
 import { MouseEventHandlerService } from "../event-handlers/mouse-event-handler.service";
 import { Vector3 } from "three";
@@ -51,7 +51,7 @@ export class EditorComponent implements AfterViewInit, OnInit {
         this._editorCamera = new EditorCamera(this.computeAspectRatio(), VIEW_SIZE);
         this._editorCamera.setPosition(CAMERA_POSITION);
         this._editorRenderService
-            .initialize(this._containerRef.nativeElement, this._editorScene.scene, this._editorCamera.camera)
+            .initialize(this._containerRef.nativeElement, this._editorScene, this._editorCamera)
             .then(/* do nothing */)
             .catch((err) => console.error(err));
         this._mouseEventHandlerService
