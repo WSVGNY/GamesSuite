@@ -54,7 +54,6 @@ export class ChooseTrackComponent implements OnInit, AfterViewInit {
     }
 
     public displayTrackPreview(track: Track): void {
-        this._previewScene.clearTrack();
         this._previewScene.loadTrack(track);
     }
 

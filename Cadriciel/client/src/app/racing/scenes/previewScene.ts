@@ -24,15 +24,14 @@ export class PreviewScene extends AbstractScene {
     }
 
     public loadTrack(track: Track): void {
+        if (this._track !== undefined) {
+            this._group.remove(this._track);
+        }
         this._trackType = track.type;
         this._trackPoints = new TrackPointList(track.vertices);
         this._track = this.createTrackMesh(this._trackPoints);
         this._group.add(this._track);
         this.setSkyBox(track.type);
-    }
-
-    public clearTrack(): void {
-        this._group.remove(this._track);
     }
 
     private addGround(): void {
