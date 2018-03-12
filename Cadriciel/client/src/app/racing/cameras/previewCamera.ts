@@ -2,10 +2,10 @@ import { PerspectiveCamera, Vector3 } from "three";
 
 const NEAR_CLIPPING_PLANE: number = 1;
 const FAR_CLIPPING_PLANE: number = 1000;
-const FIELD_OF_VIEW: number = 70;
+const FIELD_OF_VIEW: number = 90;
 
 const INITIAL_CAMERA_POSITION_Z: number = 50;
-const INITIAL_CAMERA_POSITION_Y: number = 100;
+const INITIAL_CAMERA_POSITION_Y: number = 125;
 const INITIAL_CAMERA_POSITION_X: number = 50;
 
 export class PreviewCamera extends PerspectiveCamera {
