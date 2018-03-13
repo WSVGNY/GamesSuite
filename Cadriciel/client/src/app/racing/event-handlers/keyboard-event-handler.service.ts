@@ -34,9 +34,9 @@ export class KeyboardEventHandlerService {
             case ACCELERATE_KEYCODE:
                 this._carControl.command = new GoFoward(raceGame.playerCar);
                 this._carControl.execute();
-                if (raceGame.isPlaying() === true) {
-                raceGame.createAccelerationEffect("../../../assets/sounds/carAcceleration.mp3"); }
-                raceGame.playAccelerationEffect();
+                if (raceGame.sound.isPlaying() === true) {
+                raceGame.sound.createAccelerationEffect("../../../assets/sounds/carAcceleration.mp3", raceGame.playerCar); }
+                raceGame.sound.playAccelerationEffect();
                 break;
             case LEFT_KEYCODE:
                 this._carControl.command = new TurnLeft(raceGame.playerCar);
@@ -61,10 +61,10 @@ export class KeyboardEventHandlerService {
                 raceGame.debug = !raceGame.debug;
                 break;
             case MUTE_KEYCODE:
-                raceGame.stopMusic();
+                raceGame.sound.stopMusic();
                 break;
             case PLAY_KEYCODE:
-                raceGame.playMusic();
+                raceGame.sound.playMusic();
                 break;
             default:
                 break;
@@ -76,7 +76,7 @@ export class KeyboardEventHandlerService {
             case ACCELERATE_KEYCODE:
                 this._carControl.command = new ReleaseAccelerator(raceGame.playerCar);
                 this._carControl.execute();
-                raceGame.stopAccelerationEffect();
+                raceGame.sound.stopAccelerationEffect();
                 break;
             case LEFT_KEYCODE:
             case RIGHT_KEYCODE:
