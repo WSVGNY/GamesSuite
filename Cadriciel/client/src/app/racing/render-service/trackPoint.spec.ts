@@ -1,9 +1,10 @@
 import { TestBed } from "@angular/core/testing";
-import { TrackPoint, TrackPointList } from "./trackPoint";
+import { TrackPoint } from "./trackPoint";
 // import { Object3D } from "three";
 // import assert = require("assert");
 import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
 import { Vector3 } from "three";
+import { TrackPointList } from "./trackPointList";
 
 // tslint:disable:no-magic-numbers
 describe("TrackPoint", () => {
