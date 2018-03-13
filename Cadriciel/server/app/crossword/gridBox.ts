@@ -13,6 +13,7 @@ export class GridBox implements CommonGridBox {
     public constructor(public _id: Coordinate2D, public _isBlack: boolean) {
         this._difficulty = 0;
         this._constraints = new Array<Word>();
+        this._isColored = false;
     }
 
     public addConstraint(word: Word): void {

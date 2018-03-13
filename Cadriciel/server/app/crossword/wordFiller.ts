@@ -69,7 +69,6 @@ export class WordFiller {
 
     private generateConstraints(): void {
         let maxWordLength: number = 0;
-        console.log(this._words.length);
         for (const word of this._words) {
             if (word.length > maxWordLength) {
                 maxWordLength = word.length;

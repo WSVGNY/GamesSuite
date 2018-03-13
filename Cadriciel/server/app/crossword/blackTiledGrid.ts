@@ -102,7 +102,6 @@ export class BlackTiledGrid {
         return isValid;
     }
 
-    // tslint:disable-next-line:max-func-body-length
     private createWordsInGridHorizontally(): boolean {
         let wordCount: number = 0;
         for (let i: number = 0; i < SIZE_GRID_Y; i++) {
