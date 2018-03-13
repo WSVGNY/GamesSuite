@@ -3,7 +3,7 @@ import { Difficulty } from "../../../../../common/crossword/difficulty";
 export class AIConfig {
 
     public static TURNING_POINT_DISTANCE: number = 0.1;
-    public static TURNING_POINT_BUFFER: number = 2;
+    public static TURNING_POINT_BUFFER: number = 20;
     public static readonly START_INDEX: number = 0;
 
     private readonly DISTANCE_FROM_VEHICULE_HARD: number = 20;
