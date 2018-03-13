@@ -8,7 +8,7 @@ import { ReleaseAccelerator } from "../commands/carAICommands/releaseAccelerator
 import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";
 import { ReleaseBrakes } from "../commands/carAICommands/releaseBrakes";
 import { RaceGame } from "../game-loop/raceGame";
-import { race } from "rxjs/operators";
+// import { race } from "rxjs/operators";
 
 const ACCELERATE_KEYCODE: number = 87;  // w
 const LEFT_KEYCODE: number = 65;        // a
