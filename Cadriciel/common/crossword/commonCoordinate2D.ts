@@ -1,7 +1,4 @@
-export class CommonCoordinate2D {
-
-    public constructor(public x: number, public y: number) {
-
-    }
-
+export interface CommonCoordinate2D {
+    x: number;
+    y: number;
 }
