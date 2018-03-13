@@ -47,4 +47,16 @@ export class CarLights extends Group {
     public attachCube(cube: Object3D): void {
         this.add(cube);
     }
+
+    public turnOn(): void {
+        this._spotlights.forEach((light: SpotLight) => {
+            light.intensity = 1;
+        });
+    }
+
+    public turnOff(): void {
+        this._spotlights.forEach((light: SpotLight) => {
+            light.intensity = 0;
+        });
+    }
 }
