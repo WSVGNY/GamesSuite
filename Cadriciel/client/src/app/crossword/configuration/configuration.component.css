@@ -76,7 +76,7 @@ button {
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
     transition-duration: 0.7s;
     text-align: center;
-    width:100px;
+    width:150px;
     font-size: 14px;
     border:black;
     cursor: pointer;
@@ -95,3 +95,23 @@ button:hover {
     top: 250px;
     left: 550px;
 }
+
+#waiter {
+    border: 16px solid #f87721;
+    position: absolute;
+    left: 900px;
+    border-radius: 50%;
+    border-top: 16px solid rgb(35, 172, 206);
+    border-right: 16px solid rgb(70, 190, 70);
+    border-bottom: 16px solid red;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite;
+    animation: spin 2s linear infinite;
+  }
+
+  #waiterText{
+    position: absolute;
+    left: 870px;
+    top:330px;
+  }

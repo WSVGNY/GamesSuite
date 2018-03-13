@@ -8,5 +8,5 @@ export class ConfigurationService {
     public configurationDone: boolean;
     public isTwoPlayerGame: boolean;
     public playerName: string;
-
+    public lookingForPlayer: boolean;
 }
