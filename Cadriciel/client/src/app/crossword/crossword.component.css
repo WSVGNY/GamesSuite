@@ -33,6 +33,24 @@ li {
     list-style-type: none;
 }
 
+.definitionID {
+    position: absolute;
+    top: -5px;
+    left: 0px;
+    z-index: 1;
+}
+
+.userInputLetter {
+    position: relative;
+    text-align: center;
+    top: 4px;
+    font-size: 30px;
+}
+
+#relative {
+    position: relative;
+}
+
 #title {
     text-align: center;
 }
