@@ -7,6 +7,7 @@ import { SkyBox } from "../render-service/skybox";
 import { TrackLights } from "../render-service/light";
 import { Track } from "../track";
 import { PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE, MS_TO_SECONDS } from "../constants";
+import { Car } from "../car/car";
 
 export class GameScene extends AbstractScene {
 
@@ -32,6 +33,12 @@ export class GameScene extends AbstractScene {
         this._track = this.createTrackMesh(this._trackPoints);
         this._group.add(this._track);
         this.setSkyBox(track.type);
+    }
+
+    public loadCars(cars: Car[]): void {
+        for (const entry of cars) {
+            this._group.add(entry);
+        }
     }
 
     private addGround(): void {
