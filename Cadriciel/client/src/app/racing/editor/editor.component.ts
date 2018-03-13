@@ -85,11 +85,12 @@ export class EditorComponent implements AfterViewInit, OnInit {
         this._trackChosenFromAdmin.type = this.currentTrack.type;
         this._trackService.putTrack(this._trackChosenFromAdmin.id, this._trackChosenFromAdmin.toTrackStructure())
             .subscribe(
-            (trackFromServer: string) => {
-                const iTrack: TrackStructure = JSON.parse(JSON.stringify(trackFromServer));
-                this._trackChosenFromAdmin = new Track(iTrack);
-            },
-            (error: Error) => console.error(error)
+                (trackFromServer: string) => {
+                    const iTrack: TrackStructure = JSON.parse(JSON.stringify(trackFromServer));
+                    this._trackChosenFromAdmin = new Track(iTrack);
+                    this.goBack();
+                },
+                (error: Error) => console.error(error)
             );
     }
 
