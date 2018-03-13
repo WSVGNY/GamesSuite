@@ -1,15 +1,14 @@
-import { Coordinate2D } from "../../server/app/crossword/coordinate2D";
-import { Char } from "../../server/app/crossword/char";
-import { Word } from "../../server/app/crossword/word";
+import { CommonCoordinate2D } from "./commonCoordinate2D";
+import { CommonChar } from "./commonChar";
+import { CommonWord } from "./commonWord";
 
-export class CommonGridBox {
+export interface CommonGridBox {
 
-    public _char: Char;
-    public _constraints: Word[] = new Array<Word>();
-    public _difficulty: number = 0;
-    public _isColored: boolean = false;
-
-    public constructor(public _id: Coordinate2D, public _isBlack: boolean) {
-    }
+    _char?: CommonChar;
+    _constraints?: CommonWord[];
+    _difficulty?: number;
+    _isColored?: boolean;
+    _id: CommonCoordinate2D;
+    _isBlack: boolean;
 
 }

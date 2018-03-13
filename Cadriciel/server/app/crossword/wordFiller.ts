@@ -7,9 +7,8 @@ import * as requestPromise from "request-promise-native";
 import { Difficulty } from "../../../common/crossword/difficulty";
 import { ResponseWordFromAPI } from "../../../common/communication/responseWordFromAPI";
 import { WordConstraint } from "./wordConstraint";
+import { IS_HORIZONTAL, IS_VERTICAL, URL_WORD_API, SIZE_GRID_X, SIZE_GRID_Y } from "./configuration";
 
-const IS_VERTICAL: boolean = false;
-const IS_HORIZONTAL: boolean = true;
 const MAX_REQUEST_TRIES: number = 2;
 const MAX_TRIES_TO_BACKTRACK: number = 4;
 
@@ -22,7 +21,6 @@ enum Token {
 @injectable()
 export class WordFiller {
 
-    private readonly URL_WORD_API: string = "http://localhost:3000/lexicon/";
     private _longestWord: Word;
     private _filledWords: Word[];
     private _backTrackCounter: number = 0;
@@ -30,8 +28,6 @@ export class WordFiller {
     public isGenerated: boolean = false;
 
     public constructor(
-        private SIZE_GRID_X: number,
-        private SIZE_GRID_Y: number,
         private _gridDifficulty: Difficulty,
         private _grid: GridBox[][],
         private _words: Word[]) {
@@ -64,8 +60,8 @@ export class WordFiller {
     }
 
     private createCharGrid(): void {
-        for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
-            for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
+        for (let i: number = 0; i < SIZE_GRID_Y; i++) {
+            for (let j: number = 0; j < SIZE_GRID_X; j++) {
                 this._grid[i][j]._isBlack ? this._grid[i][j]._char = new Char("#") : this._grid[i][j]._char = new Char("?");
             }
         }
@@ -202,7 +198,7 @@ export class WordFiller {
 
     private async getWordFromAPI(constraints: string): Promise<ResponseWordFromAPI> {
         const responseWord: ResponseWordFromAPI = new ResponseWordFromAPI();
-        await requestPromise(this.URL_WORD_API + constraints + "/" + this._gridDifficulty).then(
+        await requestPromise(URL_WORD_API + constraints + "/" + this._gridDifficulty).then(
             (result: string) => {
                 result = JSON.parse(result);
                 responseWord.word = result["word"];
@@ -216,8 +212,8 @@ export class WordFiller {
     }
 
     private gridContainsIncompleteWord(): Word {
-        for (let i: number = 0; i < this.SIZE_GRID_Y; i++) {
-            for (let j: number = 0; j < this.SIZE_GRID_X; j++) {
+        for (let i: number = 0; i < SIZE_GRID_Y; i++) {
+            for (let j: number = 0; j < SIZE_GRID_X; j++) {
                 if (this._grid[i][j]._char._value === "?") {
                     return this._grid[i][j]._constraints[0];
                 }
