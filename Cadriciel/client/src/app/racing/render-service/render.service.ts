@@ -8,6 +8,8 @@ import {
 } from "three";
 import { PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE, MS_TO_SECONDS } from "../constants";
 import { TrackPointList } from "./trackPointList";
+import { TrackType } from "../../../../../common/racing/trackType";
+import { SkyBox } from "./skybox";
 
 @Injectable()
 export class RenderService {
@@ -18,8 +20,11 @@ export class RenderService {
     private _group: Group = new Group();
     private _camera: PerspectiveCamera;
     private _skyBoxTexture: CubeTexture;
+    private _loadedSkyboxes: Map<TrackType, CubeTexture>;
 
-    public constructor() { }
+    public constructor() {
+        this._loadedSkyboxes = new Map();
+    }
 
     public async initialize(container: HTMLDivElement, camera: PerspectiveCamera): Promise<void> {
         this._container = container;
@@ -124,17 +129,20 @@ export class RenderService {
         return texture;
     }
 
-    public loadSkyBox(pathToImages: string): void {
-        this._skyBoxTexture = new CubeTextureLoader()
-            .setPath(pathToImages)
-            .load([
-                "px.jpg",
-                "nx.jpg",
-                "py.jpg",
-                "ny.jpg",
-                "pz.jpg",
-                "nz.jpg"
-            ]);
+    public loadSkyBox(trackType: TrackType): void {
+        if (!this._loadedSkyboxes.has(trackType)) {
+            this._loadedSkyboxes.set(trackType, new CubeTextureLoader()
+                .setPath(SkyBox.getPath(trackType))
+                .load([
+                    "px.jpg",
+                    "nx.jpg",
+                    "py.jpg",
+                    "ny.jpg",
+                    "pz.jpg",
+                    "nz.jpg"
+                ]));
+        }
+        this._skyBoxTexture = this._loadedSkyboxes.get(trackType);
 
         if (this._scene !== undefined) {
             this._scene.background = this._skyBoxTexture;

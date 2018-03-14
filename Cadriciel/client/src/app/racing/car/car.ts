@@ -75,6 +75,7 @@ export class Car extends Object3D {
         this._mesh.position.add(startPoint);
         this._mesh.setRotationFromAxisAngle(new Vector3(0, 1, 0), rotationAngle);
         this._lights = new CarLights();
+        this._mesh.add(this._lights);
         this.add(this._mesh);
     }
 
@@ -107,11 +108,11 @@ export class Car extends Object3D {
     }
 
     public attachLights(): void {
-        this._mesh.add(this._lights);
+        this._lights.turnOn();
     }
 
     public dettachLights(): void {
-        this._mesh.remove(this._lights);
+        this._lights.turnOff();
     }
 
     public get direction(): Vector3 {
