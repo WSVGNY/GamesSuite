@@ -35,7 +35,8 @@ export class KeyboardEventHandlerService {
                 this._carControl.command = new GoFoward(raceGame.playerCar);
                 this._carControl.execute();
                 if (raceGame.isPlaying() === true) {
-                raceGame.createAccelerationEffect("../../../assets/sounds/carAcceleration.mp3"); }
+                    raceGame.createAccelerationEffect("../../../assets/sounds/carAcceleration.mp3");
+                }
                 raceGame.playAccelerationEffect();
                 break;
             case LEFT_KEYCODE:

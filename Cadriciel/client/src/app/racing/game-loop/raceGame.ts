@@ -11,7 +11,6 @@ import { TrackType } from "../../../../../common/racing/trackType";
 import { ElementRef } from "@angular/core";
 import { TrackStructure } from "../../../../../common/racing/track";
 import { RaceGameConfig } from "./raceGameConfig";
-import { SkyBox } from "../render-service/skybox";
 import { TrackLights } from "../render-service/light";
 import { GREEN } from "../constants";
 import { TrackPointList } from "../render-service/trackPointList";
@@ -113,7 +112,7 @@ export class RaceGame {
     }
 
     private setSkyBox(trackType: TrackType): void {
-        this._renderService.loadSkyBox(SkyBox.getPath(trackType));
+        this._renderService.loadSkyBox(trackType);
     }
 
     private initializeLights(trackType: TrackType): void {
