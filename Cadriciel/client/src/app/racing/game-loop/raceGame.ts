@@ -245,7 +245,7 @@ export class RaceGame {
         this._isPlaying = false;
     }
     public stopAccelerationEffect(): void {
-        this._soundEffect.stop();
+        // this._soundEffect.stop();
     }
 
     public playAccelerationEffect(): void {

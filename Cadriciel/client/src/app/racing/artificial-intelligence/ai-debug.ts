@@ -46,7 +46,7 @@ export class AIDebug {
         this._carHelper.update(this._car);
         this._carVectorHelper.update(carPosition, projection);
         this._distanceVectorHelper.update(projection, pointOnLine);
-        this._turningVectorHelper.update( new Vector3( vertice.x, 0, vertice.z), turningPoint);
+        this._turningVectorHelper.update(new Vector3(vertice.x, 0, vertice.z), turningPoint);
     }
 
     public get debugGroup(): Group {
