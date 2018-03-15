@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { AudioListener, AudioLoader, AudioBuffer, Audio, PerspectiveCamera } from "three";
 import { Car } from "../car/car";
-import { RaceGame } from "../game-loop/raceGame";
+// import { RaceGame } from "../game-loop/raceGame";
 
 @Injectable()
 export class SoundManagerService {
