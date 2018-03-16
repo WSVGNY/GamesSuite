@@ -3,6 +3,7 @@ import { GridService } from "../grid.service";
 import { ConfigurationService } from "../configuration.service";
 import { CommonGrid } from "../../../../../common/crossword/commonGrid";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
+import { MultiplayerCommunicationService } from "../multiplayer-communication.service";
 
 @Component({
     selector: "app-configuration",
@@ -14,7 +15,10 @@ export class ConfigurationComponent {
     public isJoinGame: boolean = false;
     public difficulty: Difficulty;
     public choseGridDifficulty: boolean = false;
-    public constructor(private _gridService: GridService, public configurationService: ConfigurationService) {
+    public constructor(
+        private _gridService: GridService,
+        public configurationService: ConfigurationService,
+        private multiplayerCommunicationService: MultiplayerCommunicationService) {
     }
 
     public setNewGame(): void {
@@ -33,7 +37,7 @@ export class ConfigurationComponent {
 
     private makeGrid(): void {
         this.choseGridDifficulty = true;
-        this.createGrid();
+        // this.createGrid();
     }
 
     public makeEasyGrid(): void {
@@ -53,6 +57,11 @@ export class ConfigurationComponent {
 
     public submitName(): void {
         this.configurationService.configurationDone = true;
+    }
+
+    public createRoom(): void {
+        this.multiplayerCommunicationService.connectToSocket();
+        this.configurationService.isSocketConnected = true;
     }
 
 }

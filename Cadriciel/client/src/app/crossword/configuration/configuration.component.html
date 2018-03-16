@@ -16,7 +16,8 @@
     Enter Name :
     <input #player value="Player 1" />
     <button *ngIf="!configurationService.isTwoPlayerGame" (click)="configurationService.playerName = player.value" (click)="submitName()">Play</button>
-    <button *ngIf="configurationService.isTwoPlayerGame" (click)="configurationService.playerName = player.value" (click)="configurationService.lookingForPlayer = true">Find second player</button>
+    <button *ngIf="configurationService.isTwoPlayerGame" (click)="configurationService.playerName = player.value" (click)="configurationService.lookingForPlayer = true"
+      (click)="createRoom()">Find second player</button>
   </div>
 
   <div *ngIf="configurationService.isTwoPlayerGame">

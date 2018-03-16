@@ -15,6 +15,8 @@ export class Server {
     private readonly baseDix: number = 10;
     private server: http.Server;
     private io: SocketIO.Server;
+    private _roomName: string = "ROOM";
+    private _numberOfRoom: number = 0;
 
     constructor( @inject(Types.Application) private application: Application) { }
 
@@ -32,6 +34,8 @@ export class Server {
     private initSocket(): void {
         this.io = sio(this.server);
         this.io.on(SocketEvents.Connection, (socket: SocketIO.Socket) => {
+            this.createRoom();
+            socket.join(this._roomName);
             console.log("user connected");
             socket.on(SocketEvents.NewMessage, (message: string) => {
                 console.log(message);
@@ -41,6 +45,11 @@ export class Server {
                 console.log("user disconnected");
             });
         });
+    }
+
+    public createRoom(): void {
+        this._roomName += this._numberOfRoom++;
+
     }
     // tslint:enable:no-console
 

@@ -17,6 +17,7 @@ export class CrosswordComponent implements OnInit {
 
     private message: string;
     private messages: string[] = [];
+    private _hasSubscribed = false;
 
     public constructor(
         public configurationService: ConfigurationService,
@@ -24,9 +25,16 @@ export class CrosswordComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.multiplayerCommunicationService.getMessages().subscribe((message: string) => {
-            this.messages.push(message);
-        });
+
+    }
+
+    public subscribeToMessages(): void {
+        if (!this._hasSubscribed) {
+            this.multiplayerCommunicationService.getMessages().subscribe((message: string) => {
+                this.messages.push(message);
+            });
+            this._hasSubscribed = true;
+        }
     }
 
     public sendMessage(): void {
@@ -36,6 +44,14 @@ export class CrosswordComponent implements OnInit {
 
     public isConfigurationDone(): boolean {
         return this.configurationService.configurationDone;
+    }
+
+    public isSocketConnected(): boolean {
+        if (this.configurationService.isSocketConnected) {
+            this.subscribeToMessages();
+        }
+
+        return this.configurationService.isSocketConnected;
     }
 
     public changeMode(): void {
