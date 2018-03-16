@@ -7,10 +7,10 @@ import { ActivatedRoute } from "@angular/router";
 import { Track } from "./track";
 import { ThirdPersonCamera } from "./cameras/thirdPersonCamera";
 import { GameScene } from "./scenes/gameScene";
-import { EditorRenderService } from "./editor/editor-render-service/editor-render.service";
 import { AICarService } from "./artificial-intelligence/ai-car.service";
 import { Difficulty } from "../../../../common/crossword/difficulty";
 import { TrackPointList } from "./render-service/trackPoint";
+import { RenderService } from "./render-service/render.service";
 
 const AI_CARS_QUANTITY: number = 2;
 
@@ -35,7 +35,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private _trackPoints: TrackPointList;
 
     public constructor(
-        private _renderService: EditorRenderService,
+        private _renderService: RenderService,
         private _route: ActivatedRoute,
         private _keyboardEventHandlerService: KeyboardEventHandlerService,
         private _trackService: TrackService,

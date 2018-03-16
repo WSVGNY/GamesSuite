@@ -5,11 +5,11 @@ import { TrackStructure } from "../../../../../common/racing/track";
 import { TrackService } from "../track-service/track.service";
 import { EditorCamera } from "../cameras/editorCamera";
 import { EditorScene } from "../scenes/editorScene";
-import { EditorRenderService } from "./editor-render-service/editor-render.service";
 import { MouseEventHandlerService } from "../event-handlers/mouse-event-handler.service";
 import { Vector3 } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { Track } from "../track";
+import { RenderService } from "../render-service/render.service";
 
 const CAMERA_Z_POSITION: number = 480;
 const CAMERA_POSITION: Vector3 = new Vector3(0, 0, CAMERA_Z_POSITION);
@@ -36,7 +36,7 @@ export class EditorComponent implements AfterViewInit, OnInit {
         private _route: ActivatedRoute,
         private _trackService: TrackService,
         private _location: Location,
-        private _editorRenderService: EditorRenderService,
+        private _editorRenderService: RenderService,
         private _mouseEventHandlerService: MouseEventHandlerService) {
 
         this.currentTrack = new Track(TrackStructure.getNewDefaultTrackStructure());
