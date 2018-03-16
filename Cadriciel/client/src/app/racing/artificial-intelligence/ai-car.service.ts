@@ -22,7 +22,7 @@ export class AICarService {
     private _aiDebug: AIDebug;
     private _trackVertices: Vector3[];
 
-    public constructor(/*private _car: Car,*/ ) {}
+    public constructor() {}
 
     public async initialize(trackVertices: Vector3[], difficulty: Difficulty): Promise<void> {
         this._aiControl = new CommandController();
