@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { CommonGridBox } from "../../../../common/crossword/commonGridBox";
 import { CommonWord } from "../../../../common/crossword/commonWord";
 import { ConfigurationService } from "./configuration.service";
@@ -9,15 +9,31 @@ import { MultiplayerCommunicationService } from "./multiplayer-communication.ser
     templateUrl: "./crossword.component.html",
     styleUrls: ["./crossword.component.css"]
 })
-export class CrosswordComponent {
+export class CrosswordComponent implements OnInit {
 
     public selectedGridBox: CommonGridBox;
     public correctWordCount: number = 0;
     public isInCheatMode: boolean = false;
 
+    private message: string;
+    private messages: string[] = [];
+
     public constructor(
         public configurationService: ConfigurationService,
-        public multiplayerCommunicationService: MultiplayerCommunicationService) {
+        private multiplayerCommunicationService: MultiplayerCommunicationService) {
+        this.message = "allo";
+        this.sendMessage();
+    }
+
+    public ngOnInit(): void {
+        this.multiplayerCommunicationService.getMessages().subscribe((message: string) => {
+            this.messages.push(message);
+        });
+    }
+
+    public sendMessage(): void {
+        this.multiplayerCommunicationService.sendMessage(this.message);
+        this.message = "";
     }
 
     public isConfigurationDone(): boolean {
