@@ -2,7 +2,7 @@ import { CommonCoordinate2D } from "./commonCoordinate2D";
 
 export interface CommonWord {
 
-    _isComplete: boolean;
+    isComplete: boolean;
     value: string;
     definition: string;
     constraints: CommonWord[];

@@ -4,11 +4,11 @@ import { CommonWord } from "./commonWord";
 
 export interface CommonGridBox {
 
-    _char?: CommonChar;
-    _constraints?: CommonWord[];
-    _difficulty?: number;
-    _isColored?: boolean;
-    _id: CommonCoordinate2D;
-    _isBlack: boolean;
+    char?: CommonChar;
+    constraints?: CommonWord[];
+    difficulty?: number;
+    isColored?: boolean;
+    id: CommonCoordinate2D;
+    isBlack: boolean;
 
 }

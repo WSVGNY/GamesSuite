@@ -1,3 +1,3 @@
 export interface CommonChar {
-    _value: string
+    value: string
 }

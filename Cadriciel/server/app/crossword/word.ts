@@ -3,10 +3,10 @@ import { CommonWord } from "../../../common/crossword/commonWord";
 
 export class Word implements CommonWord {
 
-    public _isComplete: boolean;
+    public isComplete: boolean;
     public value: string;
     public definition: string;
-    public constraints: CommonWord[];
+    public constraints: Word[];
     public difficulty: number;
     public parentCaller: CommonWord;
     public constructor(
@@ -15,8 +15,8 @@ export class Word implements CommonWord {
         public isHorizontal: boolean,
         public length: number,
         public startPosition: CommonCoordinate2D) {
-        this.constraints = new Array<CommonWord>();
-        this._isComplete = false;
+        this.constraints = new Array<Word>();
+        this.isComplete = false;
         this.difficulty = 0;
     }
 

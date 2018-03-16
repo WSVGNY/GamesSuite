@@ -46,15 +46,15 @@ export class CrosswordComponent implements OnInit {
 
     public highlightedWord(word: CommonWord): boolean {
         if (word.isHorizontal) {
-            if (this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x]._isColored &&
-                this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + 1]._isColored) {
+            if (this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x].isColored &&
+                this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + 1].isColored) {
                 return true;
             }
 
             return false;
         } else {
-            if (this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x]._isColored &&
-                this.configurationService.grid.boxes[word.startPosition.y + 1][word.startPosition.x]._isColored) {
+            if (this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x].isColored &&
+                this.configurationService.grid.boxes[word.startPosition.y + 1][word.startPosition.x].isColored) {
                 return true;
             }
 
@@ -63,21 +63,21 @@ export class CrosswordComponent implements OnInit {
     }
 
     public highlightWordOfBox(gridBox: CommonGridBox): void {
-        if (gridBox._constraints[0] !== undefined) {
-            this.highlightWord((gridBox as CommonGridBox)._constraints[0]);
+        if (gridBox.constraints[0] !== undefined) {
+            this.highlightWord((gridBox as CommonGridBox).constraints[0]);
         }
     }
 
     public highlightWord(word: CommonWord): void {
-        if (!word._isComplete) {
+        if (!word.isComplete) {
             this.deselectWords();
             if (word.isHorizontal) {
                 for (let i: number = 0; i < word.length; i++) {
-                    this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + i]._isColored = true;
+                    this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + i].isColored = true;
                 }
             } else {
                 for (let i: number = 0; i < word.length; i++) {
-                    this.configurationService.grid.boxes[word.startPosition.y + i][word.startPosition.x]._isColored = true;
+                    this.configurationService.grid.boxes[word.startPosition.y + i][word.startPosition.x].isColored = true;
                 }
             }
         }
@@ -87,7 +87,7 @@ export class CrosswordComponent implements OnInit {
         if (this.configurationService.grid !== undefined) {
             for (const line of this.configurationService.grid.boxes) {
                 for (const box of line) {
-                    box._isColored = false;
+                    box.isColored = false;
                 }
             }
         }
@@ -97,11 +97,11 @@ export class CrosswordComponent implements OnInit {
         let value: string = "";
         if (word.isHorizontal) {
             for (let i: number = 0; i < word.length; i++) {
-                value += this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + i]._char._value;
+                value += this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + i].char.value;
             }
         } else {
             for (let i: number = 0; i < word.length; i++) {
-                value += this.configurationService.grid.boxes[word.startPosition.y + i][word.startPosition.x]._char._value;
+                value += this.configurationService.grid.boxes[word.startPosition.y + i][word.startPosition.x].char.value;
             }
         }
 
@@ -109,14 +109,14 @@ export class CrosswordComponent implements OnInit {
     }
 
     public getGridBoxID(gridBox: CommonGridBox): number {
-        if (gridBox._constraints[0] !== undefined) {
-            if (gridBox._constraints[1] !== undefined) {
+        if (gridBox.constraints[0] !== undefined) {
+            if (gridBox.constraints[1] !== undefined) {
                 if (this.isStartingBox(gridBox, 1)) {
-                    return gridBox._constraints[1].definitionID;
+                    return gridBox.constraints[1].definitionID;
                 }
             }
             if (this.isStartingBox(gridBox, 0)) {
-                return gridBox._constraints[0].definitionID;
+                return gridBox.constraints[0].definitionID;
             }
         }
 
@@ -124,8 +124,8 @@ export class CrosswordComponent implements OnInit {
     }
 
     private isStartingBox(gridBox: CommonGridBox, index: number): boolean {
-        return gridBox._id.x === gridBox._constraints[index].startPosition.x
-            && gridBox._id.y === gridBox._constraints[index].startPosition.y;
+        return gridBox.id.x === gridBox.constraints[index].startPosition.x
+            && gridBox.id.y === gridBox.constraints[index].startPosition.y;
     }
 
     public isCompletedWord(word: CommonWord, wordEntered: string): boolean {
@@ -133,7 +133,7 @@ export class CrosswordComponent implements OnInit {
     }
 
     public addToScore(word: CommonWord): void {
-        word._isComplete = true;
+        word.isComplete = true;
         this.correctWordCount++;
     }
 

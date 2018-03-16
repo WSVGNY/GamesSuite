@@ -1,5 +1,5 @@
 import { Word } from "./word";
-import { GridBox } from "./GridBox";
+import { GridBox } from "./gridBox";
 import { Coordinate2D } from "./coordinate2D";
 import { CommonGrid } from "../../../common/crossword/commonGrid";
 import { SIZE_GRID_X, SIZE_GRID_Y } from "./configuration";
