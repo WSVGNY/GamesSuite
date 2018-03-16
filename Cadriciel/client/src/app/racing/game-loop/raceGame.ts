@@ -12,6 +12,7 @@ import { TrackLights } from "../render-service/light";
 import { GREEN } from "../constants";
 import { TrackPointList } from "../render-service/trackPointList";
 import { SoundManagerService } from "../sound-service/sound-manager.service";
+// import { CollisionManagerService } from "../collision-service/collision-manager.service";
 
 export class RaceGame {
 
@@ -27,6 +28,7 @@ export class RaceGame {
     private _lighting: TrackLights;
     private _camera: PerspectiveCamera;
     private _sound: SoundManagerService = new SoundManagerService();
+    // private _collisionControl: CollisionManagerService;
 
     public constructor(private _renderService: RenderService) { }
 
@@ -137,7 +139,16 @@ export class RaceGame {
                 this._aiCars[i].update(timeSinceLastFrame);
                 this._aiCarService[i].update();
             }
-
+            /*for (let i: number = 1; i < this._aiCars.length; ++i) {
+                this._playerCar.detectionBox.geometry.computeBoundingBox();
+                this._aiCars[i].detectionBox.geometry.computeBoundingBox();
+                if (this._collisionControl.detectCollision(this._playerCar, this._aiCars[i]) === true) {
+                    const geometry: BoxGeometry = new BoxGeometry(3, 3, 3);
+                    geometry.computeBoundingBox();
+                    const material: MeshBasicMaterial = new MeshBasicMaterial({ color: 0xFF0000 });
+                    this._playerCar.add(new Mesh(geometry, material));
+                }
+            }*/
             this.update();
         });
     }

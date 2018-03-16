@@ -304,7 +304,7 @@ export class Car extends Object3D {
     private createDetectionBox(): Mesh {
         const geometry: BoxGeometry = new BoxGeometry(2, 2, 2);
         geometry.computeBoundingBox();
-        const material: MeshBasicMaterial = new MeshBasicMaterial({ color: 0xfff000 });
+        const material: MeshBasicMaterial = new MeshBasicMaterial({ color: 0xFFF000 });
 
         return new Mesh(geometry, material);
     }
