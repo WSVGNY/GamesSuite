@@ -18,7 +18,7 @@ export class TrackPoint {
     }
 
     public get vectorToInteriorPoint(): Vector3 {
-        const halfOfSmallAngle: number = this.halfOfSmallAngle();
+        const halfOfSmallAngle: number = this.halfOfSmallAngle;
         const vectorToInteriorPoint: Vector3 = this.vectorToNextCenterPoint.clone().normalize()
             .applyAxisAngle(new Vector3(0, 1, 0), halfOfSmallAngle)
             .multiplyScalar(HALF_TRACK_WIDTH / Math.sin(halfOfSmallAngle));
@@ -27,14 +27,14 @@ export class TrackPoint {
             vectorToInteriorPoint : vectorToInteriorPoint.negate();
     }
 
-    private halfOfSmallAngle(): number {
+    public get halfOfSmallAngle(): number {
         if (this.next !== undefined && this.previous !== undefined) {
-            this._smallAngle = this.vectorToNextCenterPoint.angleTo(this.vectorToPreviousCenterPoint);
+            this._smallAngle = this.vectorToNextCenterPoint.cross(this.vectorToPreviousCenterPoint).y > 0 ?
+                this.vectorToNextCenterPoint.angleTo(this.vectorToPreviousCenterPoint) :
+                -this.vectorToNextCenterPoint.angleTo(this.vectorToPreviousCenterPoint);
         }
 
-        return this.vectorToNextCenterPoint.cross(this.vectorToPreviousCenterPoint).y > 0 ?
-            this._smallAngle * HALF :
-            -this._smallAngle * HALF;
+        return this._smallAngle * HALF;
     }
 
     public get vectorToPreviousCenterPoint(): Vector3 {

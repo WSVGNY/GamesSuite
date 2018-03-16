@@ -1,10 +1,9 @@
 import { Shape, Vector3, Path, Mesh, MeshPhongMaterial, DoubleSide } from "three";
 import { TrackPointList } from "./trackPointList";
 import { TrackPoint } from "./trackPoint";
-import { HALF_TRACK_WIDTH, WALL_DISTANCE_TO_TRACK, PI_OVER_2, YELLOW } from "../constants";
+import { HALF_TRACK_WIDTH, WALL_DISTANCE_TO_TRACK, PI_OVER_2, YELLOW, WALL_WIDTH } from "../constants";
 
 export class Wall extends Shape {
-    private readonly WIDTH: number = 0.5;
     private readonly HEIGHT: number = 2;
     private readonly EXTRUDE_SETTINGS: Object = {
         steps: 1,
@@ -51,8 +50,6 @@ export class Wall extends Shape {
 
     private findInteriorWallPoints(trackPoints: TrackPointList): void {
         trackPoints.points.forEach((point: TrackPoint) => {
-            console.log(point);
-            console.log(this.findVectorToInteriorWall(point));
             this._shapePoints.push(point.coordinate.add(this.findVectorToInteriorWall(point)));
         });
         this.findInteriorWallWidthPoint(trackPoints);
@@ -66,12 +63,14 @@ export class Wall extends Shape {
 
     private findVectorToInteriorWall(trackPoint: TrackPoint): Vector3 {
         return trackPoint.vectorToInteriorPoint.normalize()
-            .multiplyScalar((HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK));
+            .multiplyScalar(
+                (HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK) / Math.sin(Math.abs(trackPoint.halfOfSmallAngle)));
     }
 
     private findVectorToInteriorWallWidth(trackPoint: TrackPoint): Vector3 {
         return trackPoint.vectorToInteriorPoint.normalize()
-            .multiplyScalar((HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + this.WIDTH));
+            .multiplyScalar(
+                (HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH) / Math.sin(Math.abs(trackPoint.halfOfSmallAngle)));
     }
 
     private findExteriorWallPoints(trackPoints: TrackPointList): void {
@@ -89,13 +88,15 @@ export class Wall extends Shape {
 
     private findVectorToExteriorWall(trackPoint: TrackPoint): Vector3 {
         return trackPoint.vectorToInteriorPoint.normalize()
-            .multiplyScalar((HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK))
+            .multiplyScalar(
+                (HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK) / Math.sin(Math.abs(trackPoint.halfOfSmallAngle)))
             .negate();
     }
 
     private findVectorToExteriorWallWidth(trackPoint: TrackPoint): Vector3 {
         return trackPoint.vectorToInteriorPoint.normalize()
-            .multiplyScalar((HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + this.WIDTH))
+            .multiplyScalar(
+                (HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH) / Math.sin(Math.abs(trackPoint.halfOfSmallAngle)))
             .negate();
     }
 
