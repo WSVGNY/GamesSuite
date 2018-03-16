@@ -22,7 +22,9 @@ export class MultiplayerCommunicationService {
     }
 
     public sendMessage(message: string): void {
-        this._socket.emit(SocketEvents.NewMessage, message);
+        if (this._socket !== undefined) {
+            this._socket.emit(SocketEvents.NewMessage, message);
+        }
     }
 
     // https://codingblast.com/chat-application-angular-socket-io/
