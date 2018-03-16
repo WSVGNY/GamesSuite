@@ -28,6 +28,7 @@ export class Server {
         this.server.on("error", (error: NodeJS.ErrnoException) => this.onError(error));
     }
 
+    // tslint:disable:no-console
     private initSocket(): void {
         this.io = sio(this.server);
         this.io.on(SocketEvents.Connection, (socket: SocketIO.Socket) => {
@@ -41,6 +42,7 @@ export class Server {
             });
         });
     }
+    // tslint:enable:no-console
 
     private normalizePort(val: number | string): number | string | boolean {
         const port: number = (typeof val === "string") ? parseInt(val, this.baseDix) : val;
