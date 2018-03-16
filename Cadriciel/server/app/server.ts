@@ -3,6 +3,7 @@ import * as http from "http";
 import Types from "./types";
 import { injectable, inject } from "inversify";
 import * as sio from "socket.io";
+import { SocketEvents } from "../../common/communication/socketEvents";
 
 const PIPE: string = "Pipe ";
 const PORT: string = "Port ";
@@ -29,14 +30,13 @@ export class Server {
 
     private initSocket(): void {
         this.io = sio(this.server);
-        this.io.on("connection", (socket: SocketIO.Socket) => {
-            console.log("user connected"); // TODO: change processing
-            socket.on("new-message", (message: string) => {
+        this.io.on(SocketEvents.Connection, (socket: SocketIO.Socket) => {
+            console.log("user connected");
+            socket.on(SocketEvents.NewMessage, (message: string) => {
                 console.log(message);
-                console.log("simono");
-                this.io.emit("new-message", message);
+                this.io.emit(SocketEvents.NewMessage, message);
             });
-            socket.on("disconnect", () => {
+            socket.on(SocketEvents.Disconnection, () => {
                 console.log("user disconnected");
             });
         });

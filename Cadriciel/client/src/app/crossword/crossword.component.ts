@@ -21,8 +21,6 @@ export class CrosswordComponent implements OnInit {
     public constructor(
         public configurationService: ConfigurationService,
         private multiplayerCommunicationService: MultiplayerCommunicationService) {
-        this.message = "allo";
-        this.sendMessage();
     }
 
     public ngOnInit(): void {
