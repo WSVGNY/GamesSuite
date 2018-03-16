@@ -20,26 +20,30 @@ export class AICarService {
     private _trackVectors: Line[];
     private _aiConfig: AIConfig;
     private _aiDebug: AIDebug;
+    private _trackVertices: Vector3[];
 
-    public constructor(/*private _car: Car,*/ private _trackVertices: Vector3[], difficulty: Difficulty) {
+    public constructor(/*private _car: Car,*/ ) {}
+
+    public async initialize(trackVertices: Vector3[], difficulty: Difficulty): Promise<void> {
         this._aiControl = new CommandController();
-        this.createVectorTrackFromPoints(_trackVertices);
+        this._trackVertices = trackVertices;
+        this.createVectorTrackFromPoints(trackVertices);
         // this._aiDebug = new AIDebug(this._car);
         this._aiConfig = new AIConfig(difficulty);
         this._trackPortionIndex = AIConfig.START_INDEX;
     }
 
     public update(car: Car): void {
-        const carPosition: Vector3 = new Vector3(
-            car.position.x + car.currentPosition.x, 0,
-            car.position.z + car.currentPosition.z);
+        // const carPosition: Vector3 = new Vector3(
+        //     car.position.x + car.currentPosition.x, 0,
+        //     car.position.z + car.currentPosition.z);
 
         const projection: Vector3 = this.projectInFrontOfCar(car);
         const lineDistance: number = this.getPointDistanceFromTrack(projection);
         const pointOnLine: Vector3 = this.projectPointOnLine(projection);
         const turningPoint: Vector3 = this.projectTurningPoint();
 
-        this._aiDebug.updateDebugMode(carPosition, projection, pointOnLine, turningPoint, this._trackVertices[this._trackPortionIndex]);
+        // this._aiDebug.updateDebugMode(carPosition, projection, pointOnLine, turningPoint, this._trackVertices[this._trackPortionIndex]);
 
         this.updateTrackPortionIndex(pointOnLine, turningPoint);
         this.updateCarDirection(lineDistance, car);
