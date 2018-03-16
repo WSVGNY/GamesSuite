@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import * as sio from "socket.io-client";
+import { Observable } from "rxjs/Observable";
 
 @Injectable()
 export class MultiplayerCommunicationService {
@@ -9,9 +10,6 @@ export class MultiplayerCommunicationService {
 
     public constructor() {
         this.socket = sio(this.url);
-        this.socket.on("new-message", (message: string) => {
-            console.log(message);
-        });
     }
 
     public sendMessage(message: string): void {
@@ -19,6 +17,12 @@ export class MultiplayerCommunicationService {
     }
 
     // https://codingblast.com/chat-application-angular-socket-io/
-    public getMessages(): void {
+    public getMessages = () => {
+        return Observable.create((observer: any) => {
+            this.socket.on("new-message", (message: string) => {
+                observer.next(message);
+            });
+        });
     }
+
 }
