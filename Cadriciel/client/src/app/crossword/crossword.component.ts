@@ -2,6 +2,7 @@ import { Component } from "@angular/core";
 import { CommonGridBox } from "../../../../common/crossword/commonGridBox";
 import { CommonWord } from "../../../../common/crossword/commonWord";
 import { ConfigurationService } from "./configuration.service";
+import { MultiplayerCommunicationService } from "./multiplayer-communication.service";
 
 @Component({
     selector: "app-crossword",
@@ -14,7 +15,9 @@ export class CrosswordComponent {
     public correctWordCount: number = 0;
     public isInCheatMode: boolean = false;
 
-    public constructor(public configurationService: ConfigurationService) {
+    public constructor(
+        public configurationService: ConfigurationService,
+        public multiplayerCommunicationService: MultiplayerCommunicationService) {
     }
 
     public isConfigurationDone(): boolean {
