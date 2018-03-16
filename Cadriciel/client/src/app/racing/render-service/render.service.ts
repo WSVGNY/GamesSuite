@@ -4,21 +4,15 @@ import {
     PerspectiveCamera, WebGLRenderer, Scene, Mesh, Shape, ShapeGeometry, Path, BackSide, TextureLoader, Texture, RepeatWrapping,
     PlaneGeometry, Group, Object3D, CubeTexture,
     CubeTextureLoader,
-    MeshPhongMaterial,
-    DoubleSide,
-    ExtrudeGeometry,
-    MeshBasicMaterial,
-    CatmullRomCurve3,
-    Vector2,
-    MeshLambertMaterial,
-    Vector3,
-    SceneUtils,
-    MeshStandardMaterial
+    MeshPhongMaterial
 } from "three";
-import { PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE, MS_TO_SECONDS, WHITE } from "../constants";
+import {
+    PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE, MS_TO_SECONDS, WHITE
+} from "../constants";
 import { TrackPointList } from "./trackPointList";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { SkyBox } from "./skybox";
+import { Wall } from "./wall";
 
 @Injectable()
 export class RenderService {
@@ -90,7 +84,7 @@ export class RenderService {
 
         const geometry: ShapeGeometry = new ShapeGeometry(shape);
         const trackMaterial: MeshPhongMaterial =
-            new MeshPhongMaterial({ side: BackSide, map: this.loadRepeatingTexture(ASPHALT_TEXTURE, GROUND_TEXTURE_FACTOR) });
+            new MeshPhongMaterial({ side: BackSide, color: 0xAAAAAA /*map: this.loadRepeatingTexture(ASPHALT_TEXTURE, GROUND_TEXTURE_FACTOR)*/ });
 
         const trackMesh: Mesh = new Mesh(geometry, trackMaterial);
         trackMesh.rotateX(PI_OVER_2);
@@ -117,50 +111,18 @@ export class RenderService {
         trackShape.holes.push(holePath);
     }
 
-    public createWalls(trackPoints: TrackPointList): Mesh {
-        const extrudeSettings: Object = {
-            steps: 1,
-            amount: 2,
-            bevelEnabled: false
-        };
+    public createWalls(trackPoints: TrackPointList): Group {
+        const walls: Group = new Group();
+        walls.add(Wall.createInteriorWall(trackPoints).generateMesh());
+        walls.add(Wall.createExteriorWall(trackPoints).generateMesh());
 
-        const trackMaterial: MeshPhongMaterial[] =
-            new MeshPhongMaterial({ side: DoubleSide, color: WHITE, wireframe: false })
-            ;
-
-        const wallMesh: Mesh = new Mesh(
-            this.createInteriorWall(trackPoints).extrude(extrudeSettings).translate(0, 0, -2), trackMaterial
-        );
-
-        wallMesh.rotateX(PI_OVER_2);
-        wallMesh.name = "wall";
-
-        return wallMesh;
-    }
-
-    private createInteriorWall(trackPoints: TrackPointList): Shape {
-        const wallShape: Shape = new Shape();
-        wallShape.moveTo(trackPoints.first.interiorWall.x, trackPoints.first.interiorWall.z);
-        for (let i: number = 1; i < trackPoints.length; ++i) {
-            wallShape.lineTo(trackPoints.points[i].interiorWall.x, trackPoints.points[i].interiorWall.z);
-        }
-        wallShape.lineTo(trackPoints.first.interiorWall.x, trackPoints.first.interiorWall.z);
-
-        const holePath: Path = new Path();
-        holePath.moveTo(trackPoints.first.interior.x, trackPoints.first.interior.z);
-        for (let i: number = trackPoints.length - 1; i > 0; --i) {
-            holePath.lineTo(trackPoints.points[i].interior.x, trackPoints.points[i].interior.z);
-        }
-        holePath.lineTo(trackPoints.first.interior.x, trackPoints.first.interior.z);
-        wallShape.holes.push(holePath);
-
-        return wallShape;
+        return walls;
     }
 
     private renderGround(): void {
         const groundGeometry: PlaneGeometry = new PlaneGeometry(GROUND_SIZE, GROUND_SIZE, 1, 1);
         const groundMaterial: MeshPhongMaterial =
-            new MeshPhongMaterial({ side: BackSide, map: this.loadRepeatingTexture(GRASS_TEXTURE, MS_TO_SECONDS) });
+            new MeshPhongMaterial({ side: BackSide, color: WHITE/*map: this.loadRepeatingTexture(GRASS_TEXTURE, MS_TO_SECONDS)*/ });
 
         const ground: Mesh = new Mesh(groundGeometry, groundMaterial);
         ground.rotateX(PI_OVER_2);

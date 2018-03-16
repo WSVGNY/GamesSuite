@@ -73,9 +73,9 @@ export class RaceGame {
     private async initializePlayerCar(): Promise<void> {
         this._playerCar = new Car();
         const startPos: Vector3 = new Vector3(
-            this._trackPoints.first.coordinates.x + RaceGameConfig.START_POSITION_OFFSET,
-            this._trackPoints.first.coordinates.y,
-            this._trackPoints.first.coordinates.z + RaceGameConfig.START_POSITION_OFFSET);
+            this._trackPoints.first.coordinate.x + RaceGameConfig.START_POSITION_OFFSET,
+            this._trackPoints.first.coordinate.y,
+            this._trackPoints.first.coordinate.z + RaceGameConfig.START_POSITION_OFFSET);
         await this._playerCar.init(startPos, this.findFirstTrackSegmentAngle());
         this._playerCar.attachCamera(this._camera);
     }
@@ -85,9 +85,9 @@ export class RaceGame {
             this._aiCars.push(new Car());
 
             const startPos: Vector3 = new Vector3(
-                this._trackPoints.first.coordinates.x - i * RaceGameConfig.START_POSITION_OFFSET,
-                this._trackPoints.first.coordinates.y,
-                this._trackPoints.first.coordinates.z - i * RaceGameConfig.START_POSITION_OFFSET);
+                this._trackPoints.first.coordinate.x - i * RaceGameConfig.START_POSITION_OFFSET,
+                this._trackPoints.first.coordinate.y,
+                this._trackPoints.first.coordinate.z - i * RaceGameConfig.START_POSITION_OFFSET);
 
             await this._aiCars[i].init(startPos, this.findFirstTrackSegmentAngle());
             this._aiCarService.push(new AICarService(
@@ -104,8 +104,8 @@ export class RaceGame {
     }
 
     private findFirstTrackSegmentAngle(): number {
-        const carfinalFacingVector: Vector3 = this._trackPoints.points[1].coordinates.clone()
-            .sub(this._trackPoints.points[0].coordinates)
+        const carfinalFacingVector: Vector3 = this._trackPoints.points[1].coordinate.clone()
+            .sub(this._trackPoints.points[0].coordinate)
             .normalize();
 
         return new Vector3(0, 0, -1).cross(carfinalFacingVector).y > 0 ?
@@ -190,8 +190,8 @@ export class RaceGame {
 
     private setCenterLine(): void {
         const geometryPoints: Geometry = new Geometry();
-        this._trackPoints.points.forEach((currentPoint: TrackPoint) => geometryPoints.vertices.push(currentPoint.coordinates));
-        geometryPoints.vertices.push(this._trackPoints.points[0].coordinates);
+        this._trackPoints.points.forEach((currentPoint: TrackPoint) => geometryPoints.vertices.push(currentPoint.coordinate));
+        geometryPoints.vertices.push(this._trackPoints.points[0].coordinate);
 
         this._centerLine = new Line(geometryPoints, new LineBasicMaterial({ color: GREEN, linewidth: 3 }));
     }
