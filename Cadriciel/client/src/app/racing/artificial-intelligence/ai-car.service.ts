@@ -21,20 +21,20 @@ export class AICarService {
     private _aiConfig: AIConfig;
     private _aiDebug: AIDebug;
 
-    public constructor(private _car: Car, private _trackVertices: Vector3[], difficulty: Difficulty) {
+    public constructor(/*private _car: Car,*/ private _trackVertices: Vector3[], difficulty: Difficulty) {
         this._aiControl = new CommandController();
         this.createVectorTrackFromPoints(_trackVertices);
-        this._aiDebug = new AIDebug(this._car);
+        // this._aiDebug = new AIDebug(this._car);
         this._aiConfig = new AIConfig(difficulty);
         this._trackPortionIndex = AIConfig.START_INDEX;
     }
 
-    public update(): void {
+    public update(car: Car): void {
         const carPosition: Vector3 = new Vector3(
-            this._car.position.x + this._car.currentPosition.x, 0,
-            this._car.position.z + this._car.currentPosition.z);
+            car.position.x + car.currentPosition.x, 0,
+            car.position.z + car.currentPosition.z);
 
-        const projection: Vector3 = this.projectInFrontOfCar();
+        const projection: Vector3 = this.projectInFrontOfCar(car);
         const lineDistance: number = this.getPointDistanceFromTrack(projection);
         const pointOnLine: Vector3 = this.projectPointOnLine(projection);
         const turningPoint: Vector3 = this.projectTurningPoint();
@@ -42,7 +42,7 @@ export class AICarService {
         this._aiDebug.updateDebugMode(carPosition, projection, pointOnLine, turningPoint, this._trackVertices[this._trackPortionIndex]);
 
         this.updateTrackPortionIndex(pointOnLine, turningPoint);
-        this.updateCarDirection(lineDistance);
+        this.updateCarDirection(lineDistance, car);
     }
 
     private updateTrackPortionIndex(pointOnLine: Vector3, turningPoint: Vector3): void {
@@ -56,49 +56,49 @@ export class AICarService {
         }
     }
 
-    private updateCarDirection(lineDistance: number): void {
+    private updateCarDirection(lineDistance: number, car: Car): void {
         if (Math.abs(lineDistance) > this._aiConfig.distanceBeforeReplacement) {
-            this.accelerate();
+            this.accelerate(car);
             if (lineDistance < 0) {
-                this.goLeft();
+                this.goLeft(car);
             } else {
-                this.goRight();
+                this.goRight(car);
             }
         } else {
-            this.goForward();
+            this.goForward(car);
         }
     }
 
-    private goForward(): void {
-        this.accelerate();
-        this.releaseSteering();
+    private goForward(car: Car): void {
+        this.accelerate(car);
+        this.releaseSteering(car);
     }
 
-    private accelerate(): void {
-        this._aiControl.command = new GoFoward(this._car);
+    private accelerate(car: Car): void {
+        this._aiControl.command = new GoFoward(car);
         this._aiControl.execute();
     }
 
-    private goLeft(): void {
-        this._aiControl.command = new TurnLeft(this._car);
+    private goLeft(car: Car): void {
+        this._aiControl.command = new TurnLeft(car);
         this._aiControl.execute();
     }
 
-    private goRight(): void {
-        this._aiControl.command = new TurnRight(this._car);
+    private goRight(car: Car): void {
+        this._aiControl.command = new TurnRight(car);
         this._aiControl.execute();
     }
 
-    private releaseSteering(): void {
-        this._aiControl.command = new ReleaseSteering(this._car);
+    private releaseSteering(car: Car): void {
+        this._aiControl.command = new ReleaseSteering(car);
         this._aiControl.execute();
     }
 
-    private projectInFrontOfCar(): Vector3 {
-        const dir: Vector3 = this._car.direction.normalize();
+    private projectInFrontOfCar(car: Car): Vector3 {
+        const dir: Vector3 = car.direction.normalize();
         const positionInFront: Vector3 = new Vector3(
-            this._car.position.x + this._car.currentPosition.x, 0,
-            this._car.position.z + this._car.currentPosition.z);
+            car.position.x + car.currentPosition.x, 0,
+            car.position.z + car.currentPosition.z);
         positionInFront.x += dir.x * this._aiConfig.distanceFromVehicule;
         positionInFront.z += dir.z * this._aiConfig.distanceFromVehicule;
 
