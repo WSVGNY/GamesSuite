@@ -9,8 +9,8 @@ export class WordConstraint {
         for (let i: number = 0; i < word.length; ++i) {
             let charToAdd: string;
             word.isHorizontal ?
-                charToAdd = grid[word.startPosition.y][word.startPosition.x + i]._char._value :
-                charToAdd = grid[word.startPosition.y + i][word.startPosition.x]._char._value;
+                charToAdd = grid[word.startPosition.y][word.startPosition.x + i].char.value :
+                charToAdd = grid[word.startPosition.y + i][word.startPosition.x].char.value;
             this._originalValue += charToAdd;
             if (charToAdd === "?") {
                 charToAdd = "%3f";

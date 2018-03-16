@@ -35,7 +35,7 @@ describe("GRID CREATE TESTS", () => {
         let numBlackTiles: number = 0;
         for (let i: number = 0; i < SIZE_GRID_X; i++) {
             for (let j: number = 0; j < SIZE_GRID_Y; j++) {
-                if (blackGrid["_grid"][i][j]._char._value === "#") {
+                if (blackGrid["_grid"][i][j].char.value === "#") {
                     numBlackTiles++;
                 }
             }
