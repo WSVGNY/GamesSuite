@@ -120,4 +120,8 @@ export class CrosswordComponent {
         this.correctWordCount++;
     }
 
+    public getFirstLetter(): void {
+
+    }
+
 }
