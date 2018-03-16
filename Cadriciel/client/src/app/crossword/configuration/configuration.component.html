@@ -20,8 +20,8 @@
   </div>
 
   <div *ngIf="configurationService.isTwoPlayerGame">
-    <div id="waiter" *ngIf="configurationService.lookingForPlayer == true"></div>
-    <div id="waiterText" *ngIf="configurationService.lookingForPlayer == true">waiting for another player...</div>
+    <div id="waiter" *ngIf="configurationService.lookingForPlayer"></div>
+    <div id="waiterText" *ngIf="configurationService.lookingForPlayer">waiting for another player...</div>
   </div>
 
 

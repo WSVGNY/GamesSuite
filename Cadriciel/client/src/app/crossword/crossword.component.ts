@@ -137,8 +137,20 @@ export class CrosswordComponent implements OnInit {
         this.correctWordCount++;
     }
 
-    public getFirstLetter(): void {
+    public setInputOnBox(gridBox: CommonGridBox): void {
+        if (!gridBox.isBlack) {
+            this.setInputOnWord(gridBox.constraints[0]);
+        }
+    }
 
+    public setInputOnWord(word: CommonWord): void {
+        for (const line of this.configurationService.grid.boxes) {
+            for (const box of line) {
+                box.readyForInput = false;
+            }
+        }
+        this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x]
+            .readyForInput = true;
     }
 
 }
