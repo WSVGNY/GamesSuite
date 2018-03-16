@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, HostListener } from "@angular/core";
 import { CommonGridBox } from "../../../../common/crossword/commonGridBox";
 import { CommonWord } from "../../../../common/crossword/commonWord";
 import { ConfigurationService } from "./configuration.service";
@@ -151,6 +151,25 @@ export class CrosswordComponent implements OnInit {
         }
         this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x]
             .readyForInput = true;
+    }
+
+    @HostListener("window:keyup", ["$event"])
+    public inputChar(event: KeyboardEvent): void {
+        if (this.configurationService.grid !== undefined) {
+            let gridBox: CommonGridBox;
+            for (const line of this.configurationService.grid.boxes) {
+                for (const box of line) {
+                    if (box.readyForInput) {
+                        gridBox = box;
+                    }
+                }
+            }
+            if (gridBox !== undefined) {
+                if (event.key.match(/^[a-z]$/i) !== null) {
+                    gridBox.inputChar.value = event.key;
+                }
+            }
+        }
     }
 
 }

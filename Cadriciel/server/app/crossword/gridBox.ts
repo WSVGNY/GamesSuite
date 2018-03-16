@@ -9,11 +9,13 @@ export class GridBox implements CommonGridBox {
     public constraints: Word[];
     public difficulty: number;
     public isColored?: boolean;
+    public inputChar?: Char;
 
     public constructor(public id: Coordinate2D, public isBlack: boolean) {
         this.difficulty = 0;
         this.constraints = new Array<Word>();
         this.isColored = false;
+        this.inputChar = new Char;
     }
 
     public addConstraint(word: Word): void {

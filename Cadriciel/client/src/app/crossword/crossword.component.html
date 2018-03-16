@@ -60,7 +60,7 @@
         <div (mousedown)="deselectWords()" [ngClass]="{filledGridBox : gridBox.isBlack, 
           selectedGridBox: gridBox.isColored, emptyGridBox : !gridBox.isBlack}">
           <div id="relative">
-            <div *ngIf="gridBox.inputChar != undefined && gridBox.inputChar.value != undefined">{{gridBox.inputChar.value}}</div>
+            <div *ngIf="gridBox.inputChar != undefined && gridBox.inputChar.value != undefined" class="userInputLetter">{{gridBox.inputChar.value}}</div>
             <div class="definitionID">{{getGridBoxID(gridBox)}}</div>
           </div>
         </div>
