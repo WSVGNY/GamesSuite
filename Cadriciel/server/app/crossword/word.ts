@@ -1,15 +1,23 @@
-import { Coordinate2D } from "./coordinate2D";
+import { CommonCoordinate2D } from "../../../common/crossword/commonCoordinate2D";
 import { CommonWord } from "../../../common/crossword/commonWord";
 
-export class Word extends CommonWord {
+export class Word implements CommonWord {
 
+    public _isComplete: boolean;
+    public value: string;
+    public definition: string;
+    public constraints: CommonWord[];
+    public difficulty: number;
+    public parentCaller: CommonWord;
     public constructor(
-        id: number,
-        definitionID: number,
-        isHorizontal: boolean,
-        length: number,
-        startPosition: Coordinate2D) {
-        super(id, definitionID, isHorizontal, length, startPosition);
+        public id: number,
+        public definitionID: number,
+        public isHorizontal: boolean,
+        public length: number,
+        public startPosition: CommonCoordinate2D) {
+        this.constraints = new Array<CommonWord>();
+        this._isComplete = false;
+        this.difficulty = 0;
     }
 
     public addConstraint(word: Word): void {
