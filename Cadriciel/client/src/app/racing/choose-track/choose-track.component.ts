@@ -36,10 +36,18 @@ export class ChooseTrackComponent implements OnInit, AfterViewInit {
             .initialize(this._containerRef.nativeElement, this._previewScene, this._previewCamera)
             .then(/* do nothing */)
             .catch((err) => console.error(err));
+        this.update();
     }
 
     private computeAspectRatio(): number {
         return this._containerRef.nativeElement.clientWidth / this._containerRef.nativeElement.clientHeight;
+    }
+
+    private update(): void {
+        requestAnimationFrame(() => {
+            this._renderService.render(this._previewScene, this._previewCamera);
+            this.update();
+        });
     }
 
     private getTracksFromServer(): void {

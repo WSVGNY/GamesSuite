@@ -1,14 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Camera, WebGLRenderer, Scene } from "three";
 
-export enum Action {
-    AddPoint = 1,
-    SetSelectedVertex,
-    CompleteLoop,
-    None,
-    Remove
-}
-
 @Injectable()
 export class EditorRenderService {
 
@@ -20,7 +12,6 @@ export class EditorRenderService {
             this._containerEditor = containerEditor;
         }
         await this.initialiseRenderer();
-        this.render(scene, camera);
     }
 
     private async initialiseRenderer(): Promise<void> {
@@ -30,8 +21,7 @@ export class EditorRenderService {
         this._containerEditor.appendChild(this._renderer.domElement);
     }
 
-    private render(scene: Scene, camera: Camera): void {
-        requestAnimationFrame(() => this.render(scene, camera));
+    public render(scene: Scene, camera: Camera): void {
         this._renderer.render(scene, camera);
     }
 

@@ -58,10 +58,18 @@ export class EditorComponent implements AfterViewInit, OnInit {
             .initialize(this._containerRef.nativeElement, VIEW_SIZE)
             .then(/* do nothing */)
             .catch((err) => console.error(err));
+        this.update();
     }
 
     private computeAspectRatio(): number {
         return this._containerRef.nativeElement.clientWidth / this._containerRef.nativeElement.clientHeight;
+    }
+
+    private update(): void {
+        requestAnimationFrame(() => {
+            this._editorRenderService.render(this._editorScene, this._editorCamera);
+            this.update();
+        });
     }
 
     public getTrack(): void {
