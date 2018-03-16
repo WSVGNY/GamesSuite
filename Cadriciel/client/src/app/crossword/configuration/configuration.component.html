@@ -19,8 +19,11 @@
     <button *ngIf="configurationService.isTwoPlayerGame" (click)="configurationService.playerName = player.value" (click)="configurationService.lookingForPlayer = true">Find second player</button>
   </div>
 
-  <div id="waiter" *ngIf="configurationService.lookingForPlayer == true"></div>
-  <div id="waiterText" *ngIf="configurationService.lookingForPlayer == true">waiting for another player...</div>
+  <div *ngIf="configurationService.isTwoPlayerGame">
+    <div id="waiter" *ngIf="configurationService.lookingForPlayer == true"></div>
+    <div id="waiterText" *ngIf="configurationService.lookingForPlayer == true">waiting for another player...</div>
+  </div>
+
 
   <div *ngIf="configurationService.isTwoPlayerGame !== undefined" id="selectedOptions">
     <div *ngIf="!configurationService.isTwoPlayerGame"> Chosen : One player </div>

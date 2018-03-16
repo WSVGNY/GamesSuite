@@ -1,22 +1,23 @@
 import { RenderService } from "./../render-service/render.service";
 import { Car } from "./../car/car";
 import { AICarService } from "./../artificial-intelligence/ai-car.service";
-import { TrackPointList, TrackPoint } from "./../render-service/trackPoint";
+import { TrackPoint } from "./../render-service/trackPoint";
 import {
-    Vector3, PerspectiveCamera, Group, LineBasicMaterial,
-    Line, Geometry, AudioListener, AudioLoader, AudioBuffer, Audio
+    Vector3, PerspectiveCamera, Group, LineBasicMaterial, Line, Geometry, AudioListener, AudioLoader,
+    Audio, AudioBuffer
 } from "three";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { ElementRef } from "@angular/core";
 import { TrackStructure } from "../../../../../common/racing/track";
 import { RaceGameConfig } from "./raceGameConfig";
-import { SkyBox } from "../render-service/skybox";
 import { TrackLights } from "../render-service/light";
 import { GREEN } from "../constants";
+import { TrackPointList } from "../render-service/trackPointList";
+import { SoundManagerService } from "../sound-service/sound-manager.service";
 
 export class RaceGame {
-    private _camera: PerspectiveCamera;
+
     private _playerCar: Car = new Car();
     private _aiCarService: AICarService[] = [];
     private _aiCars: Car[] = [];
@@ -27,9 +28,8 @@ export class RaceGame {
     private _debug: boolean;
     private _centerLine: Line;
     private _lighting: TrackLights;
-    private _music: Audio;
-    private _soundEffect: Audio;
-    private _isPlaying: boolean = true;
+    private _camera: PerspectiveCamera;
+    private _sound: SoundManagerService = new SoundManagerService();
 
     public constructor(private _renderService: RenderService) { }
 
@@ -45,7 +45,8 @@ export class RaceGame {
         this.setSkyBox(this._trackType);
         await this._renderService.initialize(containerRef.nativeElement, this._camera);
         this.startGameLoop();
-        this.createSound("../../../assets/sounds/rainbowRoad.mp3");
+        this._sound.createSound("../../../assets/sounds/rainbowRoad.mp3", this._camera, this._playerCar);
+        // this.createSound("../../../assets/sounds/rainbowRoad.mp3");
     }
 
     private addObjectsToRenderScene(): void {
@@ -112,7 +113,7 @@ export class RaceGame {
     }
 
     private setSkyBox(trackType: TrackType): void {
-        this._renderService.loadSkyBox(SkyBox.getPath(trackType));
+        this._renderService.loadSkyBox(trackType);
     }
 
     private initializeLights(trackType: TrackType): void {
@@ -147,6 +148,14 @@ export class RaceGame {
 
     public get playerCar(): Car {
         return this._playerCar;
+    }
+
+    public get camera(): PerspectiveCamera {
+        return this._camera;
+    }
+
+    public get sound(): SoundManagerService {
+        return this._sound;
     }
 
     public set isDay(isDay: boolean) {
@@ -191,66 +200,20 @@ export class RaceGame {
         this._camera.add(listener); // On peut soit l ajouter à la caméra ou à la voiture en fonction de ce qu on veut
         const sound: Audio = new Audio(listener); // Maybe positionnal audio
         const loader: AudioLoader = new AudioLoader();
-
         // load a resource
         loader.load(
             soundName,
-            function (audioBuffer: AudioBuffer) {
+            (audioBuffer: AudioBuffer) => {
                 sound.setBuffer(audioBuffer);
                 sound.play();
             },
-            function (xhr: XMLHttpRequest) {
-                console.log((xhr.LOADING) + "% loaded");
-            },
-            function (err: Event) {
-                console.log("An error happened");
-            }
+            (xhr: XMLHttpRequest) => { },
+            (err: Event) => { }
         );
         this._playerCar.add(sound);
-        this._music = sound;
+        this._camera.add(sound);
         /*for (let i: number = 0; i < RaceGameConfig.AI_CARS_NUMBER; ++i) { // Pour ajouter aux IA
             this._aiCars[i].add(sound);
         }*/
     }
-
-    public stopMusic(): void {
-        this._music.stop();
-    }
-
-    public playMusic(): void {
-        this._music.play();
-    }
-
-    public createAccelerationEffect(effectName: string): void {
-        const listener: AudioListener = new AudioListener();
-        this._camera.add(listener); // On peut soit l ajouter à la caméra ou à la voiture en fonction de ce qu on veut
-        const soundEffect: Audio = new Audio(listener); // Maybe positionnal audio
-        const loader: AudioLoader = new AudioLoader();
-
-        loader.load(
-            effectName,
-            function (audioBuffer: AudioBuffer) {
-                soundEffect.setBuffer(audioBuffer);
-                soundEffect.play();
-            },
-            function (xhr: XMLHttpRequest) {
-                console.log((xhr.LOADING) + "% loaded");
-            },
-            function (err: Event) {
-                console.log("An error happened");
-            }
-        );
-        this._playerCar.add(soundEffect);
-        this._soundEffect = soundEffect;
-        this._isPlaying = false;
-    }
-    public stopAccelerationEffect(): void {
-        this._soundEffect.stop();
-    }
-
-    public playAccelerationEffect(): void {
-        this._soundEffect.play();
-    }
-
-    public isPlaying(): boolean { return this._isPlaying; }
 }

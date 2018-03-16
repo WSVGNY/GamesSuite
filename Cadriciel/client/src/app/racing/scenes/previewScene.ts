@@ -1,12 +1,14 @@
 import { AbstractScene } from "./abstractScene";
-import { TrackPointList } from "./../render-service/trackPoint";
-import { Group, PlaneGeometry, MeshPhongMaterial, BackSide, Texture, TextureLoader,
-         RepeatWrapping, Mesh, CubeTexture, Shape, ShapeGeometry, Path, CubeTextureLoader } from "three";
+import {
+    Group, PlaneGeometry, MeshPhongMaterial, BackSide, Texture, TextureLoader,
+    RepeatWrapping, Mesh, CubeTexture, Shape, ShapeGeometry, Path, CubeTextureLoader
+} from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { SkyBox } from "../render-service/skybox";
 import { TrackLights } from "../render-service/light";
 import { Track } from "../track";
 import { PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE, MS_TO_SECONDS } from "../constants";
+import { TrackPointList } from "../render-service/trackPointList";
 
 export class PreviewScene extends AbstractScene {
 

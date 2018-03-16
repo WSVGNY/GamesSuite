@@ -8,7 +8,7 @@ import { AbstractService } from "../AbstractService";
 export class GridService extends AbstractService {
     public readonly baseRoute: string = "/grid";
 
-    public constructor( @inject(Types.GridCreate) private grid: GridCreate) {
+    public constructor(@inject(Types.GridCreate) private grid: GridCreate) {
         super();
     }
 

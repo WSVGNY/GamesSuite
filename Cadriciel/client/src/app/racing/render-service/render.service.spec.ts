@@ -1,6 +1,5 @@
 import { TestBed, inject } from "@angular/core/testing";
 import { RenderService } from "./render.service";
-import { TrackPointList } from "./trackPoint";
 import {
     Object3D, Mesh, MeshPhongMaterial,
     Vector3, Scene, Geometry, Group
@@ -8,6 +7,7 @@ import {
 import { RaceGame } from "../game-loop/raceGame";
 import { TrackStructure } from "../../../../../common/racing/track";
 import { ElementRef } from "@angular/core";
+import { TrackPointList } from "./trackPointList";
 
 // tslint:disable:no-magic-numbers
 describe("RenderService", () => {

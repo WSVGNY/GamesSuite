@@ -1,11 +1,19 @@
 import { Coordinate2D } from "./coordinate2D";
 import { Word } from "./word";
 import { CommonGridBox } from "../../../common/crossword/commonGridBox";
+import { Char } from "./char";
 
-export class GridBox extends CommonGridBox {
+export class GridBox implements CommonGridBox {
 
-    public constructor(id: Coordinate2D, isBlack: boolean) {
-        super(id, isBlack);
+    public _char?: Char;
+    public _constraints: Word[];
+    public _difficulty: number;
+    public _isColored?: boolean;
+
+    public constructor(public _id: Coordinate2D, public _isBlack: boolean) {
+        this._difficulty = 0;
+        this._constraints = new Array<Word>();
+        this._isColored = false;
     }
 
     public addConstraint(word: Word): void {
