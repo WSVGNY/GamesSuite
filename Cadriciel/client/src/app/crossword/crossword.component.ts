@@ -26,10 +26,8 @@ export class CrosswordComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.multiplayerCommunicationService.getMessages().subscribe((message: string) => {
-            console.log("!!!");
-            this.messages.push(message);
-        });
+        this.multiplayerCommunicationService.getMessages();
+
     }
 
     public sendMessage(): void {

@@ -15,7 +15,7 @@ export class Server {
     private server: http.Server;
     private io: SocketIO.Server;
 
-    constructor(@inject(Types.Application) private application: Application) { }
+    constructor( @inject(Types.Application) private application: Application) { }
 
     public initServer(): void {
         this.application.app.set("port", this.appPort);
@@ -33,7 +33,11 @@ export class Server {
             console.log("user connected"); // TODO: change processing
             socket.on("new-message", (message: string) => {
                 console.log(message);
-                this.io.emit(message);
+                console.log("simono");
+                this.io.emit("new-message", message);
+            });
+            socket.on("disconnect", () => {
+                console.log("user disconnected");
             });
         });
     }
