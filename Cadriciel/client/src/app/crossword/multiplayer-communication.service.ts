@@ -18,9 +18,10 @@ export class MultiplayerCommunicationService {
 
   // https://codingblast.com/chat-application-angular-socket-io/
   public getMessages = () => {
+    console.log("!!!!!!!");
     return Observable.create((observer: any) => {
       this.socket.on("new-message", (message: string) => {
-        console.log(message);
+        console.log("!!!");
         observer.next(message);
       });
     });
