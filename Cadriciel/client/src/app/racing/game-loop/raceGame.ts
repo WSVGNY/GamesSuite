@@ -2,10 +2,7 @@ import { RenderService } from "./../render-service/render.service";
 import { Car } from "./../car/car";
 import { AICarService } from "./../artificial-intelligence/ai-car.service";
 import { TrackPoint } from "./../render-service/trackPoint";
-import {
-    Vector3, PerspectiveCamera, Group, LineBasicMaterial, Line, Geometry, AudioListener, AudioLoader,
-    Audio, AudioBuffer
-} from "three";
+import { Vector3, PerspectiveCamera, Group, LineBasicMaterial, Line, Geometry } from "three";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { ElementRef } from "@angular/core";
@@ -46,7 +43,6 @@ export class RaceGame {
         await this._renderService.initialize(containerRef.nativeElement, this._camera);
         this.startGameLoop();
         this._sound.createSound("../../../assets/sounds/rainbowRoad.mp3", this._camera, this._playerCar);
-        // this.createSound("../../../assets/sounds/rainbowRoad.mp3");
     }
 
     private addObjectsToRenderScene(): void {
@@ -193,27 +189,5 @@ export class RaceGame {
         geometryPoints.vertices.push(this._trackPoints.points[0].coordinates);
 
         this._centerLine = new Line(geometryPoints, new LineBasicMaterial({ color: GREEN, linewidth: 3 }));
-    }
-
-    public createSound(soundName: string): void {
-        const listener: AudioListener = new AudioListener();
-        this._camera.add(listener); // On peut soit l ajouter à la caméra ou à la voiture en fonction de ce qu on veut
-        const sound: Audio = new Audio(listener); // Maybe positionnal audio
-        const loader: AudioLoader = new AudioLoader();
-        // load a resource
-        loader.load(
-            soundName,
-            (audioBuffer: AudioBuffer) => {
-                sound.setBuffer(audioBuffer);
-                sound.play();
-            },
-            (xhr: XMLHttpRequest) => { },
-            (err: Event) => { }
-        );
-        this._playerCar.add(sound);
-        this._camera.add(sound);
-        /*for (let i: number = 0; i < RaceGameConfig.AI_CARS_NUMBER; ++i) { // Pour ajouter aux IA
-            this._aiCars[i].add(sound);
-        }*/
     }
 }
