@@ -59,7 +59,10 @@
       <div *ngFor="let gridBox of line" (mouseup)="highlightWordOfBox(gridBox)">
         <div (mousedown)="deselectWords()" [ngClass]="{filledGridBox : gridBox._isBlack, 
           selectedGridBox: gridBox._isColored, emptyGridBox : !gridBox._isBlack}">
-          <div>{{getGridBoxID(gridBox)}}</div>
+          <div id="relative">
+            <div class="userInputLetter">{{gridBox._char._value}}</div>
+            <div class="definitionID">{{getGridBoxID(gridBox)}}</div>
+          </div>
         </div>
       </div>
     </div>
