@@ -131,7 +131,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
     @HostListener("window:keydown", ["$event"])
     public onKeyDown(event: KeyboardEvent): void {
         if (this._gameScene !== undefined) {
-            this._keyboardEventHandlerService.handleKeyDown(event, this._playerCar);
+            this._keyboardEventHandlerService.handleKeyDown(event, this._gameScene, this._cars);
         }
     }
 
