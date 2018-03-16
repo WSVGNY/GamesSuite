@@ -17,7 +17,7 @@ import { AICarService } from "./racing/artificial-intelligence/ai-car.service";
 import { KeyboardEventHandlerService } from "./racing/event-handlers/keyboard-event-handler.service";
 import { ConfigurationService } from "./crossword/configuration.service";
 import { ChooseTrackComponent } from "./racing/choose-track/choose-track.component";
-import { RenderService } from "./racing/render-service/render.service";
+//import { RenderService } from "./racing/render-service/render.service";
 
 @NgModule({
     declarations: [
@@ -42,7 +42,7 @@ import { RenderService } from "./racing/render-service/render.service";
         MouseEventHandlerService,
         AICarService,
         KeyboardEventHandlerService,
-        RenderService,
+        // RenderService,
         EditorRenderService,
     ],
     bootstrap: [AppComponent]
