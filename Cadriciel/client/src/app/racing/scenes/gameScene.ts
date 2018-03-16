@@ -1,21 +1,27 @@
 import { AbstractScene } from "./abstractScene";
-import { TrackPointList } from "./../render-service/trackPoint";
+import { TrackPointList, TrackPoint } from "./../render-service/trackPoint";
 import { Group, PlaneGeometry, MeshPhongMaterial, BackSide, Texture, TextureLoader,
-         RepeatWrapping, Mesh, CubeTexture, Shape, ShapeGeometry, Path, CubeTextureLoader } from "three";
+         RepeatWrapping, Mesh, CubeTexture, Shape, ShapeGeometry, Path, CubeTextureLoader,
+         Vector3, Geometry, LineBasicMaterial, Line, Camera } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { SkyBox } from "../render-service/skybox";
 import { TrackLights } from "../render-service/light";
 import { Track } from "../track";
 import { PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE, MS_TO_SECONDS } from "../constants";
 import { Car } from "../car/car";
+import { GREEN } from ".././constants";
+
+const START_POSITION_OFFSET: number = 4;
 
 export class GameScene extends AbstractScene {
 
-    private _trackType: TrackType;
     private _trackPoints: TrackPointList;
     private _track: Mesh;
     private _group: Group = new Group();
     private _skyBoxTexture: CubeTexture;
+    private _lighting: TrackLights;
+    private _centerLine: Line;
+    private _aiCarsDebug: Group = new Group();
 
     public constructor() {
         super();
@@ -28,17 +34,35 @@ export class GameScene extends AbstractScene {
         if (this._track !== undefined) {
             this._group.remove(this._track);
         }
-        this._trackType = track.type;
         this._trackPoints = new TrackPointList(track.vertices);
         this._track = this.createTrackMesh(this._trackPoints);
         this._group.add(this._track);
         this.setSkyBox(track.type);
+        this.loadLights(track.type);
     }
 
-    public loadCars(cars: Car[]): void {
-        for (const entry of cars) {
-            this._group.add(entry);
+    public async loadCars(cars: Car[], camera: Camera): Promise<void> {
+        for (let i: number = 0; i < cars.length; ++i) {
+            const startPos: Vector3 = new Vector3(
+                this._trackPoints.first.coordinates.x - i * START_POSITION_OFFSET,
+                this._trackPoints.first.coordinates.y,
+                this._trackPoints.first.coordinates.z - i * START_POSITION_OFFSET);
+
+            await cars[i].init(startPos, this.findFirstTrackSegmentAngle());
+            if (!cars[i]._isAI) {
+                cars[i].attachCamera(camera);
+            }
+            this._group.add(cars[i]);
         }
+    }
+
+    private loadLights(trackType: TrackType): void {
+        if (this._lighting !== undefined) {
+            this._group.remove(this._lighting);
+        }
+        this._lighting = new TrackLights(trackType);
+        this._lighting.updateLightsToTrackType(trackType);
+        this._group.add(this._lighting);
     }
 
     private addGround(): void {
@@ -117,11 +141,45 @@ export class GameScene extends AbstractScene {
         return texture;
     }
 
-    public set isDay(isDay: boolean) {
+    private findFirstTrackSegmentAngle(): number {
+        const carfinalFacingVector: Vector3 = this._trackPoints.points[1].coordinates.clone()
+            .sub(this._trackPoints.points[0].coordinates)
+            .normalize();
+
+        return new Vector3(0, 0, -1).cross(carfinalFacingVector).y > 0 ?
+            new Vector3(0, 0, -1).angleTo(carfinalFacingVector) :
+            - new Vector3(0, 0, -1).angleTo(carfinalFacingVector);
+    }
+
+    public setCenterLine(): void {
+        const geometryPoints: Geometry = new Geometry();
+        this._trackPoints.points.forEach((currentPoint: TrackPoint) => geometryPoints.vertices.push(currentPoint.coordinates));
+        geometryPoints.vertices.push(this._trackPoints.points[0].coordinates);
+
+        this._centerLine = new Line(geometryPoints, new LineBasicMaterial({ color: GREEN, linewidth: 3 }));
+    }
+
+    public changeTimeOfDay(isDay: boolean, cars: Car[]): void {
         if (isDay) {
-            this.setSkyBox(this._trackType);
+            this.setSkyBox(TrackType.Default);
+            this.loadLights(TrackType.Default);
+            cars.forEach((car: Car) => car.dettachLights());
         } else {
             this.setSkyBox(TrackType.Night);
+            this.loadLights(TrackType.Night);
+            cars.forEach((car: Car) => car.attachLights());
         }
+    }
+
+    public enableDebugMode(): void {
+        // this._debug = true;
+        this.add(this._aiCarsDebug);
+        this.add(this._centerLine);
+    }
+
+    public disableDebugMode(): void {
+        // this._debug = false;
+        this.remove(this._aiCarsDebug);
+        this.remove(this._centerLine);
     }
 }
