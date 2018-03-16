@@ -20,6 +20,7 @@ import { ChooseTrackComponent } from "./racing/choose-track/choose-track.compone
 import { RenderService } from "./racing/render-service/render.service";
 import { SoundManagerService } from "./racing/sound-service/sound-manager.service";
 import { MultiplayerCommunicationService } from "./crossword/multiplayer-communication.service";
+import { CollisionManagerService } from "./racing/collision-service/collision-manager.service";
 
 @NgModule({
     declarations: [
@@ -47,7 +48,8 @@ import { MultiplayerCommunicationService } from "./crossword/multiplayer-communi
         RenderService,
         EditorRenderService,
         SoundManagerService,
-        MultiplayerCommunicationService
+        MultiplayerCommunicationService,
+        CollisionManagerService
     ],
     bootstrap: [AppComponent]
 })
