@@ -137,4 +137,8 @@ export class CrosswordComponent implements OnInit {
         this.correctWordCount++;
     }
 
+    public getFirstLetter(): void {
+
+    }
+
 }
