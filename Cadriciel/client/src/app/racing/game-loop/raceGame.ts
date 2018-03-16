@@ -53,6 +53,7 @@ export class RaceGame {
         this._renderService.addObjectToScene(this._playerCar);
         this._aiCars.forEach((aiCar: Car) => this._renderService.addObjectToScene(aiCar));
         this._renderService.addObjectToScene(this._renderService.createTrackMesh(this._trackPoints));
+        this._renderService.addObjectToScene(this._renderService.createWalls(this._trackPoints));
         this._renderService.addObjectToScene(this._lighting);
     }
 

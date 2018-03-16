@@ -12,7 +12,11 @@ export const PI_OVER_2: number = Math.PI / 2;
 export const PI_OVER_4: number = Math.PI / 4;
 export const SQUARED: number = 2;
 
-export const HALF_TRACK_WIDTH: number = 10;
+export const TRACK_WIDTH: number = 20;
+// tslint:disable-next-line:no-magic-numbers
+export const HALF_TRACK_WIDTH: number = TRACK_WIDTH / 2;
+export const WALL_DISTANCE_TO_TRACK: number = 10;
+
 export const LOWER_GROUND: number = 0.01;
 export const SKYBOX_SIZE: number = 700;
 

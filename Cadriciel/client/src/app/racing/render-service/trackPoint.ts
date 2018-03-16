@@ -1,9 +1,11 @@
 import { Vector3 } from "three";
-import { HALF, HALF_TRACK_WIDTH } from "../constants";
+import { HALF, HALF_TRACK_WIDTH, WALL_DISTANCE_TO_TRACK } from "../constants";
 
 export class TrackPoint {
     private _interior: Vector3;
     private _exterior: Vector3;
+    private _interiorWall: Vector3;
+    private _exteriorWall: Vector3;
     private _smallAngle: number;
     public next: TrackPoint;
     public previous: TrackPoint;
@@ -15,15 +17,18 @@ export class TrackPoint {
         const vectorToInteriorPoint: Vector3 = this.findVectorToInteriorPoint();
 
         if (this.vectorToNextCenterPoint.cross(vectorToInteriorPoint).y < 0) {
-            this.generatePointsFromVector(vectorToInteriorPoint);
+            this.generatePointsFromVector(vectorToInteriorPoint, this.findVectorToInteriorWall());
         } else {
-            this.generatePointsFromVector(vectorToInteriorPoint.negate());
+            this.generatePointsFromVector(vectorToInteriorPoint.negate(), this.findVectorToInteriorWall().negate());
         }
     }
 
-    private generatePointsFromVector(interiorVector: Vector3): void {
+    private generatePointsFromVector(interiorVector: Vector3, interiorWall: Vector3): void {
         this._interior = this._coordinates.clone().add(interiorVector);
         this._exterior = this._coordinates.clone().sub(interiorVector);
+
+        this._interiorWall = this._coordinates.clone().add(interiorWall);
+        this._exteriorWall = this._coordinates.clone().sub(interiorWall);
     }
 
     private findVectorToInteriorPoint(): Vector3 {
@@ -32,6 +37,14 @@ export class TrackPoint {
         return this.vectorToNextCenterPoint.clone().normalize()
             .applyAxisAngle(new Vector3(0, 1, 0), halfOfSmallAngle)
             .multiplyScalar(HALF_TRACK_WIDTH / Math.sin(halfOfSmallAngle));
+    }
+
+    private findVectorToInteriorWall(): Vector3 {
+        const halfOfSmallAngle: number = this.findHalfOfSmallAngle();
+
+        return this.vectorToNextCenterPoint.clone().normalize()
+            .applyAxisAngle(new Vector3(0, 1, 0), halfOfSmallAngle)
+            .multiplyScalar((HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK) / Math.sin(halfOfSmallAngle));
     }
 
     private findHalfOfSmallAngle(): number {
@@ -70,6 +83,14 @@ export class TrackPoint {
 
     public get exterior(): Vector3 {
         return this._exterior;
+    }
+
+    public get interiorWall(): Vector3 {
+        return this._interiorWall;
+    }
+
+    public get exteriorWall(): Vector3 {
+        return this._exteriorWall;
     }
 
     public get coordinates(): Vector3 {

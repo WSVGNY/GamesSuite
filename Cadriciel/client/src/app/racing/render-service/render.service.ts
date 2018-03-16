@@ -4,9 +4,18 @@ import {
     PerspectiveCamera, WebGLRenderer, Scene, Mesh, Shape, ShapeGeometry, Path, BackSide, TextureLoader, Texture, RepeatWrapping,
     PlaneGeometry, Group, Object3D, CubeTexture,
     CubeTextureLoader,
-    MeshPhongMaterial
+    MeshPhongMaterial,
+    DoubleSide,
+    ExtrudeGeometry,
+    MeshBasicMaterial,
+    CatmullRomCurve3,
+    Vector2,
+    MeshLambertMaterial,
+    Vector3,
+    SceneUtils,
+    MeshStandardMaterial
 } from "three";
-import { PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE, MS_TO_SECONDS } from "../constants";
+import { PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE, MS_TO_SECONDS, WHITE } from "../constants";
 import { TrackPointList } from "./trackPointList";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { SkyBox } from "./skybox";
@@ -106,6 +115,46 @@ export class RenderService {
         }
         holePath.lineTo(trackPoints.first.interior.x, trackPoints.first.interior.z);
         trackShape.holes.push(holePath);
+    }
+
+    public createWalls(trackPoints: TrackPointList): Mesh {
+        const extrudeSettings: Object = {
+            steps: 1,
+            amount: 2,
+            bevelEnabled: false
+        };
+
+        const trackMaterial: MeshPhongMaterial[] =
+            new MeshPhongMaterial({ side: DoubleSide, color: WHITE, wireframe: false })
+            ;
+
+        const wallMesh: Mesh = new Mesh(
+            this.createInteriorWall(trackPoints).extrude(extrudeSettings).translate(0, 0, -2), trackMaterial
+        );
+
+        wallMesh.rotateX(PI_OVER_2);
+        wallMesh.name = "wall";
+
+        return wallMesh;
+    }
+
+    private createInteriorWall(trackPoints: TrackPointList): Shape {
+        const wallShape: Shape = new Shape();
+        wallShape.moveTo(trackPoints.first.interiorWall.x, trackPoints.first.interiorWall.z);
+        for (let i: number = 1; i < trackPoints.length; ++i) {
+            wallShape.lineTo(trackPoints.points[i].interiorWall.x, trackPoints.points[i].interiorWall.z);
+        }
+        wallShape.lineTo(trackPoints.first.interiorWall.x, trackPoints.first.interiorWall.z);
+
+        const holePath: Path = new Path();
+        holePath.moveTo(trackPoints.first.interior.x, trackPoints.first.interior.z);
+        for (let i: number = trackPoints.length - 1; i > 0; --i) {
+            holePath.lineTo(trackPoints.points[i].interior.x, trackPoints.points[i].interior.z);
+        }
+        holePath.lineTo(trackPoints.first.interior.x, trackPoints.first.interior.z);
+        wallShape.holes.push(holePath);
+
+        return wallShape;
     }
 
     private renderGround(): void {
