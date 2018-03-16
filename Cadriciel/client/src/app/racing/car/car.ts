@@ -24,6 +24,7 @@ export class Car extends Object3D {
     private _isReversing: boolean;
     private _steeringWheelDirection: number;
     private _initialDirection: Vector3 = new Vector3(0, 0, -1);
+    public _isAI: boolean;
 
     public constructor(
         engine: Engine = new Engine(),
