@@ -56,7 +56,7 @@
 <div id="grid">
   <div *ngIf="configurationService.grid !== undefined">
     <div *ngFor="let line of configurationService.grid.boxes">
-      <div *ngFor="let gridBox of line" (mouseup)="highlightWordOfBox(gridBox)" (click)="setInputOnBox(gridBox)">
+      <div *ngFor="let gridBox of line" (mouseup)="highlightWordOfBox(gridBox)" (click)="setInputOnFirstBox(gridBox)">
         <div (mousedown)="deselectWords()" [ngClass]="{filledGridBox : gridBox.isBlack, 
           selectedGridBox: gridBox.isColored, emptyGridBox : !gridBox.isBlack}">
           <div id="relative">

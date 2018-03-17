@@ -12,9 +12,9 @@ import { MultiplayerCommunicationService } from "./multiplayer-communication.ser
 export class CrosswordComponent implements OnInit {
 
     public selectedGridBox: CommonGridBox;
+    public selectedWord: CommonWord;
     public correctWordCount: number = 0;
     public isInCheatMode: boolean = false;
-    public counter: number = 0;
 
     private message: string;
     private messages: string[] = [];
@@ -138,41 +138,41 @@ export class CrosswordComponent implements OnInit {
         this.correctWordCount++;
     }
 
-    public setInputOnBox(gridBox: CommonGridBox): void {
+    public setInputOnFirstBox(gridBox: CommonGridBox): void {
         if (!gridBox.isBlack) {
             this.setInputOnWord(gridBox.constraints[0]);
         }
     }
 
     public setInputOnWord(word: CommonWord): void {
+        this.selectedWord = word;
+        this.resetInputBoxes();
+        if (word.isHorizontal) {
+            this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + this.selectedWord.enteredCharacters]
+                .readyForInput = true;
+        } else {
+            this.configurationService.grid.boxes[word.startPosition.y + this.selectedWord.enteredCharacters][word.startPosition.x]
+                .readyForInput = true;
+        }
+    }
+
+    public setInputOnBox(gridBox: CommonGridBox): void {
+        this.resetInputBoxes();
+        gridBox.readyForInput = true;
+    }
+
+    public resetInputBoxes(): void {
         for (const line of this.configurationService.grid.boxes) {
             for (const box of line) {
                 box.readyForInput = false;
             }
         }
-        console.log("clic souris   " + this.counter);
-        if (this.counter >= word.length) {
-            this.counter = 0;
-        }
-
-        if (word.isHorizontal) {
-            this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + this.counter - 1]
-                .readyForInput = false;
-            this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + this.counter]
-                .readyForInput = true;
-        } else {
-            this.configurationService.grid.boxes[word.startPosition.y + this.counter - 1][word.startPosition.x]
-                .readyForInput = false;
-            this.configurationService.grid.boxes[word.startPosition.y + this.counter][word.startPosition.x]
-                .readyForInput = true;
-        }
-
-
     }
-    @HostListener("window:keyup", ["$event"])
+
+    @HostListener("window:keydown", ["$event"])
     public inputChar(event: KeyboardEvent): void {
+        let gridBox: CommonGridBox;
         if (this.configurationService.grid !== undefined) {
-            let gridBox: CommonGridBox;
             for (const line of this.configurationService.grid.boxes) {
                 for (const box of line) {
                     if (box.readyForInput) {
@@ -180,12 +180,12 @@ export class CrosswordComponent implements OnInit {
                     }
                 }
             }
-            if (gridBox !== undefined) {
-                if (event.key.match(/^[a-z]$/i) !== null) {
-                    gridBox.inputChar.value = event.key;
-                    this.counter++;
-                    console.log("aaa     " + this.counter);
-                }
+        }
+        if (gridBox !== undefined) {
+            if (event.key.match(/^[a-z]$/i) !== null) {
+                gridBox.inputChar.value = event.key;
+                this.selectedWord.enteredCharacters++;
+                this.setInputOnWord(this.selectedWord);
             }
         }
     }

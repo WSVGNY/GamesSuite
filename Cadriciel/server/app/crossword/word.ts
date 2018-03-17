@@ -9,6 +9,7 @@ export class Word implements CommonWord {
     public constraints: Word[];
     public difficulty: number;
     public parentCaller: CommonWord;
+    public enteredCharacters: number;
     public constructor(
         public id: number,
         public definitionID: number,
@@ -18,6 +19,7 @@ export class Word implements CommonWord {
         this.constraints = new Array<Word>();
         this.isComplete = false;
         this.difficulty = 0;
+        this.enteredCharacters = 0;
     }
 
     public addConstraint(word: Word): void {
