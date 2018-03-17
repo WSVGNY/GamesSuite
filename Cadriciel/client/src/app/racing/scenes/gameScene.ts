@@ -10,6 +10,7 @@ import { Track } from "../track";
 import { PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE, MS_TO_SECONDS } from "../constants";
 import { Car } from "../car/car";
 import { GREEN } from ".././constants";
+import { AIDebug } from "../artificial-intelligence/ai-debug";
 
 const START_POSITION_OFFSET: number = 4;
 
@@ -21,7 +22,8 @@ export class GameScene extends AbstractScene {
     private _skyBoxTexture: CubeTexture;
     private _lighting: TrackLights;
     private _centerLine: Line;
-    private _aiCarsDebug: Group = new Group();
+    private _debugMode: boolean;
+    private _debugElements: Group = new Group();
 
     public constructor() {
         super();
@@ -41,7 +43,7 @@ export class GameScene extends AbstractScene {
         this.loadLights(track.type);
     }
 
-    public async loadCars(cars: Car[], camera: Camera): Promise<void> {
+    public async loadCars(cars: Car[], carDebugs: AIDebug[], camera: Camera): Promise<void> {
         for (let i: number = 0; i < cars.length; ++i) {
             const startPos: Vector3 = new Vector3(
                 this._trackPoints.first.coordinates.x - i * START_POSITION_OFFSET,
@@ -49,6 +51,7 @@ export class GameScene extends AbstractScene {
                 this._trackPoints.first.coordinates.z - i * START_POSITION_OFFSET);
 
             await cars[i].init(startPos, this.findFirstTrackSegmentAngle());
+            this._debugElements.add(carDebugs[i].debugGroup);
             if (!cars[i]._isAI) {
                 cars[i].attachCamera(camera);
             }
@@ -172,14 +175,22 @@ export class GameScene extends AbstractScene {
     }
 
     public enableDebugMode(): void {
-        // this._debug = true;
-        this.add(this._aiCarsDebug);
-        this.add(this._centerLine);
+        if (!this._debugMode) {
+            this._debugMode = true;
+            this.add(this._debugElements);
+            this.add(this._centerLine);
+        }
     }
 
     public disableDebugMode(): void {
-        // this._debug = false;
-        this.remove(this._aiCarsDebug);
-        this.remove(this._centerLine);
+        if (this._debugMode) {
+            this._debugMode = false;
+            this.remove(this._debugElements);
+            this.remove(this._centerLine);
+        }
+    }
+
+    public get debugMode(): boolean {
+        return this._debugMode;
     }
 }
