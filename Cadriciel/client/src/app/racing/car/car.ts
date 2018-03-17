@@ -25,7 +25,7 @@ export class Car extends Object3D {
     private _steeringWheelDirection: number;
     private _initialDirection: Vector3 = new Vector3(0, 0, -1);
 
-    public detectionBox: Mesh = this.createDetectionBox();
+    public detectionBox: Mesh;
 
     public constructor(
         engine: Engine = new Engine(),
@@ -61,6 +61,7 @@ export class Car extends Object3D {
         this._weightRear = CarConfig.INITIAL_WEIGHT_DISTRIBUTION;
         this._speed = new Vector3(0, 0, 0);
         this.position.add(new Vector3(0, 0, 0));
+        this.detectionBox = this.createDetectionBox();
     }
 
     private async load(): Promise<Object3D> {
@@ -78,7 +79,6 @@ export class Car extends Object3D {
         this._mesh.setRotationFromAxisAngle(new Vector3(0, 1, 0), rotationAngle);
         this._lights = new CarLights();
         this._mesh.add(this._lights);
-        this._mesh.add(this.detectionBox);
         this.add(this._mesh);
     }
 
