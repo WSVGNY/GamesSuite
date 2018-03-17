@@ -4,6 +4,8 @@ import { CommonWord } from "../../../../common/crossword/commonWord";
 import { ConfigurationService } from "./configuration.service";
 import { MultiplayerCommunicationService } from "./multiplayer-communication.service";
 
+const BACKSPACE_KEYCODE: number = 8;
+
 @Component({
     selector: "app-crossword",
     templateUrl: "./crossword.component.html",
@@ -185,6 +187,11 @@ export class CrosswordComponent implements OnInit {
             if (event.key.match(/^[a-z]$/i) !== null) {
                 gridBox.inputChar.value = event.key;
                 this.selectedWord.enteredCharacters++;
+                this.setInputOnWord(this.selectedWord);
+            }
+            if (event.keyCode === BACKSPACE_KEYCODE) {
+                gridBox.inputChar.value = "";
+                this.selectedWord.enteredCharacters--;
                 this.setInputOnWord(this.selectedWord);
             }
         }
