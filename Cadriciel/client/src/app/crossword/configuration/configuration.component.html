@@ -1,6 +1,9 @@
 <div id="modeSelection">
   <a (click)="setNewGame()" class="push_button">New game</a>
   <a (click)="setJoinGame()" class="push_button">Join game</a>
+  <div *ngIf="isJoinGame">
+    {{multiplayerCommunicationService._rooms}}
+  </div>
   <div *ngIf="isNewGame" id="buttongroup" class="btn-group">
     <button (click)="configurationService.isTwoPlayerGame = false" class="btn btn-primary">One player</button>
     <button (click)="configurationService.isTwoPlayerGame = true" class="btn btn-primary">Two players</button>

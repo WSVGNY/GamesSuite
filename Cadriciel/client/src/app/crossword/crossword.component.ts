@@ -30,6 +30,7 @@ export class CrosswordComponent {
                 this.messages.push(message);
             });
             this._hasSubscribed = true;
+
         }
     }
 
