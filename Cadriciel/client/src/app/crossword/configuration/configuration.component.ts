@@ -61,6 +61,7 @@ export class ConfigurationComponent {
 
     public createRoom(): void {
         this.multiplayerCommunicationService.connectToSocket();
+        this.multiplayerCommunicationService.createRoom();
         this.configurationService.isSocketConnected = true;
     }
 

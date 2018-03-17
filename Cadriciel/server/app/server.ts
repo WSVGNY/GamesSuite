@@ -22,9 +22,7 @@ export class Server {
 
         this._server = http.createServer(this.application.app);
 
-        this._serverSockets = new ServerSockets(this._server);
-        this._serverSockets.createRoom();
-        this._serverSockets.initSocket();
+        this._serverSockets = new ServerSockets(this._server, true);
 
         this._server.listen(this.appPort);
         this._server.on("error", (error: NodeJS.ErrnoException) => this.onError(error));
