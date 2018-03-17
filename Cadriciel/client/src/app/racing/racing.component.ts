@@ -29,7 +29,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private _currentTrackId: string = "";
     private _chosenTrack: Track;
     private _cars: Car[] = [];
-    private _carDebugs: AIDebug[];
+    private _carDebugs: AIDebug[] = [];
     private _thirdPersonCamera: ThirdPersonCamera;
     private _gameScene: GameScene;
     private _playerCar: Car;
@@ -95,7 +95,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
                 await this.initializeCars();
                 await this._gameScene.loadTrack(this._chosenTrack);
-                await this._gameScene.loadCars(this._cars, this._thirdPersonCamera);
+                await this._gameScene.loadCars(this._cars, this._carDebugs, this._thirdPersonCamera);
                 await this._aiCarService
                     .initialize(this._trackPoints.pointVectors, Difficulty.Medium)
                     .then(/* do nothing */)
@@ -114,8 +114,8 @@ export class RacingComponent implements AfterViewInit, OnInit {
                 this._playerCar = this._cars[i];
             } else {
                 this._cars[i]._isAI = true;
-                this._carDebugs.push(new AIDebug(this._cars[i]));
             }
+            this._carDebugs.push(new AIDebug(this._cars[i]));
             // this.isEven(i) ? Difficulty.Hard : Difficulty.Easy;
             // this._aiCarsDebug.add(this._aiCarService[i].debugGroup);
         }
