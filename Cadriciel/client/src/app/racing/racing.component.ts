@@ -11,6 +11,7 @@ import { AICarService } from "./artificial-intelligence/ai-car.service";
 import { Difficulty } from "../../../../common/crossword/difficulty";
 import { TrackPointList } from "./render-service/trackPoint";
 import { RenderService } from "./render-service/render.service";
+import { AIDebug } from "./artificial-intelligence/ai-debug";
 
 const AI_CARS_QUANTITY: number = 2;
 
@@ -28,6 +29,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private _currentTrackId: string = "";
     private _chosenTrack: Track;
     private _cars: Car[] = [];
+    private _carDebugs: AIDebug[];
     private _thirdPersonCamera: ThirdPersonCamera;
     private _gameScene: GameScene;
     private _playerCar: Car;
@@ -75,7 +77,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
             for (let i: number = 0; i < AI_CARS_QUANTITY + 1; ++i) {
                 this._cars[i].update(timeSinceLastFrame);
                 if (this._cars[i]._isAI) {
-                    this._aiCarService.update(this._cars[i]);
+                    this._aiCarService.update(this._cars[i], this._carDebugs[i]);
                 }
             }
             this._renderService.render(this._gameScene, this._thirdPersonCamera);
@@ -112,7 +114,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
                 this._playerCar = this._cars[i];
             } else {
                 this._cars[i]._isAI = true;
-
+                this._carDebugs.push(new AIDebug(this._cars[i]));
             }
             // this.isEven(i) ? Difficulty.Hard : Difficulty.Easy;
             // this._aiCarsDebug.add(this._aiCarService[i].debugGroup);
