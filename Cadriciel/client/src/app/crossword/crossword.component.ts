@@ -136,7 +136,6 @@ export class CrosswordComponent implements OnInit {
     }
 
     public addToScore(word: CommonWord): void {
-        word.isComplete = true;
         this.correctWordCount++;
     }
 
@@ -184,6 +183,7 @@ export class CrosswordComponent implements OnInit {
         }
         if (wordValue === this.getWordValue(word)) {
             word.isComplete = true;
+            this.addToScore(word);
         }
 
         return word;
