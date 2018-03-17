@@ -7,7 +7,7 @@ import {
     MeshPhongMaterial
 } from "three";
 import {
-    PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE, MS_TO_SECONDS, WHITE
+    PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE, MS_TO_SECONDS
 } from "../constants";
 import { TrackPointList } from "./trackPointList";
 import { TrackType } from "../../../../../common/racing/trackType";
