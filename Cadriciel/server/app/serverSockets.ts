@@ -24,7 +24,7 @@ export class ServerSockets {
             console.log("user connected");
             socket.on(SocketEvents.NewMessage, (message: string) => {
                 console.log(message);
-                // this.io.to(this._roomName).emit(SocketEvents.NewMessage, message);
+                this.io.to(this.getSocketRoom(socket)).emit(SocketEvents.NewMessage, message);
             });
             socket.on(SocketEvents.Disconnection, () => {
                 console.log("user disconnected");
@@ -46,6 +46,10 @@ export class ServerSockets {
 
     public createRoom(): void {
         this._roomNames.push(this.baseRoomName + ServerSockets._numberOfRoom++);
+    }
+
+    private getSocketRoom(socket: SocketIO.Socket): string {
+        return Object.keys(socket.rooms).filter((room: string) => room !== socket.id)[0];
     }
 
 }

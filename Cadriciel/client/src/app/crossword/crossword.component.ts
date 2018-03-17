@@ -28,6 +28,7 @@ export class CrosswordComponent {
         if (!this._hasSubscribed) {
             this.multiplayerCommunicationService.getMessages().subscribe((message: string) => {
                 this.messages.push(message);
+                console.log(message);
             });
             this._hasSubscribed = true;
 
