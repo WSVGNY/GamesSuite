@@ -6,10 +6,13 @@ import {
     CubeTextureLoader,
     MeshPhongMaterial
 } from "three";
-import { PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE, MS_TO_SECONDS } from "../constants";
+import {
+    PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE, MS_TO_SECONDS, WHITE
+} from "../constants";
 import { TrackPointList } from "./trackPointList";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { SkyBox } from "./skybox";
+import { Wall } from "./wall";
 
 @Injectable()
 export class RenderService {
@@ -106,6 +109,14 @@ export class RenderService {
         }
         holePath.lineTo(trackPoints.first.interior.x, trackPoints.first.interior.z);
         trackShape.holes.push(holePath);
+    }
+
+    public createWalls(trackPoints: TrackPointList): Group {
+        const walls: Group = new Group();
+        walls.add(Wall.createInteriorWall(trackPoints));
+        walls.add(Wall.createExteriorWall(trackPoints));
+
+        return walls;
     }
 
     private renderGround(): void {

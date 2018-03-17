@@ -12,7 +12,12 @@ export const PI_OVER_2: number = Math.PI / 2;
 export const PI_OVER_4: number = Math.PI / 4;
 export const SQUARED: number = 2;
 
-export const HALF_TRACK_WIDTH: number = 10;
+export const TRACK_WIDTH: number = 20;
+// tslint:disable-next-line:no-magic-numbers
+export const HALF_TRACK_WIDTH: number = TRACK_WIDTH / 2;
+export const WALL_DISTANCE_TO_TRACK: number = 10;
+export const WALL_WIDTH: number = 0.5;
+
 export const LOWER_GROUND: number = 0.01;
 export const SKYBOX_SIZE: number = 700;
 
@@ -39,5 +44,7 @@ export const SPACE_SKYBOX: string = SKYBOX_PATH + "space/";
 export const ATMOSPHERE_SKYBOX: string = SKYBOX_PATH + "atmosphere/";
 export const GROUND_SIZE: number = 10000;
 export const GROUND_TEXTURE_FACTOR: number = 0.045;
-export const ASPHALT_TEXTURE: string = BASE_TEXTURE_PATH + "rainbow.png";
-export const GRASS_TEXTURE: string = BASE_TEXTURE_PATH + "space.jpg";
+export const ASPHALT_TEXTURE: string = BASE_TEXTURE_PATH + "asphalte.jpg";
+export const GRASS_TEXTURE: string = BASE_TEXTURE_PATH + "grass.jpg";
+export const WALL_TEXTURE: string = BASE_TEXTURE_PATH + "brick.jpg";
+export const WALL_TEXTURE_FACTOR: number = 1;
