@@ -7,11 +7,12 @@ import { Brake } from "../commands/carAICommands/brake";
 import { ReleaseAccelerator } from "../commands/carAICommands/releaseAccelerator";
 import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";
 import { ReleaseBrakes } from "../commands/carAICommands/releaseBrakes";
-// import { RaceGame } from "../game-loop/raceGame";
 import { Car } from "../car/car";
 import { GameScene } from "../scenes/gameScene";
 import { EnableDayMode } from "../commands/gameSceneCommands/enableDayMode";
 import { EnableNightMode } from "../commands/gameSceneCommands/enableNightMode";
+import { EnableDebugMode } from "../commands/gameSceneCommands/enableDebugMode";
+import { DisableDebugMode } from "../commands/gameSceneCommands/disableDebugMode";
 
 const ACCELERATE_KEYCODE: number = 87;  // w
 const LEFT_KEYCODE: number = 65;        // a
@@ -19,7 +20,7 @@ const BRAKE_KEYCODE: number = 83;       // s
 const RIGHT_KEYCODE: number = 68;       // d
 const DAY_KEYCODE: number = 74;         // j
 const NIGHT_KEYCODE: number = 78;       // n
-// const DEBUG_KEYCODE: number = 48;       // 0
+const DEBUG_KEYCODE: number = 48;       // 0
 
 @Injectable()
 export class KeyboardEventHandlerService {
@@ -57,9 +58,12 @@ export class KeyboardEventHandlerService {
                 this._commandController.command = new EnableNightMode(gameScene, cars);
                 this._commandController.execute();
                 break;
-            // case DEBUG_KEYCODE:
-            //     raceGame.debug = !raceGame.debug;
-            //     break;
+            case DEBUG_KEYCODE:
+                this._commandController.command = (gameScene.debugMode) ?
+                    new DisableDebugMode(gameScene, cars) :
+                    new EnableDebugMode(gameScene, cars);
+                this._commandController.execute();
+                break;
             default:
                 break;
         }
