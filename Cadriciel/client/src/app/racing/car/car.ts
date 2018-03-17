@@ -1,5 +1,5 @@
 import {
-    Vector3, Matrix4, Object3D, ObjectLoader, Quaternion, Camera, Mesh, MeshBasicMaterial, BoxGeometry
+    Vector3, Matrix4, Object3D, ObjectLoader, Quaternion, Camera, Mesh, MeshBasicMaterial, SphereGeometry
 } from "three";
 import { Engine } from "./engine";
 import { MS_TO_SECONDS, GRAVITY, RAD_TO_DEG, CAR_TEXTURE } from "../constants";
@@ -25,7 +25,7 @@ export class Car extends Object3D {
     private _steeringWheelDirection: number;
     private _initialDirection: Vector3 = new Vector3(0, 0, -1);
 
-    public detectionBox: Mesh = this.createDetectionBox();
+    public detectionShpere: Mesh = this.createDetectionSphere();
 
     public constructor(
         engine: Engine = new Engine(),
@@ -78,7 +78,7 @@ export class Car extends Object3D {
         this._mesh.setRotationFromAxisAngle(new Vector3(0, 1, 0), rotationAngle);
         this._lights = new CarLights();
         this._mesh.add(this._lights);
-        this._mesh.add(this.detectionBox);
+        this._mesh.add(this.detectionShpere);
         this.add(this._mesh);
     }
 
@@ -301,9 +301,9 @@ export class Car extends Object3D {
         return this.speed.normalize().dot(this.direction) > 0.05;
     }
 
-    private createDetectionBox(): Mesh {
-        const geometry: BoxGeometry = new BoxGeometry(2, 2, 2);
-        geometry.computeBoundingBox();
+    private createDetectionSphere(): Mesh {
+        const geometry: SphereGeometry = new SphereGeometry(1, 32, 32);
+        // geometry.computeBoundingSphere();
         const material: MeshBasicMaterial = new MeshBasicMaterial({ color: 0xFFF000 });
 
         return new Mesh(geometry, material);

@@ -2,7 +2,7 @@ import { RenderService } from "./../render-service/render.service";
 import { Car } from "./../car/car";
 import { AICarService } from "./../artificial-intelligence/ai-car.service";
 import { TrackPoint } from "./../render-service/trackPoint";
-import { Vector3, PerspectiveCamera, Group, LineBasicMaterial, Line, Geometry } from "three";
+import { Vector3, PerspectiveCamera, Group, LineBasicMaterial, Line, Geometry, BoxGeometry, MeshBasicMaterial, Mesh } from "three";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { ElementRef } from "@angular/core";
@@ -12,7 +12,7 @@ import { TrackLights } from "../render-service/light";
 import { GREEN } from "../constants";
 import { TrackPointList } from "../render-service/trackPointList";
 import { SoundManagerService } from "../sound-service/sound-manager.service";
-// import { CollisionManagerService } from "../collision-service/collision-manager.service";
+import { CollisionManagerService } from "../collision-service/collision-manager.service";
 
 export class RaceGame {
 
@@ -28,7 +28,7 @@ export class RaceGame {
     private _lighting: TrackLights;
     private _camera: PerspectiveCamera;
     private _sound: SoundManagerService = new SoundManagerService();
-    // private _collisionControl: CollisionManagerService;
+    private _collisionControl: CollisionManagerService;
 
     public constructor(private _renderService: RenderService) { }
 
@@ -139,20 +139,31 @@ export class RaceGame {
                 this._aiCars[i].update(timeSinceLastFrame);
                 this._aiCarService[i].update();
             }
-            /*for (let i: number = 1; i < this._aiCars.length; ++i) {
-                this._playerCar.detectionBox.geometry.computeBoundingBox();
-                this._aiCars[i].detectionBox.geometry.computeBoundingBox();
-                if (this._collisionControl.detectCollision(this._playerCar, this._aiCars[i]) === true) {
-                    const geometry: BoxGeometry = new BoxGeometry(3, 3, 3);
-                    geometry.computeBoundingBox();
-                    const material: MeshBasicMaterial = new MeshBasicMaterial({ color: 0xFF0000 });
-                    this._playerCar.add(new Mesh(geometry, material));
-                }
-            }*/
+            this.detectCarCollision();
             this.update();
         });
     }
 
+    private detectCarCollision(): void {
+        for (let i: number = 1; i < this._aiCars.length; ++i) {
+
+            if (this._playerCar.detectionShpere.geometry.boundingSphere.center.
+                distanceTo(this._aiCars[i].detectionShpere.geometry.boundingSphere.center) < 1) {
+                this._playerCar.detectionShpere.geometry.computeBoundingSphere();
+                this._aiCars[i].detectionShpere.geometry.computeBoundingSphere();
+                /*if (this._collisionControl.detectCollision(this._playerCar, this._aiCars[i])) {
+                    const geometry: BoxGeometry = new BoxGeometry(5, 5, 5);
+                    geometry.computeBoundingBox();
+                    const material: MeshBasicMaterial = new MeshBasicMaterial({ color: 0xFF0000 });
+                    this._playerCar.add(new Mesh(geometry, material));
+                }*/
+                if (this._sound.isDetected() === true) {
+                    this._sound.createCollisionSound("../../../assets/sounds/collision-sound.mp3", this._camera, this._playerCar);
+                }
+                // this._sound.play(this._sound.collisionSound);
+            }
+        }
+    }
     public get playerCar(): Car {
         return this._playerCar;
     }
