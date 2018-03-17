@@ -83,6 +83,18 @@ li {
     text-transform: uppercase;
 }
 
+.foundGridBox {
+    text-align: left;    
+    width: 60px;
+    height: 60px;
+    background:  rgb(72, 168, 27);
+    border: 2px solid black;
+    padding: 0;
+    margin: 0;
+    float: left;
+    text-transform: uppercase;
+}
+
 .filledGridBox {
     width: 60px;
     height: 60px;

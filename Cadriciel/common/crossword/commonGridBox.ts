@@ -12,5 +12,5 @@ export interface CommonGridBox {
     id: CommonCoordinate2D;
     isBlack: boolean;
     readyForInput?: boolean;
-
+    isFound?: boolean;
 }

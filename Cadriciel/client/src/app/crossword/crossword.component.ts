@@ -184,6 +184,15 @@ export class CrosswordComponent implements OnInit {
         if (wordValue === this.getWordValue(word)) {
             word.isComplete = true;
             this.addToScore(word);
+            if (word.isHorizontal) {
+                for (let i: number = 0; i < word.length; i++) {
+                    this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + i].isFound = true;
+                }
+            } else {
+                for (let i: number = 0; i < word.length; i++) {
+                    this.configurationService.grid.boxes[word.startPosition.y + i][word.startPosition.x].isFound = true;
+                }
+            }
         }
 
         return word;

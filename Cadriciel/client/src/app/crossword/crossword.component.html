@@ -58,7 +58,7 @@
     <div *ngFor="let line of configurationService.grid.boxes">
       <div *ngFor="let gridBox of line" (mouseup)="highlightWordOfBox(gridBox)" (click)="setInputOnFirstBox(gridBox)">
         <div (mousedown)="deselectWords()" [ngClass]="{filledGridBox : gridBox.isBlack, 
-          selectedGridBox: gridBox.isColored, emptyGridBox : !gridBox.isBlack}">
+          selectedGridBox: gridBox.isColored, foundGridBox: gridBox.isFound, emptyGridBox : !gridBox.isBlack}">
           <div id="relative">
             <div *ngIf="gridBox.inputChar != undefined && gridBox.inputChar.value != undefined" class="userInputLetter">{{gridBox.inputChar.value}}</div>
             <div class="definitionID">{{getGridBoxID(gridBox)}}</div>
