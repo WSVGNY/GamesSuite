@@ -147,6 +147,7 @@ export class CrosswordComponent implements OnInit {
     }
 
     public setInputOnWord(word: CommonWord): void {
+        word = this.verifyCompletedWord(word);
         this.selectedWord = word;
         this.resetInputBoxes();
         if (word.isHorizontal) {
@@ -158,17 +159,34 @@ export class CrosswordComponent implements OnInit {
         }
     }
 
-    public setInputOnBox(gridBox: CommonGridBox): void {
-        this.resetInputBoxes();
-        gridBox.readyForInput = true;
-    }
-
     public resetInputBoxes(): void {
         for (const line of this.configurationService.grid.boxes) {
             for (const box of line) {
                 box.readyForInput = false;
             }
         }
+    }
+
+    public verifyCompletedWord(word: CommonWord): CommonWord {
+        let wordValue: string = "";
+        for (let i: number = 0; i < word.length; i++) {
+            if (word.isHorizontal) {
+                if (this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + i].inputChar.value
+                    !== undefined) {
+                    wordValue += this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + i].inputChar.value;
+                }
+            } else {
+                if (this.configurationService.grid.boxes[word.startPosition.y + i][word.startPosition.x].inputChar.value
+                    !== undefined) {
+                    wordValue += this.configurationService.grid.boxes[word.startPosition.y + i][word.startPosition.x].inputChar.value;
+                }
+            }
+        }
+        if (wordValue === this.getWordValue(word)) {
+            word.isComplete = true;
+        }
+
+        return word;
     }
 
     @HostListener("window:keydown", ["$event"])
@@ -183,10 +201,12 @@ export class CrosswordComponent implements OnInit {
                 }
             }
         }
-        if (gridBox !== undefined) {
+        if (gridBox !== undefined && !this.selectedWord.isComplete) {
             if (event.key.match(/^[a-z]$/i) !== null) {
-                gridBox.inputChar.value = event.key;
-                this.selectedWord.enteredCharacters++;
+                gridBox.inputChar.value = event.key.toUpperCase();
+                this.selectedWord.enteredCharacters + 1 === this.selectedWord.length ?
+                    this.selectedWord.enteredCharacters = 0 :
+                    this.selectedWord.enteredCharacters++;
                 this.setInputOnWord(this.selectedWord);
             }
             if (event.keyCode === BACKSPACE_KEYCODE) {
