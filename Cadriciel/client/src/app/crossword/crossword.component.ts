@@ -14,6 +14,7 @@ export class CrosswordComponent implements OnInit {
     public selectedGridBox: CommonGridBox;
     public correctWordCount: number = 0;
     public isInCheatMode: boolean = false;
+    public counter: number = 0;
 
     private message: string;
     private messages: string[] = [];
@@ -149,10 +150,25 @@ export class CrosswordComponent implements OnInit {
                 box.readyForInput = false;
             }
         }
-        this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x]
-            .readyForInput = true;
-    }
+        console.log("clic souris   " + this.counter);
+        if (this.counter >= word.length) {
+            this.counter = 0;
+        }
 
+        if (word.isHorizontal) {
+            this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + this.counter - 1]
+                .readyForInput = false;
+            this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + this.counter]
+                .readyForInput = true;
+        } else {
+            this.configurationService.grid.boxes[word.startPosition.y + this.counter - 1][word.startPosition.x]
+                .readyForInput = false;
+            this.configurationService.grid.boxes[word.startPosition.y + this.counter][word.startPosition.x]
+                .readyForInput = true;
+        }
+
+
+    }
     @HostListener("window:keyup", ["$event"])
     public inputChar(event: KeyboardEvent): void {
         if (this.configurationService.grid !== undefined) {
@@ -167,6 +183,8 @@ export class CrosswordComponent implements OnInit {
             if (gridBox !== undefined) {
                 if (event.key.match(/^[a-z]$/i) !== null) {
                     gridBox.inputChar.value = event.key;
+                    this.counter++;
+                    console.log("aaa     " + this.counter);
                 }
             }
         }
