@@ -84,7 +84,7 @@ export class RenderService {
 
         const geometry: ShapeGeometry = new ShapeGeometry(shape);
         const trackMaterial: MeshPhongMaterial =
-            new MeshPhongMaterial({ side: BackSide, color: 0xAAAAAA /*map: this.loadRepeatingTexture(ASPHALT_TEXTURE, GROUND_TEXTURE_FACTOR)*/ });
+            new MeshPhongMaterial({ side: BackSide, map: this.loadRepeatingTexture(ASPHALT_TEXTURE, GROUND_TEXTURE_FACTOR) });
 
         const trackMesh: Mesh = new Mesh(geometry, trackMaterial);
         trackMesh.rotateX(PI_OVER_2);
@@ -113,8 +113,8 @@ export class RenderService {
 
     public createWalls(trackPoints: TrackPointList): Group {
         const walls: Group = new Group();
-        walls.add(Wall.createInteriorWall(trackPoints).generateMesh());
-        walls.add(Wall.createExteriorWall(trackPoints).generateMesh());
+        walls.add(Wall.createInteriorWall(trackPoints));
+        walls.add(Wall.createExteriorWall(trackPoints));
 
         return walls;
     }
@@ -122,7 +122,7 @@ export class RenderService {
     private renderGround(): void {
         const groundGeometry: PlaneGeometry = new PlaneGeometry(GROUND_SIZE, GROUND_SIZE, 1, 1);
         const groundMaterial: MeshPhongMaterial =
-            new MeshPhongMaterial({ side: BackSide, color: WHITE/*map: this.loadRepeatingTexture(GRASS_TEXTURE, MS_TO_SECONDS)*/ });
+            new MeshPhongMaterial({ side: BackSide, map: this.loadRepeatingTexture(GRASS_TEXTURE, MS_TO_SECONDS) });
 
         const ground: Mesh = new Mesh(groundGeometry, groundMaterial);
         ground.rotateX(PI_OVER_2);
