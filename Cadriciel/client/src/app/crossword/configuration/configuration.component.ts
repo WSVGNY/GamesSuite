@@ -27,6 +27,9 @@ export class ConfigurationComponent {
 
     public setJoinGame(): void {
         this.isJoinGame = true;
+        this.multiplayerCommunicationService.connectToSocket();
+        this.multiplayerCommunicationService.roomListQuery();
+        this.configurationService.isSocketConnected = true;
     }
 
     public createGrid(): void {
@@ -62,7 +65,6 @@ export class ConfigurationComponent {
     public createRoom(): void {
         this.multiplayerCommunicationService.connectToSocket();
         this.multiplayerCommunicationService.createRoom();
-        this.multiplayerCommunicationService.roomListQuery();
         this.configurationService.isSocketConnected = true;
     }
 

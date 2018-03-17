@@ -37,6 +37,7 @@ export class ServerSockets {
                 socket.emit(SocketEvents.RoomCreated, this._roomNames[ServerSockets._numberOfRoom - 1]);
             });
             socket.on(SocketEvents.RoomsListQuery, () => {
+                console.log("Room list query");
                 socket.emit(SocketEvents.RoomsListQuery, this._roomNames);
             });
         });
