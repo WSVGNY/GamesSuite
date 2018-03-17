@@ -15,6 +15,7 @@ export class ConfigurationComponent {
     public isJoinGame: boolean = false;
     public difficulty: Difficulty;
     public choseGridDifficulty: boolean = false;
+    private messages: string[];
     public constructor(
         private _gridService: GridService,
         public configurationService: ConfigurationService,
@@ -28,6 +29,10 @@ export class ConfigurationComponent {
     public setJoinGame(): void {
         this.isJoinGame = true;
         this.multiplayerCommunicationService.connectToSocket();
+        this.multiplayerCommunicationService.getMessages().subscribe((message: string) => {
+            this.messages.push(message);
+            console.log(message);
+        });
         this.multiplayerCommunicationService.roomListQuery();
         this.configurationService.isSocketConnected = true;
     }
