@@ -36,6 +36,9 @@ export class ServerSockets {
                 socket.join(this._roomNames[ServerSockets._numberOfRoom - 1]);
                 socket.emit(SocketEvents.RoomCreated, this._roomNames[ServerSockets._numberOfRoom - 1]);
             });
+            socket.on(SocketEvents.RoomsListQuery, () => {
+                socket.emit(SocketEvents.RoomsListQuery, this._roomNames);
+            });
         });
     }
     // tslint:enable:no-console

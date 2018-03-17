@@ -10,6 +10,15 @@ export class MultiplayerCommunicationService {
     private _socket: SocketIOClient.Socket;
     private _hasConnected: boolean = false;
     private _room: string;
+    private _rooms: string[] = [];
+
+    public get room(): string {
+        return this._room;
+    }
+
+    public get rooms(): string[] {
+        return this._rooms;
+    }
 
     public get hasConnected(): boolean {
         return this._hasConnected;
@@ -34,6 +43,12 @@ export class MultiplayerCommunicationService {
         }
     }
 
+    public roomListQuery(): void {
+        if (this._socket !== undefined) {
+            this._socket.emit(SocketEvents.RoomsListQuery);
+        }
+    }
+
     // https://codingblast.com/chat-application-angular-socket-io/
     public getMessages = () => {
         return Observable.create((observer: Observer<string>) => {
@@ -43,6 +58,10 @@ export class MultiplayerCommunicationService {
             this._socket.on(SocketEvents.RoomCreated, (message: string) => {
                 console.log(message);
                 this._room = message;
+            });
+            this._socket.on(SocketEvents.RoomsListQuery, (message: string[]) => {
+                this._rooms = message;
+                console.log(this._rooms);
             });
         });
     }
