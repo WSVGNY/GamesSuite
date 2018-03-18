@@ -81,6 +81,7 @@ export class Car extends Object3D {
         this._lights = new CarLights();
         this._mesh.add(this._lights);
         this.add(this._mesh);
+        this.dettachLights();
     }
 
     public get speed(): Vector3 {
