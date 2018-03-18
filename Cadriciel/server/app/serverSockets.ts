@@ -48,7 +48,7 @@ export class ServerSockets {
     }
     // tslint:enable:no-console
 
-    public createRoom(): void {
+    private createRoom(): void {
         this._roomNames.push(this.baseRoomName + ServerSockets._numberOfRoom++);
     }
 
