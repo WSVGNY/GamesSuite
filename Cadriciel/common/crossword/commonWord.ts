@@ -13,5 +13,6 @@ export interface CommonWord {
     isHorizontal: boolean;
     length: number;
     startPosition: CommonCoordinate2D;
+    enteredCharacters: number;
 
 }
