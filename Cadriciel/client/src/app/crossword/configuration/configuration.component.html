@@ -6,10 +6,10 @@
       Enter Name :
       <input #player value="Player 2" />
       <h2>ROOM LIST: </h2>
-      <li *ngFor="let room of multiplayerCommunicationService._rooms" (click)="configurationService.playerName = player.value"
+      <button *ngFor="let room of multiplayerCommunicationService._rooms" (click)="configurationService.playerName = player.value"
         (click)="onRoomSelect(room)">
         {{room}}
-      </li>
+      </button>
     </div>
   </div>
   <div *ngIf="isNewGame" id="buttongroup" class="btn-group">
