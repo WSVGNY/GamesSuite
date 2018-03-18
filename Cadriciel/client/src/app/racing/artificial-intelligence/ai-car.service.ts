@@ -19,7 +19,6 @@ export class AICarService {
     private _trackPortionIndex: number;
     private _trackLineEquations: LineEquation[];
     private _aiConfig: AIConfig;
-    // private _aiDebug: AIDebug;
     private _trackVertices: Vector3[];
 
     public constructor() {}
@@ -28,7 +27,6 @@ export class AICarService {
         this._aiControl = new CommandController();
         this._trackVertices = trackVertices;
         this.createVectorTrackFromPoints(trackVertices);
-        // this._aiDebug = new AIDebug(this._car);
         this._aiConfig = new AIConfig(difficulty);
         this._trackPortionIndex = AIConfig.START_INDEX;
     }
@@ -166,8 +164,4 @@ export class AICarService {
             (nextPoint.x + dx * AIConfig.TURNING_POINT_DISTANCE), 0,
             (nextPoint.z + dz * AIConfig.TURNING_POINT_DISTANCE));
     }
-
-    // public get debugGroup(): Group {
-    //     return this._aiDebug.debugGroup;
-    // }
 }

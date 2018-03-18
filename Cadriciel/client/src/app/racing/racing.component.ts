@@ -120,7 +120,6 @@ export class RacingComponent implements AfterViewInit, OnInit {
             }
             this._carDebugs.push(new AIDebug(this._cars[i]));
             // this.isEven(i) ? Difficulty.Hard : Difficulty.Easy;
-            // this._aiCarsDebug.add(this._aiCarService[i].debugGroup);
         }
     }
 
