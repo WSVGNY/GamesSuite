@@ -3,7 +3,6 @@ import { NgModule } from "@angular/core";
 import { HttpClientModule } from "@angular/common/http";
 import { FormsModule } from "@angular/forms";
 import { AppComponent } from "./app.component";
-import { EditorRenderService } from "./racing/editor/editor-render-service/editor-render.service";
 import { AppRoutingModule } from "./app-routing/app-routing.module";
 import { CrosswordComponent } from "./crossword/crossword.component";
 import { GridService } from "./crossword/grid.service";
@@ -20,6 +19,7 @@ import { ChooseTrackComponent } from "./racing/choose-track/choose-track.compone
 import { RenderService } from "./racing/render-service/render.service";
 import { SoundManagerService } from "./racing/sound-service/sound-manager.service";
 import { MultiplayerCommunicationService } from "./crossword/multiplayer-communication.service";
+import { CollisionManagerService } from "./racing/collision-service/collision-manager.service";
 
 @NgModule({
     declarations: [
@@ -45,9 +45,9 @@ import { MultiplayerCommunicationService } from "./crossword/multiplayer-communi
         AICarService,
         KeyboardEventHandlerService,
         RenderService,
-        EditorRenderService,
         SoundManagerService,
-        MultiplayerCommunicationService
+        MultiplayerCommunicationService,
+        CollisionManagerService
     ],
     bootstrap: [AppComponent]
 })

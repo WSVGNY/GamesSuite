@@ -37,19 +37,16 @@ export class TrackPointList {
     private checkTrackPointsOrientation(): TrackPointList {
         let angleSum: number = 0;
         this._trackPoints.forEach((currentPoint: TrackPoint, i: number) => {
-            angleSum += currentPoint.vectorToNextCenterPoint.cross(currentPoint.vectorToPreviousCenterPoint).y < 0 ?
-                currentPoint.smallAngle *
-                (currentPoint.vectorToNextCenterPoint.length() + currentPoint.vectorToPreviousCenterPoint.length()) :
-                -currentPoint.smallAngle *
+            angleSum += currentPoint.smallAngle *
                 (currentPoint.vectorToNextCenterPoint.length() + currentPoint.vectorToPreviousCenterPoint.length());
         });
-        if (angleSum < 0) {
+        if (angleSum > 0) {
             const reversePoints: Vector3[] = Array<Vector3>(this._trackPoints.length);
             this._trackPoints.forEach((currentPoint: TrackPoint, i: number) => {
                 reversePoints[this._trackPoints.length - 1 - i] = new Vector3(
-                    currentPoint.coordinates.x,
-                    currentPoint.coordinates.y,
-                    currentPoint.coordinates.z);
+                    currentPoint.coordinate.x,
+                    currentPoint.coordinate.y,
+                    currentPoint.coordinate.z);
             });
             this.fillFromVector3Array(reversePoints);
         }
@@ -72,7 +69,7 @@ export class TrackPointList {
     public get pointVectors(): Vector3[] {
         const points: Vector3[] = new Array(this._trackPoints.length);
         this._trackPoints.forEach((currentPoint: TrackPoint, i: number) => {
-            points[i] = currentPoint.coordinates.clone();
+            points[i] = currentPoint.coordinate.clone();
         });
 
         return points;

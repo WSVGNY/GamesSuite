@@ -1,10 +1,10 @@
 import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from "@angular/core";
 import { TrackService } from "../track-service/track.service";
 import { TrackStructure } from "../../../../../common/racing/track";
-import { EditorRenderService } from "../editor/editor-render-service/editor-render.service";
 import { Track } from "../track";
 import { PreviewCamera } from "../cameras/previewCamera";
 import { PreviewScene } from "../scenes/previewScene";
+import { RenderService } from "../render-service/render.service";
 
 @Component({
     selector: "app-choose-track",
@@ -22,7 +22,7 @@ export class ChooseTrackComponent implements OnInit, AfterViewInit {
 
     public constructor(
         private _trackService: TrackService,
-        private _renderService: EditorRenderService
+        private _renderService: RenderService
     ) { }
 
     public ngOnInit(): void {
@@ -36,10 +36,18 @@ export class ChooseTrackComponent implements OnInit, AfterViewInit {
             .initialize(this._containerRef.nativeElement, this._previewScene, this._previewCamera)
             .then(/* do nothing */)
             .catch((err) => console.error(err));
+        this.update();
     }
 
     private computeAspectRatio(): number {
         return this._containerRef.nativeElement.clientWidth / this._containerRef.nativeElement.clientHeight;
+    }
+
+    private update(): void {
+        requestAnimationFrame(() => {
+            this._renderService.render(this._previewScene, this._previewCamera);
+            this.update();
+        });
     }
 
     private getTracksFromServer(): void {
