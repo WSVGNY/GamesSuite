@@ -23,32 +23,52 @@ export class ServerSockets {
         this.io = sio(this._httpServer);
         this.io.on(SocketEvents.Connection, (socket: SocketIO.Socket) => {
             console.log("user connected");
-            socket.on(SocketEvents.NewMessage, (message: string) => {
-                console.log(message);
-                this.io.to(this.getSocketRoom(socket)).emit(SocketEvents.NewMessage, message);
-            });
-            socket.on(SocketEvents.Disconnection, () => {
-                console.log("user disconnected");
-            });
-            socket.on(SocketEvents.RoomCreate, () => {
-                console.log("Room creation");
-                this.createRoom();
-                console.log("Room name: " + this._games[ServerSockets._numberOfRoom - 1].roomName);
-                socket.join(this._games[ServerSockets._numberOfRoom - 1].roomName);
-                socket.emit(SocketEvents.RoomCreated, this._games[ServerSockets._numberOfRoom - 1].roomName);
-            });
-            socket.on(SocketEvents.RoomsListQuery, () => {
-                console.log("Room list query");
-                const roomNames: string[] = [];
-                for (const game of this._games) {
-                    roomNames.push(game.roomName);
-                }
-                socket.emit(SocketEvents.RoomsListQuery, roomNames);
-            });
-            socket.on(SocketEvents.RoomConnect, (room: string) => {
-                console.log("Connection to room");
-                socket.join(room);
-            });
+            this.onNewMessage(socket);
+            this.onDisconnect(socket);
+            this.onRoomCreate(socket);
+            this.onRoomsListQuery(socket);
+            this.onRoomConnect(socket);
+        });
+    }
+
+    private onNewMessage(socket: SocketIO.Socket): void {
+        socket.on(SocketEvents.NewMessage, (message: string) => {
+            console.log(message);
+            this.io.to(this.getSocketRoom(socket)).emit(SocketEvents.NewMessage, message);
+        });
+    }
+
+    private onDisconnect(socket: SocketIO.Socket): void {
+        socket.on(SocketEvents.Disconnection, () => {
+            console.log("user disconnected");
+        });
+    }
+
+    private onRoomCreate(socket: SocketIO.Socket): void {
+        socket.on(SocketEvents.RoomCreate, () => {
+            console.log("Room creation");
+            this.createRoom();
+            console.log("Room name: " + this._games[ServerSockets._numberOfRoom - 1].roomName);
+            socket.join(this._games[ServerSockets._numberOfRoom - 1].roomName);
+            socket.emit(SocketEvents.RoomCreated, this._games[ServerSockets._numberOfRoom - 1].roomName);
+        });
+    }
+
+    private onRoomsListQuery(socket: SocketIO.Socket): void {
+        socket.on(SocketEvents.RoomsListQuery, () => {
+            console.log("Room list query");
+            const roomNames: string[] = [];
+            for (const game of this._games) {
+                roomNames.push(game.roomName);
+            }
+            socket.emit(SocketEvents.RoomsListQuery, roomNames);
+        });
+    }
+
+    private onRoomConnect(socket: SocketIO.Socket): void {
+        socket.on(SocketEvents.RoomConnect, (room: string) => {
+            console.log("Connection to room");
+            socket.join(room);
         });
     }
     // tslint:enable:no-console
