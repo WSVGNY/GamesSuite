@@ -50,7 +50,7 @@ export class ConfigurationComponent {
 
     private makeGrid(): void {
         this.choseGridDifficulty = true;
-        // this.createGrid();
+        this.createGrid();
     }
 
     public makeEasyGrid(): void {
