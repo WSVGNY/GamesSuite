@@ -12,7 +12,7 @@ import { Difficulty } from "../../../../common/crossword/difficulty";
 import { TrackPointList } from "./render-service/trackPointList";
 import { RenderService } from "./render-service/render.service";
 import { AIDebug } from "./artificial-intelligence/ai-debug";
-import { SoundManagerService } from "./sound-service/sound-manager.service";
+// import { SoundManagerService } from "./sound-service/sound-manager.service";
 
 const AI_CARS_QUANTITY: number = 2;
 
@@ -43,7 +43,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
         private _keyboardEventHandlerService: KeyboardEventHandlerService,
         private _trackService: TrackService,
         private _aiCarService: AICarService,
-        private _soundManagerService: SoundManagerService
+        // private _soundManagerService: SoundManagerService
     ) { }
 
     public ngOnInit(): void {

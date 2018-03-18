@@ -2,7 +2,6 @@ import { Shape, Vector3, Path, Mesh, MeshPhongMaterial, DoubleSide, SmoothShadin
 import { TrackPointList } from "./trackPointList";
 import { TrackPoint } from "./trackPoint";
 import { HALF_TRACK_WIDTH, WALL_DISTANCE_TO_TRACK, PI_OVER_2, WALL_WIDTH, WALL_TEXTURE, WALL_TEXTURE_FACTOR } from "../constants";
-import { RenderService } from "./render.service";
 
 export class Wall extends Mesh {
     private readonly HEIGHT: number = 2;

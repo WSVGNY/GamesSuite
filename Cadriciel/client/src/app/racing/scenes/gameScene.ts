@@ -167,7 +167,7 @@ export class GameScene extends AbstractScene {
 
     public setCenterLine(): void {
         const geometryPoints: Geometry = new Geometry();
-        this._trackPoints.points.forEach((currentPoint: TrackPoint) => geometryPoints.vertices.push(currentPoint.coordinates));
+        this._trackPoints.points.forEach((currentPoint: TrackPoint) => geometryPoints.vertices.push(currentPoint.coordinate));
         geometryPoints.vertices.push(this._trackPoints.points[0].coordinate);
 
         this._centerLine = new Line(geometryPoints, new LineBasicMaterial({ color: GREEN, linewidth: 3 }));
