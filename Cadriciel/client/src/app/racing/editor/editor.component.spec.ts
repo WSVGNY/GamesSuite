@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { EditorComponent } from "./editor.component";
 import { ActivatedRoute } from "@angular/router";
+import { TrackService } from "../track-service/track.service";
+import { RenderService } from "../render-service/render.service";
+import { MouseEventHandlerService } from "../event-handlers/mouse-event-handler.service";
 
 describe("EditorComponent", () => {
     let component: EditorComponent;
@@ -8,7 +11,7 @@ describe("EditorComponent", () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [EditorComponent],
-            providers: [ActivatedRoute]
+            providers: [ActivatedRoute, TrackService, RenderService, MouseEventHandlerService]
         }).compileComponents()
             .then()
             .catch((e: Error) => console.error(e.message));
@@ -20,7 +23,7 @@ describe("EditorComponent", () => {
         fixture.detectChanges();
     });
 
-    it("should create", () => {
+    it("should be created", () => {
         expect(component).toBeTruthy();
     });
 });

@@ -3,7 +3,6 @@ import { NgModule } from "@angular/core";
 import { HttpClientModule } from "@angular/common/http";
 import { FormsModule } from "@angular/forms";
 import { AppComponent } from "./app.component";
-import { EditorRenderService } from "./racing/editor/editor-render-service/editor-render.service";
 import { AppRoutingModule } from "./app-routing/app-routing.module";
 import { CrosswordComponent } from "./crossword/crossword.component";
 import { GridService } from "./crossword/grid.service";
@@ -46,7 +45,6 @@ import { CollisionManagerService } from "./racing/collision-service/collision-ma
         AICarService,
         KeyboardEventHandlerService,
         RenderService,
-        EditorRenderService,
         SoundManagerService,
         MultiplayerCommunicationService,
         CollisionManagerService

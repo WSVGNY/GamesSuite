@@ -24,6 +24,7 @@ export class Car extends Object3D {
     private _isReversing: boolean;
     private _steeringWheelDirection: number;
     private _initialDirection: Vector3 = new Vector3(0, 0, -1);
+    public _isAI: boolean;
 
     public detectionShpere: Mesh = this.createDetectionSphere();
 
@@ -61,6 +62,7 @@ export class Car extends Object3D {
         this._weightRear = CarConfig.INITIAL_WEIGHT_DISTRIBUTION;
         this._speed = new Vector3(0, 0, 0);
         this.position.add(new Vector3(0, 0, 0));
+        // this.detectionBox = this.createDetectionBox();
     }
 
     private async load(): Promise<Object3D> {
@@ -80,6 +82,7 @@ export class Car extends Object3D {
         this._mesh.add(this._lights);
         this._mesh.add(this.detectionShpere);
         this.add(this._mesh);
+        this.dettachLights();
     }
 
     public get speed(): Vector3 {
