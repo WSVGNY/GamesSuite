@@ -93,6 +93,7 @@ export class CrosswordComponent implements OnInit {
                     box.isColored = false;
                 }
             }
+            this.resetInputBoxes();
         }
     }
 
@@ -149,12 +150,14 @@ export class CrosswordComponent implements OnInit {
         word = this.verifyCompletedWord(word);
         this.selectedWord = word;
         this.resetInputBoxes();
-        if (word.isHorizontal) {
-            this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + this.selectedWord.enteredCharacters]
-                .readyForInput = true;
-        } else {
-            this.configurationService.grid.boxes[word.startPosition.y + this.selectedWord.enteredCharacters][word.startPosition.x]
-                .readyForInput = true;
+        if (!word.isComplete) {
+            if (word.isHorizontal) {
+                this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + this.selectedWord.enteredCharacters]
+                    .readyForInput = true;
+            } else {
+                this.configurationService.grid.boxes[word.startPosition.y + this.selectedWord.enteredCharacters][word.startPosition.x]
+                    .readyForInput = true;
+            }
         }
     }
 
@@ -223,11 +226,28 @@ export class CrosswordComponent implements OnInit {
                 this.setInputOnWord(this.selectedWord);
             }
             if (event.keyCode === BACKSPACE_KEYCODE) {
-                gridBox.inputChar.value = "";
-                this.selectedWord.enteredCharacters--;
+                this.eraseLastCharacter();
                 this.setInputOnWord(this.selectedWord);
             }
+        } else {
+            this.deselectWords();
         }
     }
 
+    private eraseLastCharacter(): void {
+        if (this.selectedWord.enteredCharacters > 0) {
+            this.selectedWord.enteredCharacters--;
+        }
+        if (this.selectedWord.isHorizontal) {
+            this.configurationService.grid.boxes[
+                this.selectedWord.startPosition.y][
+                this.selectedWord.startPosition.x + this.selectedWord.enteredCharacters]
+                .inputChar.value = "";
+        } else {
+            this.configurationService.grid.boxes[
+                this.selectedWord.startPosition.y + this.selectedWord.enteredCharacters][
+                this.selectedWord.startPosition.x]
+                .inputChar.value = "";
+        }
+    }
 }
