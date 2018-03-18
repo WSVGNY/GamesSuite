@@ -68,10 +68,11 @@ export class ServerSockets {
 
     private onRoomConnect(socket: SocketIO.Socket): void {
         socket.on(SocketEvents.RoomConnect, (room: string) => {
+            console.log(room);
             for (const game of this._games) {
-                if (game.roomName === room) {
-                    if (game.addPlayer({ name: "allo" })) { // TODO: change name to receive it in message
-                        socket.join(room);
+                if (game.roomName === room["roomName"]) {
+                    if (game.addPlayer({ name: room["playerName"] })) { // TODO: change name to receive it in message
+                        socket.join(room["roomName"]);
                         console.log("Connection to room successful");
                     } else {
                         console.log("Unable to connect to room");

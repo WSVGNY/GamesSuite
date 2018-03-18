@@ -38,8 +38,8 @@ export class ConfigurationComponent {
     }
 
     public onRoomSelect(room: string): void {
-        console.log(room);
-        this.multiplayerCommunicationService.connectToRoom(room);
+        console.log({ roomName: room, playerName: this.configurationService.playerName });
+        this.multiplayerCommunicationService.connectToRoom({ roomName: room, playerName: this.configurationService.playerName });
     }
 
     public createGrid(): void {

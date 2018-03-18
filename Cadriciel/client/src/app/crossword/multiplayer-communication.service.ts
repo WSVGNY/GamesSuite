@@ -49,7 +49,7 @@ export class MultiplayerCommunicationService {
         }
     }
 
-    public connectToRoom(room: string): void {
+    public connectToRoom(room: { roomName: string, playerName: string }): void {
         if (this._socket !== undefined) {
             this._socket.emit(SocketEvents.RoomConnect, room);
         }

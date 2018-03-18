@@ -5,11 +5,12 @@
     <div id="input">
       Enter Name :
       <input #player value="Player 2" />
+      <h2>ROOM LIST: </h2>
+      <li *ngFor="let room of multiplayerCommunicationService._rooms" (click)="configurationService.playerName = player.value"
+        (click)="onRoomSelect(room)">
+        {{room}}
+      </li>
     </div>
-    <h2>ROOM LIST: </h2>
-    <li *ngFor="let room of multiplayerCommunicationService._rooms" (click)="onRoomSelect(room)" (click)="configurationService.playerName = player.value">
-      {{room}}
-    </li>
   </div>
   <div *ngIf="isNewGame" id="buttongroup" class="btn-group">
     <button (click)="configurationService.isTwoPlayerGame = false" class="btn btn-primary">One player</button>
