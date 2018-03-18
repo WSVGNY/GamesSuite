@@ -49,6 +49,12 @@ export class MultiplayerCommunicationService {
         }
     }
 
+    public connectToRoom(room: string): void {
+        if (this._socket !== undefined) {
+            this._socket.emit(SocketEvents.RoomConnect, room);
+        }
+    }
+
     // https://codingblast.com/chat-application-angular-socket-io/
     public getMessages = () => {
         return Observable.create((observer: Observer<string>) => {

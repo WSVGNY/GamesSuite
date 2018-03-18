@@ -40,6 +40,10 @@ export class ServerSockets {
                 console.log("Room list query");
                 socket.emit(SocketEvents.RoomsListQuery, this._roomNames);
             });
+            socket.on(SocketEvents.RoomConnect, (room: string) => {
+                console.log("Connection to room");
+                socket.join(room);
+            });
         });
     }
     // tslint:enable:no-console

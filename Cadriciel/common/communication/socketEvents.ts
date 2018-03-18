@@ -4,5 +4,6 @@ export enum SocketEvents {
     Disconnection = "disconnect",
     RoomCreate = "room-create",
     RoomCreated = "room-created",
-    RoomsListQuery = "room-list-query"
+    RoomsListQuery = "room-list-query",
+    RoomConnect = "room-connect"
 }

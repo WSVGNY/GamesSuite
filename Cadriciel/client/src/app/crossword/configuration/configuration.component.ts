@@ -15,7 +15,7 @@ export class ConfigurationComponent {
     public isJoinGame: boolean = false;
     public difficulty: Difficulty;
     public choseGridDifficulty: boolean = false;
-    private messages: string[];
+    private messages: string[] = [];
     public constructor(
         private _gridService: GridService,
         public configurationService: ConfigurationService,
@@ -39,6 +39,7 @@ export class ConfigurationComponent {
 
     public onRoomSelect(room: string): void {
         console.log(room);
+        this.multiplayerCommunicationService.connectToRoom(room);
     }
 
     public createGrid(): void {
