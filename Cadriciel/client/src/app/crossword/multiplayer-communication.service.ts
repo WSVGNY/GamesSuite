@@ -69,6 +69,9 @@ export class MultiplayerCommunicationService {
                 this._rooms = message;
                 console.log(this._rooms);
             });
+            this._socket.on(SocketEvents.StartGame, () => {
+                observer.next(SocketEvents.StartGame);
+            });
         });
     }
 }

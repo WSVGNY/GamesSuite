@@ -4,6 +4,7 @@ import { ConfigurationService } from "../configuration.service";
 import { CommonGrid } from "../../../../../common/crossword/commonGrid";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { MultiplayerCommunicationService } from "../multiplayer-communication.service";
+import { SocketEvents } from "../../../../../common/communication/socketEvents";
 
 @Component({
     selector: "app-configuration",
@@ -32,6 +33,9 @@ export class ConfigurationComponent {
         this.multiplayerCommunicationService.getMessages().subscribe((message: string) => {
             this.messages.push(message);
             console.log(message);
+            if (message === SocketEvents.StartGame) {
+                // this.configurationService.configurationDone = true;
+            }
         });
         this.multiplayerCommunicationService.roomListQuery();
         this.configurationService.isSocketConnected = true;

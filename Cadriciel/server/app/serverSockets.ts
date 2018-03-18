@@ -72,9 +72,13 @@ export class ServerSockets {
                 if (game.roomName === room["roomName"]) {
                     if (game.addPlayer({ name: room["playerName"] })) { // TODO: change name to receive it in message
                         socket.join(room["roomName"]);
-                        console.log("Connection to room: " + room["roomName"] + " by player: " + room["playerName"] + " successfull");
+                        console.log("Connection to room: " + room["roomName"] + " by " + room["playerName"] + " successfull");
+                        if (game.isFull()) {
+                            console.log("Game is starting from server");
+                            this.io.to(game.roomName).emit(SocketEvents.StartGame);
+                        }
                     } else {
-                        console.log("Unable to connect to room: " + room["roomName"] + " by player: " + room["playerName"]);
+                        console.log("Unable to connect to room: " + room["roomName"] + " by " + room["playerName"]);
                     }
                     break;
                 }
