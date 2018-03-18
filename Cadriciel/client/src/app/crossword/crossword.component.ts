@@ -166,6 +166,18 @@ export class CrosswordComponent implements OnInit {
         }
     }
 
+    public colorFoundBoxes(word: CommonWord): void {
+        if (word.isHorizontal) {
+            for (let i: number = 0; i < word.length; i++) {
+                this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + i].isFound = true;
+            }
+        } else {
+            for (let i: number = 0; i < word.length; i++) {
+                this.configurationService.grid.boxes[word.startPosition.y + i][word.startPosition.x].isFound = true;
+            }
+        }
+    }
+
     public verifyCompletedWord(word: CommonWord): CommonWord {
         let wordValue: string = "";
         for (let i: number = 0; i < word.length; i++) {
@@ -184,15 +196,7 @@ export class CrosswordComponent implements OnInit {
         if (wordValue === this.getWordValue(word)) {
             word.isComplete = true;
             this.addToScore(word);
-            if (word.isHorizontal) {
-                for (let i: number = 0; i < word.length; i++) {
-                    this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + i].isFound = true;
-                }
-            } else {
-                for (let i: number = 0; i < word.length; i++) {
-                    this.configurationService.grid.boxes[word.startPosition.y + i][word.startPosition.x].isFound = true;
-                }
-            }
+            this.colorFoundBoxes(word);
         }
 
         return word;

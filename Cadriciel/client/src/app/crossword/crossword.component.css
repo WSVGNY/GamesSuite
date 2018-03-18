@@ -95,6 +95,19 @@ li {
     text-transform: uppercase;
 }
 
+.inputGridBox {
+    text-align: left;    
+    width: 60px;
+    height: 60px;
+    background:  rgb(44, 107, 97);
+    border: 2px solid black;
+    padding: 0;
+    margin: 0;
+    float: left;
+    text-transform: uppercase;
+    animation: blinker 0.5s alternate-reverse infinite;
+}
+
 .filledGridBox {
     width: 60px;
     height: 60px;
@@ -150,6 +163,11 @@ li {
 @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
+}
+
+@keyframes blinker {
+    from {background-color: rgb(48, 165, 155);}
+    to {background-color:  rgb(44, 107, 97);}
 }
 
 h4{
