@@ -29,8 +29,6 @@ export class GameScene extends AbstractScene {
 
     public constructor() {
         super();
-        this.addGround();
-        this._group.add(new TrackLights(TrackType.Default));
         this.add(this._group);
     }
 
@@ -41,6 +39,7 @@ export class GameScene extends AbstractScene {
         this._trackPoints = new TrackPointList(track.vertices);
         this._track = this.createTrackMesh(this._trackPoints);
         this._group.add(this._track);
+        this.addGround();
         this.setSkyBox(track.type);
         this.loadLights(track.type);
         this._group.add(this.createWalls(this._trackPoints));
@@ -63,11 +62,7 @@ export class GameScene extends AbstractScene {
     }
 
     private loadLights(trackType: TrackType): void {
-        if (this._lighting !== undefined) {
-            this._group.remove(this._lighting);
-        }
         this._lighting = new TrackLights(trackType);
-        this._lighting.updateLightsToTrackType(trackType);
         this._group.add(this._lighting);
     }
 
@@ -176,11 +171,11 @@ export class GameScene extends AbstractScene {
     public changeTimeOfDay(isDay: boolean, cars: Car[]): void {
         if (isDay) {
             this.setSkyBox(TrackType.Default);
-            this.loadLights(TrackType.Default);
+            this._lighting.updateLightsToTrackType(TrackType.Default);
             cars.forEach((car: Car) => car.dettachLights());
         } else {
             this.setSkyBox(TrackType.Night);
-            this.loadLights(TrackType.Night);
+            this._lighting.updateLightsToTrackType(TrackType.Night);
             cars.forEach((car: Car) => car.attachLights());
         }
     }
