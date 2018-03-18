@@ -45,11 +45,12 @@ export class ServerSockets {
     }
 
     private onRoomCreate(socket: SocketIO.Socket): void {
-        socket.on(SocketEvents.RoomCreate, () => {
-            console.log("Room creation");
+        socket.on(SocketEvents.RoomCreate, (message: string) => {
+            console.log("Room creation by: " + message);
             this.createRoom();
             console.log("Room name: " + this._games[ServerSockets._numberOfRoom - 1].roomName);
             socket.join(this._games[ServerSockets._numberOfRoom - 1].roomName);
+            this._games[ServerSockets._numberOfRoom - 1].addPlayer({ name: message });
             socket.emit(SocketEvents.RoomCreated, this._games[ServerSockets._numberOfRoom - 1].roomName);
         });
     }
@@ -67,8 +68,17 @@ export class ServerSockets {
 
     private onRoomConnect(socket: SocketIO.Socket): void {
         socket.on(SocketEvents.RoomConnect, (room: string) => {
-            console.log("Connection to room");
-            socket.join(room);
+            for (const game of this._games) {
+                if (game.roomName === room) {
+                    if (game.addPlayer({ name: "allo" })) { // TODO: change name to receive it in message
+                        socket.join(room);
+                        console.log("Connection to room successful");
+                    } else {
+                        console.log("Unable to connect to room");
+                    }
+                    break;
+                }
+            }
         });
     }
     // tslint:enable:no-console

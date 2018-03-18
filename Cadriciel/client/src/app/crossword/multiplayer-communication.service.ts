@@ -31,9 +31,9 @@ export class MultiplayerCommunicationService {
         this._socket = sio(this.url);
     }
 
-    public createRoom(): void {
+    public createRoom(playerName: string): void {
         if (this._socket !== undefined) {
-            this._socket.emit(SocketEvents.RoomCreate);
+            this._socket.emit(SocketEvents.RoomCreate, playerName);
         }
     }
 
