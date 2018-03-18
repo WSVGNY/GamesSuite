@@ -302,9 +302,9 @@ export class Car extends Object3D {
     }
 
     private createDetectionSphere(): Mesh {
-        const geometry: SphereGeometry = new SphereGeometry(1, 32, 32);
-        // geometry.computeBoundingSphere();
-        const material: MeshBasicMaterial = new MeshBasicMaterial({ color: 0xFFF000 });
+        const geometry: SphereGeometry = new SphereGeometry(2, 32, 32);
+        geometry.computeBoundingSphere();
+        const material: MeshBasicMaterial = new MeshBasicMaterial({ color: 0xFFF069 });
 
         return new Mesh(geometry, material);
     }

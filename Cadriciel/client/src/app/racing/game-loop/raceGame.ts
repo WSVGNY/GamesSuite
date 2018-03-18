@@ -2,7 +2,7 @@ import { RenderService } from "./../render-service/render.service";
 import { Car } from "./../car/car";
 import { AICarService } from "./../artificial-intelligence/ai-car.service";
 import { TrackPoint } from "./../render-service/trackPoint";
-import { Vector3, PerspectiveCamera, Group, LineBasicMaterial, Line, Geometry, BoxGeometry, MeshBasicMaterial, Mesh } from "three";
+import { Vector3, PerspectiveCamera, Group, LineBasicMaterial, Line, Geometry } from "three";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { ElementRef } from "@angular/core";
@@ -146,21 +146,25 @@ export class RaceGame {
 
     private detectCarCollision(): void {
         for (let i: number = 1; i < this._aiCars.length; ++i) {
-
-            if (this._playerCar.detectionShpere.geometry.boundingSphere.center.
-                distanceTo(this._aiCars[i].detectionShpere.geometry.boundingSphere.center) < 1) {
-                this._playerCar.detectionShpere.geometry.computeBoundingSphere();
-                this._aiCars[i].detectionShpere.geometry.computeBoundingSphere();
-                /*if (this._collisionControl.detectCollision(this._playerCar, this._aiCars[i])) {
-                    const geometry: BoxGeometry = new BoxGeometry(5, 5, 5);
-                    geometry.computeBoundingBox();
-                    const material: MeshBasicMaterial = new MeshBasicMaterial({ color: 0xFF0000 });
-                    this._playerCar.add(new Mesh(geometry, material));
-                }*/
-                if (this._sound.isDetected() === true) {
-                    this._sound.createCollisionSound("../../../assets/sounds/collision-sound.mp3", this._camera, this._playerCar);
+            // this._aiCars[i].detectionShpere.geometry.computeBoundingSphere();
+            // this._playerCar.detectionShpere.geometry.computeBoundingSphere();
+            if (this._playerCar.detectionShpere.geometry.boundingSphere.center
+                !== this._aiCars[i].detectionShpere.geometry.boundingSphere.center) {
+                if (this._playerCar.detectionShpere.geometry.boundingSphere.center.
+                    distanceTo(this._aiCars[i].detectionShpere.geometry.boundingSphere.center) < 0.0000001) {
+                    /*if (this._collisionControl.detectCollision(this._playerCar, this._aiCars[i])) {
+                        const geometry: BoxGeometry = new BoxGeometry(5, 5, 5);
+                        geometry.computeBoundingBox();
+                        const material: MeshBasicMaterial = new MeshBasicMaterial({ color: 0xFF0000 });
+                        this._playerCar.add(new Mesh(geometry, material));
+                    }*/
+                    if (this._sound.isDetected() === true) {
+                        this._sound.createCollisionSound("../../../assets/sounds/collision-sound.mp3", this._camera, this._playerCar);
+                    }
+                    this._sound.play(this._sound.collisionSound);
+                } else {
+                    this._sound.collisionSound.stop();
                 }
-                // this._sound.play(this._sound.collisionSound);
             }
         }
     }
