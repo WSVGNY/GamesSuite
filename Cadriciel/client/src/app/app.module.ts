@@ -7,7 +7,7 @@ import { AppRoutingModule } from "./app-routing/app-routing.module";
 import { CrosswordComponent } from "./crossword/crossword.component";
 import { GridService } from "./crossword/grid.service";
 import { AdminComponent } from "./racing/admin/admin.component";
-import { RacingComponent } from "./racing/racing.component";
+import { RacingComponent } from "./racing/race-game/racing.component";
 import { TrackService } from "./racing/track-service/track.service";
 import { EditorComponent } from "./racing/editor/editor.component";
 import { MouseEventHandlerService } from "./racing/event-handlers/mouse-event-handler.service";
