@@ -1,7 +1,7 @@
 import { Component } from "@angular/core";
 import { GridService } from "../grid.service";
 import { ConfigurationService } from "../configuration.service";
-import { Grid } from "../../../../../common/crossword/grid";
+import { CommonGrid } from "../../../../../common/crossword/commonGrid";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
 
 @Component({
@@ -26,7 +26,7 @@ export class ConfigurationComponent {
     }
 
     public createGrid(): void {
-        this._gridService.gridGet(this.difficulty).subscribe((grid: Grid) => {
+        this._gridService.gridGet(this.difficulty).subscribe((grid: CommonGrid) => {
             this.configurationService.grid = grid;
         });
     }

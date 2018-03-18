@@ -1,37 +1,52 @@
-import { Group, SpotLight, BoxGeometry, MeshBasicMaterial, Mesh, Object3D } from "three";
-import { CarConfig } from "./carConfig";
+import { Group, SpotLight, BoxGeometry, MeshBasicMaterial, Mesh, Object3D, Vector3 } from "three";
 import { WHITE, RED, YELLOW } from "../constants";
+import { CarLightConfig } from "./carLightsConfig";
 
 export class CarLights extends Group {
 
-    private _spotlights: SpotLight[] = new Array();
+    private _spotlights: SpotLight[];
 
     public constructor() {
         super();
-        this.createSpotlight(WHITE, -1, 1, -1, -CarConfig.TARGET_DISTANCE_FROM_CAR);
-        this.createSpotlight(WHITE, 1, 1, -1, -CarConfig.TARGET_DISTANCE_FROM_CAR);
-        this.createSpotlight(RED, -1, 1, 1, CarConfig.TARGET_DISTANCE_FROM_CAR);
-        this.createSpotlight(RED, 1, 1, 1, CarConfig.TARGET_DISTANCE_FROM_CAR);
+        this._spotlights = new Array();
+        this.createSpotlight(true, true);
+        this.createSpotlight(false, true);
+        this.createSpotlight(true, false);
+        this.createSpotlight(false, false);
     }
 
-    private createSpotlight(color: number, positionX: number, positionY: number, positionZ: number, targetDistance: number): void {
-        const spotLight: SpotLight = new SpotLight(
-            color, 1, CarConfig.SPOTLIGHT_MAX_DISTANCE,
-            CarConfig.SPOTLIGHT_ANGLE, CarConfig.SPOTLIGHT_PENUMBRA, 1);
-        spotLight.position.set(positionX, positionY, positionZ);
-        spotLight.target = this.attachTarget(targetDistance);
+    private createSpotlight(lightIsLeft: boolean, lightIsFront: boolean): void {
+        let spotLight: SpotLight;
+        if (lightIsFront) {
+            spotLight = new SpotLight(
+                WHITE,
+                CarLightConfig.FRONT_INTENSITY,
+                CarLightConfig.FRONT_MAX_DISTANCE,
+                CarLightConfig.FRONT_ANGLE,
+                CarLightConfig.FRONT_PENUMBRA, 1);
+        } else {
+            spotLight = new SpotLight(
+                RED,
+                CarLightConfig.BACK_INTENSITY_HIGH,
+                CarLightConfig.BACK_MAX_DISTANCE,
+                CarLightConfig.BACK_ANGLE,
+                CarLightConfig.BACK_PENUMBRA, 1);
+        }
+
+        spotLight.position.add(this.positionSpotLight(lightIsLeft, lightIsFront));
+        spotLight.target = this.attachTarget(lightIsFront ?
+            -CarLightConfig.TARGET_DISTANCE_FROM_CAR : CarLightConfig.TARGET_DISTANCE_FROM_CAR);
+        this.add(spotLight);
         this._spotlights.push(spotLight);
-        this.add(this._spotlights[this._spotlights.length - 1]);
     }
 
-    public turnBackLightsOn(): void {
-        this.add(this._spotlights[CarConfig.SPOTLIGHT_BACK_LEFT]);
-        this.add(this._spotlights[CarConfig.SPOTLIGHT_BACK_RIGHT]);
-    }
+    private positionSpotLight(lightIsLeft: boolean, lightIsFront: boolean): Vector3 {
+        const position: Vector3 = new Vector3();
+        position.setY(CarLightConfig.POSITION_Y);
+        position.setX(lightIsLeft ? CarLightConfig.POSITION_LEFT : CarLightConfig.POSITION_RIGHT);
+        position.setZ(lightIsFront ? CarLightConfig.POSITION_FRONT : CarLightConfig.POSITION_BACK);
 
-    public turnBackLightsOff(): void {
-        this.remove(this._spotlights[CarConfig.SPOTLIGHT_BACK_LEFT]);
-        this.remove(this._spotlights[CarConfig.SPOTLIGHT_BACK_RIGHT]);
+        return position;
     }
 
     public attachTarget(distance: number): Mesh {
@@ -46,5 +61,31 @@ export class CarLights extends Group {
 
     public attachCube(cube: Object3D): void {
         this.add(cube);
+    }
+
+    public turnOn(): void {
+        this._spotlights.forEach((light: SpotLight) => {
+            light.intensity = 1;
+        });
+    }
+
+    public turnOff(): void {
+        this._spotlights.forEach((light: SpotLight) => {
+            light.intensity = 0;
+        });
+    }
+
+    public turnBackLightsOn(): void {
+        this._spotlights[CarLightConfig.BACK_LEFT_INDEX]
+            .intensity = CarLightConfig.BACK_INTENSITY_HIGH;
+        this._spotlights[CarLightConfig.BACK_RIGHT_INDEX]
+            .intensity = CarLightConfig.BACK_INTENSITY_HIGH;
+    }
+
+    public turnBackLightsOff(): void {
+        this._spotlights[CarLightConfig.BACK_LEFT_INDEX]
+            .intensity = CarLightConfig.BACK_INTENSITY_LOW;
+        this._spotlights[CarLightConfig.BACK_RIGHT_INDEX]
+            .intensity = CarLightConfig.BACK_INTENSITY_LOW;
     }
 }

@@ -22,18 +22,19 @@ export class TrackLights extends Group {
     }
 
     private setAmbiantLight(): void {
-        if (this._ambiantLight !== undefined) {
-            this.remove(this._ambiantLight);
+        if (this._ambiantLight === undefined) {
+            this._ambiantLight = new AmbientLight(WHITE, this._lightingConfig.AMBIENT_LIGHT_INTENSITY);
+            this.add(this._ambiantLight);
         }
-        this._ambiantLight = new AmbientLight(WHITE, this._lightingConfig.AMBIENT_LIGHT_INTENSITY);
-        this.add(this._ambiantLight);
+
+        this._ambiantLight.intensity = this._lightingConfig.AMBIENT_LIGHT_INTENSITY;
     }
 
     private setDirectionalLight(): void {
-        if (this._directionalLight !== undefined) {
-            this.remove(this._directionalLight);
+        if (this._directionalLight === undefined) {
+            this._directionalLight = new DirectionalLight(WHITE, this._lightingConfig.DIRECTIONAL_LIGHT_INTENSITY);
+            this.add(this._directionalLight);
         }
-        this._directionalLight = new DirectionalLight(WHITE, this._lightingConfig.DIRECTIONAL_LIGHT_INTENSITY);
         this._directionalLight.color.setHSL(
             this._lightingConfig.DIRECTIONAL_LIGHT_HUE,
             this._lightingConfig.DIRECTIONAL_LIGHT_SATURATION,
@@ -44,7 +45,7 @@ export class TrackLights extends Group {
             this._lightingConfig.DIRECTIONAL_LIGHT_POSITION_Y,
             this._lightingConfig.DIRECTIONAL_LIGHT_POSITION_Z
         );
-        this.add(this._directionalLight);
+        this._directionalLight.intensity = this._lightingConfig.DIRECTIONAL_LIGHT_INTENSITY;
     }
 
     private chooseConfig(trackType: TrackType): void {

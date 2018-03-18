@@ -1,4 +1,4 @@
-import { NIGHT_SKYBOX, DEFAULT_SKYBOX } from "../constants";
+import { DEFAULT_SKYBOX, NIGHT_SKYBOX } from "../constants";
 import { TrackType } from "../../../../../common/racing/trackType";
 
 export class SkyBox {

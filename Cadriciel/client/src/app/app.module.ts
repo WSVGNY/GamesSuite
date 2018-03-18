@@ -18,6 +18,9 @@ import { KeyboardEventHandlerService } from "./racing/event-handlers/keyboard-ev
 import { ConfigurationService } from "./crossword/configuration.service";
 import { ChooseTrackComponent } from "./racing/choose-track/choose-track.component";
 import { RenderService } from "./racing/render-service/render.service";
+import { SoundManagerService } from "./racing/sound-service/sound-manager.service";
+import { MultiplayerCommunicationService } from "./crossword/multiplayer-communication.service";
+import { CollisionManagerService } from "./racing/collision-service/collision-manager.service";
 
 @NgModule({
     declarations: [
@@ -44,6 +47,9 @@ import { RenderService } from "./racing/render-service/render.service";
         KeyboardEventHandlerService,
         RenderService,
         EditorRenderService,
+        SoundManagerService,
+        MultiplayerCommunicationService,
+        CollisionManagerService
     ],
     bootstrap: [AppComponent]
 })

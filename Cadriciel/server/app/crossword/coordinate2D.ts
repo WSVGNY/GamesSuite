@@ -1,10 +1,8 @@
 import { CommonCoordinate2D } from "../../../common/crossword/commonCoordinate2D";
 
-export class Coordinate2D extends CommonCoordinate2D {
+export class Coordinate2D implements CommonCoordinate2D {
 
-    public constructor(x: number, y: number) {
-        super(x, y);
-    }
+    public constructor(public y: number, public x: number) { }
 
     public equals(coordinate: Coordinate2D): boolean {
         return (this.x === coordinate.x && this.y === coordinate.y);

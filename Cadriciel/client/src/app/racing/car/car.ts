@@ -1,5 +1,5 @@
 import {
-    Vector3, Matrix4, Object3D, ObjectLoader, Quaternion, Camera
+    Vector3, Matrix4, Object3D, ObjectLoader, Quaternion, Camera, Mesh, MeshBasicMaterial, BoxGeometry
 } from "three";
 import { Engine } from "./engine";
 import { MS_TO_SECONDS, GRAVITY, RAD_TO_DEG, CAR_TEXTURE } from "../constants";
@@ -25,6 +25,8 @@ export class Car extends Object3D {
     private _steeringWheelDirection: number;
     private _initialDirection: Vector3 = new Vector3(0, 0, -1);
     public _isAI: boolean;
+
+    public detectionBox: Mesh;
 
     public constructor(
         engine: Engine = new Engine(),
@@ -60,6 +62,7 @@ export class Car extends Object3D {
         this._weightRear = CarConfig.INITIAL_WEIGHT_DISTRIBUTION;
         this._speed = new Vector3(0, 0, 0);
         this.position.add(new Vector3(0, 0, 0));
+        this.detectionBox = this.createDetectionBox();
     }
 
     private async load(): Promise<Object3D> {
@@ -76,6 +79,7 @@ export class Car extends Object3D {
         this._mesh.position.add(startPoint);
         this._mesh.setRotationFromAxisAngle(new Vector3(0, 1, 0), rotationAngle);
         this._lights = new CarLights();
+        this._mesh.add(this._lights);
         this.add(this._mesh);
     }
 
@@ -108,11 +112,11 @@ export class Car extends Object3D {
     }
 
     public attachLights(): void {
-        this._mesh.add(this._lights);
+        this._lights.turnOn();
     }
 
     public dettachLights(): void {
-        this._mesh.remove(this._lights);
+        this._lights.turnOff();
     }
 
     public get direction(): Vector3 {
@@ -296,5 +300,13 @@ export class Car extends Object3D {
     private isGoingForward(): boolean {
         // tslint:disable-next-line:no-magic-numbers
         return this.speed.normalize().dot(this.direction) > 0.05;
+    }
+
+    private createDetectionBox(): Mesh {
+        const geometry: BoxGeometry = new BoxGeometry(2, 2, 2);
+        geometry.computeBoundingBox();
+        const material: MeshBasicMaterial = new MeshBasicMaterial({ color: 0xfff000 });
+
+        return new Mesh(geometry, material);
     }
 }

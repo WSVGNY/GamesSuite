@@ -5,7 +5,7 @@ import { TrackService } from "../track-service/track.service";
 import { Track } from "../track";
 import { RouterModule } from "@angular/router";
 import { HttpClientModule } from "@angular/common/http";
-import { RenderService } from "../render-service/render.service";
+import { EditorRenderService } from "../editor/editor-render-service/editor-render.service";
 
 describe("ChooseTrackComponent", () => {
     let component: ChooseTrackComponent;
@@ -18,7 +18,7 @@ describe("ChooseTrackComponent", () => {
                 RouterModule,
                 HttpClientModule
             ],
-            providers: [TrackService, RenderService]
+            providers: [TrackService, EditorRenderService]
         })
             .compileComponents().catch((error: Error) => console.error(error));
         await component["getTracksFromServer"]();

@@ -1,8 +1,9 @@
 import assert = require("assert");
-import { Grid } from "../../../common/crossword/grid";
+import { Grid } from "./grid";
 import { BlackTiledGrid } from "./blackTiledGrid";
 import { GridCreate } from "./gridCreate";
 import { Difficulty } from "../../../common/crossword/difficulty";
+import { NUMBER_OF_TILES, NUM_BLACK_TILES, SIZE_GRID_X, SIZE_GRID_Y } from "./configuration";
 
 let grid: Grid;
 let gridCreate: GridCreate;
@@ -25,21 +26,21 @@ describe("GRID CREATE TESTS", () => {
     });
 
     it("Grid contains appropriate number of tiles", (done: MochaDone) => {
-        blackGrid = new BlackTiledGrid(grid.SIZE_GRID_X, grid.SIZE_GRID_Y, grid["boxes"]);
-        assert(blackGrid.NUMBER_OF_TILES === grid.SIZE_GRID_X * grid.SIZE_GRID_Y);
+        blackGrid = new BlackTiledGrid(grid["boxes"]);
+        assert(NUMBER_OF_TILES === SIZE_GRID_X * SIZE_GRID_Y);
         done();
     });
 
     it("Grid contains appropriate number of black tiles", (done: MochaDone) => {
         let numBlackTiles: number = 0;
-        for (let i: number = 0; i < grid.SIZE_GRID_X; i++) {
-            for (let j: number = 0; j < grid.SIZE_GRID_Y; j++) {
-                if (blackGrid["_grid"][i][j]._char._value === "#") {
+        for (let i: number = 0; i < SIZE_GRID_X; i++) {
+            for (let j: number = 0; j < SIZE_GRID_Y; j++) {
+                if (blackGrid["_grid"][i][j].char.value === "#") {
                     numBlackTiles++;
                 }
             }
         }
-        assert(numBlackTiles === blackGrid["NUM_BLACK_TILES"]);
+        assert(numBlackTiles === NUM_BLACK_TILES);
         done();
     });
 
@@ -56,7 +57,7 @@ describe("GRID CREATE TESTS", () => {
                 i = -1;
             }
         }
-        assert(indexCounter === grid.SIZE_GRID_X);
+        assert(indexCounter === SIZE_GRID_X);
         done();
     });
 
