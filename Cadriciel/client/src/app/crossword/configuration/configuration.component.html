@@ -2,8 +2,12 @@
   <a (click)="setNewGame()" class="push_button">New game</a>
   <a (click)="setJoinGame()" class="push_button">Join game</a>
   <div *ngIf="isJoinGame">
+    <div id="input">
+      Enter Name :
+      <input #player value="Player 2" />
+    </div>
     <h2>ROOM LIST: </h2>
-    <li *ngFor="let room of multiplayerCommunicationService._rooms" (click)="onRoomSelect(room)">
+    <li *ngFor="let room of multiplayerCommunicationService._rooms" (click)="onRoomSelect(room)" (click)="configurationService.playerName = player.value">
       {{room}}
     </li>
   </div>
