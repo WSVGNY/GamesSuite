@@ -37,6 +37,10 @@ export class ConfigurationComponent {
         this.configurationService.isSocketConnected = true;
     }
 
+    public onRoomSelect(room: string): void {
+        console.log(room);
+    }
+
     public createGrid(): void {
         this._gridService.gridGet(this.difficulty).subscribe((grid: CommonGrid) => {
             this.configurationService.grid = grid;

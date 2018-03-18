@@ -2,7 +2,10 @@
   <a (click)="setNewGame()" class="push_button">New game</a>
   <a (click)="setJoinGame()" class="push_button">Join game</a>
   <div *ngIf="isJoinGame">
-    {{multiplayerCommunicationService._rooms}}
+    <h2>ROOM LIST: </h2>
+    <li *ngFor="let room of multiplayerCommunicationService._rooms" (click)="onRoomSelect(room)">
+      {{room}}
+    </li>
   </div>
   <div *ngIf="isNewGame" id="buttongroup" class="btn-group">
     <button (click)="configurationService.isTwoPlayerGame = false" class="btn btn-primary">One player</button>
