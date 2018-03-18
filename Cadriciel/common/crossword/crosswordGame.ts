@@ -23,4 +23,8 @@ export class CrosswordGame {
     public get players(): CrosswordPlayer[] {
         return this._players;
     }
+
+    public get roomName(): string {
+        return this._roomName;
+    }
 }

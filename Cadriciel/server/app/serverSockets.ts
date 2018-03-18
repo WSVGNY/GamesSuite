@@ -1,14 +1,15 @@
 import * as sio from "socket.io";
 import { SocketEvents } from "../../common/communication/socketEvents";
 import * as http from "http";
+import { CrosswordGame } from "../../common/crossword/crosswordGame";
 
 export class ServerSockets {
     private static _numberOfRoom: number = 0;
     private readonly baseRoomName: string = "ROOM";
 
     private io: SocketIO.Server;
-    public _roomNames: string[] = [];
     private _httpServer: http.Server;
+    private _games: CrosswordGame[] = [];
 
     public constructor(server: http.Server, initialize: boolean = false) {
         this._httpServer = server;
@@ -32,13 +33,17 @@ export class ServerSockets {
             socket.on(SocketEvents.RoomCreate, () => {
                 console.log("Room creation");
                 this.createRoom();
-                console.log("Room name: " + this._roomNames[ServerSockets._numberOfRoom - 1]);
-                socket.join(this._roomNames[ServerSockets._numberOfRoom - 1]);
-                socket.emit(SocketEvents.RoomCreated, this._roomNames[ServerSockets._numberOfRoom - 1]);
+                console.log("Room name: " + this._games[ServerSockets._numberOfRoom - 1].roomName);
+                socket.join(this._games[ServerSockets._numberOfRoom - 1].roomName);
+                socket.emit(SocketEvents.RoomCreated, this._games[ServerSockets._numberOfRoom - 1].roomName);
             });
             socket.on(SocketEvents.RoomsListQuery, () => {
                 console.log("Room list query");
-                socket.emit(SocketEvents.RoomsListQuery, this._roomNames);
+                const roomNames: string[] = [];
+                for (const game of this._games) {
+                    roomNames.push(game.roomName);
+                }
+                socket.emit(SocketEvents.RoomsListQuery, roomNames);
             });
             socket.on(SocketEvents.RoomConnect, (room: string) => {
                 console.log("Connection to room");
@@ -49,7 +54,7 @@ export class ServerSockets {
     // tslint:enable:no-console
 
     private createRoom(): void {
-        this._roomNames.push(this.baseRoomName + ServerSockets._numberOfRoom++);
+        this._games.push(new CrosswordGame(this.baseRoomName + ServerSockets._numberOfRoom++));
     }
 
     private getSocketRoom(socket: SocketIO.Socket): string {
