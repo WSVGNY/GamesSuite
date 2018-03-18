@@ -1,47 +1,14 @@
 import { Line, Geometry, Vector3, LineBasicMaterial } from "three";
 import { RED, PI_OVER_4, PI_OVER_2, HALF_TRACK_WIDTH, WALL_DISTANCE_TO_TRACK, WALL_WIDTH } from "../../constants";
+import { CommonCoordinate3D } from "../../../../../../common/racing/commonCoordinate3D";
+import { TrackPointList } from "../../render-service/trackPointList";
+import { Wall } from "../../render-service/wall";
 
 const UNAUTHORIZED_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: RED });
+const OFFSET: number = HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH;
 
 export class ConstraintValidator {
-
-    private static calculateLength(vector1: Vector3[]): number {
-        return Math.sqrt((vector1[1].x - vector1[0].x) * (vector1[1].x - vector1[0].x)
-            + (vector1[1].y - vector1[0].y) * (vector1[1].y - vector1[0].y));
-    }
-
-    // https://stackoverflow.com/questions/17763392/how-to-calculate-in-javascript-angle-between-3-points
-    private static calculateAngle(line1: Line, line2: Line): number {
-        const vector1: Vector3[] = ((line1.geometry) as Geometry).vertices;
-        const vector2: Vector3[] = ((line2.geometry) as Geometry).vertices;
-
-        const vertex1: number = Math.sqrt((vector2[0].x - vector1[0].x) * (vector2[0].x - vector1[0].x)
-            + (vector2[0].y - vector1[0].y) * (vector2[0].y - vector1[0].y));
-        const vertex2: number = Math.sqrt((vector2[0].x - vector2[1].x) * (vector2[0].x - vector2[1].x)
-            + (vector2[0].y - vector2[1].y) * (vector2[0].y - vector2[1].y));
-        const vertex3: number = Math.sqrt((vector2[1].x - vector1[0].x) * (vector2[1].x - vector1[0].x)
-            + (vector2[1].y - vector1[0].y) * (vector2[1].y - vector1[0].y));
-
-        return Math.acos((
-            vertex2 * vertex2 + vertex1 * vertex1 - vertex3 * vertex3)
-            / ((vertex2 * vertex1) + (vertex2 * vertex1)));
-    }
-
-    public static checkLength(connections: Array<Line>): boolean {
-        let lengthOK: boolean = true;
-
-        for (const connection of connections) {
-            const geometry: Geometry = (connection.geometry) as Geometry;
-            if (this.calculateLength(geometry.vertices) < HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH) {
-                connection.material = UNAUTHORIZED_LINE_MATERIAL;
-                lengthOK = false;
-            }
-        }
-
-        return lengthOK;
-    }
-
-    public static checkAngle(connections: Array<Line>, isComplete: boolean): boolean {
+    public static checkAngle(connections: Line[], isComplete: boolean): boolean {
         let angleOK: boolean = true;
 
         if (connections.length > 0) {
@@ -61,19 +28,93 @@ export class ConstraintValidator {
         return angleOK;
     }
 
+    // https://stackoverflow.com/questions/17763392/how-to-calculate-in-javascript-angle-between-3-points
+    private static calculateAngle(line1: Line, line2: Line): number {
+        const vector1: Vector3[] = ((line1.geometry) as Geometry).vertices;
+        const vector2: Vector3[] = ((line2.geometry) as Geometry).vertices;
+
+        const vertex1: number = Math.sqrt((vector2[0].x - vector1[0].x) * (vector2[0].x - vector1[0].x)
+            + (vector2[0].y - vector1[0].y) * (vector2[0].y - vector1[0].y));
+        const vertex2: number = Math.sqrt((vector2[0].x - vector2[1].x) * (vector2[0].x - vector2[1].x)
+            + (vector2[0].y - vector2[1].y) * (vector2[0].y - vector2[1].y));
+        const vertex3: number = Math.sqrt((vector2[1].x - vector1[0].x) * (vector2[1].x - vector1[0].x)
+            + (vector2[1].y - vector1[0].y) * (vector2[1].y - vector1[0].y));
+
+        return Math.acos((
+            vertex2 * vertex2 + vertex1 * vertex1 - vertex3 * vertex3)
+            / ((vertex2 * vertex1) + (vertex2 * vertex1)));
+    }
+
+    public static checkLength(connections: Line[]): boolean {
+        let lengthOK: boolean = true;
+
+        for (const connection of connections) {
+            const geometry: Geometry = (connection.geometry) as Geometry;
+            if (this.calculateLength(geometry.vertices) < OFFSET) {
+                connection.material = UNAUTHORIZED_LINE_MATERIAL;
+                lengthOK = false;
+            }
+        }
+
+        return lengthOK;
+    }
+
+    private static calculateLength(vector1: Vector3[]): number {
+        return vector1[1].clone().sub(vector1[0]).length();
+    }
+
     // https://stackoverflow.com/questions/9043805/test-if-two-lines-intersect-javascript-function
-    public static checkIntersection(connections: Array<Line>, isComplete: boolean): boolean {
+    public static checkIntersection(connections: Line[], isComplete: boolean): boolean {
+        return isComplete ? this.checkIntersectionComplete(connections) : this.checkIntersectionIncomplete(connections);
+    }
+
+    private static checkIntersectionIncomplete(connections: Line[]): boolean {
         let intersectionOK: boolean = true;
+        const limit: number = connections.length;
 
         for (let i: number = 0; i < connections.length; i++) {
-            const limit: number = isComplete && i === 0 ? connections.length - 1 : connections.length;
+            for (let j: number = 0; j < limit; j++) {
+                if (j > i + 1) {
+                    const vectors1: Vector3[][] = this.generateTrackWidth(connections[i]);
+                    const vectors2: Vector3[][] = this.generateTrackWidth(connections[j]);
+                    if (this.checkIntersectionWithOffset(vectors1, vectors2)) {
+                        connections[i].material = UNAUTHORIZED_LINE_MATERIAL;
+                        connections[j].material = UNAUTHORIZED_LINE_MATERIAL;
+                        intersectionOK = false;
+                    }
+                }
+            }
+        }
+
+        return intersectionOK;
+    }
+
+    private static generateTrackWidth(line: Line): Vector3[][] {
+        const geo: Geometry = (line.geometry) as Geometry;
+        const vector1: Vector3[] = geo.vertices;
+
+        return [
+            vector1,
+            this.translateVector(vector1, OFFSET),
+            this.translateVector(vector1, -OFFSET),
+            this.perpendicularVector(vector1, OFFSET),
+            this.perpendicularVector(vector1, -OFFSET)
+        ];
+    }
+
+    private static checkIntersectionComplete(connections: Line[]): boolean {
+        let intersectionOK: boolean = true;
+        const trackPoints: TrackPointList = new TrackPointList(this.convertLinesToCommonCoordinates3D(connections));
+        const interiorWallPoints: Vector3[] = this.convertZXCoordsToXY(new Wall(true, trackPoints).holePoints);
+        const exteriorWallPoints: Vector3[] = this.convertZXCoordsToXY(new Wall(false, trackPoints).shapePoints);
+
+        for (let i: number = 0; i < connections.length; i++) {
+            const limit: number = i === 0 ? connections.length - 1 : connections.length;
 
             for (let j: number = 0; j < limit; j++) {
                 if (j > i + 1) {
-                    const vectors1: Array<Vector3[]> =
-                        this.generateTrackWidth(connections[i], HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH);
-                    const vectors2: Array<Vector3[]> =
-                        this.generateTrackWidth(connections[j], HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH);
+                    const vectors1: Vector3[][] = this.generateTrackWallWidth(interiorWallPoints, exteriorWallPoints, i);
+                    const vectors2: Vector3[][] = this.generateTrackWallWidth(interiorWallPoints, exteriorWallPoints, j);
 
                     if (this.checkIntersectionWithOffset(vectors1, vectors2)) {
                         connections[i].material = UNAUTHORIZED_LINE_MATERIAL;
@@ -87,17 +128,39 @@ export class ConstraintValidator {
         return intersectionOK;
     }
 
-    private static generateTrackWidth(line: Line, offset: number): Array<Vector3[]> {
-        const geo: Geometry = (line.geometry) as Geometry;
-        const vector1: Vector3[] = geo.vertices;
+    private static generateTrackWallWidth(interiorWallPoints: Vector3[], exteriorWallPoints: Vector3[], index: number): Vector3[][] {
+        const nextInteriorPoint: Vector3 = index + 1 === interiorWallPoints.length ? interiorWallPoints[0] : interiorWallPoints[index + 1];
+        const nextExteriorPoint: Vector3 = index + 1 === exteriorWallPoints.length ? exteriorWallPoints[0] : exteriorWallPoints[index + 1];
 
         return [
-            vector1,
-            this.translateVector(vector1, offset),
-            this.translateVector(vector1, -offset),
-            this.perpendicularVector(vector1, offset),
-            this.perpendicularVector(vector1, -offset)
+            [interiorWallPoints[index], nextInteriorPoint],
+            [exteriorWallPoints[index], nextExteriorPoint],
+            [interiorWallPoints[index], exteriorWallPoints[index]],
+            [nextInteriorPoint, nextExteriorPoint]
         ];
+    }
+
+    private static convertLinesToCommonCoordinates3D(connections: Line[]): CommonCoordinate3D[] {
+        const array: CommonCoordinate3D[] = [];
+        connections.forEach((connection: Line) => {
+            const points: Vector3[] = ((connection.geometry) as Geometry).vertices;
+            array.push(new CommonCoordinate3D(
+                points[0].y,
+                points[0].z,
+                points[0].x
+            ));
+        });
+
+        return array;
+    }
+
+    private static convertZXCoordsToXY(points: Vector3[]): Vector3[] {
+        const array: Vector3[] = [];
+        points.forEach((point: Vector3) =>
+            array.push(new Vector3(point.z, point.x, 0))
+        );
+
+        return array;
     }
 
     private static checkIntersectionWithOffset(vectors1: Vector3[][], vectors2: Vector3[][]): boolean {
