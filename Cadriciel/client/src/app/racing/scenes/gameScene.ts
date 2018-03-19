@@ -14,7 +14,7 @@ import { AIDebug } from "../artificial-intelligence/ai-debug";
 import { Wall } from "../render-service/wall";
 import { TrackPointList } from "../render-service/trackPointList";
 
-const START_POSITION_OFFSET: number = 4;
+const START_POSITION_OFFSET: number = -10;
 
 export class GameScene extends AbstractScene {
 
@@ -48,7 +48,7 @@ export class GameScene extends AbstractScene {
     public async loadCars(cars: Car[], carDebugs: AIDebug[], camera: Camera): Promise<void> {
         for (let i: number = 0; i < cars.length; ++i) {
             const startPos: Vector3 = new Vector3(
-                this._trackPoints.first.coordinate.x - i * START_POSITION_OFFSET,
+                this._trackPoints.first.coordinate.x /*- i * START_POSITION_OFFSET*/,
                 this._trackPoints.first.coordinate.y,
                 this._trackPoints.first.coordinate.z - i * START_POSITION_OFFSET);
 
