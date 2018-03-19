@@ -271,7 +271,7 @@ export class CrosswordComponent {
 
     private findEquivalent(badWord: CommonWord): CommonWord {
         for (const word of this.configurationService.grid.words) {
-            if (word.value === badWord.value) {
+            if (this.getWordValue(word) === this.getWordValue(badWord)) {
                 return word;
             }
         }
