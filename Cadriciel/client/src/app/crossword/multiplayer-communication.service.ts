@@ -82,7 +82,7 @@ export class MultiplayerCommunicationService {
                 console.log(message);
                 this._games = message;
                 for (const room of message) {
-                    this._rooms.push(room["_roomName"] + " of difficulty: " + room["_difficulty"]);
+                    this._rooms.push(room["_roomName"] /*+ " of difficulty: " + room["_difficulty"]*/);
                 }
 
             });

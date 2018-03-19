@@ -60,16 +60,25 @@ export class ServerSockets {
     private onRoomsListQuery(socket: SocketIO.Socket): void {
         socket.on(SocketEvents.RoomsListQuery, () => {
             console.log("Room list query");
-            socket.emit(SocketEvents.RoomsListsQueryResponse, this._games);
+            const emptyRooms: CrosswordGame[] = [];
+            for (const rooms of this._games) {
+                if (!rooms.isFull()) {
+                    emptyRooms.push(rooms);
+                }
+            }
+            console.log(emptyRooms);
+            socket.emit(SocketEvents.RoomsListsQueryResponse, emptyRooms);
         });
     }
 
     private onRoomConnect(socket: SocketIO.Socket): void {
         socket.on(SocketEvents.RoomConnect, (room: string) => {
+            console.log("room connect event");
+            console.log(room);
             for (const game of this._games) {
                 if (game.roomName === room["roomName"]) {
                     if (game.addPlayer({ name: room["playerName"] })) { // TODO: change name to receive it in message
-                        socket.join(room["roomName"]);
+                        socket.join(room["_roomName"]);
                         console.log("Connection to room: " + room["roomName"] + " by " + room["playerName"] + " successfull");
                         if (game.isFull()) {
                             console.log("Game is starting from server");
