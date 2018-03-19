@@ -9,7 +9,6 @@
   <div *ngIf="!isConfigurationDone()">
     <app-configuration></app-configuration>
   </div>
-  <div *ngIf="isSocketConnected()"></div>
   <div id="loader" *ngIf="isConfigurationDone() && configurationService.grid===undefined"></div>
   <div id="definitions" (mousedown)="deselectWords()">
     <button id="CheatButton" (click)="changeMode()"> Cheat mode </button>

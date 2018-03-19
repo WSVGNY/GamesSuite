@@ -20,23 +20,23 @@ export class CrosswordComponent {
 
     private message: string;
     // private messages: string[] = [];
-    private _hasSubscribed: boolean = false;
+    // private _hasSubscribed: boolean = false;
 
     public constructor(
         public configurationService: ConfigurationService,
         private multiplayerCommunicationService: MultiplayerCommunicationService) {
     }
 
-    public subscribeToMessages(): void {
-        if (!this._hasSubscribed) {
-            // this.multiplayerCommunicationService.getMessages().subscribe((message: string) => {
-            //     this.messages.push(message);
-            //     // console.log(message);
-            // });
-            this._hasSubscribed = true;
+    // public subscribeToMessages(): void {
+    //     if (!this._hasSubscribed) {
+    //         this.multiplayerCommunicationService.getMessages().subscribe((message: string) => {
+    //             this.messages.push(message);
+    //             // console.log(message);
+    //         });
+    //         this._hasSubscribed = true;
 
-        }
-    }
+    //     }
+    // }
 
     public sendMessage(): void {
         this.multiplayerCommunicationService.sendMessage(this.message);
@@ -45,14 +45,6 @@ export class CrosswordComponent {
 
     public isConfigurationDone(): boolean {
         return this.configurationService.configurationDone;
-    }
-
-    public isSocketConnected(): boolean {
-        if (this.configurationService.isSocketConnected) {
-            this.subscribeToMessages();
-        }
-
-        return this.configurationService.isSocketConnected;
     }
 
     public changeMode(): void {

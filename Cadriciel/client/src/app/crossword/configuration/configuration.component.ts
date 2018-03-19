@@ -17,6 +17,8 @@ export class ConfigurationComponent {
     public difficulty: Difficulty;
     public choseGridDifficulty: boolean = false;
     private messages: string[] = [];
+    private _hasSubscribed: boolean = false;
+
     public constructor(
         private _gridService: GridService,
         public configurationService: ConfigurationService,
@@ -30,15 +32,23 @@ export class ConfigurationComponent {
     public setJoinGame(): void {
         this.isJoinGame = true;
         this.multiplayerCommunicationService.connectToSocket();
-        this.multiplayerCommunicationService.getMessages().subscribe((message: string) => {
-            this.messages.push(message);
-            console.log(message);
-            if (message === SocketEvents.StartGame) {
-                // this.configurationService.configurationDone = true;
-            }
-        });
+        this.subscribeToMessages();
         this.multiplayerCommunicationService.roomListQuery();
         this.configurationService.isSocketConnected = true;
+    }
+
+    public subscribeToMessages(): void {
+        if (!this._hasSubscribed) {
+            this.multiplayerCommunicationService.getMessages().subscribe((message: string) => {
+                this.messages.push(message);
+                console.log(message);
+                if (message === SocketEvents.StartGame) {
+                    this.configurationService.configurationDone = true;
+                }
+            });
+            this._hasSubscribed = true;
+
+        }
     }
 
     public onRoomSelect(room: string): void {
@@ -78,6 +88,7 @@ export class ConfigurationComponent {
 
     public createRoom(): void {
         this.multiplayerCommunicationService.connectToSocket();
+        this.subscribeToMessages();
         this.multiplayerCommunicationService.createRoom(this.configurationService.playerName, this.difficulty);
         this.configurationService.isSocketConnected = true;
     }
