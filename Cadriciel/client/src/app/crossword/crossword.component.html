@@ -12,11 +12,11 @@
       <div *ngFor="let word of configurationService.grid.words">
         <li *ngIf="word.isHorizontal">{{word.definitionID}})
           <span *ngIf="isInCheatMode">
-            <div [ngClass]="{selectedDefinition : highlightedWord(word)===1, foundDefinition : highlightedWord(word)===2,
-              clearDefinition: highlightedWord(word)===0}" (mouseup)="highlightWord(word)" (click)="setInputOnWord(word)">{{getWordValue(word)}}</div>
+            <div [ngClass]="{selectedDefinition : getState(word)===1, foundDefinition : getState(word)===2,
+              clearDefinition: getState(word)===0}" (mouseup)="highlightWord(word)" (click)="setInputOnWord(word)">{{getWordValue(word)}}</div>
           </span>
           <span *ngIf="!isInCheatMode">
-            <div id="textDefinition" [ngClass]="{selectedDefinition : highlightedWord(word)===1, foundDefinition : highlightedWord(word)===2, clearDefinition: highlightedWord(word)===0}"
+            <div id="textDefinition" [ngClass]="{selectedDefinition : getState(word)===1, foundDefinition : getState(word)===2, clearDefinition: getState(word)===0}"
               (mouseup)="highlightWord(word)" (click)="setInputOnWord(word)">{{word.definition}}</div>
           </span>
         </li>
@@ -25,11 +25,11 @@
       <div *ngFor="let word of configurationService.grid.words">
         <li *ngIf="!word.isHorizontal">{{word.definitionID}})
           <span *ngIf="isInCheatMode">
-            <div [ngClass]="{selectedDefinition : highlightedWord(word)===1, foundDefinition : highlightedWord(word)===2,
-              clearDefinition: highlightedWord(word)===0}" (mouseup)="highlightWord(word)" (click)="setInputOnWord(word)">{{getWordValue(word)}}</div>
+            <div [ngClass]="{selectedDefinition : getState(word)===1, foundDefinition : getState(word)===2,
+              clearDefinition: getState(word)===0}" (mouseup)="highlightWord(word)" (click)="setInputOnWord(word)">{{getWordValue(word)}}</div>
           </span>
           <span *ngIf="!isInCheatMode">
-            <div id="textDefinition" [ngClass]="{selectedDefinition : highlightedWord(word)===1, foundDefinition : highlightedWord(word)===2, clearDefinition: highlightedWord(word)===0}"
+            <div id="textDefinition" [ngClass]="{selectedDefinition : getState(word)===1, foundDefinition : getState(word)===2, clearDefinition: getState(word)===0}"
               (mouseup)="highlightWord(word)" (click)="setInputOnWord(word)">{{word.definition}}</div>
           </span>
         </li>

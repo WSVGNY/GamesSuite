@@ -5,6 +5,12 @@ import { ConfigurationService } from "./configuration.service";
 
 const BACKSPACE_KEYCODE: number = 8;
 
+enum State {
+    FREE = 0,
+    SELECTED,
+    FOUND
+}
+
 @Component({
     selector: "app-crossword",
     templateUrl: "./crossword.component.html",
@@ -31,26 +37,25 @@ export class CrosswordComponent {
             this.isInCheatMode = true;
     }
 
-    public highlightedWord(word: CommonWord): number {
-        console.log(word.isComplete);
+    public getState(word: CommonWord): State {
         if (word.isComplete) {
-            return 2;
+            return State.FOUND;
         }
 
         if (word.isHorizontal) {
             if (this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x].isColored &&
                 this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + 1].isColored) {
-                return 1;
+                return State.SELECTED;
             }
 
-            return 0;
+            return State.FREE;
         } else {
             if (this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x].isColored &&
                 this.configurationService.grid.boxes[word.startPosition.y + 1][word.startPosition.x].isColored) {
-                return 1;
+                return State.SELECTED;
             }
 
-            return 0;
+            return State.FREE;
         }
     }
 
@@ -236,23 +241,31 @@ export class CrosswordComponent {
     }
 
     private eraseLastCharacter(): void {
+        this.configurationService.grid.boxes[this.getY()][this.getX()].inputChar.value = "";
         if (this.selectedWord.enteredCharacters > 0) {
             this.selectedWord.enteredCharacters--;
-        }
-        let x: number;
-        let y: number;
-        if (this.selectedWord.isHorizontal) {
-            x = this.selectedWord.startPosition.x + this.selectedWord.enteredCharacters;
-            y = this.selectedWord.startPosition.y;
         } else {
-            x = this.selectedWord.startPosition.x;
-            y = this.selectedWord.startPosition.y + this.selectedWord.enteredCharacters;
+            this.selectedWord.enteredCharacters = this.selectedWord.length - 1;
         }
-        if (this.configurationService.grid.boxes[y][x].isFound) {
+        while (this.configurationService.grid.boxes[this.getY()][this.getX()].isFound) {
             this.selectedWord.enteredCharacters--;
-            this.eraseLastCharacter();
+        }
+        this.configurationService.grid.boxes[this.getY()][this.getX()].inputChar.value = "";
+    }
+
+    private getX(): number {
+        if (this.selectedWord.isHorizontal) {
+            return this.selectedWord.startPosition.x + this.selectedWord.enteredCharacters;
         } else {
-            this.configurationService.grid.boxes[y][x].inputChar.value = "";
+            return this.selectedWord.startPosition.x;
+        }
+    }
+
+    private getY(): number {
+        if (this.selectedWord.isHorizontal) {
+            return this.selectedWord.startPosition.y;
+        } else {
+            return this.selectedWord.startPosition.y + this.selectedWord.enteredCharacters;
         }
     }
 }
