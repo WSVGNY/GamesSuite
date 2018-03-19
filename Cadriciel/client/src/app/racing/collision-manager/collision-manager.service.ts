@@ -1,17 +1,19 @@
 import { Injectable } from "@angular/core";
 import { Car } from "../car/car";
 
+const MINIMUM_CAR_DISTANCE: number = 20;
 @Injectable()
 export class CollisionManagerService {
 
     public constructor() { }
 
-    public detectCollision(car1: Car, car2: Car): boolean {
-        if (car1.detectionShpere.geometry.boundingSphere
-        .intersectsSphere(car2.detectionShpere.geometry.boundingSphere)) {
-            return true;
-        } else {
-            return false;
+    public computeCollisions(cars: Car[]): void {
+        for (let i: number = 0; i < cars.length; ++i) {
+            for (let j: number = i + 1; j < cars.length; ++j) {
+                if (cars[i].currentPosition.distanceTo(cars[j].currentPosition) < MINIMUM_CAR_DISTANCE) {
+                        // console.log("too close jack!");
+                    }
+            }
         }
     }
 

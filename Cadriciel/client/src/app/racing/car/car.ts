@@ -1,5 +1,5 @@
 import {
-    Vector3, Matrix4, Object3D, ObjectLoader, Quaternion, Camera, Mesh, MeshBasicMaterial, SphereGeometry
+    Vector3, Matrix4, Object3D, ObjectLoader, Quaternion, Camera, /*Mesh, MeshBasicMaterial, SphereGeometry*/
 } from "three";
 import { Engine } from "./engine";
 import { MS_TO_SECONDS, GRAVITY, RAD_TO_DEG, CAR_TEXTURE } from "../constants";
