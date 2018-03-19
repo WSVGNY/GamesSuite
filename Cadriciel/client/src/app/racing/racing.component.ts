@@ -43,7 +43,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
         private _keyboardEventHandlerService: KeyboardEventHandlerService,
         private _trackService: TrackService,
         private _aiCarService: AICarService,
-        // private _soundManagerService: SoundManagerService
+        // private _sound: SoundManagerService
     ) { }
 
     public ngOnInit(): void {
@@ -68,7 +68,6 @@ export class RacingComponent implements AfterViewInit, OnInit {
     }
 
     public startGameLoop(): void {
-        // this._soundManagerService.createSound("../../../assets/sounds/rainbowRoad.mp3", this._thirdPersonCamera, this._playerCar);
         this._lastDate = Date.now();
         this.update();
     }
