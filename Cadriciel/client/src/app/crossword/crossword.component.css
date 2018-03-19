@@ -153,6 +153,13 @@ li {
     background: rgba(25, 66, 59, 0.705);
 }
 
+.foundDefinition {
+    display: inline-block;
+    max-width: 530px;
+    vertical-align:top;
+    background: rgba(8, 228, 63, 0.705);
+}
+
 .clearDefinition {
     display: inline-block;
     max-width: 530px;

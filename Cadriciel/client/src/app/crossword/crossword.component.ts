@@ -61,21 +61,25 @@ export class CrosswordComponent {
             this.isInCheatMode = true;
     }
 
-    public highlightedWord(word: CommonWord): boolean {
+    public highlightedWord(word: CommonWord): number {
+        if (this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x].isFound) {
+            return 2;
+        }
+
         if (word.isHorizontal) {
             if (this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x].isColored &&
                 this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + 1].isColored) {
-                return true;
+                return 1;
             }
 
-            return false;
+            return 0;
         } else {
             if (this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x].isColored &&
                 this.configurationService.grid.boxes[word.startPosition.y + 1][word.startPosition.x].isColored) {
-                return true;
+                return 1;
             }
 
-            return false;
+            return 0;
         }
     }
 
