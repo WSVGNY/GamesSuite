@@ -113,7 +113,7 @@ export class ServerSockets {
     private async gridCreateQuery(game: MultiplayerCrosswordGame): Promise<void> {
         await requestPromise(this.GRID_GET_URL + game.difficulty).then(
             (result: CommonGrid) => {
-                this.grid = result;
+                this.grid = JSON.parse(result.toString());
             }
         ).catch((e: Error) => {
             console.error(e);

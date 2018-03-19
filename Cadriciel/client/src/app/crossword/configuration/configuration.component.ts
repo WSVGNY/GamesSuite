@@ -45,11 +45,12 @@ export class ConfigurationComponent {
                 console.log(message);
                 if (message === SocketEvents.StartGame) {
                     this.configurationService.grid = this.multiplayerCommunicationService.grid;
+                    console.log(this.multiplayerCommunicationService.grid);
+                    this.configurationService.lookingForPlayer = false;
                     this.configurationService.configurationDone = true;
                 }
             });
             this._hasSubscribed = true;
-
         }
     }
 
@@ -66,7 +67,6 @@ export class ConfigurationComponent {
         } else {
             // this.multiplayerCommunicationService.gridQuery()
         }
-
     }
 
     private makeGrid(): void {
