@@ -1,4 +1,7 @@
-import { Shape, Vector3, Path, Mesh, MeshPhongMaterial, DoubleSide, SmoothShading, Texture, TextureLoader, RepeatWrapping } from "three";
+import {
+    Shape, Vector3, Path, Mesh, MeshPhongMaterial, DoubleSide, SmoothShading, Texture, TextureLoader, RepeatWrapping,
+    ExtrudeGeometry
+} from "three";
 import { TrackPointList } from "./trackPointList";
 import { TrackPoint } from "./trackPoint";
 import { HALF_TRACK_WIDTH, WALL_DISTANCE_TO_TRACK, PI_OVER_2, WALL_WIDTH, WALL_TEXTURE, WALL_TEXTURE_FACTOR } from "../constants";
@@ -16,25 +19,28 @@ export class Wall extends Mesh {
     private _wallShape: Shape;
 
     public static createInteriorWall(trackPoints: TrackPointList): Wall {
-        return new Wall(true, trackPoints);
+        return new Wall(true, trackPoints)
+            .createWallShape()
+            .extrudeShapeToGeometry()
+            .loadMaterialWithTexture();
     }
 
     public static createExteriorWall(trackPoints: TrackPointList): Wall {
-        return new Wall(false, trackPoints);
+        return new Wall(false, trackPoints)
+            .createWallShape()
+            .extrudeShapeToGeometry()
+            .loadMaterialWithTexture();
     }
 
-    private constructor(isInterior: boolean, trackPoints: TrackPointList) {
+    public constructor(isInterior: boolean, trackPoints: TrackPointList) {
         super();
         this._shapePoints = [];
         this._holePoints = [];
         this._wallShape = new Shape();
         isInterior ? this.findInteriorWallPoints(trackPoints) : this.findExteriorWallPoints(trackPoints);
-        this.createWallShape();
-        this.extrudeShapeToGeometry();
-        this.loadMaterialWithTexture();
     }
 
-    private createWallShape(): void {
+    private createWallShape(): Wall {
         this._wallShape.moveTo(this._shapePoints[0].x, this._shapePoints[0].z);
         for (let i: number = 1; i < this._shapePoints.length; ++i) {
             this._wallShape.lineTo(this._shapePoints[i].x, this._shapePoints[i].z);
@@ -48,6 +54,8 @@ export class Wall extends Mesh {
         }
         holePath.lineTo(this._holePoints[0].x, this._holePoints[0].z);
         this._wallShape.holes.push(holePath);
+
+        return this;
     }
 
     private findInteriorWallPoints(trackPoints: TrackPointList): void {
@@ -102,11 +110,13 @@ export class Wall extends Mesh {
             .negate();
     }
 
-    private extrudeShapeToGeometry(): void {
-        this.geometry = this._wallShape.extrude(this.EXTRUDE_SETTINGS).rotateX(PI_OVER_2).translate(0, this.HEIGHT, 0);
+    private extrudeShapeToGeometry(): Wall {
+        this.geometry = new ExtrudeGeometry(this._wallShape, this.EXTRUDE_SETTINGS).rotateX(PI_OVER_2).translate(0, this.HEIGHT, 0);
+
+        return this;
     }
 
-    private loadMaterialWithTexture(): void {
+    private loadMaterialWithTexture(): Wall {
         const texture: Texture = new TextureLoader().load(WALL_TEXTURE);
         texture.wrapS = RepeatWrapping;
         texture.wrapT = RepeatWrapping;
@@ -117,5 +127,15 @@ export class Wall extends Mesh {
             map: texture,
             shading: SmoothShading
         });
+
+        return this;
+    }
+
+    public get shapePoints(): Vector3[] {
+        return this._shapePoints;
+    }
+
+    public get holePoints(): Vector3[] {
+        return this._holePoints;
     }
 }

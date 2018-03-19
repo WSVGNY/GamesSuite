@@ -28,8 +28,8 @@ export class EditorScene extends AbstractScene {
         super();
         // this._scene = new Scene();
         this.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
-        this._vertices = new Array();
-        this._connections = new Array();
+        this._vertices = [];
+        this._connections = [];
     }
 
     public importTrackVertices(trackVertices: Array<CommonCoordinate3D>): void {
@@ -73,10 +73,6 @@ export class EditorScene extends AbstractScene {
     public deselectVertex(): void {
         this._selectedVertex = undefined;
     }
-
-    // public get scene(): Scene {
-    //     return this._scene;
-    // }
 
     public get isEmpty(): boolean {
         return this._vertices.length === 0;

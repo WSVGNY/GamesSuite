@@ -1,10 +1,11 @@
 import { CrosswordPlayer } from "./crosswordPlayer";
+import { Difficulty } from "./difficulty";
 
 export class CrosswordGame {
     public readonly MAX_PLAYER_NUMBER: number = 2;
     private _players: CrosswordPlayer[] = [];
 
-    public constructor(private _roomName: string) {
+    public constructor(private _roomName: string, private _difficulty: Difficulty) {
     }
 
     public isFull(): boolean {
@@ -26,5 +27,9 @@ export class CrosswordGame {
 
     public get roomName(): string {
         return this._roomName;
+    }
+
+    public get difficulty(): Difficulty {
+        return this._difficulty;
     }
 }

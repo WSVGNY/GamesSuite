@@ -6,5 +6,6 @@ export enum SocketEvents {
     RoomCreated = "room-created",
     RoomsListQuery = "room-list-query",
     RoomConnect = "room-connect",
-    StartGame = "start-game"
+    StartGame = "start-game",
+    RoomsListsQueryResponse = "room-list-query-response"
 }
