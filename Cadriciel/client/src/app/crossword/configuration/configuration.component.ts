@@ -39,6 +39,7 @@ export class ConfigurationComponent {
 
     public subscribeToMessages(): void {
         if (!this._hasSubscribed) {
+            console.log("WTF");
             this.multiplayerCommunicationService.getMessages().subscribe((message: string) => {
                 this.messages.push(message);
                 console.log(message);

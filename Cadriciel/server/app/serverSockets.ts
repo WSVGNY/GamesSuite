@@ -78,7 +78,7 @@ export class ServerSockets {
                 if (game["_roomName"] === room["roomInfo"]["roomName"]) {
                     console.log("allo");
                     if (game.addPlayer({ name: room["playerName"] })) {
-                        socket.join(room["_roomName"]);
+                        socket.join(room["roomInfo"]["roomName"]);
                         console.log("Connection to room: " + room["roomInfo"]["roomName"] + " by " + room["playerName"] + " successfull");
                         if (game.isFull()) {
                             console.log("Game is starting from server");
