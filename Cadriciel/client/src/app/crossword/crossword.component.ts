@@ -62,7 +62,8 @@ export class CrosswordComponent {
     }
 
     public highlightedWord(word: CommonWord): number {
-        if (this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x].isFound) {
+        console.log(word.isComplete);
+        if (word.isComplete) {
             return 2;
         }
 
@@ -205,6 +206,7 @@ export class CrosswordComponent {
                 this.configurationService.grid.boxes[word.startPosition.y + i][word.startPosition.x].isFound = true;
             }
         }
+        word.isComplete = true;
     }
 
     public verifyCompletedWord(word: CommonWord): CommonWord {
