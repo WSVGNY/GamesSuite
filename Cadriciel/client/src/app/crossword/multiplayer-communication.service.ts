@@ -11,7 +11,7 @@ export class MultiplayerCommunicationService {
     private readonly url: string = "http://localhost:3000";
     private _socket: SocketIOClient.Socket;
     private _hasConnected: boolean = false;
-    private _games: CrosswordGame[] = [];
+    public _games: CrosswordGame[] = [];
 
     public get hasConnected(): boolean {
         return this._hasConnected;

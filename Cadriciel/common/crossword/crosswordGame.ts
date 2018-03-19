@@ -3,11 +3,10 @@ import { Difficulty } from "./difficulty";
 
 export class CrosswordGame {
     public readonly MAX_PLAYER_NUMBER: number = 2;
-    // private _players: CrosswordPlayer[] = [];
 
-    static create(json: string): CrosswordGame {
-        const obj = JSON.parse(json) as CrosswordGame;
-        return new CrosswordGame(obj["_roomName"], obj["_difficulty"], obj["_players"]);
+    static create(stringObject: string): CrosswordGame {
+        const jsonObject = JSON.parse(stringObject) as CrosswordGame;
+        return new CrosswordGame(jsonObject["_roomName"], jsonObject["_difficulty"], jsonObject["_players"]);
     }
 
     public constructor(private _roomName: string, private _difficulty: Difficulty, private _players: CrosswordPlayer[] = []) {
