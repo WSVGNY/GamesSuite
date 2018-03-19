@@ -8,6 +8,6 @@ export class ReleaseSteering extends AbstractCarAICommand {
     }
 
     public execute(): void {
-        this._car.releaseSteering();
+        Car.releaseSteering(this._car);
     }
 }

@@ -8,6 +8,6 @@ export class ReleaseAccelerator extends AbstractCarAICommand {
     }
 
     public execute(): void {
-        this._car.releaseAccelerator();
+        Car.releaseAccelerator(this._car);
     }
 }

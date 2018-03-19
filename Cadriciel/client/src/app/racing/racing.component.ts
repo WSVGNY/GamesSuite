@@ -56,10 +56,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
             .initialize(this._containerRef.nativeElement, this._gameScene, this._thirdPersonCamera)
             .then(/* do nothing */)
             .catch((err) => console.error(err));
-        this._keyboardEventHandlerService
-            .initialize()
-            .then(/* do nothing */)
-            .catch((err) => console.error(err));
+        this._keyboardEventHandlerService.initialize();
         this.getTrack();
     }
 
@@ -96,7 +93,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
                 this._chosenTrack = new Track(iTrack);
                 this._trackPoints = new TrackPointList(this._chosenTrack.vertices);
 
-                await this.initializeCars();
+                this.initializeCars();
                 await this._gameScene.loadTrack(this._chosenTrack);
                 await this._gameScene.loadCars(this._cars, this._carDebugs, this._thirdPersonCamera);
                 await this._aiCarService
@@ -108,19 +105,25 @@ export class RacingComponent implements AfterViewInit, OnInit {
             });
     }
 
-    private async initializeCars(): Promise<void> {
+    private initializeCars(): void {
         for (let i: number = 0; i < AI_CARS_QUANTITY + 1; ++i) {
             this._cars.push(new Car());
 
             if (i === 0) {
-                this._cars[i]._isAI = false;
-                this._playerCar = this._cars[i];
+                this.initializePlayerCar(this._cars[i]);
             } else {
                 this._cars[i]._isAI = true;
             }
             this._carDebugs.push(new AIDebug(this._cars[i]));
             // this.isEven(i) ? Difficulty.Hard : Difficulty.Easy;
         }
+    }
+
+    private initializePlayerCar(playerCar: Car): void {
+        playerCar._isAI = false;
+        this._playerCar = playerCar;
+
+        this._keyboardEventHandlerService.bindCarKeys(this._playerCar);
     }
 
     public get car(): Car {
@@ -135,14 +138,14 @@ export class RacingComponent implements AfterViewInit, OnInit {
     @HostListener("window:keydown", ["$event"])
     public onKeyDown(event: KeyboardEvent): void {
         if (this._gameScene !== undefined) {
-            this._keyboardEventHandlerService.handleKeyDown(event, this._gameScene, this._cars);
+            this._keyboardEventHandlerService.handleKeyDown(event.keyCode);
         }
     }
 
     @HostListener("window:keyup", ["$event"])
     public onKeyUp(event: KeyboardEvent): void {
         if (this._gameScene !== undefined) {
-            this._keyboardEventHandlerService.handleKeyUp(event, this._playerCar);
+            this._keyboardEventHandlerService.handleKeyUp(event.keyCode);
         }
     }
 
