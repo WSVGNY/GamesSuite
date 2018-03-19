@@ -4,7 +4,7 @@ import { Observable } from "rxjs/Observable";
 import { SocketEvents } from "../../../../common/communication/socketEvents";
 import { Observer } from "rxjs/Observer";
 import { Difficulty } from "../../../../common/crossword/difficulty";
-import { MultiplayerCrosswordGame } from "../../../../common/crossword/crosswordGame";
+import { MultiplayerCrosswordGame } from "../../../../common/crossword/multiplayerCrosswordGame";
 @Injectable()
 export class MultiplayerCommunicationService {
 

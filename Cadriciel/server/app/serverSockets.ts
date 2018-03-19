@@ -1,7 +1,7 @@
 import * as sio from "socket.io";
 import { SocketEvents } from "../../common/communication/socketEvents";
 import * as http from "http";
-import { MultiplayerCrosswordGame } from "../../common/crossword/crosswordGame";
+import { MultiplayerCrosswordGame } from "../../common/crossword/multiplayerCrosswordGame";
 import { Difficulty } from "../../common/crossword/difficulty";
 
 export class ServerSockets {

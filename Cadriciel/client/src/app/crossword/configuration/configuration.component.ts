@@ -5,7 +5,7 @@ import { CommonGrid } from "../../../../../common/crossword/commonGrid";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { MultiplayerCommunicationService } from "../multiplayer-communication.service";
 import { SocketEvents } from "../../../../../common/communication/socketEvents";
-import { MultiplayerCrosswordGame } from "../../../../../common/crossword/crosswordGame";
+import { MultiplayerCrosswordGame } from "../../../../../common/crossword/multiplayerCrosswordGame";
 
 @Component({
     selector: "app-configuration",
