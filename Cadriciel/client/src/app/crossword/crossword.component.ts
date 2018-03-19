@@ -2,7 +2,6 @@ import { Component, HostListener } from "@angular/core";
 import { CommonGridBox } from "../../../../common/crossword/commonGridBox";
 import { CommonWord } from "../../../../common/crossword/commonWord";
 import { ConfigurationService } from "./configuration.service";
-import { MultiplayerCommunicationService } from "./multiplayer-communication.service";
 
 const BACKSPACE_KEYCODE: number = 8;
 
