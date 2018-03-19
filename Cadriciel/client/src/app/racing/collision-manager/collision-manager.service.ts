@@ -27,9 +27,11 @@ export class CollisionManagerService {
                     for (let vertexIndex: number = 0; vertexIndex < cars[i].hitbox.vertices.length; ++vertexIndex) {
                         const localVertex: Vector3 = cars[i].hitbox.vertices[vertexIndex].clone();
                         const globalVertex: Vector3 = localVertex.applyMatrix4(cars[i].meshMatrix);
+                        console.log(globalVertex);
                         const direction: Vector3 = globalVertex.sub(cars[i].currentPosition);
                         const ray: Raycaster = new Raycaster(cars[i].currentPosition.clone(), direction.clone().normalize());
                         const collisionResult: Intersection[] = ray.intersectObject(cars[j].hitbox);
+                        // console.log(collisionResult);
                         if (collisionResult.length > 0 && collisionResult[0].distance < direction.length()) {
                             alert("STAY BACK MAN");
                             // this.computeResultingForces(cars[i], cars[j], collisionResult[0].point);
