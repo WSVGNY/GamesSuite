@@ -9,6 +9,7 @@ const MINIMUM_CAR_DISTANCE: number = 5;
 export class CollisionManagerService {
 
     private collisionAxisHelper: VectorHelper;
+    private collisionAxisOrthoHelper: VectorHelper;
     private collisionToFirstCarHelper: VectorHelper;
     private collisionToSecondCarHelper: VectorHelper;
 
@@ -17,8 +18,10 @@ export class CollisionManagerService {
         this.collisionAxisHelper = new VectorHelper(0xFFFFFF);
         this.collisionToFirstCarHelper = new VectorHelper(0x0000FF);
         this.collisionToSecondCarHelper = new VectorHelper(0xFF0000);
+        this.collisionAxisOrthoHelper = new VectorHelper(0xFF00FF);
     }
 
+    // tslint:disable-next-line:max-func-body-length
     public computeCollisions(cars: Car[], gameScene: GameScene): void {
         for (let i: number = 0; i < cars.length; ++i) {
             for (let j: number = i + 1; j < cars.length; ++j) {
@@ -34,12 +37,22 @@ export class CollisionManagerService {
                             gameScene.remove(this.collisionToFirstCarHelper);
                             gameScene.remove(this.collisionToSecondCarHelper);
                             const collisionAxis: Vector3 = this.computeCollisionAxis(cars[i], cars[j], collisionResult[0].point);
+                            const collisionAxisOrtho: Vector3 = new Vector3(
+                                -collisionAxis.z,
+                                0,
+                                collisionAxis.x
+                            );
                             gameScene.add(this.collisionToFirstCarHelper);
                             gameScene.add(this.collisionToSecondCarHelper);
                             gameScene.remove(this.collisionAxisHelper);
+                            gameScene.remove(this.collisionAxisOrthoHelper);
                             this.collisionAxisHelper.update(collisionResult[0].point.clone(),
                                                             collisionResult[0].point.clone().add(collisionAxis.clone().multiplyScalar(10)));
+                            this.collisionAxisOrthoHelper.update(collisionResult[0].point.clone(),
+                                                                 collisionResult[0].point.clone().add(
+                                                                     collisionAxisOrtho.clone().multiplyScalar(10)));
                             gameScene.add(this.collisionAxisHelper);
+                            gameScene.add(this.collisionAxisOrthoHelper);
                         }
                     }
                 }
