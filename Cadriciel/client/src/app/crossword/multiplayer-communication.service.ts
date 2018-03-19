@@ -87,7 +87,6 @@ export class MultiplayerCommunicationService {
 
             });
             this._socket.on(SocketEvents.StartGame, () => {
-                console.log("YOYOYO");
                 observer.next(SocketEvents.StartGame);
             });
         });
