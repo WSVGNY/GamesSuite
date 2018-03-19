@@ -1,8 +1,8 @@
 import {
-    Vector3, Matrix4, Object3D, ObjectLoader, Quaternion, Camera, /*Mesh, MeshBasicMaterial, SphereGeometry*/
+    Vector3, Matrix4, Object3D, /*ObjectLoader,*/ Quaternion, Camera, MeshBasicMaterial, BoxGeometry, Mesh, /*Mesh, MeshBasicMaterial, SphereGeometry*/
 } from "three";
 import { Engine } from "./engine";
-import { MS_TO_SECONDS, GRAVITY, RAD_TO_DEG, CAR_TEXTURE } from "../constants";
+import { MS_TO_SECONDS, GRAVITY, RAD_TO_DEG, /*CAR_TEXTURE*/ } from "../constants";
 import { Wheel } from "./wheel";
 import { CarConfig } from "./carConfig";
 import { CarLights } from "./carLights";
@@ -68,12 +68,16 @@ export class Car extends Object3D {
     }
 
     private async load(): Promise<Object3D> {
-        return new Promise<Object3D>((resolve, reject) => {
-            const loader: ObjectLoader = new ObjectLoader();
-            loader.load(CAR_TEXTURE, (object) => {
-                resolve(object);
-            });
-        });
+        // return new Promise<Object3D>((resolve, reject) => {
+        //     const loader: ObjectLoader = new ObjectLoader();
+        //     loader.load(CAR_TEXTURE, (object) => {
+        //         resolve(object);
+        //     });
+        // });
+        const geometry: BoxGeometry = new BoxGeometry(0.1, 0.1, 0.1);
+        const material: MeshBasicMaterial = new MeshBasicMaterial({color: 0xFFFA00 });
+
+        return new Mesh(geometry, material);
     }
 
     public async init(startPoint: Vector3, rotationAngle: number): Promise<void> {
