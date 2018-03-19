@@ -4,14 +4,14 @@ import { Observable } from "rxjs/Observable";
 import { SocketEvents } from "../../../../common/communication/socketEvents";
 import { Observer } from "rxjs/Observer";
 import { Difficulty } from "../../../../common/crossword/difficulty";
-import { CrosswordGame } from "../../../../common/crossword/crosswordGame";
+import { MultiplayerCrosswordGame } from "../../../../common/crossword/crosswordGame";
 @Injectable()
 export class MultiplayerCommunicationService {
 
     private readonly url: string = "http://localhost:3000";
     private _socket: SocketIOClient.Socket;
     private _hasConnected: boolean = false;
-    public _games: CrosswordGame[] = [];
+    public _games: MultiplayerCrosswordGame[] = [];
 
     public get hasConnected(): boolean {
         return this._hasConnected;
@@ -42,7 +42,7 @@ export class MultiplayerCommunicationService {
         }
     }
 
-    public connectToRoom(room: { roomInfo: CrosswordGame, playerName: string }): void {
+    public connectToRoom(room: { roomInfo: MultiplayerCrosswordGame, playerName: string }): void {
         if (this._socket !== undefined) {
             this._socket.emit(SocketEvents.RoomConnect, room);
         }
@@ -57,7 +57,7 @@ export class MultiplayerCommunicationService {
             this._socket.on(SocketEvents.RoomCreated, (message: string) => {
                 console.log(message);
             });
-            this._socket.on(SocketEvents.RoomsListsQueryResponse, (message: CrosswordGame[]) => {
+            this._socket.on(SocketEvents.RoomsListsQueryResponse, (message: MultiplayerCrosswordGame[]) => {
                 console.log(message);
                 this._games = message;
             });

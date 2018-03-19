@@ -1,7 +1,7 @@
 import * as sio from "socket.io";
 import { SocketEvents } from "../../common/communication/socketEvents";
 import * as http from "http";
-import { CrosswordGame } from "../../common/crossword/crosswordGame";
+import { MultiplayerCrosswordGame } from "../../common/crossword/crosswordGame";
 import { Difficulty } from "../../common/crossword/difficulty";
 
 export class ServerSockets {
@@ -10,7 +10,7 @@ export class ServerSockets {
 
     private io: SocketIO.Server;
     private _httpServer: http.Server;
-    private _games: CrosswordGame[] = [];
+    private _games: MultiplayerCrosswordGame[] = [];
 
     public constructor(server: http.Server, initialize: boolean = false) {
         this._httpServer = server;
@@ -60,7 +60,7 @@ export class ServerSockets {
     private onRoomsListQuery(socket: SocketIO.Socket): void {
         socket.on(SocketEvents.RoomsListQuery, () => {
             console.log("Room list query");
-            const emptyRooms: CrosswordGame[] = [];
+            const emptyRooms: MultiplayerCrosswordGame[] = [];
             for (const rooms of this._games) {
                 if (!rooms.isFull()) {
                     emptyRooms.push(rooms);
@@ -71,10 +71,10 @@ export class ServerSockets {
     }
 
     private onRoomConnect(socket: SocketIO.Socket): void {
-        socket.on(SocketEvents.RoomConnect, (message: { roomInfo: CrosswordGame, playerName: string }) => {
+        socket.on(SocketEvents.RoomConnect, (message: { roomInfo: MultiplayerCrosswordGame, playerName: string }) => {
             console.log("room connect event");
             for (const game of this._games) {
-                const room: CrosswordGame = CrosswordGame.create(JSON.stringify(message["roomInfo"]));
+                const room: MultiplayerCrosswordGame = MultiplayerCrosswordGame.create(JSON.stringify(message["roomInfo"]));
                 if (game.roomName === room.roomName) {
                     if (game.addPlayer({ name: message["playerName"] })) {
                         socket.join(room.roomName);
@@ -94,7 +94,7 @@ export class ServerSockets {
     // tslint:enable:no-console
 
     private createRoom(difficulty: Difficulty): void {
-        this._games.push(new CrosswordGame(this.baseRoomName + ServerSockets._numberOfRoom++, difficulty));
+        this._games.push(new MultiplayerCrosswordGame(this.baseRoomName + ServerSockets._numberOfRoom++, difficulty));
     }
 
     private getSocketRoom(socket: SocketIO.Socket): string {
