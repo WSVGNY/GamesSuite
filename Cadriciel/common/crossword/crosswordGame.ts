@@ -3,9 +3,14 @@ import { Difficulty } from "./difficulty";
 
 export class CrosswordGame {
     public readonly MAX_PLAYER_NUMBER: number = 2;
-    private _players: CrosswordPlayer[] = [];
+    // private _players: CrosswordPlayer[] = [];
 
-    public constructor(private _roomName: string, private _difficulty: Difficulty) {
+    static create(json: string): CrosswordGame {
+        const obj = JSON.parse(json) as CrosswordGame;
+        return new CrosswordGame(obj["_roomName"], obj["_difficulty"], obj["_players"]);
+    }
+
+    public constructor(private _roomName: string, private _difficulty: Difficulty, private _players: CrosswordPlayer[] = []) {
     }
 
     public isFull(): boolean {
