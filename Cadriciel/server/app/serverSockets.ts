@@ -60,12 +60,7 @@ export class ServerSockets {
     private onRoomsListQuery(socket: SocketIO.Socket): void {
         socket.on(SocketEvents.RoomsListQuery, () => {
             console.log("Room list query");
-            const roomInfos: { roomName: string, difficulty: string }[] = [];
-            for (const game of this._games) {
-                roomInfos.push({ roomName: game.roomName, difficulty: game.difficulty });
-            }
-            console.log("allo");
-            socket.emit(SocketEvents.RoomsListsQueryResponse, roomInfos);
+            socket.emit(SocketEvents.RoomsListsQueryResponse, this._games);
         });
     }
 

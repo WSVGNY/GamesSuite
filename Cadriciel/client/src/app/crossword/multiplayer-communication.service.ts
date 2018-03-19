@@ -4,6 +4,7 @@ import { Observable } from "rxjs/Observable";
 import { SocketEvents } from "../../../../common/communication/socketEvents";
 import { Observer } from "rxjs/Observer";
 import { Difficulty } from "../../../../common/crossword/difficulty";
+import { CrosswordGame } from "../../../../common/crossword/crosswordGame";
 @Injectable()
 export class MultiplayerCommunicationService {
 
@@ -11,6 +12,7 @@ export class MultiplayerCommunicationService {
     private _socket: SocketIOClient.Socket;
     private _hasConnected: boolean = false;
     private _room: string;
+    private _games: CrosswordGame[] = [];
     private _rooms: string[] = [];
 
     public get room(): string {
@@ -18,7 +20,17 @@ export class MultiplayerCommunicationService {
     }
 
     public get rooms(): string[] {
-        return this._rooms;
+        if (this._games !== undefined) {
+            const rooms: string[] = [];
+            for (const room of this._games) {
+                rooms.push(room.roomName);
+            }
+            console.log(rooms);
+
+            return rooms;
+        }
+
+        return undefined;
     }
 
     public get hasConnected(): boolean {
@@ -66,12 +78,13 @@ export class MultiplayerCommunicationService {
                 console.log(message);
                 this._room = message;
             });
-            this._socket.on(SocketEvents.RoomsListsQueryResponse, (message: { roomName: string, difficulty: string }[]) => {
+            this._socket.on(SocketEvents.RoomsListsQueryResponse, (message: CrosswordGame[]) => {
                 console.log(message);
+                this._games = message;
                 for (const room of message) {
-                    this._rooms.push(room["roomName"]);
+                    this._rooms.push(room["_roomName"] + " of difficulty: " + room["_difficulty"]);
                 }
-                console.log(this._rooms);
+
             });
             this._socket.on(SocketEvents.StartGame, () => {
                 observer.next(SocketEvents.StartGame);
