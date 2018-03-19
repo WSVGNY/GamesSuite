@@ -59,12 +59,12 @@ export class ConfigurationComponent {
     }
 
     public createGrid(): void {
-        if (this.configurationService.isTwoPlayerGame) {
-            // this.multiplayerCommunicationService.gridQuery()
-        } else {
+        if (!this.configurationService.isTwoPlayerGame) {
             this._gridService.gridGet(this.difficulty).subscribe((grid: CommonGrid) => {
                 this.configurationService.grid = grid;
             });
+        } else {
+            // this.multiplayerCommunicationService.gridQuery()
         }
 
     }
