@@ -2,6 +2,7 @@ import * as sio from "socket.io";
 import { SocketEvents } from "../../common/communication/socketEvents";
 import * as http from "http";
 import { CrosswordGame } from "../../common/crossword/crosswordGame";
+import { Difficulty } from "../../common/crossword/difficulty";
 
 export class ServerSockets {
     private static _numberOfRoom: number = 0;
@@ -46,11 +47,12 @@ export class ServerSockets {
 
     private onRoomCreate(socket: SocketIO.Socket): void {
         socket.on(SocketEvents.RoomCreate, (message: string) => {
-            console.log("Room creation by: " + message);
-            this.createRoom();
+            console.log(message);
+            console.log("Room creation by: " + message["creator"]);
+            this.createRoom(message["difficulty"]);
             console.log("Room name: " + this._games[ServerSockets._numberOfRoom - 1].roomName);
             socket.join(this._games[ServerSockets._numberOfRoom - 1].roomName);
-            this._games[ServerSockets._numberOfRoom - 1].addPlayer({ name: message });
+            this._games[ServerSockets._numberOfRoom - 1].addPlayer({ name: message["creator"] });
             socket.emit(SocketEvents.RoomCreated, this._games[ServerSockets._numberOfRoom - 1].roomName);
         });
     }
@@ -58,11 +60,12 @@ export class ServerSockets {
     private onRoomsListQuery(socket: SocketIO.Socket): void {
         socket.on(SocketEvents.RoomsListQuery, () => {
             console.log("Room list query");
-            const roomNames: string[] = [];
+            const roomInfos: { roomName: string, difficulty: string }[] = [];
             for (const game of this._games) {
-                roomNames.push(game.roomName);
+                roomInfos.push({ roomName: game.roomName, difficulty: game.difficulty });
             }
-            socket.emit(SocketEvents.RoomsListQuery, roomNames);
+            console.log("allo");
+            socket.emit(SocketEvents.RoomsListsQueryResponse, roomInfos);
         });
     }
 
@@ -87,8 +90,8 @@ export class ServerSockets {
     }
     // tslint:enable:no-console
 
-    private createRoom(): void {
-        this._games.push(new CrosswordGame(this.baseRoomName + ServerSockets._numberOfRoom++));
+    private createRoom(difficulty: Difficulty): void {
+        this._games.push(new CrosswordGame(this.baseRoomName + ServerSockets._numberOfRoom++, difficulty));
     }
 
     private getSocketRoom(socket: SocketIO.Socket): string {

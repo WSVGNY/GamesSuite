@@ -54,7 +54,7 @@ export class ConfigurationComponent {
 
     private makeGrid(): void {
         this.choseGridDifficulty = true;
-        this.createGrid();
+        // this.createGrid();
     }
 
     public makeEasyGrid(): void {
@@ -78,7 +78,7 @@ export class ConfigurationComponent {
 
     public createRoom(): void {
         this.multiplayerCommunicationService.connectToSocket();
-        this.multiplayerCommunicationService.createRoom(this.configurationService.playerName);
+        this.multiplayerCommunicationService.createRoom(this.configurationService.playerName, this.difficulty);
         this.configurationService.isSocketConnected = true;
     }
 

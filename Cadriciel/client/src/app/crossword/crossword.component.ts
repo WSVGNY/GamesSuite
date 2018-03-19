@@ -19,7 +19,7 @@ export class CrosswordComponent {
     public isInCheatMode: boolean = false;
 
     private message: string;
-    private messages: string[] = [];
+    // private messages: string[] = [];
     private _hasSubscribed: boolean = false;
 
     public constructor(
@@ -29,10 +29,10 @@ export class CrosswordComponent {
 
     public subscribeToMessages(): void {
         if (!this._hasSubscribed) {
-            this.multiplayerCommunicationService.getMessages().subscribe((message: string) => {
-                this.messages.push(message);
-                console.log(message);
-            });
+            // this.multiplayerCommunicationService.getMessages().subscribe((message: string) => {
+            //     this.messages.push(message);
+            //     // console.log(message);
+            // });
             this._hasSubscribed = true;
 
         }

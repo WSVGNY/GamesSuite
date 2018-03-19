@@ -3,6 +3,7 @@ import * as sio from "socket.io-client";
 import { Observable } from "rxjs/Observable";
 import { SocketEvents } from "../../../../common/communication/socketEvents";
 import { Observer } from "rxjs/Observer";
+import { Difficulty } from "../../../../common/crossword/difficulty";
 @Injectable()
 export class MultiplayerCommunicationService {
 
@@ -31,9 +32,9 @@ export class MultiplayerCommunicationService {
         this._socket = sio(this.url);
     }
 
-    public createRoom(playerName: string): void {
+    public createRoom(playerName: string, roomDifficulty: Difficulty): void {
         if (this._socket !== undefined) {
-            this._socket.emit(SocketEvents.RoomCreate, playerName);
+            this._socket.emit(SocketEvents.RoomCreate, { creator: playerName, difficulty: roomDifficulty });
         }
     }
 
@@ -65,8 +66,11 @@ export class MultiplayerCommunicationService {
                 console.log(message);
                 this._room = message;
             });
-            this._socket.on(SocketEvents.RoomsListQuery, (message: string[]) => {
-                this._rooms = message;
+            this._socket.on(SocketEvents.RoomsListsQueryResponse, (message: { roomName: string, difficulty: string }[]) => {
+                console.log(message);
+                for (const room of message) {
+                    this._rooms.push(room["roomName"]);
+                }
                 console.log(this._rooms);
             });
             this._socket.on(SocketEvents.StartGame, () => {
