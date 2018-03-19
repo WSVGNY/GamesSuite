@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Car } from "../car/car";
+import { Vector3, Raycaster, Intersection } from "three";
 
 const MINIMUM_CAR_DISTANCE: number = 5;
 @Injectable()
@@ -11,34 +12,22 @@ export class CollisionManagerService {
         for (let i: number = 0; i < cars.length; ++i) {
             for (let j: number = i + 1; j < cars.length; ++j) {
                 if (cars[i].currentPosition.distanceTo(cars[j].currentPosition) < MINIMUM_CAR_DISTANCE) {
-                        console.log("too close jack!");
+                    // console.log(cars[i].hitbox.vertices[0].clone().applyMatrix4(cars[i].meshMatrix));
+                    for (let vertexIndex: number = 0; vertexIndex < cars[i].hitbox.vertices.length; ++vertexIndex) {
+                        const localVertex: Vector3 = cars[i].hitbox.vertices[vertexIndex].clone();
+                        const globalVertex: Vector3 = localVertex.applyMatrix4(cars[i].meshMatrix);
+                        const direction: Vector3 = globalVertex.sub(cars[i].currentPosition);
+
+                        const ray: Raycaster = new Raycaster(cars[i].currentPosition.clone(), direction.clone().normalize());
+
+                        const collisionResult: Intersection[] = ray.intersectObject(cars[j].hitbox);
+
+                        if (collisionResult.length > 0 && collisionResult[0].distance < direction.length()) {
+                            alert("STAY BACK MAN");
+                        }
                     }
+                }
             }
         }
     }
-
-    // private detectCarCollision(): void {
-    //     for (let i: number = 1; i < this._aiCars.length; ++i) {
-    //         // this._aiCars[i].detectionShpere.geometry.computeBoundingSphere();
-    //         // this._playerCar.detectionShpere.geometry.computeBoundingSphere();
-    //         if (this._playerCar.detectionShpere.geometry.boundingSphere.center
-    //             !== this._aiCars[i].detectionShpere.geometry.boundingSphere.center) {
-    //             if (this._playerCar.detectionShpere.geometry.boundingSphere.center.
-    //                 distanceTo(this._aiCars[i].detectionShpere.geometry.boundingSphere.center) < 0.0000001) {
-    //                 /*if (this._collisionControl.detectCollision(this._playerCar, this._aiCars[i])) {
-    //                     const geometry: BoxGeometry = new BoxGeometry(5, 5, 5);
-    //                     geometry.computeBoundingBox();
-    //                     const material: MeshBasicMaterial = new MeshBasicMaterial({ color: 0xFF0000 });
-    //                     this._playerCar.add(new Mesh(geometry, material));
-    //                 }*/
-    //                 if (this._sound.isDetected() === true) {
-    //                     this._sound.createCollisionSound("../../../assets/sounds/collision-sound.mp3", this._camera, this._playerCar);
-    //                 }
-    //                 this._sound.play(this._sound.collisionSound);
-    //             } else {
-    //                 this._sound.collisionSound.stop();
-    //             }
-    //         }
-    //     }
-    // }
 }
