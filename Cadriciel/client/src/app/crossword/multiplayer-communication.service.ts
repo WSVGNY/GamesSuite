@@ -11,27 +11,7 @@ export class MultiplayerCommunicationService {
     private readonly url: string = "http://localhost:3000";
     private _socket: SocketIOClient.Socket;
     private _hasConnected: boolean = false;
-    private _room: string;
     private _games: CrosswordGame[] = [];
-    private _rooms: CrosswordGame[] = [];
-
-    public get room(): string {
-        return this._room;
-    }
-
-    public get rooms(): string[] {
-        if (this._games !== undefined) {
-            const rooms: string[] = [];
-            for (const room of this._games) {
-                rooms.push(room.roomName);
-            }
-            console.log(rooms);
-
-            return rooms;
-        }
-
-        return undefined;
-    }
 
     public get hasConnected(): boolean {
         return this._hasConnected;
@@ -76,16 +56,10 @@ export class MultiplayerCommunicationService {
             });
             this._socket.on(SocketEvents.RoomCreated, (message: string) => {
                 console.log(message);
-                this._room = message;
             });
             this._socket.on(SocketEvents.RoomsListsQueryResponse, (message: CrosswordGame[]) => {
                 console.log(message);
                 this._games = message;
-                for (const room of message) {
-                    this._rooms.push(CrosswordGame.create(JSON.stringify(room)));
-                    //this._rooms.push({ roomName: room["_roomName"], difficulty: room["_difficulty"], player: room["_players"][0].name });
-                }
-
             });
             this._socket.on(SocketEvents.StartGame, () => {
                 observer.next(SocketEvents.StartGame);
