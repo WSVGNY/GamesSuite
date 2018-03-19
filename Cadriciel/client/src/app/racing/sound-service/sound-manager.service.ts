@@ -76,6 +76,23 @@ export class SoundManagerService {
     }*/
   }
 
+  public createStartingSound(camera: PerspectiveCamera): void {
+    const listener: AudioListener = new AudioListener();
+    camera.add(listener);
+    const sound: Audio = new Audio(listener); // Maybe positionnal audio
+    const loader: AudioLoader = new AudioLoader();
+    loader.load(
+      "../../assets/sounds/startingSound.mp3",
+      (audioBuffer: AudioBuffer) => {
+        sound.setBuffer(audioBuffer);
+        sound.play();
+      },
+      (xhr: XMLHttpRequest) => { },
+      (err: Event) => { }
+    );
+    camera.add(sound);
+  }
+
   public play (sound: Audio): void {
     sound.play();
   }
