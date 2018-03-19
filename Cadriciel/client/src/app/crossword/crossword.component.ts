@@ -165,12 +165,20 @@ export class CrosswordComponent {
         this.selectedWord = word;
         this.resetInputBoxes();
         if (!word.isComplete) {
+            let x: number;
+            let y: number;
             if (word.isHorizontal) {
-                this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + this.selectedWord.enteredCharacters]
-                    .readyForInput = true;
+                x = word.startPosition.x + this.selectedWord.enteredCharacters;
+                y = word.startPosition.y;
             } else {
-                this.configurationService.grid.boxes[word.startPosition.y + this.selectedWord.enteredCharacters][word.startPosition.x]
-                    .readyForInput = true;
+                x = word.startPosition.x;
+                y = word.startPosition.y + this.selectedWord.enteredCharacters;
+            }
+            if (this.configurationService.grid.boxes[y][x].isFound) {
+                this.selectedWord.enteredCharacters++;
+                this.setInputOnWord(word);
+            } else {
+                this.configurationService.grid.boxes[y][x].readyForInput = true;
             }
         }
     }
@@ -210,7 +218,7 @@ export class CrosswordComponent {
                 }
             }
         }
-        if (wordValue === this.getWordValue(word)) {
+        if (wordValue === this.getWordValue(word) && !word.isComplete) {
             word.isComplete = true;
             this.addToScore(word);
             this.colorFoundBoxes(word);
@@ -246,22 +254,29 @@ export class CrosswordComponent {
         } else {
             this.deselectWords();
         }
+        for (const word of this.configurationService.grid.words) {
+            this.verifyCompletedWord(word);
+        }
     }
 
     private eraseLastCharacter(): void {
         if (this.selectedWord.enteredCharacters > 0) {
             this.selectedWord.enteredCharacters--;
         }
+        let x: number;
+        let y: number;
         if (this.selectedWord.isHorizontal) {
-            this.configurationService.grid.boxes[
-                this.selectedWord.startPosition.y][
-                this.selectedWord.startPosition.x + this.selectedWord.enteredCharacters]
-                .inputChar.value = "";
+            x = this.selectedWord.startPosition.x + this.selectedWord.enteredCharacters;
+            y = this.selectedWord.startPosition.y;
         } else {
-            this.configurationService.grid.boxes[
-                this.selectedWord.startPosition.y + this.selectedWord.enteredCharacters][
-                this.selectedWord.startPosition.x]
-                .inputChar.value = "";
+            x = this.selectedWord.startPosition.x;
+            y = this.selectedWord.startPosition.y + this.selectedWord.enteredCharacters;
+        }
+        if (this.configurationService.grid.boxes[y][x].isFound) {
+            this.selectedWord.enteredCharacters--;
+            this.eraseLastCharacter();
+        } else {
+            this.configurationService.grid.boxes[y][x].inputChar.value = "";
         }
     }
 }
