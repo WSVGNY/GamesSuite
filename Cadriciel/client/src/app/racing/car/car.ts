@@ -104,6 +104,10 @@ export class Car extends Object3D {
         return this._mesh.rotation.y * RAD_TO_DEG;
     }
 
+    public get meshMatrix(): Matrix4 {
+        return this._mesh.matrix;
+    }
+
     public get currentPosition(): Vector3 {
         return this._mesh.position;
     }
