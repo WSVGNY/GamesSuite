@@ -6,6 +6,7 @@ import { MS_TO_SECONDS, GRAVITY, RAD_TO_DEG, CAR_TEXTURE } from "../constants";
 import { Wheel } from "./wheel";
 import { CarConfig } from "./carConfig";
 import { CarLights } from "./carLights";
+import { Hitbox } from "../collision-manager/hitbox";
 
 export class Car extends Object3D {
 
@@ -25,8 +26,9 @@ export class Car extends Object3D {
     private _steeringWheelDirection: number;
     private _initialDirection: Vector3 = new Vector3(0, 0, -1);
     public _isAI: boolean;
+    private _hitbox: Hitbox;
 
-    public detectionShpere: Mesh = this.createDetectionSphere();
+    // public detectionShpere: Mesh = this.createDetectionSphere();
 
     public constructor(
         engine: Engine = new Engine(),
@@ -80,7 +82,8 @@ export class Car extends Object3D {
         this._mesh.setRotationFromAxisAngle(new Vector3(0, 1, 0), rotationAngle);
         this._lights = new CarLights();
         this._mesh.add(this._lights);
-        this._mesh.add(this.detectionShpere);
+        this._hitbox = new Hitbox();
+        this._mesh.add(this._hitbox);
         this.add(this._mesh);
         this.dettachLights();
     }
@@ -103,6 +106,10 @@ export class Car extends Object3D {
 
     public get currentPosition(): Vector3 {
         return this._mesh.position;
+    }
+
+    public get hitbox(): Hitbox {
+        return this._hitbox;
     }
 
     public getChild(childName: string): Object3D {
@@ -304,11 +311,11 @@ export class Car extends Object3D {
         return this.speed.normalize().dot(this.direction) > 0.05;
     }
 
-    private createDetectionSphere(): Mesh {
-        const geometry: SphereGeometry = new SphereGeometry(2, 32, 32);
-        geometry.computeBoundingSphere();
-        const material: MeshBasicMaterial = new MeshBasicMaterial({ color: 0xFFF069 });
+    // private createDetectionSphere(): Mesh {
+    //     const geometry: SphereGeometry = new SphereGeometry(2, 32, 32);
+    //     geometry.computeBoundingSphere();
+    //     const material: MeshBasicMaterial = new MeshBasicMaterial({ color: 0xFFF069 });
 
-        return new Mesh(geometry, material);
-    }
+    //     return new Mesh(geometry, material);
+    // }
 }
