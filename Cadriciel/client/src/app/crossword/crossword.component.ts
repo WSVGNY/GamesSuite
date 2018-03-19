@@ -2,7 +2,6 @@ import { Component, HostListener } from "@angular/core";
 import { CommonGridBox } from "../../../../common/crossword/commonGridBox";
 import { CommonWord } from "../../../../common/crossword/commonWord";
 import { ConfigurationService } from "./configuration.service";
-import { MultiplayerCommunicationService } from "./multiplayer-communication.service";
 
 const BACKSPACE_KEYCODE: number = 8;
 
@@ -18,41 +17,12 @@ export class CrosswordComponent {
     public correctWordCount: number = 0;
     public isInCheatMode: boolean = false;
 
-    private message: string;
-    private messages: string[] = [];
-    private _hasSubscribed: boolean = false;
-
     public constructor(
-        public configurationService: ConfigurationService,
-        private multiplayerCommunicationService: MultiplayerCommunicationService) {
-    }
-
-    public subscribeToMessages(): void {
-        if (!this._hasSubscribed) {
-            this.multiplayerCommunicationService.getMessages().subscribe((message: string) => {
-                this.messages.push(message);
-                console.log(message);
-            });
-            this._hasSubscribed = true;
-
-        }
-    }
-
-    public sendMessage(): void {
-        this.multiplayerCommunicationService.sendMessage(this.message);
-        this.message = "";
+        public configurationService: ConfigurationService) {
     }
 
     public isConfigurationDone(): boolean {
         return this.configurationService.configurationDone;
-    }
-
-    public isSocketConnected(): boolean {
-        if (this.configurationService.isSocketConnected) {
-            this.subscribeToMessages();
-        }
-
-        return this.configurationService.isSocketConnected;
     }
 
     public changeMode(): void {

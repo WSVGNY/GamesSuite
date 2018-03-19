@@ -3,6 +3,8 @@ import * as sio from "socket.io-client";
 import { Observable } from "rxjs/Observable";
 import { SocketEvents } from "../../../../common/communication/socketEvents";
 import { Observer } from "rxjs/Observer";
+import { Difficulty } from "../../../../common/crossword/difficulty";
+import { CrosswordGame } from "../../../../common/crossword/crosswordGame";
 @Injectable()
 export class MultiplayerCommunicationService {
 
@@ -10,14 +12,25 @@ export class MultiplayerCommunicationService {
     private _socket: SocketIOClient.Socket;
     private _hasConnected: boolean = false;
     private _room: string;
-    private _rooms: string[] = [];
+    private _games: CrosswordGame[] = [];
+    private _rooms: { roomName: string, difficulty: Difficulty, player: string }[] = [];
 
     public get room(): string {
         return this._room;
     }
 
     public get rooms(): string[] {
-        return this._rooms;
+        if (this._games !== undefined) {
+            const rooms: string[] = [];
+            for (const room of this._games) {
+                rooms.push(room.roomName);
+            }
+            console.log(rooms);
+
+            return rooms;
+        }
+
+        return undefined;
     }
 
     public get hasConnected(): boolean {
@@ -31,9 +44,9 @@ export class MultiplayerCommunicationService {
         this._socket = sio(this.url);
     }
 
-    public createRoom(playerName: string): void {
+    public createRoom(playerName: string, roomDifficulty: Difficulty): void {
         if (this._socket !== undefined) {
-            this._socket.emit(SocketEvents.RoomCreate, playerName);
+            this._socket.emit(SocketEvents.RoomCreate, { creator: playerName, difficulty: roomDifficulty });
         }
     }
 
@@ -49,7 +62,7 @@ export class MultiplayerCommunicationService {
         }
     }
 
-    public connectToRoom(room: { roomName: string, playerName: string }): void {
+    public connectToRoom(room: { roomInfo: string, playerName: string }): void {
         if (this._socket !== undefined) {
             this._socket.emit(SocketEvents.RoomConnect, room);
         }
@@ -65,9 +78,13 @@ export class MultiplayerCommunicationService {
                 console.log(message);
                 this._room = message;
             });
-            this._socket.on(SocketEvents.RoomsListQuery, (message: string[]) => {
-                this._rooms = message;
-                console.log(this._rooms);
+            this._socket.on(SocketEvents.RoomsListsQueryResponse, (message: CrosswordGame[]) => {
+                console.log(message);
+                this._games = message;
+                for (const room of message) {
+                    this._rooms.push({ roomName: room["_roomName"], difficulty: room["_difficulty"], player: room["_players"][0].name });
+                }
+
             });
             this._socket.on(SocketEvents.StartGame, () => {
                 observer.next(SocketEvents.StartGame);
