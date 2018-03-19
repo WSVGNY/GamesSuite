@@ -61,7 +61,7 @@ export class CrosswordComponent {
 
     public highlightWordOfBox(gridBox: CommonGridBox): void {
         if (gridBox.constraints[0] !== undefined) {
-            this.highlightWord((gridBox as CommonGridBox).constraints[0]);
+            this.highlightWord(this.findEquivalent(gridBox.constraints[0]));
         }
     }
 
@@ -136,7 +136,7 @@ export class CrosswordComponent {
 
     public setInputOnFirstBox(gridBox: CommonGridBox): void {
         if (!gridBox.isBlack) {
-            this.setInputOnWord(gridBox.constraints[0]);
+            this.setInputOnWord(this.findEquivalent(gridBox.constraints[0]));
         }
     }
 
@@ -267,5 +267,15 @@ export class CrosswordComponent {
         } else {
             return this.selectedWord.startPosition.y + this.selectedWord.enteredCharacters;
         }
+    }
+
+    private findEquivalent(badWord: CommonWord): CommonWord {
+        for (const word of this.configurationService.grid.words) {
+            if (word.value === badWord.value) {
+                return word;
+            }
+        }
+
+        return undefined;
     }
 }
