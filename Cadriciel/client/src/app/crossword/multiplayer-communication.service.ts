@@ -13,7 +13,7 @@ export class MultiplayerCommunicationService {
     private _hasConnected: boolean = false;
     private _room: string;
     private _games: CrosswordGame[] = [];
-    private _rooms: string[] = [];
+    private _rooms: { roomName: string, difficulty: Difficulty }[] = [];
 
     public get room(): string {
         return this._room;
@@ -62,7 +62,7 @@ export class MultiplayerCommunicationService {
         }
     }
 
-    public connectToRoom(room: { roomName: string, playerName: string }): void {
+    public connectToRoom(room: { roomInfo: string, playerName: string }): void {
         if (this._socket !== undefined) {
             this._socket.emit(SocketEvents.RoomConnect, room);
         }
@@ -82,7 +82,7 @@ export class MultiplayerCommunicationService {
                 console.log(message);
                 this._games = message;
                 for (const room of message) {
-                    this._rooms.push(room["_roomName"] /*+ " of difficulty: " + room["_difficulty"]*/);
+                    this._rooms.push({ roomName: room["_roomName"], difficulty: room["_difficulty"] });
                 }
 
             });

@@ -8,7 +8,7 @@
       <h2>ROOM LIST: </h2>
       <button *ngFor="let room of multiplayerCommunicationService._rooms" (click)="configurationService.playerName = player.value"
         (click)="onRoomSelect(room)">
-        {{room}}
+        {{room["roomName"]}} of difficulty {{room["difficulty"]}}
       </button>
     </div>
   </div>

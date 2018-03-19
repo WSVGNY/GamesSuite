@@ -66,7 +66,6 @@ export class ServerSockets {
                     emptyRooms.push(rooms);
                 }
             }
-            console.log(emptyRooms);
             socket.emit(SocketEvents.RoomsListsQueryResponse, emptyRooms);
         });
     }
@@ -75,11 +74,18 @@ export class ServerSockets {
         socket.on(SocketEvents.RoomConnect, (room: string) => {
             console.log("room connect event");
             console.log(room);
+            // console.log(this._games);
+            console.log("ALLO");
+            // console.log(this._games);
             for (const game of this._games) {
-                if (game.roomName === room["roomName"]) {
-                    if (game.addPlayer({ name: room["playerName"] })) { // TODO: change name to receive it in message
+                console.log("WTF");
+                console.log(game.roomName);
+                console.log(room["roomInfo"]["roomName"]);
+                if (game["_roomName"] === room["roomInfo"]["roomName"]) {
+                    console.log("allo");
+                    if (game.addPlayer({ name: room["playerName"] })) {
                         socket.join(room["_roomName"]);
-                        console.log("Connection to room: " + room["roomName"] + " by " + room["playerName"] + " successfull");
+                        console.log("Connection to room: " + room["roomInfo"]["roomName"] + " by " + room["playerName"] + " successfull");
                         if (game.isFull()) {
                             console.log("Game is starting from server");
                             this.io.to(game.roomName).emit(SocketEvents.StartGame);
