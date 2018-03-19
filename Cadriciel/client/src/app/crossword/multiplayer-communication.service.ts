@@ -5,6 +5,7 @@ import { SocketEvents } from "../../../../common/communication/socketEvents";
 import { Observer } from "rxjs/Observer";
 import { Difficulty } from "../../../../common/crossword/difficulty";
 import { MultiplayerCrosswordGame } from "../../../../common/crossword/multiplayerCrosswordGame";
+import { CommonGrid } from "../../../../common/crossword/commonGrid";
 @Injectable()
 export class MultiplayerCommunicationService {
 
@@ -12,6 +13,7 @@ export class MultiplayerCommunicationService {
     private _socket: SocketIOClient.Socket;
     private _hasConnected: boolean = false;
     public _games: MultiplayerCrosswordGame[] = [];
+    public grid: CommonGrid;
 
     public get hasConnected(): boolean {
         return this._hasConnected;
@@ -48,6 +50,12 @@ export class MultiplayerCommunicationService {
         }
     }
 
+    public gridQuery(difficulty: Difficulty): void {
+        if (this._socket !== undefined) {
+            this._socket.emit(SocketEvents.GridQuery);
+        }
+    }
+
     // https://codingblast.com/chat-application-angular-socket-io/
     public getMessages = () => {
         return Observable.create((observer: Observer<string>) => {
@@ -61,7 +69,8 @@ export class MultiplayerCommunicationService {
                 console.log(message);
                 this._games = message;
             });
-            this._socket.on(SocketEvents.StartGame, () => {
+            this._socket.on(SocketEvents.StartGame, (message: CommonGrid) => {
+                this.grid = message;
                 observer.next(SocketEvents.StartGame);
             });
         });
