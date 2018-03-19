@@ -5,6 +5,7 @@ import { CommonGrid } from "../../../../../common/crossword/commonGrid";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { MultiplayerCommunicationService } from "../multiplayer-communication.service";
 import { SocketEvents } from "../../../../../common/communication/socketEvents";
+import { CrosswordGame } from "../../../../../common/crossword/crosswordGame";
 
 @Component({
     selector: "app-configuration",
@@ -51,8 +52,8 @@ export class ConfigurationComponent {
         }
     }
 
-    public onRoomSelect(room: string): void {
-        console.log({ roomName: room, playerName: this.configurationService.playerName });
+    public onRoomSelect(room: CrosswordGame): void {
+        console.log(room);
         this.multiplayerCommunicationService.connectToRoom({ roomInfo: room, playerName: this.configurationService.playerName });
     }
 

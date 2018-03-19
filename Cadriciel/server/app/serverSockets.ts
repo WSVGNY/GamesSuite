@@ -71,20 +71,20 @@ export class ServerSockets {
     }
 
     private onRoomConnect(socket: SocketIO.Socket): void {
-        socket.on(SocketEvents.RoomConnect, (room: string) => {
+        socket.on(SocketEvents.RoomConnect, (message: { roomInfo: CrosswordGame, playerName: string }) => {
             console.log("room connect event");
             for (const game of this._games) {
-                console.log(room["roomInfo"]["roomName"]);
-                if (game["_roomName"] === room["roomInfo"]["roomName"]) {
-                    if (game.addPlayer({ name: room["playerName"] })) {
-                        socket.join(room["roomInfo"]["roomName"]);
-                        console.log("Connection to room: " + room["roomInfo"]["roomName"] + " by " + room["playerName"] + " successfull");
+                const room: CrosswordGame = CrosswordGame.create(JSON.stringify(message["roomInfo"]));
+                if (game.roomName === room.roomName) {
+                    if (game.addPlayer({ name: message["playerName"] })) {
+                        socket.join(room.roomName);
+                        console.log("Connection to room: " + room.roomName + " by " + message["playerName"] + " successfull");
                         if (game.isFull()) {
                             console.log("Game is starting from server");
                             this.io.to(game.roomName).emit(SocketEvents.StartGame);
                         }
                     } else {
-                        console.log("Unable to connect to room: " + room["roomName"] + " by " + room["playerName"]);
+                        console.log("Unable to connect to room: " + room.roomName + " by " + message["playerName"]);
                     }
                     break;
                 }
