@@ -73,13 +73,7 @@ export class ServerSockets {
     private onRoomConnect(socket: SocketIO.Socket): void {
         socket.on(SocketEvents.RoomConnect, (room: string) => {
             console.log("room connect event");
-            console.log(room);
-            // console.log(this._games);
-            console.log("ALLO");
-            // console.log(this._games);
             for (const game of this._games) {
-                console.log("WTF");
-                console.log(game.roomName);
                 console.log(room["roomInfo"]["roomName"]);
                 if (game["_roomName"] === room["roomInfo"]["roomName"]) {
                     console.log("allo");
