@@ -65,7 +65,7 @@ export class CrosswordComponent {
 
     public highlightWord(word: CommonWord): void {
         this.configurationService.currentPlayer.selectedWord = word;
-        //TODO: Envoie a l'autre joueur
+        // TODO: Envoie a l'autre joueur
         this.multiplayerCommunicationService.playerUpdate(this.configurationService.currentPlayer);
         if (!this.configurationService.currentPlayer.selectedWord.isComplete) {
             this.deselectWords();
@@ -131,7 +131,8 @@ export class CrosswordComponent {
 
     private addToScore(word: CommonWord): void {
         this.configurationService.currentPlayer.score++;
-        //TODO: Envoie a l'autre joueur
+        // TODO: Envoie a l'autre joueur
+        // this.multiplayerCommunicationService.playerUpdate(this.configurationService.currentPlayer);
     }
 
     public setInputOnFirstBox(gridBox: CommonGridBox): void {
@@ -147,7 +148,8 @@ export class CrosswordComponent {
     public setInputOnWord(word: CommonWord): void {
         word = this.verifyCompletedWord(word);
         this.configurationService.currentPlayer.selectedWord = word;
-        //TODO: Envoie a l'autre joueur
+        // TODO: Envoie a l'autre joueur
+        // this.multiplayerCommunicationService.playerUpdate(this.configurationService.currentPlayer);
         this.resetInputBoxes();
         if (!word.isComplete) {
             if (this.configurationService.grid.boxes[this.getY()][this.getX()].isFound) {
@@ -155,14 +157,16 @@ export class CrosswordComponent {
                 this.setInputOnWord(word);
             } else {
                 this.configurationService.currentPlayer.selectedGridBox = this.configurationService.grid.boxes[this.getY()][this.getX()];
-                //TODO: Envoie a l'autre joueur
+                // TODO: Envoie a l'autre joueur
+                // this.multiplayerCommunicationService.playerUpdate(this.configurationService.currentPlayer);
             }
         }
     }
 
     private resetInputBoxes(): void {
         this.configurationService.currentPlayer.selectedGridBox = undefined;
-        //TODO: Envoie a l'autre joueur
+        // TODO: Envoie a l'autre joueur
+        // this.multiplayerCommunicationService.playerUpdate(this.configurationService.currentPlayer);
     }
 
     private colorFoundBoxes(word: CommonWord): void {
