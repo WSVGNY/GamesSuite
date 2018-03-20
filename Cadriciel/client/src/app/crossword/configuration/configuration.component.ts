@@ -32,6 +32,7 @@ export class ConfigurationComponent {
 
     public setJoinGame(): void {
         this.isJoinGame = true;
+        this.configurationService.isTwoPlayerGame = true;
         this.multiplayerCommunicationService.connectToSocket();
         this.subscribeToMessages();
         this.multiplayerCommunicationService.roomListQuery();
@@ -45,7 +46,9 @@ export class ConfigurationComponent {
                 console.log(message);
                 if (message === SocketEvents.StartGame) {
                     this.configurationService.grid = this.multiplayerCommunicationService.grid;
-                    console.log(this.multiplayerCommunicationService.grid);
+                    console.log(this.multiplayerCommunicationService.currentGame.players);
+                    this.configurationService.playerName = this.multiplayerCommunicationService.currentGame.players[0].name;
+                    this.configurationService.secondPlayerName = this.multiplayerCommunicationService.currentGame.players[1].name;
                     this.configurationService.lookingForPlayer = false;
                     this.configurationService.configurationDone = true;
                 }

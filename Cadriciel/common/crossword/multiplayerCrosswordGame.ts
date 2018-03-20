@@ -1,15 +1,20 @@
 import { CrosswordPlayer } from "./crosswordPlayer";
 import { Difficulty } from "./difficulty";
+import { CommonGrid } from "./commonGrid";
 
 export class MultiplayerCrosswordGame {
     public readonly MAX_PLAYER_NUMBER: number = 2;
 
     static create(stringObject: string): MultiplayerCrosswordGame {
         const jsonObject = JSON.parse(stringObject) as MultiplayerCrosswordGame;
-        return new MultiplayerCrosswordGame(jsonObject["_roomName"], jsonObject["_difficulty"], jsonObject["_players"]);
+        return new MultiplayerCrosswordGame(jsonObject["_roomName"], jsonObject["_difficulty"], jsonObject["_players"], jsonObject["grid"]);
     }
 
-    public constructor(private _roomName: string, private _difficulty: Difficulty, private _players: CrosswordPlayer[] = []) {
+    public constructor(
+        private _roomName: string,
+        private _difficulty: Difficulty,
+        private _players: CrosswordPlayer[] = [],
+        public grid?: CommonGrid) {
     }
 
     public isFull(): boolean {

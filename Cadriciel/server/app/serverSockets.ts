@@ -15,7 +15,6 @@ export class ServerSockets {
     private io: SocketIO.Server;
     private _httpServer: http.Server;
     private _games: MultiplayerCrosswordGame[] = [];
-    private grid: CommonGrid;
 
     public constructor(server: http.Server, initialize: boolean = false) {
         this._httpServer = server;
@@ -87,7 +86,8 @@ export class ServerSockets {
                         if (game.isFull()) {
                             console.log("Game is starting from server");
                             this.gridCreateQuery(game).then(() => {
-                                this.io.to(game.roomName).emit(SocketEvents.StartGame, this.grid);
+                                // socket.broadcast.to(game.roomName).emit(SocketEvents.StartGameRoom, room);
+                                this.io.to(game.roomName).emit(SocketEvents.StartGame, game);
                             }).catch((e: Error) => {
                                 console.error(e);
                             });
@@ -113,7 +113,7 @@ export class ServerSockets {
     private async gridCreateQuery(game: MultiplayerCrosswordGame): Promise<void> {
         await requestPromise(this.GRID_GET_URL + game.difficulty).then(
             (result: CommonGrid) => {
-                this.grid = JSON.parse(result.toString());
+                game.grid = JSON.parse(result.toString());
             }
         ).catch((e: Error) => {
             console.error(e);
