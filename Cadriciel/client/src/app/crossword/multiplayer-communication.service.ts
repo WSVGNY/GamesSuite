@@ -4,34 +4,16 @@ import { Observable } from "rxjs/Observable";
 import { SocketEvents } from "../../../../common/communication/socketEvents";
 import { Observer } from "rxjs/Observer";
 import { Difficulty } from "../../../../common/crossword/difficulty";
-import { CrosswordGame } from "../../../../common/crossword/crosswordGame";
+import { MultiplayerCrosswordGame } from "../../../../common/crossword/multiplayerCrosswordGame";
+import { CommonGrid } from "../../../../common/crossword/commonGrid";
 @Injectable()
 export class MultiplayerCommunicationService {
 
     private readonly url: string = "http://localhost:3000";
     private _socket: SocketIOClient.Socket;
     private _hasConnected: boolean = false;
-    private _room: string;
-    private _games: CrosswordGame[] = [];
-    private _rooms: { roomName: string, difficulty: Difficulty, player: string }[] = [];
-
-    public get room(): string {
-        return this._room;
-    }
-
-    public get rooms(): string[] {
-        if (this._games !== undefined) {
-            const rooms: string[] = [];
-            for (const room of this._games) {
-                rooms.push(room.roomName);
-            }
-            console.log(rooms);
-
-            return rooms;
-        }
-
-        return undefined;
-    }
+    public _games: MultiplayerCrosswordGame[] = [];
+    public grid: CommonGrid;
 
     public get hasConnected(): boolean {
         return this._hasConnected;
@@ -62,9 +44,15 @@ export class MultiplayerCommunicationService {
         }
     }
 
-    public connectToRoom(room: { roomInfo: string, playerName: string }): void {
+    public connectToRoom(room: { roomInfo: MultiplayerCrosswordGame, playerName: string }): void {
         if (this._socket !== undefined) {
             this._socket.emit(SocketEvents.RoomConnect, room);
+        }
+    }
+
+    public gridQuery(difficulty: Difficulty): void {
+        if (this._socket !== undefined) {
+            this._socket.emit(SocketEvents.GridQuery);
         }
     }
 
@@ -76,17 +64,13 @@ export class MultiplayerCommunicationService {
             });
             this._socket.on(SocketEvents.RoomCreated, (message: string) => {
                 console.log(message);
-                this._room = message;
             });
-            this._socket.on(SocketEvents.RoomsListsQueryResponse, (message: CrosswordGame[]) => {
+            this._socket.on(SocketEvents.RoomsListsQueryResponse, (message: MultiplayerCrosswordGame[]) => {
                 console.log(message);
                 this._games = message;
-                for (const room of message) {
-                    this._rooms.push({ roomName: room["_roomName"], difficulty: room["_difficulty"], player: room["_players"][0].name });
-                }
-
             });
-            this._socket.on(SocketEvents.StartGame, () => {
+            this._socket.on(SocketEvents.StartGame, (message: CommonGrid) => {
+                this.grid = message;
                 observer.next(SocketEvents.StartGame);
             });
         });

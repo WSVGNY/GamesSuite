@@ -6,9 +6,9 @@
       Enter Name :
       <input #player value="Player 2" />
       <h2>ROOM LIST: </h2>
-      <button *ngFor="let room of multiplayerCommunicationService._rooms" (click)="configurationService.playerName = player.value"
+      <button *ngFor="let room of multiplayerCommunicationService._games" (click)="configurationService.playerName = player.value"
         (click)="onRoomSelect(room)">
-        {{room["roomName"]}} of difficulty {{room["difficulty"]}} created by {{room["player"]}}
+        {{room["_roomName"]}} of difficulty {{room["_difficulty"]}} created by {{room["_players"][0].name}}
       </button>
     </div>
   </div>

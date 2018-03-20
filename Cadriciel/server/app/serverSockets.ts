@@ -1,16 +1,21 @@
 import * as sio from "socket.io";
 import { SocketEvents } from "../../common/communication/socketEvents";
 import * as http from "http";
-import { CrosswordGame } from "../../common/crossword/crosswordGame";
+import { MultiplayerCrosswordGame } from "../../common/crossword/multiplayerCrosswordGame";
 import { Difficulty } from "../../common/crossword/difficulty";
+import * as requestPromise from "request-promise-native";
+import { CommonGrid } from "../../common/crossword/commonGrid";
 
 export class ServerSockets {
     private static _numberOfRoom: number = 0;
+
+    private readonly GRID_GET_URL: string = "http://localhost:3000/grid/gridGet/";
     private readonly baseRoomName: string = "ROOM";
 
     private io: SocketIO.Server;
     private _httpServer: http.Server;
-    private _games: CrosswordGame[] = [];
+    private _games: MultiplayerCrosswordGame[] = [];
+    private grid: CommonGrid;
 
     public constructor(server: http.Server, initialize: boolean = false) {
         this._httpServer = server;
@@ -60,7 +65,7 @@ export class ServerSockets {
     private onRoomsListQuery(socket: SocketIO.Socket): void {
         socket.on(SocketEvents.RoomsListQuery, () => {
             console.log("Room list query");
-            const emptyRooms: CrosswordGame[] = [];
+            const emptyRooms: MultiplayerCrosswordGame[] = [];
             for (const rooms of this._games) {
                 if (!rooms.isFull()) {
                     emptyRooms.push(rooms);
@@ -70,21 +75,25 @@ export class ServerSockets {
         });
     }
 
-    private onRoomConnect(socket: SocketIO.Socket): void {
-        socket.on(SocketEvents.RoomConnect, (room: string) => {
+    private async onRoomConnect(socket: SocketIO.Socket): Promise<void> {
+        socket.on(SocketEvents.RoomConnect, (message: { roomInfo: MultiplayerCrosswordGame, playerName: string }) => {
             console.log("room connect event");
             for (const game of this._games) {
-                console.log(room["roomInfo"]["roomName"]);
-                if (game["_roomName"] === room["roomInfo"]["roomName"]) {
-                    if (game.addPlayer({ name: room["playerName"] })) {
-                        socket.join(room["roomInfo"]["roomName"]);
-                        console.log("Connection to room: " + room["roomInfo"]["roomName"] + " by " + room["playerName"] + " successfull");
+                const room: MultiplayerCrosswordGame = MultiplayerCrosswordGame.create(JSON.stringify(message["roomInfo"]));
+                if (game.roomName === room.roomName) {
+                    if (game.addPlayer({ name: message["playerName"] })) {
+                        socket.join(room.roomName);
+                        console.log("Connection to room: " + room.roomName + " by " + message["playerName"] + " successfull");
                         if (game.isFull()) {
                             console.log("Game is starting from server");
-                            this.io.to(game.roomName).emit(SocketEvents.StartGame);
+                            this.gridCreateQuery(game).then(() => {
+                                this.io.to(game.roomName).emit(SocketEvents.StartGame, this.grid);
+                            }).catch((e: Error) => {
+                                console.error(e);
+                            });
                         }
                     } else {
-                        console.log("Unable to connect to room: " + room["roomName"] + " by " + room["playerName"]);
+                        console.log("Unable to connect to room: " + room.roomName + " by " + message["playerName"]);
                     }
                     break;
                 }
@@ -94,11 +103,20 @@ export class ServerSockets {
     // tslint:enable:no-console
 
     private createRoom(difficulty: Difficulty): void {
-        this._games.push(new CrosswordGame(this.baseRoomName + ServerSockets._numberOfRoom++, difficulty));
+        this._games.push(new MultiplayerCrosswordGame(this.baseRoomName + ServerSockets._numberOfRoom++, difficulty));
     }
 
     private getSocketRoom(socket: SocketIO.Socket): string {
         return Object.keys(socket.rooms).filter((room: string) => room !== socket.id)[0];
     }
 
+    private async gridCreateQuery(game: MultiplayerCrosswordGame): Promise<void> {
+        await requestPromise(this.GRID_GET_URL + game.difficulty).then(
+            (result: CommonGrid) => {
+                this.grid = JSON.parse(result.toString());
+            }
+        ).catch((e: Error) => {
+            console.error(e);
+        });
+    }
 }

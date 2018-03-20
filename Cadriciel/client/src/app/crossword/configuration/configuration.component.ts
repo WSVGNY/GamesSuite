@@ -5,6 +5,7 @@ import { CommonGrid } from "../../../../../common/crossword/commonGrid";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { MultiplayerCommunicationService } from "../multiplayer-communication.service";
 import { SocketEvents } from "../../../../../common/communication/socketEvents";
+import { MultiplayerCrosswordGame } from "../../../../../common/crossword/multiplayerCrosswordGame";
 
 @Component({
     selector: "app-configuration",
@@ -43,23 +44,29 @@ export class ConfigurationComponent {
                 this.messages.push(message);
                 console.log(message);
                 if (message === SocketEvents.StartGame) {
+                    this.configurationService.grid = this.multiplayerCommunicationService.grid;
+                    console.log(this.multiplayerCommunicationService.grid);
+                    this.configurationService.lookingForPlayer = false;
                     this.configurationService.configurationDone = true;
                 }
             });
             this._hasSubscribed = true;
-
         }
     }
 
-    public onRoomSelect(room: string): void {
-        console.log({ roomName: room, playerName: this.configurationService.playerName });
+    public onRoomSelect(room: MultiplayerCrosswordGame): void {
+        console.log(room);
         this.multiplayerCommunicationService.connectToRoom({ roomInfo: room, playerName: this.configurationService.playerName });
     }
 
     public createGrid(): void {
-        this._gridService.gridGet(this.difficulty).subscribe((grid: CommonGrid) => {
-            this.configurationService.grid = grid;
-        });
+        if (!this.configurationService.isTwoPlayerGame) {
+            this._gridService.gridGet(this.difficulty).subscribe((grid: CommonGrid) => {
+                this.configurationService.grid = grid;
+            });
+        } else {
+            // this.multiplayerCommunicationService.gridQuery()
+        }
     }
 
     private makeGrid(): void {
