@@ -20,6 +20,7 @@ export class CollisionManagerService {
     private collisionAxisOrthoHelper: VectorHelper;
     private collisionToFirstCarHelper: VectorHelper;
     private collisionToSecondCarHelper: VectorHelper;
+    private tangantialComponentHelper: VectorHelper;
     private radialComponentHelper: VectorHelper;
     private carSpeedHelper: VectorHelper;
     private a: number = 0;
@@ -29,6 +30,7 @@ export class CollisionManagerService {
         this.collisionAxisOrthoHelper = new VectorHelper(YELLOW);
         this.collisionToFirstCarHelper = new VectorHelper(CYAN);
         this.collisionToSecondCarHelper = new VectorHelper(BLUE);
+        this.tangantialComponentHelper = new VectorHelper(GREEN);
         this.radialComponentHelper = new VectorHelper(RED);
         this.carSpeedHelper = new VectorHelper(PINK);
     }
@@ -41,11 +43,18 @@ export class CollisionManagerService {
                 this.carSpeedHelper.update(cars[i].currentPosition, cars[i].currentPosition.clone().add(firstCarSpeed));
                 gameScene.add(this.carSpeedHelper);
 
+                // if (this.a % 100 === 0) {
+                //     console.log("world: \n" + "x: " + firstCarSpeed.clone().x + " z: " + firstCarSpeed.clone().z);
+                //     console.log("local: \n" + "x: " + cars[i]._speed.clone().x + " z: " + cars[i]._speed.clone().z);
+                // }
+
                 if (cars[i].currentPosition.distanceTo(cars[j].currentPosition) < MINIMUM_CAR_DISTANCE) {
                     const collisionPoint: Vector3 = this.detectCollision(cars[i], cars[j]);
                     if (collisionPoint !== undefined) {
-                        this.computeCollisionAxis(cars[i], cars[j], collisionPoint, gameScene);
-
+                        if (cars[i].hitbox._inCollision === false) {
+                            cars[i].hitbox._inCollision = true;
+                            this.computeCollisionAxis(cars[i], cars[j], collisionPoint, gameScene);
+                        }
                     }
                 }
             }
@@ -75,42 +84,63 @@ export class CollisionManagerService {
         collisionToFirstCar.y = 0;
         collisionToSecondCar.y = 0;
 
-        const firstCarSpeed: Vector3 = firstCar.direction.clone().multiplyScalar(- firstCar._speed.z);
+        const firstCarSpeed: Vector3 = firstCar.direction.clone().multiplyScalar(-firstCar._speed.z);
+        // const secondCarSpeed: Vector3 = secondCar.direction.clone().multiplyScalar(-secondCar._speed.z);
 
-        gameScene.remove(this.collisionToFirstCarHelper);
-        gameScene.remove(this.collisionToSecondCarHelper);
+        // gameScene.remove(this.collisionToFirstCarHelper);
+        // gameScene.remove(this.collisionToSecondCarHelper);
 
-        this.collisionToFirstCarHelper.update(firstCar.currentPosition.clone().add(new Vector3(0, 0.1, 0)),
-                                              collisionPoint.clone().add(new Vector3(0, 0.1, 0)));
-        this.collisionToSecondCarHelper.update(secondCar.currentPosition.clone().add(new Vector3(0, 0.1, 0)),
-                                               collisionPoint.clone().add(new Vector3(0, 0.1, 0)));
+        // this.collisionToFirstCarHelper.update(firstCar.currentPosition.clone().add(new Vector3(0, 0.1, 0)),
+        //                                       collisionPoint.clone().add(new Vector3(0, 0.1, 0)));
+        // this.collisionToSecondCarHelper.update(secondCar.currentPosition.clone().add(new Vector3(0, 0.1, 0)),
+        //                                        collisionPoint.clone().add(new Vector3(0, 0.1, 0)));
 
-        gameScene.add(this.collisionToFirstCarHelper);
-        gameScene.add(this.collisionToSecondCarHelper);
+        // gameScene.add(this.collisionToFirstCarHelper);
+        // gameScene.add(this.collisionToSecondCarHelper);
 
         let halfOfSmallAngle: number = collisionToFirstCar.angleTo(collisionToSecondCar) / 2;
+        // let flipAxis: boolean = false;
         if (collisionToFirstCar.clone().cross(collisionToSecondCar).y < 0) {
             halfOfSmallAngle = -halfOfSmallAngle;
+            // flipAxis = true;
         }
         const collisionAxis: Vector3 = collisionToFirstCar.clone().normalize().applyAxisAngle(new Vector3(0, 1, 0), halfOfSmallAngle);
         collisionAxis.y = 0;
+        // if (flipAxis) {
+        //     collisionAxis.negate();
+        // }
         const collisionAxisOrtho: Vector3 = new Vector3(collisionAxis.z, 0, - collisionAxis.x);
-        const radialComponent: Vector3 = firstCarSpeed.clone().projectOnVector(collisionAxisOrtho);
 
-        gameScene.remove(this.collisionAxisHelper);
-        gameScene.remove(this.collisionAxisOrthoHelper);
-        gameScene.remove(this.radialComponentHelper);
-        this.collisionAxisHelper.update(collisionPoint.clone().add(new Vector3(0, 0.1, 0)),
-                                        collisionPoint.clone().add(new Vector3(0, 0.1, 0)).add(collisionAxis.clone().multiplyScalar(10)));
-        this.collisionAxisOrthoHelper.update(collisionPoint.clone().add(new Vector3(0, 0.1, 0)),
-                                             collisionPoint.clone().add(new Vector3(0, 0.1, 0)).add(
-                                                 collisionAxisOrtho.clone().multiplyScalar(10)));
-        this.radialComponentHelper.update(firstCar.currentPosition.clone().add(new Vector3(0, 0.1, 0)),
-                                          firstCar.currentPosition.clone().add(new Vector3(0, 0.1, 0)).add(radialComponent.clone()));
-        gameScene.add(this.collisionAxisHelper);
-        gameScene.add(this.collisionAxisOrthoHelper);
-        gameScene.add(this.radialComponentHelper);
-        firstCar._speed.add(radialComponent);
-        secondCar._speed.sub(radialComponent);
+        const radialComponent: Vector3 = firstCarSpeed.clone().projectOnVector(collisionAxisOrtho);
+        const tangantialComponent: Vector3 = firstCarSpeed.clone().projectOnVector(collisionAxis);
+
+        const firstCarDirection: Vector3 = firstCar.direction.clone();
+        const secondCarDirection: Vector3 = secondCar.direction.clone();
+        const firstCarDirectionOrtho: Vector3 = new Vector3(firstCarDirection.z, 0, -firstCarDirection.x);
+        const secondCarDirectionOrtho: Vector3 = new Vector3(secondCarDirection.z, 0, -secondCarDirection.x);
+
+        let xSign: number = 1;
+        if (tangantialComponent.clone().cross(firstCarDirection).y < 0) {
+            xSign = -1;
+        }
+        firstCar._speed.x = tangantialComponent.clone().projectOnVector(firstCarDirectionOrtho).length() * xSign;
+
+        let zSign: number = 1;
+        if (tangantialComponent.clone().dot(firstCarDirection) > 0) {
+            zSign = -1;
+        }
+        firstCar._speed.z = tangantialComponent.clone().projectOnVector(firstCarDirection).length() * zSign;
+
+        let xSign2: number = 1;
+        if (radialComponent.clone().cross(secondCarDirection).y < 0) {
+            xSign2 = -1;
+        }
+        secondCar._speed.x = radialComponent.clone().projectOnVector(secondCarDirectionOrtho).length() * xSign2;
+
+        let zSign2: number = 1;
+        if (radialComponent.clone().dot(secondCarDirection) > 0) {
+            zSign2 = -1;
+        }
+        secondCar._speed.z = radialComponent.clone().projectOnVector(secondCarDirection).length() * zSign2;
     }
 }
