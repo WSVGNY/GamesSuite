@@ -42,23 +42,25 @@
 <div *ngIf="isConfigurationDone()">
   <div id="gameInformations" (mousedown)="deselectWords()">
     <h3> {{configurationService.playerOne.name}} :
-      <h4> {{correctWordCount}} words found</h4>
+      <h4> {{configurationService.currentPlayer.score}} words found</h4>
     </h3>
     <h3 *ngIf="configurationService.isTwoPlayerGame" id="secondPlayer"> {{configurationService.playerTwo.name}} :
-      <h4> {{correctWordCount}} words found</h4>
+      <h4> {{configurationService.otherPlayer.score}} words found</h4>
     </h3>
   </div>
 </div>
 
-<div id="grid">
-  <div *ngIf="configurationService.grid !== undefined">
-    <div *ngFor="let line of configurationService.grid.boxes">
-      <div *ngFor="let gridBox of line" (mouseup)="highlightWordOfBox(gridBox)" (click)="setInputOnFirstBox(gridBox)">
-        <div (mousedown)="deselectWords()" [ngClass]="{filledGridBox : gridBox.isBlack, 
-          selectedGridBox: gridBox.isColored, foundGridBox: gridBox.isFound, inputGridBox: gridBox===selectedGridBox, emptyGridBox : !gridBox.isBlack}">
-          <div id="relative">
-            <div *ngIf="gridBox.inputChar != undefined && gridBox.inputChar.value != undefined" class="userInputLetter">{{gridBox.inputChar.value}}</div>
-            <div class="definitionID">{{getGridBoxID(gridBox)}}</div>
+<div *ngIf="isConfigurationDone()">
+  <div id="grid">
+    <div *ngIf="configurationService.grid !== undefined">
+      <div *ngFor="let line of configurationService.grid.boxes">
+        <div *ngFor="let gridBox of line" (mouseup)="highlightWordOfBox(gridBox)" (click)="setInputOnFirstBox(gridBox)">
+          <div (mousedown)="deselectWords()" [ngClass]="{filledGridBox : gridBox.isBlack, 
+            selectedGridBox: gridBox.isColored, foundGridBox: gridBox.isFound, inputGridBox: gridBox===getMySelectedGridBox(), emptyGridBox : !gridBox.isBlack}">
+            <div id="relative">
+              <div *ngIf="gridBox.inputChar != undefined && gridBox.inputChar.value != undefined" class="userInputLetter">{{gridBox.inputChar.value}}</div>
+              <div class="definitionID">{{getGridBoxID(gridBox)}}</div>
+            </div>
           </div>
         </div>
       </div>
