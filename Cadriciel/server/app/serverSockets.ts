@@ -86,7 +86,7 @@ export class ServerSockets {
                         socket.join(room.roomName);
                         console.log("Connection to room: " + room.roomName + " by " + message["playerName"] + " successfull");
                         if (game.isFull()) {
-                            console.log("trying to find grid");
+                            console.log("Game is starting from server");
                             let isGenerated: boolean = false;
                             while (!isGenerated) {
                                 for (let i: number = 0; i < this._grids.length; ++i) {
@@ -96,12 +96,12 @@ export class ServerSockets {
                                     }
                                 }
                             }
-                            console.log("Game is starting from server");
+                            console.log("emiting grid");
                             this.io.to(game.roomName).emit(SocketEvents.StartGame, game);
                         } else {
                             console.log("Unable to connect to room: " + room.roomName + " by " + message["playerName"]);
-                            break;
                         }
+                        break;
                     }
                 }
             }
