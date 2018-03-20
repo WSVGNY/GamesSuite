@@ -57,6 +57,7 @@ export class ConfigurationComponent {
     }
 
     public onRoomSelect(room: MultiplayerCrosswordGame, playerName: string): void {
+        this.configurationService.currentPlayerName = playerName;
         this.multiplayerCommunicationService.connectToRoom({ roomInfo: room, playerName: playerName });
     }
 
@@ -92,11 +93,13 @@ export class ConfigurationComponent {
 
     public submitName(playerName: string): void {
         this.configurationService.playerOne = { name: playerName, color: "teal", score: 0 };
+        this.configurationService.currentPlayerName = this.configurationService.playerOne.name;
         this.configurationService.configurationDone = true;
     }
 
     public createRoom(name: string): void {
         this.multiplayerCommunicationService.connectToSocket();
+        this.configurationService.currentPlayerName = name;
         this.subscribeToMessages();
         this.multiplayerCommunicationService.createRoom(name, this.difficulty);
         this.configurationService.isSocketConnected = true;
