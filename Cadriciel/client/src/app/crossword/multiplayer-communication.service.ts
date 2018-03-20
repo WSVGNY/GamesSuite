@@ -6,6 +6,7 @@ import { Observer } from "rxjs/Observer";
 import { Difficulty } from "../../../../common/crossword/difficulty";
 import { MultiplayerCrosswordGame } from "../../../../common/crossword/multiplayerCrosswordGame";
 import { CommonGrid } from "../../../../common/crossword/commonGrid";
+import { Player } from "../../../../common/crossword/player";
 
 @Injectable()
 export class MultiplayerCommunicationService {
@@ -53,6 +54,12 @@ export class MultiplayerCommunicationService {
     public roomListQuery(): void {
         if (this._socket !== undefined) {
             this._socket.emit(SocketEvents.RoomsListQuery);
+        }
+    }
+
+    public playerUpdate(player: Player): void {
+        if (this._socket !== undefined) {
+            this._socket.emit(SocketEvents.PlayerUpdate, player);
         }
     }
 

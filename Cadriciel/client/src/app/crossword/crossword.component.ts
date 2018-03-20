@@ -2,6 +2,7 @@ import { Component, HostListener } from "@angular/core";
 import { CommonGridBox } from "../../../../common/crossword/commonGridBox";
 import { CommonWord } from "../../../../common/crossword/commonWord";
 import { ConfigurationService } from "./configuration.service";
+import { MultiplayerCommunicationService } from "./multiplayer-communication.service";
 
 const BACKSPACE_KEYCODE: number = 8;
 
@@ -21,7 +22,7 @@ export class CrosswordComponent {
     public isInCheatMode: boolean = false;
 
     public constructor(
-        public configurationService: ConfigurationService) {
+        public configurationService: ConfigurationService, private multiplayerCommunicationService: MultiplayerCommunicationService) {
     }
 
     public isConfigurationDone(): boolean {
@@ -65,6 +66,7 @@ export class CrosswordComponent {
     public highlightWord(word: CommonWord): void {
         this.configurationService.currentPlayer.selectedWord = word;
         //TODO: Envoie a l'autre joueur
+        this.multiplayerCommunicationService.playerUpdate(this.configurationService.currentPlayer);
         if (!this.configurationService.currentPlayer.selectedWord.isComplete) {
             this.deselectWords();
             if (this.configurationService.currentPlayer.selectedWord.isHorizontal) {

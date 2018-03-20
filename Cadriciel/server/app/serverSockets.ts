@@ -33,6 +33,7 @@ export class ServerSockets {
             this.onRoomCreate(socket);
             this.onRoomsListQuery(socket);
             this.onRoomConnect(socket);
+            this.onPlayerUpdate(socket);
         });
     }
 
@@ -98,6 +99,11 @@ export class ServerSockets {
                     }
                 }
             }
+        });
+    }
+
+    private onPlayerUpdate(socket: SocketIO.Socket): void {
+        socket.on(SocketEvents.PlayerUpdate, (message: string) => {
         });
     }
     // tslint:enable:no-console
