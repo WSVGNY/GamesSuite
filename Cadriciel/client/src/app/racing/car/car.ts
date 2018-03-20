@@ -25,12 +25,12 @@ export class Car extends Object3D {
     private _isReversing: boolean;
     private _steeringWheelDirection: number;
     private _initialDirection: Vector3 = new Vector3(0, 0, -1);
-    public _isAI: boolean;
 
     public detectionBox: Mesh;
 
     public constructor(
         private keyBoardService: KeyboardEventHandlerService,
+        private _isAI: boolean,
         engine: Engine = new Engine(),
         rearWheel: Wheel = new Wheel(),
         wheelbase: number = CarConfig.DEFAULT_WHEELBASE,
@@ -61,7 +61,9 @@ export class Car extends Object3D {
         this._dragCoefficient = dragCoefficient;
 
         this.initAttributes();
-        this.bindKeys();
+        if (!this._isAI) {
+            this.bindKeys();
+        }
     }
 
     private bindKeys(): void {
@@ -102,6 +104,10 @@ export class Car extends Object3D {
         this._mesh.add(this._lights);
         this.add(this._mesh);
         this.dettachLights();
+    }
+
+    public get isAI(): boolean {
+        return this._isAI;
     }
 
     public get speed(): Vector3 {

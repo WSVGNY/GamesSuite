@@ -51,7 +51,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
     ) { }
 
     public ngOnInit(): void {
-        this._gameScene = new GameScene();
+        this._gameScene = new GameScene(this._keyboardEventHandlerService);
     }
 
     public async ngAfterViewInit(): Promise<void> {
@@ -81,13 +81,14 @@ export class RacingComponent implements AfterViewInit, OnInit {
             this._lastDate = Date.now();
             for (let i: number = 0; i < AI_CARS_QUANTITY + 1; ++i) {
                 this._cars[i].update(timeSinceLastFrame);
-                if (this._cars[i]._isAI) {
+                if (this._cars[i].isAI) {
                     this._aiCarService.update(this._cars[i], this._carDebugs[i]);
                 }
             }
             this._useThirpPersonCamera ?
                 this._renderService.render(this._gameScene, this._thirdPersonCamera) :
                 this._renderService.render(this._gameScene, this._topViewCamera);
+            this._topViewCamera.updatePosition(this._playerCar);
             this.update();
         });
     }
@@ -123,21 +124,16 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
     private initializeCars(): void {
         for (let i: number = 0; i < AI_CARS_QUANTITY + 1; ++i) {
-            this._cars.push(new Car(this._keyboardEventHandlerService));
 
             if (i === 0) {
-                this.initializePlayerCar(this._cars[i]);
+                this._cars.push(new Car(this._keyboardEventHandlerService, false));
+                this._playerCar = this._cars[0];
             } else {
-                this._cars[i]._isAI = true;
+                this._cars.push(new Car(this._keyboardEventHandlerService, true));
             }
             this._carDebugs.push(new AIDebug());
             // this.isEven(i) ? Difficulty.Hard : Difficulty.Easy;
         }
-    }
-
-    private initializePlayerCar(playerCar: Car): void {
-        playerCar._isAI = false;
-        this._playerCar = playerCar;
     }
 
     public get car(): Car {

@@ -9,12 +9,16 @@ import { TrackType } from "../../../../../common/racing/trackType";
 import { SkyBox } from "../render-service/skybox";
 import { TrackLights } from "../render-service/light";
 import { Track } from "../track";
-import { PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE, MS_TO_SECONDS } from "../constants";
+import {
+    PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE, MS_TO_SECONDS,
+    CHANGE_CAMERA_KEYCODE
+} from "../constants";
 import { Car } from "../car/car";
 import { GREEN } from ".././constants";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
 import { Wall } from "../render-service/wall";
 import { TrackPointList } from "../render-service/trackPointList";
+import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 
 const START_POSITION_OFFSET: number = 4;
 
@@ -30,7 +34,7 @@ export class GameScene extends AbstractScene {
     private _debugElements: Group = new Group();
     private _isDay: boolean;
 
-    public constructor() {
+    public constructor(private _keyBoardService: KeyboardEventHandlerService) {
         super();
         this.add(this._group);
     }
@@ -58,7 +62,7 @@ export class GameScene extends AbstractScene {
 
             await cars[i].init(startPos, this.findFirstTrackSegmentAngle());
             this._debugElements.add(carDebugs[i].debugGroup);
-            if (!cars[i]._isAI) {
+            if (!cars[i].isAI) {
                 cars[i].attachCamera(camera);
             }
             this._group.add(cars[i]);
@@ -67,6 +71,7 @@ export class GameScene extends AbstractScene {
 
     private loadLights(trackType: TrackType): void {
         this._lighting = new TrackLights(trackType);
+        this._keyBoardService.bindFunctionToKeyDown(CHANGE_CAMERA_KEYCODE, () => this._lighting.changePerspective());
         this._group.add(this._lighting);
     }
 
