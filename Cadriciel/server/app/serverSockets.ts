@@ -105,7 +105,7 @@ export class ServerSockets {
 
     private onPlayerUpdate(socket: SocketIO.Socket): void {
         socket.on(SocketEvents.PlayerUpdate, (player: Player) => {
-            console.log(player);
+            console.log("player update event");
             socket.broadcast.to(this.getSocketRoom(socket)).emit(SocketEvents.PlayerUpdate, player);
         });
     }

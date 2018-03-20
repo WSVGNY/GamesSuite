@@ -3,6 +3,7 @@ import { CommonGridBox } from "../../../../common/crossword/commonGridBox";
 import { CommonWord } from "../../../../common/crossword/commonWord";
 import { ConfigurationService } from "./configuration.service";
 import { MultiplayerCommunicationService } from "./multiplayer-communication.service";
+import { SocketEvents } from "../../../../common/communication/socketEvents";
 
 const BACKSPACE_KEYCODE: number = 8;
 
@@ -20,12 +21,27 @@ enum State {
 export class CrosswordComponent {
 
     public isInCheatMode: boolean = false;
+    private _hasSubscribed: boolean = false;
 
     public constructor(
         public configurationService: ConfigurationService, private multiplayerCommunicationService: MultiplayerCommunicationService) {
     }
 
+    public subscribeToMessages(): void {
+        this.multiplayerCommunicationService.getMessages().subscribe((message: string) => {
+            console.log(message);
+            if (message === SocketEvents.PlayerUpdate) {
+                this.configurationService.updateOtherPlayer(this.multiplayerCommunicationService.updatedPlayer);
+            }
+        });
+    }
+
     public isConfigurationDone(): boolean {
+        if (!this._hasSubscribed && this.multiplayerCommunicationService.isSocketDefined) {
+            this.subscribeToMessages();
+            this._hasSubscribed = true;
+        }
+
         return this.configurationService.configurationDone;
     }
 

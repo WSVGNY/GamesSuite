@@ -26,7 +26,14 @@ export class ConfigurationService {
             this.playerTwo;
     }
 
+    public updateOtherPlayer(player: Player): void {
+        this.playerOne.name !== this._currentPlayerName ?
+            this.playerOne = player :
+            this.playerTwo = player;
+    }
+
     public set currentPlayerName(playerName: string) {
         this._currentPlayerName = playerName;
     }
+
 }

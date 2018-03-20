@@ -16,6 +16,7 @@ export class MultiplayerCommunicationService {
     private _hasConnected: boolean = false;
     public _games: MultiplayerCrosswordGame[] = [];
     private _currentGame: MultiplayerCrosswordGame;
+    private _temporaryPlayerHolder: Player;
 
     public get hasConnected(): boolean {
         return this._hasConnected;
@@ -27,6 +28,14 @@ export class MultiplayerCommunicationService {
 
     public get grid(): CommonGrid {
         return this._currentGame.grid;
+    }
+
+    public get updatedPlayer(): Player {
+        return this._temporaryPlayerHolder;
+    }
+
+    public get isSocketDefined(): boolean {
+        return this._socket !== undefined;
     }
 
     public constructor() {
@@ -71,26 +80,29 @@ export class MultiplayerCommunicationService {
 
     // https://codingblast.com/chat-application-angular-socket-io/
     public getMessages = () => {
-        return Observable.create((observer: Observer<string>) => {
-            this._socket.on(SocketEvents.NewMessage, (message: string) => {
-                observer.next(message);
+        if (this._socket !== undefined) {
+            return Observable.create((observer: Observer<string>) => {
+                this._socket.on(SocketEvents.NewMessage, (message: string) => {
+                    observer.next(message);
+                });
+                this._socket.on(SocketEvents.RoomCreated, (message: string) => {
+                    console.log(message);
+                });
+                this._socket.on(SocketEvents.RoomsListsQueryResponse, (message: MultiplayerCrosswordGame[]) => {
+                    console.log(message);
+                    for (const game of message) {
+                        this._games.push(MultiplayerCrosswordGame.create(JSON.stringify(game)));
+                    }
+                });
+                this._socket.on(SocketEvents.StartGame, (message: MultiplayerCrosswordGame) => {
+                    this._currentGame = MultiplayerCrosswordGame.create(JSON.stringify(message));
+                    observer.next(SocketEvents.StartGame);
+                });
+                this._socket.on(SocketEvents.PlayerUpdate, (player: Player) => {
+                    this._temporaryPlayerHolder = player;
+                    observer.next(SocketEvents.PlayerUpdate);
+                });
             });
-            this._socket.on(SocketEvents.RoomCreated, (message: string) => {
-                console.log(message);
-            });
-            this._socket.on(SocketEvents.RoomsListsQueryResponse, (message: MultiplayerCrosswordGame[]) => {
-                console.log(message);
-                for (const game of message) {
-                    this._games.push(MultiplayerCrosswordGame.create(JSON.stringify(game)));
-                }
-            });
-            this._socket.on(SocketEvents.StartGame, (message: MultiplayerCrosswordGame) => {
-                this._currentGame = MultiplayerCrosswordGame.create(JSON.stringify(message));
-                observer.next(SocketEvents.StartGame);
-            });
-            this._socket.on(SocketEvents.PlayerUpdate, (player: Player) => {
-                console.log(player);
-            });
-        });
+        }
     }
 }
