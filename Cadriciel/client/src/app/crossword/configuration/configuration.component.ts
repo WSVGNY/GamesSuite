@@ -19,6 +19,7 @@ export class ConfigurationComponent {
     public choseGridDifficulty: boolean = false;
     private messages: string[] = [];
     private _hasSubscribed: boolean = false;
+    public waitingForRoom: boolean = false;
 
     public constructor(
         private _gridService: GridService,
@@ -64,6 +65,7 @@ export class ConfigurationComponent {
     }
 
     public onRoomSelect(room: MultiplayerCrosswordGame, playerName: string): void {
+        this.waitingForRoom = true;
         this.configurationService.currentPlayerName = playerName;
         this.multiplayerCommunicationService.connectToRoom({ roomInfo: room, playerName: playerName });
     }
