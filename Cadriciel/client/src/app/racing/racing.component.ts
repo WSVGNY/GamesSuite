@@ -12,6 +12,8 @@ import { Difficulty } from "../../../../common/crossword/difficulty";
 import { TrackPointList } from "./render-service/trackPointList";
 import { RenderService } from "./render-service/render.service";
 import { AIDebug } from "./artificial-intelligence/ai-debug";
+import { TopViewCamera } from "./cameras/topViewCamera";
+import { CHANGE_CAMERA_KEYCODE, DAY_KEYCODE, DEBUG_KEYCODE } from "./constants";
 // import { SoundManagerService } from "./sound-service/sound-manager.service";
 
 const AI_CARS_QUANTITY: number = 2;
@@ -32,6 +34,8 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private _cars: Car[] = [];
     private _carDebugs: AIDebug[] = [];
     private _thirdPersonCamera: ThirdPersonCamera;
+    private _topViewCamera: TopViewCamera;
+    private _useThirpPersonCamera: boolean = true;
     private _gameScene: GameScene;
     private _playerCar: Car;
     private _lastDate: number;
@@ -52,6 +56,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
     public async ngAfterViewInit(): Promise<void> {
         this._thirdPersonCamera = new ThirdPersonCamera(this.computeAspectRatio());
+        this._topViewCamera = new TopViewCamera(this.computeAspectRatio());
         this._renderService
             .initialize(this._containerRef.nativeElement, this._gameScene, this._thirdPersonCamera)
             .then(/* do nothing */)
@@ -80,7 +85,9 @@ export class RacingComponent implements AfterViewInit, OnInit {
                     this._aiCarService.update(this._cars[i], this._carDebugs[i]);
                 }
             }
-            this._renderService.render(this._gameScene, this._thirdPersonCamera);
+            this._useThirpPersonCamera ?
+                this._renderService.render(this._gameScene, this._thirdPersonCamera) :
+                this._renderService.render(this._gameScene, this._topViewCamera);
             this.update();
         });
     }
@@ -107,19 +114,23 @@ export class RacingComponent implements AfterViewInit, OnInit {
     }
 
     private bindKeys(): void {
-        this._keyboardEventHandlerService.bindGameSceneKeys(this._gameScene, this._cars);
+        this._keyboardEventHandlerService.bindFunctionToKeyDown(DAY_KEYCODE, () => this._gameScene.changeTimeOfDay(this._cars));
+        this._keyboardEventHandlerService.bindFunctionToKeyDown(DEBUG_KEYCODE, () => this._gameScene.changeDebugMode());
+        this._keyboardEventHandlerService.bindFunctionToKeyDown(CHANGE_CAMERA_KEYCODE, () =>
+            this._useThirpPersonCamera = !this._useThirpPersonCamera
+        );
     }
 
     private initializeCars(): void {
         for (let i: number = 0; i < AI_CARS_QUANTITY + 1; ++i) {
-            this._cars.push(new Car());
+            this._cars.push(new Car(this._keyboardEventHandlerService));
 
             if (i === 0) {
                 this.initializePlayerCar(this._cars[i]);
             } else {
                 this._cars[i]._isAI = true;
             }
-            this._carDebugs.push(new AIDebug(this._cars[i]));
+            this._carDebugs.push(new AIDebug());
             // this.isEven(i) ? Difficulty.Hard : Difficulty.Easy;
         }
     }
@@ -127,8 +138,6 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private initializePlayerCar(playerCar: Car): void {
         playerCar._isAI = false;
         this._playerCar = playerCar;
-
-        this._keyboardEventHandlerService.bindCarKeys(this._playerCar);
     }
 
     public get car(): Car {

@@ -2,10 +2,11 @@ import {
     Vector3, Matrix4, Object3D, ObjectLoader, Quaternion, Camera, Mesh, MeshBasicMaterial, BoxGeometry
 } from "three";
 import { Engine } from "./engine";
-import { MS_TO_SECONDS, GRAVITY, RAD_TO_DEG, CAR_TEXTURE } from "../constants";
+import { MS_TO_SECONDS, GRAVITY, RAD_TO_DEG, CAR_TEXTURE, ACCELERATE_KEYCODE, LEFT_KEYCODE, BRAKE_KEYCODE, RIGHT_KEYCODE } from "../constants";
 import { Wheel } from "./wheel";
 import { CarConfig } from "./carConfig";
 import { CarLights } from "./carLights";
+import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 
 export class Car extends Object3D {
 
@@ -28,50 +29,14 @@ export class Car extends Object3D {
 
     public detectionBox: Mesh;
 
-    public releaseBrakes(): void {
-        this._isBraking = false;
-        this._lights.turnBackLightsOff();
-    }
-
-    public steerLeft(): void {
-        this._steeringWheelDirection = CarConfig.MAXIMUM_STEERING_ANGLE;
-    }
-
-    public steerRight(): void {
-        this._steeringWheelDirection = -CarConfig.MAXIMUM_STEERING_ANGLE;
-    }
-
-    public releaseSteering(): void {
-        this._steeringWheelDirection = 0;
-    }
-
-    public brake(): void {
-        this._isBraking = true;
-        this._lights.turnBackLightsOn();
-    }
-
-    public reverse(): void {
-        this._isReversing = true;
-    }
-
-    public releaseReverse(): void {
-        this._isReversing = false;
-    }
-
-    public accelerate(): void {
-        this._isAcceleratorPressed = true;
-    }
-
-    public releaseAccelerator(): void {
-        this._isAcceleratorPressed = false;
-    }
-
     public constructor(
+        private keyBoardService: KeyboardEventHandlerService,
         engine: Engine = new Engine(),
         rearWheel: Wheel = new Wheel(),
         wheelbase: number = CarConfig.DEFAULT_WHEELBASE,
         mass: number = CarConfig.DEFAULT_MASS,
-        dragCoefficient: number = CarConfig.DEFAULT_DRAG_COEFFICIENT) {
+        dragCoefficient: number = CarConfig.DEFAULT_DRAG_COEFFICIENT
+    ) {
         super();
 
         if (wheelbase <= 0) {
@@ -95,6 +60,23 @@ export class Car extends Object3D {
         this._mass = mass;
         this._dragCoefficient = dragCoefficient;
 
+        this.initAttributes();
+        this.bindKeys();
+    }
+
+    private bindKeys(): void {
+        this.keyBoardService.bindFunctionToKeyDown(ACCELERATE_KEYCODE, () => { this.accelerate(); });
+        this.keyBoardService.bindFunctionToKeyDown(LEFT_KEYCODE, () => { this.steerLeft(); });
+        this.keyBoardService.bindFunctionToKeyDown(BRAKE_KEYCODE, () => { this.brake(); });
+        this.keyBoardService.bindFunctionToKeyDown(RIGHT_KEYCODE, () => { this.steerRight(); });
+
+        this.keyBoardService.bindFunctionToKeyUp(ACCELERATE_KEYCODE, () => { this.releaseAccelerator(); });
+        this.keyBoardService.bindFunctionToKeyUp(LEFT_KEYCODE, () => { this.releaseSteering(); });
+        this.keyBoardService.bindFunctionToKeyUp(BRAKE_KEYCODE, () => { this.releaseBrakes(); });
+        this.keyBoardService.bindFunctionToKeyUp(RIGHT_KEYCODE, () => { this.releaseSteering(); });
+    }
+
+    private initAttributes(): void {
         this._isBraking = false;
         this._steeringWheelDirection = 0;
         this._weightRear = CarConfig.INITIAL_WEIGHT_DISTRIBUTION;
@@ -156,6 +138,44 @@ export class Car extends Object3D {
 
     public dettachLights(): void {
         this._lights.turnOff();
+    }
+
+    public releaseBrakes(): void {
+        this._isBraking = false;
+        this._lights.turnBackLightsOff();
+    }
+
+    public steerLeft(): void {
+        this._steeringWheelDirection = CarConfig.MAXIMUM_STEERING_ANGLE;
+    }
+
+    public steerRight(): void {
+        this._steeringWheelDirection = -CarConfig.MAXIMUM_STEERING_ANGLE;
+    }
+
+    public releaseSteering(): void {
+        this._steeringWheelDirection = 0;
+    }
+
+    public brake(): void {
+        this._isBraking = true;
+        this._lights.turnBackLightsOn();
+    }
+
+    public reverse(): void {
+        this._isReversing = true;
+    }
+
+    public releaseReverse(): void {
+        this._isReversing = false;
+    }
+
+    public accelerate(): void {
+        this._isAcceleratorPressed = true;
+    }
+
+    public releaseAccelerator(): void {
+        this._isAcceleratorPressed = false;
     }
 
     public get direction(): Vector3 {
