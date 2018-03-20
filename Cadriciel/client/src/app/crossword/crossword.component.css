@@ -104,7 +104,6 @@ li {
     margin: 0;
     float: left;
     text-transform: uppercase;
-    color: transparent;
     animation: blinker 0.5s alternate-reverse infinite;
 }
 

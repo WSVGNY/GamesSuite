@@ -222,10 +222,7 @@ export class CrosswordComponent {
         }
         if (gridBox !== undefined && !this.selectedWord.isComplete) {
             if (event.key.match(/^[a-z]$/i) !== null) {
-                gridBox.inputChar.value = event.key.toUpperCase();
-                this.selectedWord.enteredCharacters + 1 === this.selectedWord.length ?
-                    this.selectedWord.enteredCharacters = 0 :
-                    this.selectedWord.enteredCharacters++;
+                this.enterNextCharacter(event.key.toUpperCase());
                 this.setInputOnWord(this.selectedWord);
             }
             if (event.keyCode === BACKSPACE_KEYCODE) {
@@ -240,33 +237,44 @@ export class CrosswordComponent {
         }
     }
 
+    private enterNextCharacter(char: string): void {
+        this.configurationService.grid.boxes[this.getY()][this.getX()].inputChar.value = char;
+        this.goToNextAvailableBox();
+    }
+
+    private goToNextAvailableBox(): void {
+        this.selectedWord.enteredCharacters + 1 < this.selectedWord.length ?
+            this.selectedWord.enteredCharacters++ :
+            this.selectedWord.enteredCharacters = 0;
+        if (this.configurationService.grid.boxes[this.getY()][this.getX()].isFound) {
+            this.goToNextAvailableBox();
+        }
+    }
+
     private eraseLastCharacter(): void {
+        this.goBackOneCharacter();
         this.configurationService.grid.boxes[this.getY()][this.getX()].inputChar.value = "";
-        if (this.selectedWord.enteredCharacters > 0) {
-            this.selectedWord.enteredCharacters--;
-        } else {
+    }
+
+    private goBackOneCharacter(): void {
+        this.selectedWord.enteredCharacters > 0 ?
+            this.selectedWord.enteredCharacters-- :
             this.selectedWord.enteredCharacters = this.selectedWord.length - 1;
+        if (this.configurationService.grid.boxes[this.getY()][this.getX()].isFound) {
+            this.goBackOneCharacter();
         }
-        while (this.configurationService.grid.boxes[this.getY()][this.getX()].isFound) {
-            this.selectedWord.enteredCharacters--;
-        }
-        this.configurationService.grid.boxes[this.getY()][this.getX()].inputChar.value = "";
     }
 
     private getX(): number {
-        if (this.selectedWord.isHorizontal) {
-            return this.selectedWord.startPosition.x + this.selectedWord.enteredCharacters;
-        } else {
-            return this.selectedWord.startPosition.x;
-        }
+        return this.selectedWord.isHorizontal ?
+            this.selectedWord.startPosition.x + this.selectedWord.enteredCharacters :
+            this.selectedWord.startPosition.x;
     }
 
     private getY(): number {
-        if (this.selectedWord.isHorizontal) {
-            return this.selectedWord.startPosition.y;
-        } else {
-            return this.selectedWord.startPosition.y + this.selectedWord.enteredCharacters;
-        }
+        return this.selectedWord.isHorizontal ?
+            this.selectedWord.startPosition.y :
+            this.selectedWord.startPosition.y + this.selectedWord.enteredCharacters;
     }
 
     private findEquivalent(badWord: CommonWord): CommonWord {
