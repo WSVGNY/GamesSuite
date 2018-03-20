@@ -13,8 +13,8 @@
     </div>
   </div>
   <div *ngIf="isNewGame" id="buttongroup" class="btn-group">
-    <button (click)="setGameType(false)" class="btn btn-primary">One player</button>
-    <button (click)="setGameType(true)" class="btn btn-primary">Two players</button>
+    <button (click)="configurationService.isTwoPlayerGame = false" class="btn btn-primary">One player</button>
+    <button (click)="configurationService.isTwoPlayerGame = true" class="btn btn-primary">Two players</button>
   </div>
 
   <div *ngIf="configurationService.isTwoPlayerGame !== undefined && difficulty === undefined && !isJoinGame" id="buttongroupDifficulty"

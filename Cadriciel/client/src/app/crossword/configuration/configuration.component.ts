@@ -39,13 +39,6 @@ export class ConfigurationComponent {
         this.configurationService.isSocketConnected = true;
     }
 
-    public setGameType(isTwoPlayerGame: boolean): void {
-        this.configurationService.isTwoPlayerGame = isTwoPlayerGame;
-        if (isTwoPlayerGame) {
-            this.multiplayerCommunicationService.connectToSocket();
-        }
-    }
-
     public subscribeToMessages(): void {
         if (!this._hasSubscribed) {
             this.multiplayerCommunicationService.getMessages().subscribe((message: string) => {
@@ -53,6 +46,7 @@ export class ConfigurationComponent {
                 console.log(message);
                 if (message === SocketEvents.StartGame) {
                     this.configurationService.grid = this.multiplayerCommunicationService.grid;
+                    console.log(this.multiplayerCommunicationService.currentGame.players);
                     this.configurationService.playerName = this.multiplayerCommunicationService.currentGame.players[0].name;
                     this.configurationService.secondPlayerName = this.multiplayerCommunicationService.currentGame.players[1].name;
                     this.configurationService.lookingForPlayer = false;
@@ -74,7 +68,7 @@ export class ConfigurationComponent {
                 this.configurationService.grid = grid;
             });
         } else {
-            this.multiplayerCommunicationService.gridQuery(this.difficulty);
+            // this.multiplayerCommunicationService.gridQuery()
         }
     }
 

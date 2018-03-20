@@ -31,9 +31,7 @@ export class MultiplayerCommunicationService {
     }
 
     public connectToSocket(): void {
-        if (this._socket === undefined) {
-            this._socket = sio(this.URL);
-        }
+        this._socket = sio(this.URL);
     }
 
     public createRoom(playerName: string, roomDifficulty: Difficulty): void {
@@ -62,7 +60,7 @@ export class MultiplayerCommunicationService {
 
     public gridQuery(difficulty: Difficulty): void {
         if (this._socket !== undefined) {
-            this._socket.emit(SocketEvents.GridQuery, difficulty);
+            this._socket.emit(SocketEvents.GridQuery);
         }
     }
 

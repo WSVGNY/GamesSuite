@@ -15,7 +15,6 @@ export class ServerSockets {
     private io: SocketIO.Server;
     private _httpServer: http.Server;
     private _games: MultiplayerCrosswordGame[] = [];
-    private _grids: CommonGrid[] = [];
 
     public constructor(server: http.Server, initialize: boolean = false) {
         this._httpServer = server;
@@ -34,7 +33,6 @@ export class ServerSockets {
             this.onRoomCreate(socket);
             this.onRoomsListQuery(socket);
             this.onRoomConnect(socket);
-            this.onGridQuery(socket);
         });
     }
 
@@ -87,38 +85,20 @@ export class ServerSockets {
                         console.log("Connection to room: " + room.roomName + " by " + message["playerName"] + " successfull");
                         if (game.isFull()) {
                             console.log("Game is starting from server");
-                            let isGenerated: boolean = false;
-                            while (!isGenerated) {
-                                for (let i: number = 0; i < this._grids.length; ++i) {
-                                    if (this._grids[i].difficulty === game.difficulty) {
-                                        game.grid = this._grids[i];
-                                        isGenerated = true;
-                                    }
-                                }
-                            }
-                            console.log("emiting grid");
-                            this.io.to(game.roomName).emit(SocketEvents.StartGame, game);
-                        } else {
-                            console.log("Unable to connect to room: " + room.roomName + " by " + message["playerName"]);
+                            this.gridCreateQuery(game).then(() => {
+                                // socket.broadcast.to(game.roomName).emit(SocketEvents.StartGameRoom, room);
+                                this.io.to(game.roomName).emit(SocketEvents.StartGame, game);
+                            }).catch((e: Error) => {
+                                console.error(e);
+                            });
                         }
-                        break;
+                    } else {
+                        console.log("Unable to connect to room: " + room.roomName + " by " + message["playerName"]);
                     }
+                    break;
                 }
             }
         });
-    }
-
-    private onGridQuery(socket: SocketIO.Socket): void {
-        socket.on(SocketEvents.GridQuery, (difficulty: Difficulty) => {
-            console.log("Grid query");
-            this.gridCreateQuery(difficulty).then(() => {
-                console.log("allo");
-                console.log(this._grids);
-            }).catch((e: Error) => {
-                console.error(e);
-            });
-        });
-
     }
     // tslint:enable:no-console
 
@@ -130,10 +110,10 @@ export class ServerSockets {
         return Object.keys(socket.rooms).filter((room: string) => room !== socket.id)[0];
     }
 
-    private async gridCreateQuery(difficulty: Difficulty): Promise<void> {
-        await requestPromise(this.GRID_GET_URL + difficulty).then(
+    private async gridCreateQuery(game: MultiplayerCrosswordGame): Promise<void> {
+        await requestPromise(this.GRID_GET_URL + game.difficulty).then(
             (result: CommonGrid) => {
-                this._grids.push(JSON.parse(result.toString()));
+                game.grid = JSON.parse(result.toString());
             }
         ).catch((e: Error) => {
             console.error(e);
