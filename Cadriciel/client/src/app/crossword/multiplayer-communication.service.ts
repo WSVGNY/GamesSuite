@@ -31,7 +31,10 @@ export class MultiplayerCommunicationService {
     }
 
     public connectToSocket(): void {
-        this._socket = sio(this.URL);
+        if (this._socket === undefined) {
+            this._socket = sio(this.URL);
+        }
+
     }
 
     public createRoom(playerName: string, roomDifficulty: Difficulty): void {
@@ -55,12 +58,6 @@ export class MultiplayerCommunicationService {
     public connectToRoom(room: { roomInfo: MultiplayerCrosswordGame, playerName: string }): void {
         if (this._socket !== undefined) {
             this._socket.emit(SocketEvents.RoomConnect, room);
-        }
-    }
-
-    public gridQuery(difficulty: Difficulty): void {
-        if (this._socket !== undefined) {
-            this._socket.emit(SocketEvents.GridQuery);
         }
     }
 

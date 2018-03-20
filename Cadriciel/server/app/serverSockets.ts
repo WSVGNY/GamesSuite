@@ -94,8 +94,8 @@ export class ServerSockets {
                         }
                     } else {
                         console.log("Unable to connect to room: " + room.roomName + " by " + message["playerName"]);
+                        break;
                     }
-                    break;
                 }
             }
         });
