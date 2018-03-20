@@ -229,8 +229,9 @@ export class Car extends Object3D {
 
         if (this._speed.length() >= CarConfig.MINIMUM_SPEED) {
             const dragForce: Vector3 = this.getDragForce();
+            const frictionForce: Vector3 = this.getFrictionForce();
             const rollingResistance: Vector3 = this.getRollingResistance();
-            resultingForce.add(dragForce).add(rollingResistance);
+            resultingForce.add(dragForce).add(rollingResistance).add(frictionForce);
         }
 
         if (this._isAcceleratorPressed) {
@@ -258,6 +259,18 @@ export class Car extends Object3D {
         const rollingCoefficient: number = (1 / tirePressure) * (Math.pow(this.speed.length() * 3.6 / 100, 2) * 0.0095 + 0.01) + 0.005;
 
         return this.direction.multiplyScalar(rollingCoefficient * this._mass * GRAVITY);
+    }
+
+    private getFrictionForce(): Vector3 {
+        const tireAsphaltCoefficient: number = 0.72;
+        const kineticFriction: Vector3 = new Vector3();
+        kineticFriction.x = this.direction.z;
+        kineticFriction.z = -this.direction.x;
+
+        const force: Vector3 = this._speed.clone().projectOnVector(kineticFriction).normalize();
+        force.multiplyScalar(tireAsphaltCoefficient * this._mass * GRAVITY);
+
+        return force;
     }
 
     private getDragForce(): Vector3 {
