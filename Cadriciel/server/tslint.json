@@ -1,5 +1,5 @@
 {
-  "rulesDirectory":[
+  "rulesDirectory": [
     "node_modules/tslint-eslint-rules/dist/rules",
     "node_modules/tslint-microsoft-contrib"
   ],
@@ -83,7 +83,11 @@
       "check-whitespace"
     ],
     "prefer-const": true,
-    "quotemark": [true, "double", "avoid-escape"],
+    "quotemark": [
+      true,
+      "double",
+      "avoid-escape"
+    ],
     "radix": true,
     "semicolon": [
       true,
@@ -112,9 +116,10 @@
     ],
     "typeof-compare": true,
     "unified-signatures": true,
-    "variable-name": [true, 
-      "ban-keywords", 
-      "check-format", 
+    "variable-name": [
+      true,
+      "ban-keywords",
+      "check-format",
       "allow-leading-underscore"
     ],
     "whitespace": [
@@ -125,20 +130,40 @@
       "check-separator",
       "check-type"
     ],
-    
     "no-sparse-arrays": true,
     "no-irregular-whitespace": true,
-    "cyclomatic-complexity": [ true, 20],
-    "max-classes-per-file": [true, 2],
+    "cyclomatic-complexity": [
+      true,
+      20
+    ],
+    "max-classes-per-file": [
+      true,
+      2
+    ],
     "no-unsafe-finally": true,
     "no-unused-variable": true,
-    "align": [true, "arguments", "elements", "members", "parameters", "statements"],
+    "align": [
+      true,
+      "arguments",
+      "elements",
+      "members",
+      "parameters",
+      "statements"
+    ],
     "arrow-parens": true,
-    "no-any" : true,
-    "no-magic-numbers": true,
+    "no-any": true,
+    "no-magic-numbers": [
+      true,
+      0,
+      1,
+      2
+    ],
     "only-arrow-functions": true,
     "adjacent-overload-signatures": true,
-    "max-file-line-count": [true, 300],
+    "max-file-line-count": [
+      true,
+      300
+    ],
     "no-duplicate-imports": true,
     "binary-expression-operand-order": true,
     "newline-before-return": true,
@@ -153,31 +178,45 @@
     "promise-function-async": true,
     "await-promise": true,
     "no-floating-promises": true,
-    "no-invalid-this": [true, "check-function-in-method"],
+    "no-invalid-this": [
+      true,
+      "check-function-in-method"
+    ],
     "no-return-await": true,
-    "no-this-assignment": [true, {"allowed-names": ["^self$"], "allow-destructuring": false}],
-    "prefer-conditional-expression": [true, "check-else-if"],
+    "no-this-assignment": [
+      true,
+      {
+        "allowed-names": [
+          "^self$"
+        ],
+        "allow-destructuring": false
+      }
+    ],
+    "prefer-conditional-expression": [
+      true,
+      "check-else-if"
+    ],
     "switch-default": true,
     "typedef": [
-      true, 
-      "call-signature", 
-      "parameter", 
+      true,
+      "call-signature",
+      "parameter",
       "member-variable-declaration",
       "arrow-parameter",
       "property-declaration",
       "variable-declaration"
     ],
-    "max-func-body-length" : [
-      true, 
-      30, 
+    "max-func-body-length": [
+      true,
+      30,
       {
         "ignore-parameters-to-function-regex": "describe",
-        "ignore-comments": true 
+        "ignore-comments": true
       }
     ],
-    "no-constant-condition" : true,
-    "no-suspicious-comment" : true,
-    "no-unnecessary-local-variable" : true,
-    "no-useless-files" : true
+    "no-constant-condition": true,
+    "no-suspicious-comment": true,
+    "no-unnecessary-local-variable": true,
+    "no-useless-files": true
   }
 }
