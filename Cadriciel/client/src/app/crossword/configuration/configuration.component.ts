@@ -46,7 +46,9 @@ export class ConfigurationComponent {
                 console.log(message);
                 if (message === SocketEvents.StartGame) {
                     this.configurationService.grid = this.multiplayerCommunicationService.grid;
-                    console.log(this.multiplayerCommunicationService.grid);
+                    console.log(this.multiplayerCommunicationService.currentGame.players);
+                    this.configurationService.playerName = this.multiplayerCommunicationService.currentGame.players[0].name;
+                    this.configurationService.secondPlayerName = this.multiplayerCommunicationService.currentGame.players[1].name;
                     this.configurationService.lookingForPlayer = false;
                     this.configurationService.configurationDone = true;
                 }
@@ -57,7 +59,6 @@ export class ConfigurationComponent {
 
     public onRoomSelect(room: MultiplayerCrosswordGame): void {
         console.log(room);
-        this.configurationService.secondPlayerName = room.players[0].name;
         this.multiplayerCommunicationService.connectToRoom({ roomInfo: room, playerName: this.configurationService.playerName });
     }
 

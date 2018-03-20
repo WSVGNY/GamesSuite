@@ -9,21 +9,29 @@ import { CommonGrid } from "../../../../common/crossword/commonGrid";
 @Injectable()
 export class MultiplayerCommunicationService {
 
-    private readonly url: string = "http://localhost:3000";
+    private readonly URL: string = "http://localhost:3000";
     private _socket: SocketIOClient.Socket;
     private _hasConnected: boolean = false;
     public _games: MultiplayerCrosswordGame[] = [];
-    public grid: CommonGrid;
+    private _currentGame: MultiplayerCrosswordGame;
 
     public get hasConnected(): boolean {
         return this._hasConnected;
+    }
+
+    public get currentGame(): MultiplayerCrosswordGame {
+        return this._currentGame;
+    }
+
+    public get grid(): CommonGrid {
+        return this._currentGame.grid;
     }
 
     public constructor() {
     }
 
     public connectToSocket(): void {
-        this._socket = sio(this.url);
+        this._socket = sio(this.URL);
     }
 
     public createRoom(playerName: string, roomDifficulty: Difficulty): void {
@@ -71,8 +79,8 @@ export class MultiplayerCommunicationService {
                     this._games.push(MultiplayerCrosswordGame.create(JSON.stringify(game)));
                 }
             });
-            this._socket.on(SocketEvents.StartGame, (message: CommonGrid) => {
-                this.grid = message;
+            this._socket.on(SocketEvents.StartGame, (message: MultiplayerCrosswordGame) => {
+                this._currentGame = MultiplayerCrosswordGame.create(JSON.stringify(message));
                 observer.next(SocketEvents.StartGame);
             });
         });
