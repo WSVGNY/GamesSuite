@@ -67,7 +67,9 @@ export class MultiplayerCommunicationService {
             });
             this._socket.on(SocketEvents.RoomsListsQueryResponse, (message: MultiplayerCrosswordGame[]) => {
                 console.log(message);
-                this._games = message;
+                for (const game of message) {
+                    this._games.push(MultiplayerCrosswordGame.create(JSON.stringify(game)));
+                }
             });
             this._socket.on(SocketEvents.StartGame, (message: CommonGrid) => {
                 this.grid = message;

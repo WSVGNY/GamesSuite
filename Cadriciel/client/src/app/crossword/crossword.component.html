@@ -42,7 +42,7 @@
   <h3> {{configurationService.playerName}} :
     <h4> {{correctWordCount}} words found</h4>
   </h3>
-  <h3 *ngIf="configurationService.isTwoPlayerGame" id="secondPlayer"> Player 2 :
+  <h3 *ngIf="configurationService.isTwoPlayerGame" id="secondPlayer"> {{configurationService.secondPlayerName}} :
     <h4> {{correctWordCount}} words found</h4>
   </h3>
 </div>

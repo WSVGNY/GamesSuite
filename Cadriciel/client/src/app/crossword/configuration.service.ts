@@ -9,5 +9,6 @@ export class ConfigurationService {
     public isSocketConnected: boolean;
     public isTwoPlayerGame: boolean;
     public playerName: string;
+    public secondPlayerName: string;
     public lookingForPlayer: boolean;
 }
