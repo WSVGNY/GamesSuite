@@ -4,6 +4,7 @@
     <app-configuration></app-configuration>
   </div>
   <div id="loader" *ngIf="isConfigurationDone() && configurationService.grid===undefined"></div>
+
   <div id="definitions" (mousedown)="deselectWords()">
     <button id="CheatButton" (click)="changeMode()"> Cheat mode </button>
     <h2 id="title">Definitions</h2>

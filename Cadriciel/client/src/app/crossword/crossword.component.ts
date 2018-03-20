@@ -199,19 +199,21 @@ export class CrosswordComponent {
 
     @HostListener("window:keydown", ["$event"])
     public inputChar(event: KeyboardEvent): void {
-        if (this.selectedGridBox !== undefined && !this.selectedWord.isComplete) {
-            if (event.key.match(/^[a-z]$/i) !== null) {
-                this.enterNextCharacter(event.key.toUpperCase());
-                this.setInputOnWord(this.selectedWord);
+        if (this.configurationService.grid !== undefined) {
+            if (this.selectedGridBox !== undefined && !this.selectedWord.isComplete) {
+                if (event.key.match(/^[a-z]$/i) !== null) {
+                    this.enterNextCharacter(event.key.toUpperCase());
+                    this.setInputOnWord(this.selectedWord);
+                }
+                if (event.keyCode === BACKSPACE_KEYCODE) {
+                    this.eraseLastCharacter();
+                    this.setInputOnWord(this.selectedWord);
+                }
+            } else {
+                this.deselectWords();
             }
-            if (event.keyCode === BACKSPACE_KEYCODE) {
-                this.eraseLastCharacter();
-                this.setInputOnWord(this.selectedWord);
-            }
-        } else {
-            this.deselectWords();
+            this.verifyCompletedWords();
         }
-        this.verifyCompletedWords();
     }
 
     private enterNextCharacter(char: string): void {
