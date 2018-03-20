@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { CommonGrid } from "../../../../common/crossword/commonGrid";
+import { Player } from "../../../../common/crossword/player";
 
 @Injectable()
 export class ConfigurationService {
@@ -8,7 +9,7 @@ export class ConfigurationService {
     public configurationDone: boolean;
     public isSocketConnected: boolean;
     public isTwoPlayerGame: boolean;
-    public playerName: string;
-    public secondPlayerName: string;
+    public playerOne: Player;
+    public playerTwo: Player;
     public lookingForPlayer: boolean;
 }

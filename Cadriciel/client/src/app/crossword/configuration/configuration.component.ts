@@ -46,9 +46,8 @@ export class ConfigurationComponent {
                 console.log(message);
                 if (message === SocketEvents.StartGame) {
                     this.configurationService.grid = this.multiplayerCommunicationService.grid;
-                    console.log(this.multiplayerCommunicationService.currentGame.players);
-                    this.configurationService.playerName = this.multiplayerCommunicationService.currentGame.players[0].name;
-                    this.configurationService.secondPlayerName = this.multiplayerCommunicationService.currentGame.players[1].name;
+                    this.configurationService.playerOne = this.multiplayerCommunicationService.currentGame.players[0];
+                    this.configurationService.playerTwo = this.multiplayerCommunicationService.currentGame.players[1];
                     this.configurationService.lookingForPlayer = false;
                     this.configurationService.configurationDone = true;
                 }
@@ -57,9 +56,8 @@ export class ConfigurationComponent {
         }
     }
 
-    public onRoomSelect(room: MultiplayerCrosswordGame): void {
-        console.log(room);
-        this.multiplayerCommunicationService.connectToRoom({ roomInfo: room, playerName: this.configurationService.playerName });
+    public onRoomSelect(room: MultiplayerCrosswordGame, playerName: string): void {
+        this.multiplayerCommunicationService.connectToRoom({ roomInfo: room, playerName: playerName });
     }
 
     public createGrid(): void {
@@ -96,10 +94,10 @@ export class ConfigurationComponent {
         this.configurationService.configurationDone = true;
     }
 
-    public createRoom(): void {
+    public createRoom(name: string): void {
         this.multiplayerCommunicationService.connectToSocket();
         this.subscribeToMessages();
-        this.multiplayerCommunicationService.createRoom(this.configurationService.playerName, this.difficulty);
+        this.multiplayerCommunicationService.createRoom(name, this.difficulty);
         this.configurationService.isSocketConnected = true;
     }
 

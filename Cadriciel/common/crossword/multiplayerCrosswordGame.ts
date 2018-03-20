@@ -1,4 +1,4 @@
-import { CrosswordPlayer } from "./crosswordPlayer";
+import { Player } from "./player";
 import { Difficulty } from "./difficulty";
 import { CommonGrid } from "./commonGrid";
 
@@ -13,7 +13,7 @@ export class MultiplayerCrosswordGame {
     public constructor(
         private _roomName: string,
         private _difficulty: Difficulty,
-        private _players: CrosswordPlayer[] = [],
+        private _players: Player[] = [],
         public grid?: CommonGrid) {
     }
 
@@ -21,7 +21,7 @@ export class MultiplayerCrosswordGame {
         return this._players.length >= this.MAX_PLAYER_NUMBER;
     }
 
-    public addPlayer(player: CrosswordPlayer): boolean {
+    public addPlayer(player: Player): boolean {
         if (!this.isFull()) {
             this._players.push(player);
             return true;
@@ -30,7 +30,7 @@ export class MultiplayerCrosswordGame {
         }
     }
 
-    public get players(): CrosswordPlayer[] {
+    public get players(): Player[] {
         return this._players;
     }
 

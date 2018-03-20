@@ -38,13 +38,15 @@
   </div>
 </div>
 
-<div id="gameInformations" (mousedown)="deselectWords()">
-  <h3> {{configurationService.playerName}} :
-    <h4> {{correctWordCount}} words found</h4>
-  </h3>
-  <h3 *ngIf="configurationService.isTwoPlayerGame" id="secondPlayer"> {{configurationService.secondPlayerName}} :
-    <h4> {{correctWordCount}} words found</h4>
-  </h3>
+<div *ngIf="isConfigurationDone()">
+  <div id="gameInformations" (mousedown)="deselectWords()">
+    <h3> {{configurationService.playerOne.name}} :
+      <h4> {{correctWordCount}} words found</h4>
+    </h3>
+    <h3 *ngIf="configurationService.isTwoPlayerGame" id="secondPlayer"> {{configurationService.playerTwo.name}} :
+      <h4> {{correctWordCount}} words found</h4>
+    </h3>
+  </div>
 </div>
 
 <div id="grid">
