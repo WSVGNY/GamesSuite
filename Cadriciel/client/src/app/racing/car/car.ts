@@ -1,5 +1,5 @@
 import {
-    Vector3, Matrix4, Object3D, /*ObjectLoader,*/ Quaternion, Camera, MeshBasicMaterial, BoxGeometry, Mesh, /*Mesh, MeshBasicMaterial, SphereGeometry*/
+    Vector3, Matrix4, Object3D, /*ObjectLoader,*/ Quaternion, Camera, MeshBasicMaterial, BoxGeometry, Mesh
 } from "three";
 import { Engine } from "./engine";
 import { MS_TO_SECONDS, GRAVITY, RAD_TO_DEG, /*CAR_TEXTURE*/ } from "../constants";
@@ -20,7 +20,7 @@ export class Car extends Object3D {
     private _lights: CarLights;
 
     private _isAcceleratorPressed: boolean;
-    private _speed: Vector3;
+    public _speed: Vector3;
     private _isBraking: boolean;
     private _isReversing: boolean;
     private _steeringWheelDirection: number;
