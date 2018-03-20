@@ -79,7 +79,7 @@ export class MultiplayerCommunicationService {
     }
 
     // https://codingblast.com/chat-application-angular-socket-io/
-    public getMessages = () => {
+    public getMessagesConfigurationComponent = () => {
         if (this._socket !== undefined) {
             return Observable.create((observer: Observer<string>) => {
                 this._socket.on(SocketEvents.NewMessage, (message: string) => {
@@ -98,6 +98,13 @@ export class MultiplayerCommunicationService {
                     this._currentGame = MultiplayerCrosswordGame.create(JSON.stringify(message));
                     observer.next(SocketEvents.StartGame);
                 });
+            });
+        }
+    }
+
+    public getMessagesCrosswordComponent = () => {
+        if (this._socket !== undefined) {
+            return Observable.create((observer: Observer<string>) => {
                 this._socket.on(SocketEvents.PlayerUpdate, (player: Player) => {
                     this._temporaryPlayerHolder = player;
                     observer.next(SocketEvents.PlayerUpdate);

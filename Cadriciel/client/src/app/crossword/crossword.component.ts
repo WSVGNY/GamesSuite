@@ -28,7 +28,7 @@ export class CrosswordComponent {
     }
 
     public subscribeToMessages(): void {
-        this.multiplayerCommunicationService.getMessages().subscribe((message: string) => {
+        this.multiplayerCommunicationService.getMessagesCrosswordComponent().subscribe((message: string) => {
             console.log(message);
             if (message === SocketEvents.PlayerUpdate) {
                 this.configurationService.updateOtherPlayer(this.multiplayerCommunicationService.updatedPlayer);
