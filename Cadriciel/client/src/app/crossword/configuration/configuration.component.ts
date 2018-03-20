@@ -53,19 +53,19 @@ export class ConfigurationComponent {
                 console.log(message);
                 if (message === SocketEvents.StartGame) {
                     this.configurationService.grid = this.multiplayerCommunicationService.grid;
-                    this.configurationService.playerName = this.multiplayerCommunicationService.currentGame.players[0].name;
-                    this.configurationService.secondPlayerName = this.multiplayerCommunicationService.currentGame.players[1].name;
+                    this.configurationService.playerOne = this.multiplayerCommunicationService.currentGame.players[0];
+                    this.configurationService.playerTwo = this.multiplayerCommunicationService.currentGame.players[1];
                     this.configurationService.lookingForPlayer = false;
+                    this.configurationService.configurationDone = true;
                 }
             });
             this._hasSubscribed = true;
         }
     }
 
-    public onRoomSelect(room: MultiplayerCrosswordGame): void {
-        console.log(room);
-        this.multiplayerCommunicationService.connectToRoom({ roomInfo: room, playerName: this.configurationService.playerName });
-        this.configurationService.configurationDone = true;
+    public onRoomSelect(room: MultiplayerCrosswordGame, playerName: string): void {
+        this.configurationService.currentPlayerName = playerName;
+        this.multiplayerCommunicationService.connectToRoom({ roomInfo: room, playerName: playerName });
     }
 
     public createGrid(): void {
@@ -96,14 +96,17 @@ export class ConfigurationComponent {
         this.makeGrid();
     }
 
-    public submitName(): void {
+    public submitName(playerName: string): void {
+        this.configurationService.playerOne = { name: playerName, color: "teal", score: 0 };
+        this.configurationService.currentPlayerName = this.configurationService.playerOne.name;
         this.configurationService.configurationDone = true;
     }
 
-    public createRoom(): void {
+    public createRoom(name: string): void {
         this.multiplayerCommunicationService.connectToSocket();
+        this.configurationService.currentPlayerName = name;
         this.subscribeToMessages();
-        this.multiplayerCommunicationService.createRoom(this.configurationService.playerName, this.difficulty);
+        this.multiplayerCommunicationService.createRoom(name, this.difficulty);
         this.configurationService.isSocketConnected = true;
     }
 

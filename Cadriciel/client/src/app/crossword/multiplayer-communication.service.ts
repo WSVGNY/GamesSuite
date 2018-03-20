@@ -6,6 +6,7 @@ import { Observer } from "rxjs/Observer";
 import { Difficulty } from "../../../../common/crossword/difficulty";
 import { MultiplayerCrosswordGame } from "../../../../common/crossword/multiplayerCrosswordGame";
 import { CommonGrid } from "../../../../common/crossword/commonGrid";
+
 @Injectable()
 export class MultiplayerCommunicationService {
 
