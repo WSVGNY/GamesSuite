@@ -126,11 +126,7 @@ export class CrosswordComponent {
             && gridBox.id.y === gridBox.constraints[index].startPosition.y;
     }
 
-    public isCompletedWord(word: CommonWord, wordEntered: string): boolean {
-        return this.getWordValue(word) === wordEntered;
-    }
-
-    public addToScore(word: CommonWord): void {
+    private addToScore(word: CommonWord): void {
         this.correctWordCount++;
     }
 
@@ -145,33 +141,20 @@ export class CrosswordComponent {
         this.selectedWord = word;
         this.resetInputBoxes();
         if (!word.isComplete) {
-            let x: number;
-            let y: number;
-            if (word.isHorizontal) {
-                x = word.startPosition.x + this.selectedWord.enteredCharacters;
-                y = word.startPosition.y;
-            } else {
-                x = word.startPosition.x;
-                y = word.startPosition.y + this.selectedWord.enteredCharacters;
-            }
-            if (this.configurationService.grid.boxes[y][x].isFound) {
+            if (this.configurationService.grid.boxes[this.getY()][this.getX()].isFound) {
                 this.selectedWord.enteredCharacters++;
                 this.setInputOnWord(word);
             } else {
-                this.configurationService.grid.boxes[y][x].readyForInput = true;
+                this.selectedGridBox = this.configurationService.grid.boxes[this.getY()][this.getX()];
             }
         }
     }
 
-    public resetInputBoxes(): void {
-        for (const line of this.configurationService.grid.boxes) {
-            for (const box of line) {
-                box.readyForInput = false;
-            }
-        }
+    private resetInputBoxes(): void {
+        this.selectedGridBox = undefined;
     }
 
-    public colorFoundBoxes(word: CommonWord): void {
+    private colorFoundBoxes(word: CommonWord): void {
         if (word.isHorizontal) {
             for (let i: number = 0; i < word.length; i++) {
                 this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + i].isFound = true;
@@ -184,7 +167,13 @@ export class CrosswordComponent {
         word.isComplete = true;
     }
 
-    public verifyCompletedWord(word: CommonWord): CommonWord {
+    private verifyCompletedWords(): void {
+        for (const word of this.configurationService.grid.words) {
+            this.verifyCompletedWord(word);
+        }
+    }
+
+    private verifyCompletedWord(word: CommonWord): CommonWord {
         let wordValue: string = "";
         for (let i: number = 0; i < word.length; i++) {
             if (word.isHorizontal) {
@@ -210,17 +199,7 @@ export class CrosswordComponent {
 
     @HostListener("window:keydown", ["$event"])
     public inputChar(event: KeyboardEvent): void {
-        let gridBox: CommonGridBox;
-        if (this.configurationService.grid !== undefined) {
-            for (const line of this.configurationService.grid.boxes) {
-                for (const box of line) {
-                    if (box.readyForInput) {
-                        gridBox = box;
-                    }
-                }
-            }
-        }
-        if (gridBox !== undefined && !this.selectedWord.isComplete) {
+        if (this.selectedGridBox !== undefined && !this.selectedWord.isComplete) {
             if (event.key.match(/^[a-z]$/i) !== null) {
                 this.enterNextCharacter(event.key.toUpperCase());
                 this.setInputOnWord(this.selectedWord);
@@ -232,9 +211,7 @@ export class CrosswordComponent {
         } else {
             this.deselectWords();
         }
-        for (const word of this.configurationService.grid.words) {
-            this.verifyCompletedWord(word);
-        }
+        this.verifyCompletedWords();
     }
 
     private enterNextCharacter(char: string): void {
