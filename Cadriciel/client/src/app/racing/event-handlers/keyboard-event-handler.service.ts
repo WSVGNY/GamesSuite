@@ -21,7 +21,7 @@ const RIGHT_KEYCODE: number = 68;       // d
 const DAY_KEYCODE: number = 74;         // j
 const NIGHT_KEYCODE: number = 78;       // n
 const DEBUG_KEYCODE: number = 48;       // 0
-// const MUTE_KEYCODE: number = 77;       //  m
+const MUTE_KEYCODE: number = 77;       //  m
 // const PLAY_KEYCODE: number = 80;       //  m
 
 @Injectable()
@@ -71,9 +71,9 @@ export class KeyboardEventHandlerService {
                     new EnableDebugMode(gameScene, cars);
                 this._commandController.execute();
                 break;
-            // case MUTE_KEYCODE:
-            //     raceGame.sound.stopMusic();
-            //     break;
+            case MUTE_KEYCODE:
+                cars[0]._speed.negate();
+                break;
             // case PLAY_KEYCODE:
             //     raceGame.sound.playMusic();
             //     break;
