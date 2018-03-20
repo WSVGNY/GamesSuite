@@ -14,7 +14,7 @@ import { AIDebug } from "../artificial-intelligence/ai-debug";
 import { Wall } from "../render-service/wall";
 import { TrackPointList } from "../render-service/trackPointList";
 
-const START_POSITION_OFFSET: number = -10;
+const START_POSITION_OFFSET: number = -40;
 
 export class GameScene extends AbstractScene {
 
