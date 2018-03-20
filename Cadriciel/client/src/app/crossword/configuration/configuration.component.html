@@ -10,6 +10,10 @@
         {{room["_roomName"]}} of difficulty {{room["_difficulty"]}} created by {{room["_players"][0].name}}
       </button>
     </div>
+    <div *ngIf="configurationService.isTwoPlayerGame">
+      <div id="waiter" *ngIf="waitingForRoom"></div>
+      <div id="waiterText" *ngIf="waitingForRoom">waiting for grid to generate ...</div>
+    </div>
   </div>
   <div *ngIf="isNewGame" id="buttongroup" class="btn-group">
     <button (click)="setGameType(false)" class="btn btn-primary">One player</button>
