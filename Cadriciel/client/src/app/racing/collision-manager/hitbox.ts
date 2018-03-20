@@ -6,25 +6,27 @@ const DEPTH: number = 3.1;
 
 export class Hitbox extends Mesh {
 
-    private subPlaneVertices: Vector3[];
+    private _subPlaneVertices: Vector3[];
+    public _inCollision: boolean;
 
     public constructor() {
         const geometry: BoxGeometry = new BoxGeometry(WIDTH, HEIGHT, DEPTH);
         const material: MeshBasicMaterial = new MeshBasicMaterial({wireframe: true, color: 0x00FF00 });
         super(geometry, material);
-        this.subPlaneVertices = [];
+        this._subPlaneVertices = [];
         this.generateSubPlanVertices();
+        this._inCollision = false;
     }
 
     private generateSubPlanVertices(): void {
-        this.subPlaneVertices = [];
-        this.subPlaneVertices.push((this.geometry as BoxGeometry).vertices[2]);
-        this.subPlaneVertices.push((this.geometry as BoxGeometry).vertices[3]);
-        this.subPlaneVertices.push((this.geometry as BoxGeometry).vertices[6]);
-        this.subPlaneVertices.push((this.geometry as BoxGeometry).vertices[7]);
+        this._subPlaneVertices = [];
+        this._subPlaneVertices.push((this.geometry as BoxGeometry).vertices[2]);
+        this._subPlaneVertices.push((this.geometry as BoxGeometry).vertices[3]);
+        this._subPlaneVertices.push((this.geometry as BoxGeometry).vertices[6]);
+        this._subPlaneVertices.push((this.geometry as BoxGeometry).vertices[7]);
     }
 
     public get subPlanVertices(): Vector3[] {
-        return this.subPlaneVertices;
+        return this._subPlaneVertices;
     }
 }
