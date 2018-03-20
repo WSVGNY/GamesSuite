@@ -63,15 +63,19 @@ export class CrosswordComponent {
     }
 
     public highlightWord(word: CommonWord): void {
-        if (!word.isComplete) {
+        this.configurationService.currentPlayer.selectedWord = word;
+        //TODO: Envoie a l'autre joueur
+        if (!this.configurationService.currentPlayer.selectedWord.isComplete) {
             this.deselectWords();
-            if (word.isHorizontal) {
-                for (let i: number = 0; i < word.length; i++) {
-                    this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + i].isColored = true;
+            if (this.configurationService.currentPlayer.selectedWord.isHorizontal) {
+                for (let i: number = 0; i < this.configurationService.currentPlayer.selectedWord.length; i++) {
+                    this.configurationService.grid.boxes[this.configurationService.currentPlayer.selectedWord.startPosition.y]
+                    [this.configurationService.currentPlayer.selectedWord.startPosition.x + i].isColored = true;
                 }
             } else {
-                for (let i: number = 0; i < word.length; i++) {
-                    this.configurationService.grid.boxes[word.startPosition.y + i][word.startPosition.x].isColored = true;
+                for (let i: number = 0; i < this.configurationService.currentPlayer.selectedWord.length; i++) {
+                    this.configurationService.grid.boxes[this.configurationService.currentPlayer.selectedWord.startPosition.y + i]
+                    [this.configurationService.currentPlayer.selectedWord.startPosition.x].isColored = true;
                 }
             }
         }
@@ -125,6 +129,7 @@ export class CrosswordComponent {
 
     private addToScore(word: CommonWord): void {
         this.configurationService.currentPlayer.score++;
+        //TODO: Envoie a l'autre joueur
     }
 
     public setInputOnFirstBox(gridBox: CommonGridBox): void {
@@ -140,6 +145,7 @@ export class CrosswordComponent {
     public setInputOnWord(word: CommonWord): void {
         word = this.verifyCompletedWord(word);
         this.configurationService.currentPlayer.selectedWord = word;
+        //TODO: Envoie a l'autre joueur
         this.resetInputBoxes();
         if (!word.isComplete) {
             if (this.configurationService.grid.boxes[this.getY()][this.getX()].isFound) {
@@ -147,12 +153,14 @@ export class CrosswordComponent {
                 this.setInputOnWord(word);
             } else {
                 this.configurationService.currentPlayer.selectedGridBox = this.configurationService.grid.boxes[this.getY()][this.getX()];
+                //TODO: Envoie a l'autre joueur
             }
         }
     }
 
     private resetInputBoxes(): void {
         this.configurationService.currentPlayer.selectedGridBox = undefined;
+        //TODO: Envoie a l'autre joueur
     }
 
     private colorFoundBoxes(word: CommonWord): void {
