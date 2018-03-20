@@ -5,6 +5,7 @@ import { MultiplayerCrosswordGame } from "../../common/crossword/multiplayerCros
 import { Difficulty } from "../../common/crossword/difficulty";
 import * as requestPromise from "request-promise-native";
 import { CommonGrid } from "../../common/crossword/commonGrid";
+import { Player } from "../../common/crossword/player";
 
 export class ServerSockets {
     private static _numberOfRoom: number = 0;
@@ -103,7 +104,9 @@ export class ServerSockets {
     }
 
     private onPlayerUpdate(socket: SocketIO.Socket): void {
-        socket.on(SocketEvents.PlayerUpdate, (message: string) => {
+        socket.on(SocketEvents.PlayerUpdate, (player: Player) => {
+            console.log(player);
+            socket.broadcast.to(this.getSocketRoom(socket)).emit(SocketEvents.PlayerUpdate, player);
         });
     }
     // tslint:enable:no-console
