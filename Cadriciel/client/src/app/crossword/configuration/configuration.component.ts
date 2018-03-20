@@ -90,7 +90,8 @@ export class ConfigurationComponent {
         this.makeGrid();
     }
 
-    public submitName(): void {
+    public submitName(playerName: string): void {
+        this.configurationService.playerOne = { name: playerName, color: "teal", score: 0 };
         this.configurationService.configurationDone = true;
     }
 
