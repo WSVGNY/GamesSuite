@@ -8,6 +8,6 @@ export class TurnRight extends AbstractCarAICommand {
     }
 
     public execute(): void {
-        Car.steerRight(this._car);
+        this._car.steerRight();
     }
 }

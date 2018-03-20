@@ -100,9 +100,14 @@ export class RacingComponent implements AfterViewInit, OnInit {
                     .initialize(this._trackPoints.pointVectors, Difficulty.Medium)
                     .then(/* do nothing */)
                     .catch((err) => console.error(err));
+                this.bindKeys();
                 this.startGameLoop();
                 // this.initializeGame().then().catch((error: Error) => console.error(error));
             });
+    }
+
+    private bindKeys(): void {
+        this._keyboardEventHandlerService.bindGameSceneKeys(this._gameScene, this._cars);
     }
 
     private initializeCars(): void {

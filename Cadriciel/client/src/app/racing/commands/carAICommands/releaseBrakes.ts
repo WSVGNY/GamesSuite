@@ -8,6 +8,6 @@ export class ReleaseBrakes extends AbstractCarAICommand {
     }
 
     public execute(): void {
-        Car.releaseBrakes(this._car);
+        this._car.releaseBrakes();
     }
 }

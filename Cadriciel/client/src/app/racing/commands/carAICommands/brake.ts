@@ -8,7 +8,7 @@ export class Brake extends AbstractCarAICommand {
     }
 
     public execute(): void {
-        Car.releaseAccelerator(this._car);
-        Car.brake(this._car);
+        this._car.releaseAccelerator();
+        this._car.brake();
     }
 }

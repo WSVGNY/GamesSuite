@@ -7,7 +7,6 @@ const LEFT_KEYCODE: number = 65;        // a
 const BRAKE_KEYCODE: number = 83;       // s
 const RIGHT_KEYCODE: number = 68;       // d
 const DAY_KEYCODE: number = 74;         // j
-const NIGHT_KEYCODE: number = 78;       // n
 const DEBUG_KEYCODE: number = 48;       // 0
 // const MUTE_KEYCODE: number = 77;       //  m
 // const PLAY_KEYCODE: number = 80;       //  m
@@ -15,11 +14,11 @@ const DEBUG_KEYCODE: number = 48;       // 0
 interface CallbackWithParameters {
     callback: Function;
     parameters?: {};
+    objectToCallFrom: Object;
 }
 
 @Injectable()
 export class KeyboardEventHandlerService {
-
     private _keyDownFunctions: Map<number, Array<CallbackWithParameters>>;
     private _keyUpFunctions: Map<number, Array<CallbackWithParameters>>;
 
@@ -48,10 +47,10 @@ export class KeyboardEventHandlerService {
     }
 
     public handleKeyDown(keyCode: number): void {
-        if (this._keyUpFunctions.get(keyCode) !== undefined) {
+        if (this._keyDownFunctions.get(keyCode) !== undefined) {
             const functionsToExecute: Array<CallbackWithParameters> = this._keyDownFunctions.get(keyCode);
             functionsToExecute.forEach((callback: CallbackWithParameters) => {
-                callback.callback(callback.parameters);
+                callback.callback.apply(callback.objectToCallFrom, callback.parameters);
             });
         }
     }
@@ -59,7 +58,9 @@ export class KeyboardEventHandlerService {
     public handleKeyUp(keyCode: number): void {
         if (this._keyUpFunctions.get(keyCode) !== undefined) {
             const functionsToExecute: Array<CallbackWithParameters> = this._keyUpFunctions.get(keyCode);
-            functionsToExecute.forEach((callback: CallbackWithParameters) => callback.callback(callback.parameters));
+            functionsToExecute.forEach((callback: CallbackWithParameters) => {
+                callback.callback.apply(callback.objectToCallFrom, callback.parameters);
+            });
         }
     }
 
@@ -74,44 +75,49 @@ export class KeyboardEventHandlerService {
         this.bindCarRightKeyUp(car);
     }
 
-    public bindGameSceneKeys(gameScene: GameScene): void {
-        this.bindFunctionToKeyDown(DAY_KEYCODE, { parameters: gameScene, callback: gameScene.changeTimeOfDay });
-        this.bindFunctionToKeyDown(NIGHT_KEYCODE, { parameters: gameScene, callback: Car.releaseBrakes });
-        this.bindFunctionToKeyDown(DEBUG_KEYCODE, { parameters: gameScene, callback: Car.releaseBrakes });
+    public bindGameSceneKeys(gameScene: GameScene, cars: Car[]): void {
+        this.bindFunctionToKeyDown(
+            DAY_KEYCODE,
+            {
+                objectToCallFrom: gameScene,
+                callback: gameScene.changeTimeOfDay,
+                parameters: [cars]
+            });
+        this.bindFunctionToKeyDown(DEBUG_KEYCODE, { objectToCallFrom: gameScene, callback: gameScene.changeDebugMode });
     }
 
     private bindCarForwardKeyDown(car: Car): void {
-        this.bindFunctionToKeyDown(ACCELERATE_KEYCODE, { parameters: car, callback: Car.releaseBrakes });
-        this.bindFunctionToKeyDown(ACCELERATE_KEYCODE, { parameters: car, callback: Car.accelerate });
+        this.bindFunctionToKeyDown(ACCELERATE_KEYCODE, { objectToCallFrom: car, callback: car.releaseBrakes });
+        this.bindFunctionToKeyDown(ACCELERATE_KEYCODE, { objectToCallFrom: car, callback: car.accelerate });
     }
 
     private bindCarForwardKeyUp(car: Car): void {
-        this.bindFunctionToKeyUp(ACCELERATE_KEYCODE, { parameters: car, callback: Car.releaseAccelerator });
+        this.bindFunctionToKeyUp(ACCELERATE_KEYCODE, { objectToCallFrom: car, callback: car.releaseAccelerator });
     }
 
     private bindCarLeftKeyDown(car: Car): void {
-        this.bindFunctionToKeyDown(LEFT_KEYCODE, { parameters: car, callback: Car.steerLeft });
+        this.bindFunctionToKeyDown(LEFT_KEYCODE, { objectToCallFrom: car, callback: car.steerLeft });
     }
 
     private bindCarLeftKeyUp(car: Car): void {
-        this.bindFunctionToKeyUp(LEFT_KEYCODE, { parameters: car, callback: Car.releaseSteering });
+        this.bindFunctionToKeyUp(LEFT_KEYCODE, { objectToCallFrom: car, callback: car.releaseSteering });
     }
 
     private bindCarRightKeyDown(car: Car): void {
-        this.bindFunctionToKeyDown(RIGHT_KEYCODE, { parameters: car, callback: Car.steerRight });
+        this.bindFunctionToKeyDown(RIGHT_KEYCODE, { objectToCallFrom: car, callback: car.steerRight });
     }
 
     private bindCarRightKeyUp(car: Car): void {
-        this.bindFunctionToKeyUp(RIGHT_KEYCODE, { parameters: car, callback: Car.releaseSteering });
+        this.bindFunctionToKeyUp(RIGHT_KEYCODE, { objectToCallFrom: car, callback: car.releaseSteering });
     }
 
     private bindCarBreakKeyDown(car: Car): void {
-        this.bindFunctionToKeyDown(BRAKE_KEYCODE, { parameters: car, callback: Car.releaseAccelerator });
-        this.bindFunctionToKeyDown(BRAKE_KEYCODE, { parameters: car, callback: Car.brake });
+        this.bindFunctionToKeyDown(BRAKE_KEYCODE, { objectToCallFrom: car, callback: car.releaseAccelerator });
+        this.bindFunctionToKeyDown(BRAKE_KEYCODE, { objectToCallFrom: car, callback: car.brake });
     }
 
     private bindCarBreakKeyUp(car: Car): void {
-        this.bindFunctionToKeyUp(BRAKE_KEYCODE, { parameters: car, callback: Car.releaseBrakes });
+        this.bindFunctionToKeyUp(BRAKE_KEYCODE, { objectToCallFrom: car, callback: car.releaseBrakes });
     }
 
     // tslint:disable-next-line:max-func-body-length

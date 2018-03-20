@@ -28,42 +28,42 @@ export class Car extends Object3D {
 
     public detectionBox: Mesh;
 
-    public static releaseBrakes(car: Car): void {
-        car._isBraking = false;
-        car._lights.turnBackLightsOff();
+    public releaseBrakes(): void {
+        this._isBraking = false;
+        this._lights.turnBackLightsOff();
     }
 
-    public static steerLeft(car: Car): void {
-        car._steeringWheelDirection = CarConfig.MAXIMUM_STEERING_ANGLE;
+    public steerLeft(): void {
+        this._steeringWheelDirection = CarConfig.MAXIMUM_STEERING_ANGLE;
     }
 
-    public static steerRight(car: Car): void {
-        car._steeringWheelDirection = -CarConfig.MAXIMUM_STEERING_ANGLE;
+    public steerRight(): void {
+        this._steeringWheelDirection = -CarConfig.MAXIMUM_STEERING_ANGLE;
     }
 
-    public static releaseSteering(car: Car): void {
-        car._steeringWheelDirection = 0;
+    public releaseSteering(): void {
+        this._steeringWheelDirection = 0;
     }
 
-    public static brake(car: Car): void {
-        car._isBraking = true;
-        car._lights.turnBackLightsOn();
+    public brake(): void {
+        this._isBraking = true;
+        this._lights.turnBackLightsOn();
     }
 
-    public static reverse(car: Car): void {
-        car._isReversing = true;
+    public reverse(): void {
+        this._isReversing = true;
     }
 
-    public static releaseReverse(car: Car): void {
-        car._isReversing = false;
+    public releaseReverse(): void {
+        this._isReversing = false;
     }
 
-    public static accelerate(car: Car): void {
-        car._isAcceleratorPressed = true;
+    public accelerate(): void {
+        this._isAcceleratorPressed = true;
     }
 
-    public static releaseAccelerator(car: Car): void {
-        car._isAcceleratorPressed = false;
+    public releaseAccelerator(): void {
+        this._isAcceleratorPressed = false;
     }
 
     public constructor(
