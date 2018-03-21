@@ -43,7 +43,7 @@ export class KeyboardEventHandlerService {
                 this._commandController.command = new GoFoward(cars[0]);
                 this._commandController.execute();
                 if (this._soundManager.isPlaying() === true) {
-                    this._soundManager.createAccelerationEffect("../../assets/sounds/carAcceleration.mp3", cars[0]);
+                    this._soundManager.createAccelerationEffect(cars[0]);
                     break;
                 }
                 this._soundManager.play(this._soundManager.accelerationSoundEffect);
@@ -80,7 +80,7 @@ export class KeyboardEventHandlerService {
                 break;
             case PLAY_KEYCODE:
                 if (this._soundManager.isPlayingMusic() === true) {
-                    this._soundManager.createMusic("../../assets/sounds/rainbowRoad.mp3", cars[0]);
+                    this._soundManager.createMusic(cars[0]);
                     break;
                 }
                 this._soundManager.play(this._soundManager.music);
