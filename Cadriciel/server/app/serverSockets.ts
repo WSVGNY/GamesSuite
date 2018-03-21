@@ -84,21 +84,21 @@ export class ServerSockets {
             socket.join(room.roomName);
             console.log("Connection to room: " + room.roomName + " by " + playerName + " successfull");
             if (game.isFull()) {
-                console.log("Game is starting from server");
-                this.gridCreateQuery(game).then(() => {
-                    this._io.to(game.roomName).emit(SocketEvents.StartGame, game);
-                }).catch((e: Error) => {
-                    console.error(e);
-                });
+                this.startGame(game);
             }
         } else {
             console.log("Unable to connect to room: " + room.roomName + " by " + playerName);
         }
     }
 
-    // private startGame(): void {
-
-    // }
+    private startGame(game: MultiplayerCrosswordGame): void {
+        console.log("Game is starting from server");
+        this.gridCreateQuery(game).then(() => {
+            this._io.to(game.roomName).emit(SocketEvents.StartGame, game);
+        }).catch((e: Error) => {
+            console.error(e);
+        });
+    }
 
     private onPlayerUpdate(socket: SocketIO.Socket): void {
         socket.on(SocketEvents.PlayerUpdate, (player: Player) => {
