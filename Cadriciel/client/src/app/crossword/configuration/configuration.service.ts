@@ -8,7 +8,6 @@ export class ConfigurationService {
 
     public grid: CommonGrid;
     public configurationDone: boolean;
-    public isSocketConnected: boolean;
     public isTwoPlayerGame: boolean;
     public playerOne: Player;
     public playerTwo: Player;

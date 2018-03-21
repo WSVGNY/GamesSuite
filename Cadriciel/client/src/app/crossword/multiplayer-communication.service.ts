@@ -13,7 +13,7 @@ const SERVER_URL: string = "http://localhost:3000";
 @Injectable()
 export class MultiplayerCommunicationService {
 
-    public _availableGames: MultiplayerCrosswordGame[] = [];
+    public availableGames: MultiplayerCrosswordGame[] = [];
 
     private _socket: SocketIOClient.Socket;
     private _currentGame: MultiplayerCrosswordGame;
@@ -73,7 +73,7 @@ export class MultiplayerCommunicationService {
         return Observable.create((observer: Observer<string>) => {
             this._socket.on(SocketEvents.RoomsListsQueryResponse, (message: MultiplayerCrosswordGame[]) => {
                 for (const game of message) {
-                    this._availableGames.push(MultiplayerCrosswordGame.create(JSON.stringify(game)));
+                    this.availableGames.push(MultiplayerCrosswordGame.create(JSON.stringify(game)));
                 }
             });
 
