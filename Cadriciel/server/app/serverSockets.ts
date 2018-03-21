@@ -6,7 +6,7 @@ import { Difficulty } from "../../common/crossword/difficulty";
 import * as requestPromise from "request-promise-native";
 import { CommonGrid } from "../../common/crossword/commonGrid";
 import { Player } from "../../common/crossword/player";
-import { BASE_ROOM_NAME, GRID_GET_URL } from "./crossword/configuration";
+import { BASE_ROOM_NAME, GRID_GET_URL, FIRST_PLAYER_COLOR, SECOND_PLAYER_COLOR } from "./crossword/configuration";
 export class ServerSockets {
     private static _numberOfRoom: number = 0;
 
@@ -50,12 +50,11 @@ export class ServerSockets {
 
     private onRoomCreate(socket: SocketIO.Socket): void {
         socket.on(SocketEvents.RoomCreate, (message: string) => {
-            console.log(message);
             console.log("Room creation by: " + message["creator"]);
             this.createRoom(message["difficulty"]);
             console.log("Room name: " + this._games[ServerSockets._numberOfRoom - 1].roomName);
             socket.join(this._games[ServerSockets._numberOfRoom - 1].roomName);
-            this._games[ServerSockets._numberOfRoom - 1].addPlayer({ name: message["creator"], color: "teal", score: 0 });
+            this._games[ServerSockets._numberOfRoom - 1].addPlayer({ name: message["creator"], color: FIRST_PLAYER_COLOR, score: 0 });
             socket.emit(SocketEvents.RoomCreated, this._games[ServerSockets._numberOfRoom - 1].roomName);
         });
     }
@@ -79,25 +78,30 @@ export class ServerSockets {
             for (const game of this._games) {
                 const room: MultiplayerCrosswordGame = MultiplayerCrosswordGame.create(JSON.stringify(message["roomInfo"]));
                 if (game.roomName === room.roomName) {
-                    if (game.addPlayer({ name: message["playerName"], color: "gold", score: 0 })) {
-                        socket.join(room.roomName);
-                        console.log("Connection to room: " + room.roomName + " by " + message["playerName"] + " successfull");
-                        if (game.isFull()) {
-                            console.log("Game is starting from server");
-                            this.gridCreateQuery(game).then(() => {
-                                // socket.broadcast.to(game.roomName).emit(SocketEvents.StartGameRoom, room);
-                                this.io.to(game.roomName).emit(SocketEvents.StartGame, game);
-                            }).catch((e: Error) => {
-                                console.error(e);
-                            });
-                        }
-                    } else {
-                        console.log("Unable to connect to room: " + room.roomName + " by " + message["playerName"]);
-                        break;
-                    }
+                    this.tryAddPlayer(game, room, socket, message["playerName"]);
+                    break;
                 }
             }
         });
+    }
+
+    private tryAddPlayer(
+        game: MultiplayerCrosswordGame, room: MultiplayerCrosswordGame,
+        socket: SocketIO.Socket, playerName: string): void {
+        if (game.addPlayer({ name: playerName, color: SECOND_PLAYER_COLOR, score: 0 })) {
+            socket.join(room.roomName);
+            console.log("Connection to room: " + room.roomName + " by " + playerName + " successfull");
+            if (game.isFull()) {
+                console.log("Game is starting from server");
+                this.gridCreateQuery(game).then(() => {
+                    this.io.to(game.roomName).emit(SocketEvents.StartGame, game);
+                }).catch((e: Error) => {
+                    console.error(e);
+                });
+            }
+        } else {
+            console.log("Unable to connect to room: " + room.roomName + " by " + playerName);
+        }
     }
 
     private onPlayerUpdate(socket: SocketIO.Socket): void {
