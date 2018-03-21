@@ -12,19 +12,19 @@ import { MultiplayerCrosswordGame } from "../../../../../common/crossword/multip
     templateUrl: "./configuration.component.html",
     styleUrls: ["./configuration.component.css"]
 })
+
 export class ConfigurationComponent {
     public isNewGame: boolean = false;
     public isJoinGame: boolean = false;
     public difficulty: Difficulty;
     public choseGridDifficulty: boolean = false;
-    private messages: string[] = [];
     private _hasSubscribed: boolean = false;
     public waitingForRoom: boolean = false;
 
     public constructor(
         private _gridService: GridService,
         public configurationService: ConfigurationService,
-        private multiplayerCommunicationService: MultiplayerCommunicationService) {
+        private _multiplayerCommunicationService: MultiplayerCommunicationService) {
     }
 
     public setNewGame(): void {
@@ -34,30 +34,26 @@ export class ConfigurationComponent {
     public setJoinGame(): void {
         this.isJoinGame = true;
         this.configurationService.isTwoPlayerGame = true;
-        this.multiplayerCommunicationService.connectToSocket();
+        this._multiplayerCommunicationService.connectToSocket();
         this.subscribeToMessages();
-        this.multiplayerCommunicationService.roomListQuery();
+        this._multiplayerCommunicationService.roomListQuery();
         this.configurationService.isSocketConnected = true;
     }
 
     public setGameType(isTwoPlayerGame: boolean): void {
         this.configurationService.isTwoPlayerGame = isTwoPlayerGame;
         if (isTwoPlayerGame) {
-            this.multiplayerCommunicationService.connectToSocket();
+            this._multiplayerCommunicationService.connectToSocket();
         }
     }
 
     public subscribeToMessages(): void {
         if (!this._hasSubscribed) {
-            this.multiplayerCommunicationService.getMessagesConfigurationComponent().subscribe((message: string) => {
-                this.messages.push(message);
-                console.log(message);
+            this._multiplayerCommunicationService.getMessagesConfigurationComponent().subscribe((message: string) => {
                 if (message === SocketEvents.StartGame) {
-                    this.configurationService.grid = this.multiplayerCommunicationService.grid;
-                    this.configurationService.playerOne = this.multiplayerCommunicationService.currentGame.players[0];
-                    this.configurationService.playerTwo = this.multiplayerCommunicationService.currentGame.players[1];
-                    this.configurationService.lookingForPlayer = false;
-                    this.configurationService.configurationDone = true;
+                    this.configurationService.handleGameStart(
+                        this._multiplayerCommunicationService.grid,
+                        this._multiplayerCommunicationService.currentGame.players);
                 }
             });
             this._hasSubscribed = true;
@@ -67,7 +63,7 @@ export class ConfigurationComponent {
     public onRoomSelect(room: MultiplayerCrosswordGame, playerName: string): void {
         this.waitingForRoom = true;
         this.configurationService.currentPlayerName = playerName;
-        this.multiplayerCommunicationService.connectToRoom({ roomInfo: room, playerName: playerName });
+        this._multiplayerCommunicationService.connectToRoom({ roomInfo: room, playerName: playerName });
     }
 
     public createGrid(): void {
@@ -105,10 +101,10 @@ export class ConfigurationComponent {
     }
 
     public createRoom(name: string): void {
-        this.multiplayerCommunicationService.connectToSocket();
+        this._multiplayerCommunicationService.connectToSocket();
         this.configurationService.currentPlayerName = name;
         this.subscribeToMessages();
-        this.multiplayerCommunicationService.createRoom(name, this.difficulty);
+        this._multiplayerCommunicationService.createRoom(name, this.difficulty);
         this.configurationService.isSocketConnected = true;
     }
 

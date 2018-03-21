@@ -36,4 +36,12 @@ export class ConfigurationService {
         this._currentPlayerName = playerName;
     }
 
+    public handleGameStart(grid: CommonGrid, players: Player[]): void {
+        this.grid = grid;
+        this.playerOne = players[0];
+        this.playerTwo = players[1];
+        this.lookingForPlayer = false;
+        this.configurationDone = true;
+    }
+
 }
