@@ -7,10 +7,11 @@ import * as requestPromise from "request-promise-native";
 import { CommonGrid } from "../../common/crossword/commonGrid";
 import { Player } from "../../common/crossword/player";
 import { BASE_ROOM_NAME, GRID_GET_URL, FIRST_PLAYER_COLOR, SECOND_PLAYER_COLOR } from "./crossword/configuration";
+
 export class ServerSockets {
     private static _numberOfRoom: number = 0;
 
-    private io: SocketIO.Server;
+    private _io: SocketIO.Server;
     private _httpServer: http.Server;
     private _games: MultiplayerCrosswordGame[] = [];
 
@@ -23,8 +24,8 @@ export class ServerSockets {
 
     // tslint:disable:no-console
     public initSocket(): void {
-        this.io = sio(this._httpServer);
-        this.io.on(SocketEvents.Connection, (socket: SocketIO.Socket) => {
+        this._io = sio(this._httpServer);
+        this._io.on(SocketEvents.Connection, (socket: SocketIO.Socket) => {
             console.log("user connected");
             this.onDisconnect(socket);
             this.onRoomCreate(socket);
@@ -41,10 +42,10 @@ export class ServerSockets {
     }
 
     private onRoomCreate(socket: SocketIO.Socket): void {
-        socket.on(SocketEvents.RoomCreate, (message: string) => {
+        socket.on(SocketEvents.RoomCreate, (message: { creator: string, difficulty: Difficulty }) => {
             console.log("Room creation by: " + message["creator"]);
             this.createRoom(message["difficulty"]);
-            console.log("Room name: " + this._games[ServerSockets._numberOfRoom - 1].roomName);
+            console.log("Room name: " + this._games[ServerSockets._numberOfRoom - 1].roomName + " of difficuly: " + message["difficulty"]);
             socket.join(this._games[ServerSockets._numberOfRoom - 1].roomName);
             this._games[ServerSockets._numberOfRoom - 1].addPlayer({ name: message["creator"], color: FIRST_PLAYER_COLOR, score: 0 });
         });
@@ -85,7 +86,7 @@ export class ServerSockets {
             if (game.isFull()) {
                 console.log("Game is starting from server");
                 this.gridCreateQuery(game).then(() => {
-                    this.io.to(game.roomName).emit(SocketEvents.StartGame, game);
+                    this._io.to(game.roomName).emit(SocketEvents.StartGame, game);
                 }).catch((e: Error) => {
                     console.error(e);
                 });
@@ -94,6 +95,10 @@ export class ServerSockets {
             console.log("Unable to connect to room: " + room.roomName + " by " + playerName);
         }
     }
+
+    // private startGame(): void {
+
+    // }
 
     private onPlayerUpdate(socket: SocketIO.Socket): void {
         socket.on(SocketEvents.PlayerUpdate, (player: Player) => {
