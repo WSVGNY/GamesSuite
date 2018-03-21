@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { GridService } from "../grid.service";
-import { ConfigurationService } from "../configuration.service";
+import { ConfigurationService } from "../configuration/configuration.service";
 import { CommonGrid } from "../../../../../common/crossword/commonGrid";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { MultiplayerCommunicationService } from "../multiplayer-communication.service";

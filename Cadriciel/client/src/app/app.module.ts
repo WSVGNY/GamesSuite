@@ -14,7 +14,7 @@ import { MouseEventHandlerService } from "./racing/event-handlers/mouse-event-ha
 import { ConfigurationComponent } from "./crossword/configuration/configuration.component";
 import { AICarService } from "./racing/artificial-intelligence/ai-car.service";
 import { KeyboardEventHandlerService } from "./racing/event-handlers/keyboard-event-handler.service";
-import { ConfigurationService } from "./crossword/configuration.service";
+import { ConfigurationService } from "./crossword/configuration/configuration.service";
 import { ChooseTrackComponent } from "./racing/choose-track/choose-track.component";
 import { RenderService } from "./racing/render-service/render.service";
 import { SoundManagerService } from "./racing/sound-service/sound-manager.service";

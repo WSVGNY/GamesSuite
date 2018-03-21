@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
-import { CommonGrid } from "../../../../common/crossword/commonGrid";
-import { Player } from "../../../../common/crossword/player";
-import { Difficulty } from "../../../../common/crossword/difficulty";
+import { CommonGrid } from "../../../../../common/crossword/commonGrid";
+import { Player } from "../../../../../common/crossword/player";
+import { Difficulty } from "../../../../../common/crossword/difficulty";
 
 @Injectable()
 export class ConfigurationService {

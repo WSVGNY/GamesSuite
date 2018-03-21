@@ -1,7 +1,7 @@
 import { Component, HostListener } from "@angular/core";
 import { CommonGridBox } from "../../../../common/crossword/commonGridBox";
 import { CommonWord } from "../../../../common/crossword/commonWord";
-import { ConfigurationService } from "./configuration.service";
+import { ConfigurationService } from "./configuration/configuration.service";
 import { MultiplayerCommunicationService } from "./multiplayer-communication.service";
 import { SocketEvents } from "../../../../common/communication/socketEvents";
 
