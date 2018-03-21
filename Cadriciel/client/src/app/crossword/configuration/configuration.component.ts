@@ -16,7 +16,6 @@ import { MultiplayerCrosswordGame } from "../../../../../common/crossword/multip
 export class ConfigurationComponent {
     public isNewGame: boolean = false;
     public isJoinGame: boolean = false;
-    public difficulty: Difficulty;
     public choseGridDifficulty: boolean = false;
     private _hasSubscribed: boolean = false;
     public waitingForRoom: boolean = false;
@@ -68,7 +67,7 @@ export class ConfigurationComponent {
 
     public createGrid(): void {
         if (!this.configurationService.isTwoPlayerGame) {
-            this._gridService.gridGet(this.difficulty).subscribe((grid: CommonGrid) => {
+            this._gridService.gridGet(this.configurationService.difficulty).subscribe((grid: CommonGrid) => {
                 this.configurationService.grid = grid;
             });
         }
@@ -80,17 +79,17 @@ export class ConfigurationComponent {
     }
 
     public makeEasyGrid(): void {
-        this.difficulty = Difficulty.Easy;
+        this.configurationService.difficulty = Difficulty.Easy;
         this.makeGrid();
     }
 
     public makeMediumGrid(): void {
-        this.difficulty = Difficulty.Medium;
+        this.configurationService.difficulty = Difficulty.Medium;
         this.makeGrid();
     }
 
     public makeHardGrid(): void {
-        this.difficulty = Difficulty.Hard;
+        this.configurationService.difficulty = Difficulty.Hard;
         this.makeGrid();
     }
 
@@ -104,7 +103,7 @@ export class ConfigurationComponent {
         this._multiplayerCommunicationService.connectToSocket();
         this.configurationService.currentPlayerName = name;
         this.subscribeToMessages();
-        this._multiplayerCommunicationService.createRoom(name, this.difficulty);
+        this._multiplayerCommunicationService.createRoom(name, this.configurationService.difficulty);
         this.configurationService.isSocketConnected = true;
     }
 
