@@ -8,19 +8,15 @@ import { MultiplayerCrosswordGame } from "../../../../common/crossword/multiplay
 import { CommonGrid } from "../../../../common/crossword/commonGrid";
 import { Player } from "../../../../common/crossword/player";
 
+const SERVER_URL: string = "http://localhost:3000";
+
 @Injectable()
 export class MultiplayerCommunicationService {
 
-    private readonly URL: string = "http://localhost:3000";
     private _socket: SocketIOClient.Socket;
-    private _hasConnected: boolean = false;
-    public _games: MultiplayerCrosswordGame[] = [];
+    public _availableGames: MultiplayerCrosswordGame[] = [];
     private _currentGame: MultiplayerCrosswordGame;
     private _temporaryPlayerHolder: Player;
-
-    public get hasConnected(): boolean {
-        return this._hasConnected;
-    }
 
     public get currentGame(): MultiplayerCrosswordGame {
         return this._currentGame;
@@ -38,12 +34,9 @@ export class MultiplayerCommunicationService {
         return this._socket !== undefined;
     }
 
-    public constructor() {
-    }
-
     public connectToSocket(): void {
         if (this._socket === undefined) {
-            this._socket = sio(this.URL);
+            this._socket = sio(SERVER_URL);
         }
 
     }
@@ -51,12 +44,6 @@ export class MultiplayerCommunicationService {
     public createRoom(playerName: string, roomDifficulty: Difficulty): void {
         if (this._socket !== undefined) {
             this._socket.emit(SocketEvents.RoomCreate, { creator: playerName, difficulty: roomDifficulty });
-        }
-    }
-
-    public sendMessage(message: string): void {
-        if (this._socket !== undefined) {
-            this._socket.emit(SocketEvents.NewMessage, message);
         }
     }
 
@@ -78,20 +65,12 @@ export class MultiplayerCommunicationService {
         }
     }
 
-    // https://codingblast.com/chat-application-angular-socket-io/
     public getMessagesConfigurationComponent = () => {
         if (this._socket !== undefined) {
             return Observable.create((observer: Observer<string>) => {
-                this._socket.on(SocketEvents.NewMessage, (message: string) => {
-                    observer.next(message);
-                });
-                this._socket.on(SocketEvents.RoomCreated, (message: string) => {
-                    console.log(message);
-                });
                 this._socket.on(SocketEvents.RoomsListsQueryResponse, (message: MultiplayerCrosswordGame[]) => {
-                    console.log(message);
                     for (const game of message) {
-                        this._games.push(MultiplayerCrosswordGame.create(JSON.stringify(game)));
+                        this._availableGames.push(MultiplayerCrosswordGame.create(JSON.stringify(game)));
                     }
                 });
                 this._socket.on(SocketEvents.StartGame, (message: MultiplayerCrosswordGame) => {

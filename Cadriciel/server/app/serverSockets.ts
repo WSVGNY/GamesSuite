@@ -26,19 +26,11 @@ export class ServerSockets {
         this.io = sio(this._httpServer);
         this.io.on(SocketEvents.Connection, (socket: SocketIO.Socket) => {
             console.log("user connected");
-            this.onNewMessage(socket);
             this.onDisconnect(socket);
             this.onRoomCreate(socket);
             this.onRoomsListQuery(socket);
             this.onRoomConnect(socket);
             this.onPlayerUpdate(socket);
-        });
-    }
-
-    private onNewMessage(socket: SocketIO.Socket): void {
-        socket.on(SocketEvents.NewMessage, (message: string) => {
-            console.log(message);
-            this.io.to(this.getSocketRoom(socket)).emit(SocketEvents.NewMessage, message);
         });
     }
 
@@ -55,7 +47,6 @@ export class ServerSockets {
             console.log("Room name: " + this._games[ServerSockets._numberOfRoom - 1].roomName);
             socket.join(this._games[ServerSockets._numberOfRoom - 1].roomName);
             this._games[ServerSockets._numberOfRoom - 1].addPlayer({ name: message["creator"], color: FIRST_PLAYER_COLOR, score: 0 });
-            socket.emit(SocketEvents.RoomCreated, this._games[ServerSockets._numberOfRoom - 1].roomName);
         });
     }
 
