@@ -6,12 +6,9 @@ import { Difficulty } from "../../common/crossword/difficulty";
 import * as requestPromise from "request-promise-native";
 import { CommonGrid } from "../../common/crossword/commonGrid";
 import { Player } from "../../common/crossword/player";
-
+import { BASE_ROOM_NAME, GRID_GET_URL } from "./crossword/configuration";
 export class ServerSockets {
     private static _numberOfRoom: number = 0;
-
-    private readonly GRID_GET_URL: string = "http://localhost:3000/grid/gridGet/";
-    private readonly baseRoomName: string = "ROOM";
 
     private io: SocketIO.Server;
     private _httpServer: http.Server;
@@ -112,7 +109,7 @@ export class ServerSockets {
     // tslint:enable:no-console
 
     private createRoom(difficulty: Difficulty): void {
-        this._games.push(new MultiplayerCrosswordGame(this.baseRoomName + ServerSockets._numberOfRoom++, difficulty));
+        this._games.push(new MultiplayerCrosswordGame(BASE_ROOM_NAME + ServerSockets._numberOfRoom++, difficulty));
     }
 
     private getSocketRoom(socket: SocketIO.Socket): string {
@@ -120,7 +117,7 @@ export class ServerSockets {
     }
 
     private async gridCreateQuery(game: MultiplayerCrosswordGame): Promise<void> {
-        await requestPromise(this.GRID_GET_URL + game.difficulty).then(
+        await requestPromise(GRID_GET_URL + game.difficulty).then(
             (result: CommonGrid) => {
                 game.grid = JSON.parse(result.toString());
             }

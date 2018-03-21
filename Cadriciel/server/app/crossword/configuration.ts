@@ -8,3 +8,5 @@ export const SIZE_GRID_Y: number = 10;
 export const URL_WORD_API: string = "http://localhost:3000/lexicon/";
 export const NUMBER_OF_TILES: number = SIZE_GRID_X * SIZE_GRID_Y;
 export const NUM_BLACK_TILES: number = NUMBER_OF_TILES * BLACK_TILES_RATIO;
+export const GRID_GET_URL: string = "http://localhost:3000/grid/gridGet/";
+export const BASE_ROOM_NAME: string = "ROOM";
