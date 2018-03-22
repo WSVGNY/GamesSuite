@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { AudioListener, AudioLoader, AudioBuffer, Audio, PerspectiveCamera } from "three";
 import { Car } from "../car/car";
+import { MUSIC_PATH, ACCELERATION_PATH, COLLISION_PATH, STARTING_PATH } from "../constants";
 
 @Injectable()
 export class SoundManagerService {
@@ -32,21 +33,21 @@ export class SoundManagerService {
   }
 
   public createMusic( car: Car): void {
-    const music: Audio = this.createSound("../../assets/sounds/rainbowRoad.mp3");
+    const music: Audio = this.createSound(MUSIC_PATH);
     car.add(music);
     this._music = music;
     this._isPlayingMusic = false;
   }
 
   public createAccelerationEffect( car: Car): void {
-    const soundEffect: Audio = this.createSound("../../assets/sounds/carAcceleration.mp3");
+    const soundEffect: Audio = this.createSound(ACCELERATION_PATH);
     car.add(soundEffect);
     this._soundEffect = soundEffect;
     this._isPlayingAcceleration = false;
   }
 
   public createCollisionSound( camera: PerspectiveCamera, car: Car): void {
-    const sound: Audio = this.createSound("../../assets/sounds/collision-sound.mp3");
+    const sound: Audio = this.createSound(COLLISION_PATH);
     car.add(sound);
     camera.add(sound);
     this._isDetected = false;
@@ -54,7 +55,7 @@ export class SoundManagerService {
   }
 
   public createStartingSound(camera: PerspectiveCamera): void {
-    camera.add(this.createSound("../../assets/sounds/startingSound.mp3"));
+    camera.add(this.createSound(STARTING_PATH));
   }
 
   public play (sound: Audio): void {
