@@ -6,13 +6,8 @@ import { MUSIC_PATH, ACCELERATION_PATH, COLLISION_PATH, STARTING_PATH } from "..
 @Injectable()
 export class SoundManagerService {
 
-  public constructor() { }
-
   private _music: Audio;
   private _accelerationSoundEffect: Audio;
-  private _isPlayingAcceleration: boolean = true;
-  private _isDetected: boolean = true;
-  private _isPlayingMusic: boolean = true;
   private _collisionSound: Audio;
 
   private createSound(soundName: string): Audio {
@@ -32,25 +27,22 @@ export class SoundManagerService {
     return sound;
   }
 
-  public createMusic( car: Car): void {
+  public createMusic(car: Car): void {
     const music: Audio = this.createSound(MUSIC_PATH);
     car.add(music);
     this._music = music;
-    this._isPlayingMusic = false;
   }
 
-  public createAccelerationEffect( car: Car): void {
+  public createAccelerationEffect(car: Car): void {
     const soundEffect: Audio = this.createSound(ACCELERATION_PATH);
     car.add(soundEffect);
     this._accelerationSoundEffect = soundEffect;
-    this._isPlayingAcceleration = false;
   }
 
-  public createCollisionSound( camera: PerspectiveCamera, car: Car): void {
+  public createCollisionSound(camera: PerspectiveCamera, car: Car): void {
     const sound: Audio = this.createSound(COLLISION_PATH);
     car.add(sound);
     camera.add(sound);
-    this._isDetected = false;
     this._collisionSound = sound;
   }
 
@@ -58,7 +50,7 @@ export class SoundManagerService {
     camera.add(this.createSound(STARTING_PATH));
   }
 
-  public play (sound: Audio): void {
+  public play(sound: Audio): void {
     sound.play();
   }
 
@@ -77,7 +69,4 @@ export class SoundManagerService {
   public get collisionSound(): Audio {
     return this._collisionSound;
   }
-  public isPlaying(): boolean { return this._isPlayingAcceleration; }
-  public isDetected(): boolean { return this._isDetected; }
-  public isPlayingMusic(): boolean { return this._isPlayingMusic; }
 }
