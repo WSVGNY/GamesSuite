@@ -3,6 +3,9 @@ import { CarConfig } from "./carConfig";
 import { Engine } from "./engine";
 import { Wheel } from "./wheel";
 import { Vector3 } from "three";
+import { TestBed, inject } from "@angular/core/testing";
+import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
+import { Physics } from "./physics";
 
 const MS_BETWEEN_FRAMES: number = 16.6667;
 
@@ -14,23 +17,32 @@ class MockEngine extends Engine {
 }
 
 describe("Car", () => {
+    // const keyBoardHandler: KeyboardEventHandlerService;
     let car: Car;
 
-    beforeEach(async (done: () => void) => {
-        car = new Car(new MockEngine());
+    beforeEach(inject([KeyboardEventHandlerService], async (done: () => void, keyBoardHandler: KeyboardEventHandlerService) => {
+        TestBed.configureTestingModule({
+            providers: [KeyboardEventHandlerService]
+        }).compileComponents()
+            .then()
+            .catch((e: Error) => console.error(e.message));
+
+        car = new Car(keyBoardHandler, true, new MockEngine());
         await car.init(new Vector3(0, 0, 0), Math.PI);
 
         car.accelerate();
         car.update(MS_BETWEEN_FRAMES);
         car.releaseAccelerator();
         done();
-    });
+    }));
 
-    it("should be instantiable using default constructor", () => {
-        car = new Car(new MockEngine());
-        expect(car).toBeDefined();
-        expect(car.speed.length()).toBe(0);
-    });
+    it("should be instantiable using default constructor", inject(
+        [KeyboardEventHandlerService], (keyBoardHandler: KeyboardEventHandlerService) => {
+            car = new Car(keyBoardHandler, true, new MockEngine());
+            expect(car).toBeDefined();
+            expect(car.speed.length()).toBe(0);
+        }
+    ));
 
     it("should accelerate when accelerator is pressed", () => {
         const initialSpeed: number = car.speed.length();
@@ -41,11 +53,11 @@ describe("Car", () => {
 
     it("should decelerate when brake is pressed", () => {
         // Remove rolling resistance and drag force so the only force slowing down the car is the brakes.
-        car["getRollingResistance"] = () => {
+        Physics["getRollingResistance"] = () => {
             return new Vector3(0, 0, 0);
         };
 
-        car["getDragForce"] = () => {
+        Physics["getDragForce"] = () => {
             return new Vector3(0, 0, 0);
         };
 
@@ -99,23 +111,31 @@ describe("Car", () => {
         expect(car["_engine"]).toBeDefined();
     });
 
-    it("should use default Wheel parameter when none is provided", () => {
-        car = new Car(new MockEngine(), undefined);
-        expect(car["_rearWheel"]).toBeDefined();
-    });
+    it("should use default Wheel parameter when none is provided", inject(
+        [KeyboardEventHandlerService], (keyBoardHandler: KeyboardEventHandlerService) => {
+            car = new Car(keyBoardHandler, true, new MockEngine(), undefined);
+            expect(car["_rearWheel"]).toBeDefined();
+        }
+    ));
 
-    it("should check validity of wheelbase parameter", () => {
-        car = new Car(new MockEngine(), new Wheel(), 0);
-        expect(car["_wheelbase"]).toBe(CarConfig.DEFAULT_WHEELBASE);
-    });
+    it("should check validity of wheelbase parameter", inject(
+        [KeyboardEventHandlerService], (keyBoardHandler: KeyboardEventHandlerService) => {
+            car = new Car(keyBoardHandler, true, new MockEngine(), new Wheel(), 0);
+            expect(car["_wheelbase"]).toBe(CarConfig.DEFAULT_WHEELBASE);
+        }
+    ));
 
-    it("should check validity of mass parameter", () => {
-        car = new Car(new MockEngine(), new Wheel(), CarConfig.DEFAULT_WHEELBASE, 0);
-        expect(car["_mass"]).toBe(CarConfig.DEFAULT_MASS);
-    });
+    it("should check validity of mass parameter", inject(
+        [KeyboardEventHandlerService], (keyBoardHandler: KeyboardEventHandlerService) => {
+            car = new Car(keyBoardHandler, true, new MockEngine(), new Wheel(), CarConfig.DEFAULT_WHEELBASE, 0);
+            expect(car["_mass"]).toBe(CarConfig.DEFAULT_MASS);
+        }
+    ));
 
-    it("should check validity of dragCoefficient parameter", () => {
-        car = new Car(new MockEngine(), new Wheel(), CarConfig.DEFAULT_WHEELBASE, CarConfig.DEFAULT_MASS, -10);
-        expect(car["_dragCoefficient"]).toBe(CarConfig.DEFAULT_DRAG_COEFFICIENT);
-    });
+    it("should check validity of dragCoefficient parameter", inject(
+        [KeyboardEventHandlerService], (keyBoardHandler: KeyboardEventHandlerService) => {
+            car = new Car(keyBoardHandler, true, new MockEngine(), new Wheel(), CarConfig.DEFAULT_WHEELBASE, CarConfig.DEFAULT_MASS, -10);
+            expect(car["_dragCoefficient"]).toBe(CarConfig.DEFAULT_DRAG_COEFFICIENT);
+        }
+    ));
 });

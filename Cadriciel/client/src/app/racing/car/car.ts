@@ -35,7 +35,7 @@ export class Car extends Object3D {
 
     public constructor(
         private keyBoardService: KeyboardEventHandlerService,
-        private _isAI: boolean,
+        private _isAI: boolean = true,
         engine: Engine = new Engine(),
         rearWheel: Wheel = new Wheel(),
         wheelbase: number = CarConfig.DEFAULT_WHEELBASE,

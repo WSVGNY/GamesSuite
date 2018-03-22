@@ -3,14 +3,16 @@
 import { GameScene } from "./gameScene";
 import { Vector3, Mesh, Geometry } from "three";
 import { TrackPointList } from "../render-service/trackPointList";
+import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
+import { inject } from "@angular/core/testing";
 
 describe("Game Scene", () => {
 
     let gameScene: GameScene;
 
-    beforeEach(() => {
-        gameScene = new GameScene();
-    });
+    beforeEach(inject([KeyboardEventHandlerService], (keyboardEventHandlerService: KeyboardEventHandlerService) => {
+        gameScene = new GameScene(keyboardEventHandlerService);
+    }));
 
     it("should be created", () => {
         expect(gameScene).toBeTruthy();
