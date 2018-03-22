@@ -2,10 +2,14 @@ import {
     Vector3, Matrix4, Object3D, ObjectLoader, Quaternion, Camera, Mesh, MeshBasicMaterial, BoxGeometry
 } from "three";
 import { Engine } from "./engine";
-import { MS_TO_SECONDS, GRAVITY, RAD_TO_DEG, CAR_TEXTURE } from "../constants";
+import {
+    MS_TO_SECONDS, GRAVITY, RAD_TO_DEG, CAR_TEXTURE, ACCELERATE_KEYCODE, LEFT_KEYCODE, BRAKE_KEYCODE,
+    RIGHT_KEYCODE
+} from "../constants";
 import { Wheel } from "./wheel";
 import { CarConfig } from "./carConfig";
 import { CarLights } from "./carLights";
+import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 
 export class Car extends Object3D {
 
@@ -24,16 +28,19 @@ export class Car extends Object3D {
     private _isReversing: boolean;
     private _steeringWheelDirection: number;
     private _initialDirection: Vector3 = new Vector3(0, 0, -1);
-    public _isAI: boolean;
 
     public detectionBox: Mesh;
+    public trackPortionIndex: number;
 
     public constructor(
+        private keyBoardService: KeyboardEventHandlerService,
+        private _isAI: boolean,
         engine: Engine = new Engine(),
         rearWheel: Wheel = new Wheel(),
         wheelbase: number = CarConfig.DEFAULT_WHEELBASE,
         mass: number = CarConfig.DEFAULT_MASS,
-        dragCoefficient: number = CarConfig.DEFAULT_DRAG_COEFFICIENT) {
+        dragCoefficient: number = CarConfig.DEFAULT_DRAG_COEFFICIENT
+    ) {
         super();
 
         if (wheelbase <= 0) {
@@ -57,6 +64,27 @@ export class Car extends Object3D {
         this._mass = mass;
         this._dragCoefficient = dragCoefficient;
 
+        this.initAttributes();
+        if (!this._isAI) {
+            this.bindKeys();
+        } else {
+            this.trackPortionIndex = 0;
+        }
+    }
+
+    private bindKeys(): void {
+        this.keyBoardService.bindFunctionToKeyDown(ACCELERATE_KEYCODE, () => { this.accelerate(); });
+        this.keyBoardService.bindFunctionToKeyDown(LEFT_KEYCODE, () => { this.steerLeft(); });
+        this.keyBoardService.bindFunctionToKeyDown(BRAKE_KEYCODE, () => { this.brake(); });
+        this.keyBoardService.bindFunctionToKeyDown(RIGHT_KEYCODE, () => { this.steerRight(); });
+
+        this.keyBoardService.bindFunctionToKeyUp(ACCELERATE_KEYCODE, () => { this.releaseAccelerator(); });
+        this.keyBoardService.bindFunctionToKeyUp(LEFT_KEYCODE, () => { this.releaseSteering(); });
+        this.keyBoardService.bindFunctionToKeyUp(BRAKE_KEYCODE, () => { this.releaseBrakes(); });
+        this.keyBoardService.bindFunctionToKeyUp(RIGHT_KEYCODE, () => { this.releaseSteering(); });
+    }
+
+    private initAttributes(): void {
         this._isBraking = false;
         this._steeringWheelDirection = 0;
         this._weightRear = CarConfig.INITIAL_WEIGHT_DISTRIBUTION;
@@ -68,7 +96,7 @@ export class Car extends Object3D {
     private async load(): Promise<Object3D> {
         return new Promise<Object3D>((resolve, reject) => {
             const loader: ObjectLoader = new ObjectLoader();
-            loader.load(CAR_TEXTURE, (object) => {
+            loader.load(CAR_TEXTURE, (object: Object3D) => {
                 resolve(object);
             });
         });
@@ -82,6 +110,10 @@ export class Car extends Object3D {
         this._mesh.add(this._lights);
         this.add(this._mesh);
         this.dettachLights();
+    }
+
+    public get isAI(): boolean {
+        return this._isAI;
     }
 
     public get speed(): Vector3 {
@@ -120,14 +152,9 @@ export class Car extends Object3D {
         this._lights.turnOff();
     }
 
-    public get direction(): Vector3 {
-        const rotationMatrix: Matrix4 = new Matrix4();
-        const carDirection: Vector3 = this._initialDirection.clone();
-
-        rotationMatrix.extractRotation(this._mesh.matrix);
-        carDirection.applyMatrix4(rotationMatrix);
-
-        return carDirection;
+    public releaseBrakes(): void {
+        this._isBraking = false;
+        this._lights.turnBackLightsOff();
     }
 
     public steerLeft(): void {
@@ -140,11 +167,6 @@ export class Car extends Object3D {
 
     public releaseSteering(): void {
         this._steeringWheelDirection = 0;
-    }
-
-    public releaseBrakes(): void {
-        this._isBraking = false;
-        this._lights.turnBackLightsOff();
     }
 
     public brake(): void {
@@ -166,6 +188,16 @@ export class Car extends Object3D {
 
     public releaseAccelerator(): void {
         this._isAcceleratorPressed = false;
+    }
+
+    public get direction(): Vector3 {
+        const rotationMatrix: Matrix4 = new Matrix4();
+        const carDirection: Vector3 = this._initialDirection.clone();
+
+        rotationMatrix.extractRotation(this._mesh.matrix);
+        carDirection.applyMatrix4(rotationMatrix);
+
+        return carDirection;
     }
 
     public update(deltaTime: number): void {

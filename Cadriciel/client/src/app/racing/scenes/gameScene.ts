@@ -1,18 +1,24 @@
 import { AbstractScene } from "./abstractScene";
 import { TrackPoint } from "./../render-service/trackPoint";
-import { Group, PlaneGeometry, MeshPhongMaterial, BackSide, Texture, TextureLoader,
-         RepeatWrapping, Mesh, CubeTexture, Shape, ShapeGeometry, Path, CubeTextureLoader,
-         Vector3, Geometry, LineBasicMaterial, Line, Camera } from "three";
+import {
+    Group, PlaneGeometry, MeshPhongMaterial, BackSide, Texture, TextureLoader,
+    RepeatWrapping, Mesh, CubeTexture, Shape, ShapeGeometry, Path, CubeTextureLoader,
+    Vector3, Geometry, LineBasicMaterial, Line, Camera
+} from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { SkyBox } from "../render-service/skybox";
 import { TrackLights } from "../render-service/light";
 import { Track } from "../track";
-import { PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE, MS_TO_SECONDS } from "../constants";
+import {
+    PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE, MS_TO_SECONDS,
+    CHANGE_CAMERA_KEYCODE
+} from "../constants";
 import { Car } from "../car/car";
 import { GREEN } from ".././constants";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
 import { Wall } from "../render-service/wall";
 import { TrackPointList } from "../render-service/trackPointList";
+import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 
 const START_POSITION_OFFSET: number = 4;
 
@@ -26,8 +32,9 @@ export class GameScene extends AbstractScene {
     private _centerLine: Line;
     private _debugMode: boolean;
     private _debugElements: Group = new Group();
+    private _isDay: boolean;
 
-    public constructor() {
+    public constructor(private _keyBoardService: KeyboardEventHandlerService) {
         super();
         this.add(this._group);
     }
@@ -36,6 +43,7 @@ export class GameScene extends AbstractScene {
         if (this._track !== undefined) {
             this._group.remove(this._track);
         }
+        this._isDay = track.type === TrackType.Default ? true : false;
         this._trackPoints = new TrackPointList(track.vertices);
         this._track = this.createTrackMesh(this._trackPoints);
         this._group.add(this._track);
@@ -54,7 +62,7 @@ export class GameScene extends AbstractScene {
 
             await cars[i].init(startPos, this.findFirstTrackSegmentAngle());
             this._debugElements.add(carDebugs[i].debugGroup);
-            if (!cars[i]._isAI) {
+            if (!cars[i].isAI) {
                 cars[i].attachCamera(camera);
             }
             this._group.add(cars[i]);
@@ -63,6 +71,7 @@ export class GameScene extends AbstractScene {
 
     private loadLights(trackType: TrackType): void {
         this._lighting = new TrackLights(trackType);
+        this._keyBoardService.bindFunctionToKeyDown(CHANGE_CAMERA_KEYCODE, () => this._lighting.changePerspective());
         this._group.add(this._lighting);
     }
 
@@ -168,32 +177,36 @@ export class GameScene extends AbstractScene {
         this._centerLine = new Line(geometryPoints, new LineBasicMaterial({ color: GREEN, linewidth: 3 }));
     }
 
-    public changeTimeOfDay(isDay: boolean, cars: Car[]): void {
-        if (isDay) {
-            this.setSkyBox(TrackType.Default);
-            this._lighting.updateLightsToTrackType(TrackType.Default);
-            cars.forEach((car: Car) => car.dettachLights());
-        } else {
-            this.setSkyBox(TrackType.Night);
-            this._lighting.updateLightsToTrackType(TrackType.Night);
-            cars.forEach((car: Car) => car.attachLights());
-        }
+    public changeTimeOfDay(cars: Car[]): void {
+        this._isDay = !this._isDay;
+        this._isDay ? this.setDay(cars) : this.setNight(cars);
     }
 
-    public enableDebugMode(): void {
-        if (!this._debugMode) {
-            this._debugMode = true;
-            this.add(this._debugElements);
-            this.add(this._centerLine);
-        }
+    private setDay(cars: Car[]): void {
+        this.setSkyBox(TrackType.Default);
+        this._lighting.updateLightsToTrackType(TrackType.Default);
+        cars.forEach((car: Car) => car.dettachLights());
     }
 
-    public disableDebugMode(): void {
-        if (this._debugMode) {
-            this._debugMode = false;
-            this.remove(this._debugElements);
-            this.remove(this._centerLine);
-        }
+    private setNight(cars: Car[]): void {
+        this.setSkyBox(TrackType.Night);
+        this._lighting.updateLightsToTrackType(TrackType.Night);
+        cars.forEach((car: Car) => car.attachLights());
+    }
+
+    public changeDebugMode(): void {
+        this._debugMode = !this._debugMode;
+        this._debugMode ? this.enableDebugMode() : this.disableDebugMode();
+    }
+
+    private enableDebugMode(): void {
+        this.add(this._debugElements);
+        this.add(this._centerLine);
+    }
+
+    private disableDebugMode(): void {
+        this.remove(this._debugElements);
+        this.remove(this._centerLine);
     }
 
     public get debugMode(): boolean {
