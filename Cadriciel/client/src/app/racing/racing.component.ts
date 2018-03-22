@@ -14,9 +14,7 @@ import { RenderService } from "./render-service/render.service";
 import { AIDebug } from "./artificial-intelligence/ai-debug";
 import { SoundManagerService } from "./sound-service/sound-manager.service";
 import { TopViewCamera } from "./cameras/topViewCamera";
-import { CHANGE_CAMERA_KEYCODE, DAY_KEYCODE, DEBUG_KEYCODE } from "./constants";
-
-const AI_CARS_QUANTITY: number = 2;
+import { CHANGE_CAMERA_KEYCODE, DAY_KEYCODE, DEBUG_KEYCODE, AI_CARS_QUANTITY } from "./constants";
 
 @Component({
     moduleId: module.id,

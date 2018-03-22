@@ -24,6 +24,7 @@ export const RED: number = 0xFF0000;
 export const GREEN: number = 0x00FF00;
 export const ORANGE: number = 0xFF6600;
 export const YELLOW: number = 0xFFFF00;
+export const AI_CARS_QUANTITY: number = 1;
 
 // Texture Paths
 const BASE_URL: string = "http://localhost:4200/";
