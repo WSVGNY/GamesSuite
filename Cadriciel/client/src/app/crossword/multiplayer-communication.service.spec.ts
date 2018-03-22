@@ -1,7 +1,6 @@
 import { TestBed, inject } from "@angular/core/testing";
 import { MultiplayerCommunicationService } from "./multiplayer-communication.service";
 
-
 describe("MultiplayerCommunicationService", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
