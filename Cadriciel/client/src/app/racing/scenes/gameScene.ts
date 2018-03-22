@@ -3,7 +3,7 @@ import { TrackPoint } from "./../render-service/trackPoint";
 import {
     Group, PlaneGeometry, MeshPhongMaterial, BackSide, Texture, TextureLoader,
     RepeatWrapping, Mesh, CubeTexture, Shape, ShapeGeometry, Path, CubeTextureLoader,
-    Vector3, Geometry, LineBasicMaterial, Line, Camera
+    Vector3, Geometry, Line, Camera, LineDashedMaterial, Material, LineBasicMaterial
 } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { SkyBox } from "../render-service/skybox";
@@ -11,10 +11,9 @@ import { TrackLights } from "../render-service/light";
 import { Track } from "../track";
 import {
     PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE, MS_TO_SECONDS,
-    CHANGE_CAMERA_KEYCODE
+    CHANGE_CAMERA_KEYCODE, YELLOW
 } from "../constants";
 import { Car } from "../car/car";
-import { GREEN } from ".././constants";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
 import { Wall } from "../render-service/wall";
 import { TrackPointList } from "../render-service/trackPointList";
@@ -29,7 +28,7 @@ export class GameScene extends AbstractScene {
     private _group: Group = new Group();
     private _skyBoxTexture: CubeTexture;
     private _lighting: TrackLights;
-    private _centerLine: Line;
+    private _centerLine: Group;
     private _debugMode: boolean;
     private _debugElements: Group = new Group();
     private _isDay: boolean;
@@ -171,11 +170,43 @@ export class GameScene extends AbstractScene {
     }
 
     private setCenterLine(): void {
-        const geometryPoints: Geometry = new Geometry();
-        this._trackPoints.points.forEach((currentPoint: TrackPoint) => geometryPoints.vertices.push(currentPoint.coordinate));
-        geometryPoints.vertices.push(this._trackPoints.points[0].coordinate);
+        const material: LineBasicMaterial = new LineBasicMaterial({ color: YELLOW, linewidth: 3 });
+        this._centerLine = new Group();
 
-        this._centerLine = new Line(geometryPoints, new LineBasicMaterial({ color: GREEN, linewidth: 3 }));
+        this._trackPoints.points.forEach((currentPoint: TrackPoint) => {
+            this._centerLine.add(this.drawLine(material, currentPoint.coordinate, currentPoint.next.coordinate, 2));
+        });
+    }
+
+    // https://stackoverflow.com/questions/21067461/workaround-for-lack-of-line-width-on-windows-when-using-three-js
+    private drawLine(
+        lineMaterial: LineBasicMaterial,
+        currentPoint: Vector3,
+        nextPoint: Vector3,
+        thickness: number): Group {
+
+        const dashedLine: Group = new Group();
+        for (let i: number = 0; i < thickness * 2; i++) {
+            const routerLineGeometry: Geometry = new Geometry();
+            const offset: number = i / 32;
+
+            routerLineGeometry.vertices.push(new Vector3(currentPoint.x + offset, currentPoint.y, currentPoint.z + offset));
+            routerLineGeometry.vertices.push(new Vector3(nextPoint.x + offset, nextPoint.y, nextPoint.z + offset));
+
+            dashedLine.add(new Line(routerLineGeometry, lineMaterial));
+        }
+
+        for (let i: number = 0; i < thickness * 2; i++) {
+            const routerLineGeometry: Geometry = new Geometry();
+            const offset: number = i / 32 + 1 / 64;
+
+            routerLineGeometry.vertices.push(new Vector3(currentPoint.x + offset, currentPoint.y, currentPoint.z + offset));
+            routerLineGeometry.vertices.push(new Vector3(nextPoint.x + offset, nextPoint.y, nextPoint.z + offset));
+
+            dashedLine.add(new Line(routerLineGeometry, lineMaterial));
+        }
+
+        return dashedLine;
     }
 
     public changeTimeOfDay(cars: Car[]): void {
