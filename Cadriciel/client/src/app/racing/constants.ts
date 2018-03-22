@@ -63,3 +63,4 @@ export const DAY_KEYCODE: number = 74;              // j
 export const DEBUG_KEYCODE: number = 48;            // 0
 export const MUTE_KEYCODE: number = 77;             // m
 export const CHANGE_CAMERA_KEYCODE: number = 67;    // c
+export const PLAY_MUSIC_KEYCODE: number = 80;       // p
