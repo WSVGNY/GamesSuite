@@ -4,7 +4,7 @@ import {
 import { Engine } from "./engine";
 import {
     MS_TO_SECONDS, RAD_TO_DEG, CAR_TEXTURE, ACCELERATE_KEYCODE, LEFT_KEYCODE, BRAKE_KEYCODE,
-    RIGHT_KEYCODE
+    RIGHT_KEYCODE, YELLOW
 } from "../constants";
 import { Wheel } from "./wheel";
 import { CarConfig } from "./carConfig";
@@ -22,7 +22,7 @@ export class Car extends Object3D {
         private keyBoardService: KeyboardEventHandlerService,
         private _isAI: boolean,
         private _carStructure: CarStructure = new CarStructure(),
-        private _carControls: CarControls = new CarControls
+        private _carControls: CarControls = new CarControls()
     ) {
         super();
 
@@ -214,7 +214,7 @@ export class Car extends Object3D {
     private createDetectionBox(): Mesh {
         const geometry: BoxGeometry = new BoxGeometry(2, 2, 2);
         geometry.computeBoundingBox();
-        const material: MeshBasicMaterial = new MeshBasicMaterial({ color: 0xfff000 });
+        const material: MeshBasicMaterial = new MeshBasicMaterial({ color: YELLOW });
 
         return new Mesh(geometry, material);
     }
