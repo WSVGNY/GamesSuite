@@ -6,7 +6,7 @@ import { TurnRight } from "../commands/carAICommands/turnRight";
 import { GoFoward } from "../commands/carAICommands/goFoward";
 import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";
 import { Vector3 } from "three";
-import { SQUARED } from "../constants";
+import { SQUARED, PI_OVER_4 } from "../constants";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { AIConfig } from "./ai-config";
 import { AIDebug } from "./ai-debug";
@@ -42,7 +42,7 @@ export class AICarService {
         aiDebug.updateDebugMode(carPosition, projection, pointOnLine, turningPoint, this._trackVertices[car.trackPortionIndex]);
 
         this.updateTrackPortionIndex(car, pointOnLine, turningPoint);
-        this.updateCarDirection(lineDistance, car);
+        this.updateCarDirection(lineDistance, car, this.isCarGoingStraightToLine(car, projection, pointOnLine));
     }
 
     private updateTrackPortionIndex(car: Car, pointOnLine: Vector3, turningPoint: Vector3): void {
@@ -66,8 +66,8 @@ export class AICarService {
         return pointOnLineToTurningPoint.dot(directorVector) > 0;
     }
 
-    private updateCarDirection(lineDistance: number, car: Car): void {
-        if (Math.abs(lineDistance) > this._aiConfig.distanceBeforeReplacement) {
+    private updateCarDirection(lineDistance: number, car: Car, goingStraightToLine: boolean): void {
+        if (Math.abs(lineDistance) > this._aiConfig.distanceBeforeReplacement && !goingStraightToLine) {
             this.accelerate(car);
             if (lineDistance < 0) {
                 this.goLeft(car);
@@ -77,6 +77,13 @@ export class AICarService {
         } else {
             this.goForward(car);
         }
+    }
+
+    private isCarGoingStraightToLine(car: Car, projection: Vector3, pointOnLine: Vector3): boolean {
+        const vectorFromProjectionToCar: Vector3 = car.currentPosition.clone().sub(projection).normalize();
+        const vectorFromPointOnLineToCar: Vector3 = pointOnLine.clone().sub(projection).normalize();
+
+        return Math.abs(vectorFromProjectionToCar.angleTo(vectorFromPointOnLineToCar)) >= Math.PI - PI_OVER_4 ? true : false;
     }
 
     private goForward(car: Car): void {

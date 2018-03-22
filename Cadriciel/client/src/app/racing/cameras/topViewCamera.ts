@@ -21,6 +21,7 @@ export class TopViewCamera extends OrthographicCamera {
         );
         this.name = "PLAYER_CAMERA";
         this.rotateX(-PI_OVER_2);
+        this.rotateZ(-PI_OVER_2);
         this.position.setY(INITIAL_CAMERA_POSITION_Y);
     }
 
