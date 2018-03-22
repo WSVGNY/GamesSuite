@@ -8,6 +8,8 @@ import { CommonGrid } from "../../common/crossword/commonGrid";
 import { Player } from "../../common/crossword/player";
 import { BASE_ROOM_NAME, GRID_GET_URL, FIRST_PLAYER_COLOR, SECOND_PLAYER_COLOR } from "./crossword/configuration";
 
+const INDEX_NOT_FOUND: number = -1;
+
 export class ServerSockets {
     private static _numberOfRoom: number = 0;
 
@@ -50,7 +52,7 @@ export class ServerSockets {
 
     private deleteGame(game: MultiplayerCrosswordGame): void {
         const index: number = this._games.indexOf(game, 0);
-        if (index > -1) {
+        if (index > INDEX_NOT_FOUND) {
             this._games.splice(index, 1);
             console.log("Deleted game of room name: " + game.roomName);
         }
