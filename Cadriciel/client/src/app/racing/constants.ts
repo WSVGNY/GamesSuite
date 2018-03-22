@@ -43,4 +43,12 @@ export const GROUND_TEXTURE_FACTOR: number = 0.045;
 export const ASPHALT_TEXTURE: string = BASE_TEXTURE_PATH + "asphalte.jpg";
 export const GRASS_TEXTURE: string = BASE_TEXTURE_PATH + "grass.jpg";
 export const WALL_TEXTURE: string = BASE_TEXTURE_PATH + "brick.jpg";
+
+// Sound Paths
+const BASE_SOUND_PATH: string = BASE_ASSETS_PATH + "../../assets/sounds/";
+export const MUSIC_PATH: string = BASE_SOUND_PATH + "rainbowRoad.mp3";
+export const ACCELERATION_PATH: string = BASE_SOUND_PATH + "carAcceleration.mp3";
+export const STARTING_PATH: string = BASE_SOUND_PATH + "startingSound.mp3";
+export const COLLISION_PATH: string = BASE_SOUND_PATH + "collision-sound.mp3";
+
 export const WALL_TEXTURE_FACTOR: number = 1;
