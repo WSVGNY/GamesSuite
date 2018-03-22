@@ -50,6 +50,7 @@ export class GameScene extends AbstractScene {
         this.addGround();
         this.setSkyBox(track.type);
         this.loadLights(track.type);
+        this.setCenterLine();
         this._group.add(this.createWalls(this._trackPoints));
     }
 
@@ -169,7 +170,7 @@ export class GameScene extends AbstractScene {
             - new Vector3(0, 0, -1).angleTo(carfinalFacingVector);
     }
 
-    public setCenterLine(): void {
+    private setCenterLine(): void {
         const geometryPoints: Geometry = new Geometry();
         this._trackPoints.points.forEach((currentPoint: TrackPoint) => geometryPoints.vertices.push(currentPoint.coordinate));
         geometryPoints.vertices.push(this._trackPoints.points[0].coordinate);
