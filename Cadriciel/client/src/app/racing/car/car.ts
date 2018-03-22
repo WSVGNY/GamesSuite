@@ -2,7 +2,10 @@ import {
     Vector3, Matrix4, Object3D, ObjectLoader, Quaternion, Camera, Mesh, MeshBasicMaterial, BoxGeometry
 } from "three";
 import { Engine } from "./engine";
-import { MS_TO_SECONDS, GRAVITY, RAD_TO_DEG, CAR_TEXTURE, ACCELERATE_KEYCODE, LEFT_KEYCODE, BRAKE_KEYCODE, RIGHT_KEYCODE } from "../constants";
+import {
+    MS_TO_SECONDS, GRAVITY, RAD_TO_DEG, CAR_TEXTURE, ACCELERATE_KEYCODE, LEFT_KEYCODE, BRAKE_KEYCODE,
+    RIGHT_KEYCODE
+} from "../constants";
 import { Wheel } from "./wheel";
 import { CarConfig } from "./carConfig";
 import { CarLights } from "./carLights";
@@ -27,6 +30,7 @@ export class Car extends Object3D {
     private _initialDirection: Vector3 = new Vector3(0, 0, -1);
 
     public detectionBox: Mesh;
+    public trackPortionIndex: number;
 
     public constructor(
         private keyBoardService: KeyboardEventHandlerService,
@@ -63,6 +67,8 @@ export class Car extends Object3D {
         this.initAttributes();
         if (!this._isAI) {
             this.bindKeys();
+        } else {
+            this.trackPortionIndex = 0;
         }
     }
 
