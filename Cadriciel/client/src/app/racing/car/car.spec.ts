@@ -20,21 +20,22 @@ describe("Car", () => {
     // const keyBoardHandler: KeyboardEventHandlerService;
     let car: Car;
 
-    beforeEach(inject([KeyboardEventHandlerService], async (done: () => void, keyBoardHandler: KeyboardEventHandlerService) => {
+    // beforeEach(inject([KeyboardEventHandlerService], async (done: () => void, keyBoardHandler: KeyboardEventHandlerService) => {
+    beforeEach(async (done: () => void) => {
         TestBed.configureTestingModule({
             providers: [KeyboardEventHandlerService]
         }).compileComponents()
             .then()
             .catch((e: Error) => console.error(e.message));
 
-        car = new Car(keyBoardHandler, true, new MockEngine());
+        car = new Car(undefined, true, new MockEngine());
         await car.init(new Vector3(0, 0, 0), Math.PI);
 
         car.accelerate();
         car.update(MS_BETWEEN_FRAMES);
         car.releaseAccelerator();
         done();
-    }));
+    });
 
     it("should be instantiable using default constructor", inject(
         [KeyboardEventHandlerService], (keyBoardHandler: KeyboardEventHandlerService) => {
@@ -53,6 +54,8 @@ describe("Car", () => {
 
     it("should decelerate when brake is pressed", () => {
         // Remove rolling resistance and drag force so the only force slowing down the car is the brakes.
+        const getRollingResistance: () => Vector3 = Physics["getRollingResistance"];
+        const getDragForce: () => Vector3 = Physics["getDragForce"];
         Physics["getRollingResistance"] = () => {
             return new Vector3(0, 0, 0);
         };
@@ -68,6 +71,10 @@ describe("Car", () => {
         const initialSpeed: number = car.speed.length();
         car.brake();
         car.update(MS_BETWEEN_FRAMES);
+
+        Physics["getRollingResistance"] = getRollingResistance;
+        Physics["getDragForce"] = getDragForce;
+
         expect(car.speed.length()).toBeLessThan(initialSpeed);
     });
 
