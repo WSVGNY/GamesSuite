@@ -10,7 +10,7 @@ import { SkyBox } from "../render-service/skybox";
 import { TrackLights } from "../render-service/light";
 import { Track } from "../track";
 import {
-    PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE, MS_TO_SECONDS,
+    PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE,
     CHANGE_CAMERA_KEYCODE, YELLOW, ASPHALT_TEXTURE_FACTOR
 } from "../constants";
 import { Car } from "../car/car";
