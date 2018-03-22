@@ -219,7 +219,7 @@ export class CrosswordComponent {
                         this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + i]
                     ) :
                     this.configurationService.currentPlayer.selectedBoxes.push(
-                        this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + i]
+                        this.configurationService.grid.boxes[word.startPosition.y + i][word.startPosition.x]
                     );
             }
         }
