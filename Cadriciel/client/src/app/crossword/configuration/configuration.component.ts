@@ -29,10 +29,12 @@ export class ConfigurationComponent {
 
     public setNewGame(): void {
         this.isNewGame = true;
+        this.isJoinGame = false;
     }
 
     public setJoinGame(): void {
         this.isJoinGame = true;
+        this.isNewGame = false;
         this.configurationService.isTwoPlayerGame = true;
         this.multiplayerCommunicationService.connectToSocket();
         this.subscribeToMessages();

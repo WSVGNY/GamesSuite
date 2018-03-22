@@ -1,10 +1,12 @@
-import { CommonGridBox } from "./commonGridBox";
 import { CommonWord } from "./commonWord";
+import { CommonGridBox } from "./commonGridBox";
 
 export interface Player {
     name: string;
     color: string;
     score: number;
-    selectedGridBox?: CommonGridBox;
     selectedWord?: CommonWord;
+    selectedBoxes?: CommonGridBox[];
+    foundWords?: CommonWord[];
+    foundBoxes?: CommonGridBox[];
 }

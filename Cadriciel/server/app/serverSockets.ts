@@ -58,7 +58,7 @@ export class ServerSockets {
             this.createRoom(message["difficulty"]);
             console.log("Room name: " + this._games[ServerSockets._numberOfRoom - 1].roomName);
             socket.join(this._games[ServerSockets._numberOfRoom - 1].roomName);
-            this._games[ServerSockets._numberOfRoom - 1].addPlayer({ name: message["creator"], color: "teal", score: 0 });
+            this._games[ServerSockets._numberOfRoom - 1].addPlayer({ name: message["creator"], color: "steelBlue", score: 0 });
             socket.emit(SocketEvents.RoomCreated, this._games[ServerSockets._numberOfRoom - 1].roomName);
         });
     }
@@ -82,7 +82,7 @@ export class ServerSockets {
             for (const game of this._games) {
                 const room: MultiplayerCrosswordGame = MultiplayerCrosswordGame.create(JSON.stringify(message["roomInfo"]));
                 if (game.roomName === room.roomName) {
-                    if (game.addPlayer({ name: message["playerName"], color: "gold", score: 0 })) {
+                    if (game.addPlayer({ name: message["playerName"], color: "orangeRed", score: 0 })) {
                         socket.join(room.roomName);
                         console.log("Connection to room: " + room.roomName + " by " + message["playerName"] + " successfull");
                         if (game.isFull()) {
