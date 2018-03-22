@@ -20,7 +20,6 @@ describe("Car", () => {
     // const keyBoardHandler: KeyboardEventHandlerService;
     let car: Car;
 
-    // beforeEach(inject([KeyboardEventHandlerService], async (done: () => void, keyBoardHandler: KeyboardEventHandlerService) => {
     beforeEach(async (done: () => void) => {
         TestBed.configureTestingModule({
             providers: [KeyboardEventHandlerService]
