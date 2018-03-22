@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, inject } from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { ConfigurationComponent } from "./configuration.component";
 import { GridService } from "../grid.service";
 import { HttpClient, HttpHandler } from "@angular/common/http";
