@@ -9,7 +9,7 @@ export class SoundManagerService {
   public constructor() { }
 
   private _music: Audio;
-  private _soundEffect: Audio;
+  private _accelerationSoundEffect: Audio;
   private _isPlayingAcceleration: boolean = true;
   private _isDetected: boolean = true;
   private _isPlayingMusic: boolean = true;
@@ -23,7 +23,7 @@ export class SoundManagerService {
       soundName,
       (audioBuffer: AudioBuffer) => {
         sound.setBuffer(audioBuffer);
-        sound.play();
+        sound.stop();
       },
       (xhr: XMLHttpRequest) => { },
       (err: Event) => { }
@@ -42,7 +42,7 @@ export class SoundManagerService {
   public createAccelerationEffect( car: Car): void {
     const soundEffect: Audio = this.createSound(ACCELERATION_PATH);
     car.add(soundEffect);
-    this._soundEffect = soundEffect;
+    this._accelerationSoundEffect = soundEffect;
     this._isPlayingAcceleration = false;
   }
 
@@ -71,7 +71,7 @@ export class SoundManagerService {
   }
 
   public get accelerationSoundEffect(): Audio {
-    return this._soundEffect;
+    return this._accelerationSoundEffect;
   }
 
   public get collisionSound(): Audio {

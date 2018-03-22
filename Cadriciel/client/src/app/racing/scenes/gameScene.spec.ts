@@ -3,13 +3,20 @@
 import { GameScene } from "./gameScene";
 import { Vector3, Mesh, Geometry } from "three";
 import { TrackPointList } from "../render-service/trackPointList";
+import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
+import { inject, TestBed } from "@angular/core/testing";
 
 describe("Game Scene", () => {
 
     let gameScene: GameScene;
 
     beforeEach(() => {
-        gameScene = new GameScene();
+        TestBed.configureTestingModule({
+            providers: [KeyboardEventHandlerService]
+        }).compileComponents()
+            .then()
+            .catch((e: Error) => console.error(e.message));
+        gameScene = new GameScene(undefined);
     });
 
     it("should be created", () => {
