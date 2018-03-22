@@ -20,18 +20,9 @@ export class Car extends Object3D {
 
     public constructor(
         private keyBoardService: KeyboardEventHandlerService,
-<<<<<<< HEAD
         private _isAI: boolean,
         private _carStructure: CarStructure = new CarStructure(),
         private _carControls: CarControls = new CarControls()
-=======
-        private _isAI: boolean = true,
-        engine: Engine = new Engine(),
-        rearWheel: Wheel = new Wheel(),
-        wheelbase: number = CarConfig.DEFAULT_WHEELBASE,
-        mass: number = CarConfig.DEFAULT_MASS,
-        dragCoefficient: number = CarConfig.DEFAULT_DRAG_COEFFICIENT
->>>>>>> 125a872f7c3ee8df23963cbb6ff6b1809024b544
     ) {
         super();
 

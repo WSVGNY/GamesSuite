@@ -1,4 +1,4 @@
-import { Vector3, Object3D } from "three";
+import { Vector3 } from "three";
 import { Engine } from "./engine";
 import { Wheel } from "./wheel";
 import { CarLights } from "./carLights";
