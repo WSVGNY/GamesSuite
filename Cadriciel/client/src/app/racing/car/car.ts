@@ -92,6 +92,7 @@ export class Car extends Object3D {
         this._speed = new Vector3(0, 0, 0);
         this.position.add(new Vector3(0, 0, 0));
         this.detectionBox = this.createDetectionBox();
+        this._lights = new CarLights();
     }
 
     private async load(): Promise<Object3D> {
@@ -107,10 +108,10 @@ export class Car extends Object3D {
         this._mesh = await this.load();
         this._mesh.position.add(startPoint);
         this._mesh.setRotationFromAxisAngle(new Vector3(0, 1, 0), rotationAngle);
-        this._lights = new CarLights();
         this._mesh.add(this._lights);
         this.add(this._mesh);
-        this.dettachLights();
+        this.turnLightsOff();
+        this._lights.turnBackLightsOff();
     }
 
     public get isAI(): boolean {
@@ -145,11 +146,12 @@ export class Car extends Object3D {
         this._mesh.add(camera);
     }
 
-    public attachLights(): void {
+    public turnLightsOn(): void {
         this._lights.turnOn();
+        this._lights.turnBackLightsOff();
     }
 
-    public dettachLights(): void {
+    public turnLightsOff(): void {
         this._lights.turnOff();
     }
 

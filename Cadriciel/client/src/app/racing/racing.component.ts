@@ -15,6 +15,7 @@ import { AIDebug } from "./artificial-intelligence/ai-debug";
 import { SoundManagerService } from "./sound-service/sound-manager.service";
 import { TopViewCamera } from "./cameras/topViewCamera";
 import { CHANGE_CAMERA_KEYCODE, DAY_KEYCODE, DEBUG_KEYCODE, AI_CARS_QUANTITY } from "./constants";
+import { TrackType } from "../../../../common/racing/trackType";
 
 @Component({
     moduleId: module.id,
@@ -99,9 +100,9 @@ export class RacingComponent implements AfterViewInit, OnInit {
                 this._chosenTrack = new Track(iTrack);
                 this._trackPoints = new TrackPointList(this._chosenTrack.vertices);
 
-                this.initializeCars();
+                this.initializeCars(this._chosenTrack.type);
                 await this._gameScene.loadTrack(this._chosenTrack);
-                await this._gameScene.loadCars(this._cars, this._carDebugs, this._thirdPersonCamera);
+                await this._gameScene.loadCars(this._cars, this._carDebugs, this._thirdPersonCamera, this._chosenTrack);
                 await this._aiCarService
                     .initialize(this._trackPoints.pointVectors, Difficulty.Medium)
                     .then(/* do nothing */)
@@ -119,7 +120,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
         );
     }
 
-    private initializeCars(): void {
+    private initializeCars(trackType: TrackType): void {
         for (let i: number = 0; i < AI_CARS_QUANTITY + 1; ++i) {
 
             if (i === 0) {

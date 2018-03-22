@@ -3,7 +3,7 @@ import { TrackPoint } from "./../render-service/trackPoint";
 import {
     Group, PlaneGeometry, MeshPhongMaterial, BackSide, Texture, TextureLoader,
     RepeatWrapping, Mesh, CubeTexture, Shape, ShapeGeometry, Path, CubeTextureLoader,
-    Vector3, Geometry, Line, Camera, LineDashedMaterial, Material, LineBasicMaterial
+    Vector3, Geometry, Line, Camera, LineBasicMaterial
 } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { SkyBox } from "../render-service/skybox";
@@ -11,7 +11,7 @@ import { TrackLights } from "../render-service/light";
 import { Track } from "../track";
 import {
     PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE, MS_TO_SECONDS,
-    CHANGE_CAMERA_KEYCODE, YELLOW
+    CHANGE_CAMERA_KEYCODE, YELLOW, ASPHALT_TEXTURE_FACTOR
 } from "../constants";
 import { Car } from "../car/car";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
@@ -53,7 +53,7 @@ export class GameScene extends AbstractScene {
         this._group.add(this.createWalls(this._trackPoints));
     }
 
-    public async loadCars(cars: Car[], carDebugs: AIDebug[], camera: Camera): Promise<void> {
+    public async loadCars(cars: Car[], carDebugs: AIDebug[], camera: Camera, track: Track): Promise<void> {
         for (let i: number = 0; i < cars.length; ++i) {
             const startPos: Vector3 = new Vector3(
                 this._trackPoints.first.coordinate.x - i * START_POSITION_OFFSET,
@@ -66,6 +66,15 @@ export class GameScene extends AbstractScene {
                 cars[i].attachCamera(camera);
             }
             this._group.add(cars[i]);
+        }
+        switch (track.type) {
+            case TrackType.Night:
+                this.setNight(cars);
+                break;
+            case TrackType.Default:
+            default:
+                this.setDay(cars);
+                break;
         }
     }
 
@@ -86,7 +95,7 @@ export class GameScene extends AbstractScene {
     private addGround(): void {
         const groundGeometry: PlaneGeometry = new PlaneGeometry(GROUND_SIZE, GROUND_SIZE, 1, 1);
         const groundMaterial: MeshPhongMaterial =
-            new MeshPhongMaterial({ side: BackSide, map: this.loadRepeatingTexture(GRASS_TEXTURE, MS_TO_SECONDS) });
+            new MeshPhongMaterial({ side: BackSide, map: this.loadRepeatingTexture(GRASS_TEXTURE, GROUND_TEXTURE_FACTOR) });
 
         const ground: Mesh = new Mesh(groundGeometry, groundMaterial);
         ground.rotateX(PI_OVER_2);
@@ -123,7 +132,7 @@ export class GameScene extends AbstractScene {
 
         const geometry: ShapeGeometry = new ShapeGeometry(shape);
         const trackMaterial: MeshPhongMaterial =
-            new MeshPhongMaterial({ side: BackSide, map: this.loadRepeatingTexture(ASPHALT_TEXTURE, GROUND_TEXTURE_FACTOR) });
+            new MeshPhongMaterial({ side: BackSide, map: this.loadRepeatingTexture(ASPHALT_TEXTURE, ASPHALT_TEXTURE_FACTOR) });
 
         const trackMesh: Mesh = new Mesh(geometry, trackMaterial);
         trackMesh.rotateX(PI_OVER_2);
@@ -217,13 +226,13 @@ export class GameScene extends AbstractScene {
     private setDay(cars: Car[]): void {
         this.setSkyBox(TrackType.Default);
         this._lighting.updateLightsToTrackType(TrackType.Default);
-        cars.forEach((car: Car) => car.dettachLights());
+        cars.forEach((car: Car) => car.turnLightsOff());
     }
 
     private setNight(cars: Car[]): void {
         this.setSkyBox(TrackType.Night);
         this._lighting.updateLightsToTrackType(TrackType.Night);
-        cars.forEach((car: Car) => car.attachLights());
+        cars.forEach((car: Car) => car.turnLightsOn());
     }
 
     public changeDebugMode(): void {
