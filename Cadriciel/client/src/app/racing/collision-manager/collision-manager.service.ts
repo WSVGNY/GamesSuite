@@ -1,14 +1,14 @@
 import { Injectable } from "@angular/core";
 import { Car } from "../car/car";
-import { Vector3, Raycaster, Intersection} from "three";
+import { Vector3, Raycaster, Intersection } from "three";
 import { GameScene } from "../scenes/gameScene";
 
-const MINIMUM_CAR_DISTANCE: number  = 5;
+const MINIMUM_CAR_DISTANCE: number = 5;
 
 @Injectable()
 export class CollisionManagerService {
 
-    public constructor() {}
+    public constructor() { }
 
     // tslint:disable-next-line:max-func-body-length
     public computeCollisions(cars: Car[], gameScene: GameScene): void {
@@ -42,7 +42,7 @@ export class CollisionManagerService {
                             cars[secondCarIndex].hitbox._inCollision = true;
                             const resultingForces: Vector3[] = [];
                             if (secondCarHits) {
-                                const forces1: Vector3[] =  this.computeResultingForces(cars[secondCarIndex], cars[firstCarIndex], collisionPoint.clone());
+                                const forces1: Vector3[] = this.computeResultingForces(cars[secondCarIndex], cars[firstCarIndex], collisionPoint.clone());
                                 const forces2: Vector3[] = this.computeResultingForces(cars[firstCarIndex], cars[secondCarIndex], collisionPoint.clone());
                                 resultingForces.push(forces1[0]);
                                 resultingForces.push(forces1[1]);
@@ -50,7 +50,7 @@ export class CollisionManagerService {
                                 resultingForces.push(forces2[1]);
                                 this.applyForces(cars[secondCarIndex], cars[firstCarIndex], resultingForces);
                             } else {
-                                const forces1: Vector3[] =  this.computeResultingForces(cars[firstCarIndex], cars[secondCarIndex], collisionPoint.clone());
+                                const forces1: Vector3[] = this.computeResultingForces(cars[firstCarIndex], cars[secondCarIndex], collisionPoint.clone());
                                 const forces2: Vector3[] = this.computeResultingForces(cars[secondCarIndex], cars[firstCarIndex], collisionPoint.clone());
                                 resultingForces.push(forces1[0]);
                                 resultingForces.push(forces1[1]);
@@ -68,19 +68,17 @@ export class CollisionManagerService {
         }
     }
 
-    // tslint:disable-next-line:max-func-body-length
     private findClosestPoint(collisionPoint: Vector3, car: Car): Vector3 {
         let smallestDistance: number = 2e19;
         let pushBack: Vector3;
-        // tslint:disable-next-line:prefer-for-of
         for (let i: number = 0; i < car.hitbox.subPlanVertices.length; ++i) {
             const localVertexA: Vector3 = car.hitbox.subPlanVertices[i].clone();
             let localVertexB: Vector3;
-            if ((i + 1) === car.hitbox.subPlanVertices.length) {
-                localVertexB = car.hitbox.subPlanVertices[0].clone();
-            } else {
+
+            i + 1 === car.hitbox.subPlanVertices.length ?
+                localVertexB = car.hitbox.subPlanVertices[0].clone() :
                 localVertexB = car.hitbox.subPlanVertices[i + 1].clone();
-            }
+
             const globalVertexA: Vector3 = localVertexA.applyMatrix4(car.meshMatrix);
             const globalVertexB: Vector3 = localVertexB.applyMatrix4(car.meshMatrix);
             const ap: Vector3 = collisionPoint.clone().sub(globalVertexA);

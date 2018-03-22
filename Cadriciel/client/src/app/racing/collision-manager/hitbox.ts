@@ -1,4 +1,5 @@
 import { Mesh, MeshBasicMaterial, Vector3, BoxGeometry } from "three";
+import { GREEN } from "../constants";
 
 const WIDTH: number = 1.5;
 const HEIGHT: number = 0.01;
@@ -11,7 +12,7 @@ export class Hitbox extends Mesh {
 
     public constructor() {
         const geometry: BoxGeometry = new BoxGeometry(WIDTH, HEIGHT, DEPTH);
-        const material: MeshBasicMaterial = new MeshBasicMaterial({wireframe: true, color: 0x00FF00 });
+        const material: MeshBasicMaterial = new MeshBasicMaterial({ wireframe: true, color: GREEN });
         super(geometry, material);
         this._subPlaneVertices = [];
         this.generateSubPlanVertices();
