@@ -11,59 +11,35 @@ import { CarConfig } from "./carConfig";
 import { CarLights } from "./carLights";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { Physics } from "./physics";
+import { CarControls, CarStructure } from "./carInformations";
 
 export class Car extends Object3D {
-
-    private readonly _engine: Engine;
-    private readonly _mass: number;
-    private readonly _rearWheel: Wheel;
-    private readonly _wheelbase: number;
-    private readonly _dragCoefficient: number;
     private _mesh: Object3D;
-    private _weightRear: number;
-    private _lights: CarLights;
-
-    private _isAcceleratorPressed: boolean;
-    private _speed: Vector3;
-    private _isBraking: boolean;
-    private _isReversing: boolean;
-    private _steeringWheelDirection: number;
-    private _initialDirection: Vector3 = new Vector3(0, 0, -1);
-
     public detectionBox: Mesh;
     public trackPortionIndex: number;
 
     public constructor(
         private keyBoardService: KeyboardEventHandlerService,
         private _isAI: boolean,
-        engine: Engine = new Engine(),
-        rearWheel: Wheel = new Wheel(),
-        wheelbase: number = CarConfig.DEFAULT_WHEELBASE,
-        mass: number = CarConfig.DEFAULT_MASS,
-        dragCoefficient: number = CarConfig.DEFAULT_DRAG_COEFFICIENT
+        private _carStructure: CarStructure = new CarStructure(),
+        private _carControls: CarControls = new CarControls
     ) {
         super();
 
-        if (wheelbase <= 0) {
+        if (_carStructure.wheelbase <= 0) {
             console.error("Wheelbase should be greater than 0.");
-            wheelbase = CarConfig.DEFAULT_WHEELBASE;
+            _carStructure.wheelbase = CarConfig.DEFAULT_WHEELBASE;
         }
 
-        if (mass <= 0) {
+        if (_carStructure.mass <= 0) {
             console.error("Mass should be greater than 0.");
-            mass = CarConfig.DEFAULT_MASS;
+            _carStructure.mass = CarConfig.DEFAULT_MASS;
         }
 
-        if (dragCoefficient <= 0) {
+        if (_carStructure.dragCoefficient <= 0) {
             console.error("Drag coefficient should be greater than 0.");
-            dragCoefficient = CarConfig.DEFAULT_DRAG_COEFFICIENT;
+            _carStructure.dragCoefficient = CarConfig.DEFAULT_DRAG_COEFFICIENT;
         }
-
-        this._engine = engine;
-        this._rearWheel = rearWheel;
-        this._wheelbase = wheelbase;
-        this._mass = mass;
-        this._dragCoefficient = dragCoefficient;
 
         this.initAttributes();
         if (!this._isAI) {
@@ -86,13 +62,13 @@ export class Car extends Object3D {
     }
 
     private initAttributes(): void {
-        this._isBraking = false;
-        this._steeringWheelDirection = 0;
-        this._weightRear = CarConfig.INITIAL_WEIGHT_DISTRIBUTION;
-        this._speed = new Vector3(0, 0, 0);
+        this._carControls.isBraking = false;
+        this._carControls.steeringWheelDirection = 0;
+        this._carStructure.weightRear = CarConfig.INITIAL_WEIGHT_DISTRIBUTION;
+        this._carControls.speed = new Vector3(0, 0, 0);
         this.position.add(new Vector3(0, 0, 0));
         this.detectionBox = this.createDetectionBox();
-        this._lights = new CarLights();
+        this._carStructure.lights = new CarLights();
     }
 
     private async load(): Promise<Object3D> {
@@ -108,10 +84,10 @@ export class Car extends Object3D {
         this._mesh = await this.load();
         this._mesh.position.add(startPoint);
         this._mesh.setRotationFromAxisAngle(new Vector3(0, 1, 0), rotationAngle);
-        this._mesh.add(this._lights);
+        this._mesh.add(this._carStructure.lights);
         this.add(this._mesh);
         this.turnLightsOff();
-        this._lights.turnBackLightsOff();
+        this._carStructure.lights.turnBackLightsOff();
     }
 
     public get isAI(): boolean {
@@ -119,15 +95,15 @@ export class Car extends Object3D {
     }
 
     public get speed(): Vector3 {
-        return this._speed.clone();
+        return this._carControls.speed.clone();
     }
 
     public get currentGear(): number {
-        return this._engine.currentGear;
+        return this._carStructure.engine.currentGear;
     }
 
     public get rpm(): number {
-        return this._engine.rpm;
+        return this._carStructure.engine.rpm;
     }
 
     public get angle(): number {
@@ -147,55 +123,55 @@ export class Car extends Object3D {
     }
 
     public turnLightsOn(): void {
-        this._lights.turnOn();
-        this._lights.turnBackLightsOff();
+        this._carStructure.lights.turnOn();
+        this._carStructure.lights.turnBackLightsOff();
     }
 
     public turnLightsOff(): void {
-        this._lights.turnOff();
+        this._carStructure.lights.turnOff();
     }
 
     public releaseBrakes(): void {
-        this._isBraking = false;
-        this._lights.turnBackLightsOff();
+        this._carControls.isBraking = false;
+        this._carStructure.lights.turnBackLightsOff();
     }
 
     public steerLeft(): void {
-        this._steeringWheelDirection = CarConfig.MAXIMUM_STEERING_ANGLE;
+        this._carControls.steeringWheelDirection = CarConfig.MAXIMUM_STEERING_ANGLE;
     }
 
     public steerRight(): void {
-        this._steeringWheelDirection = -CarConfig.MAXIMUM_STEERING_ANGLE;
+        this._carControls.steeringWheelDirection = -CarConfig.MAXIMUM_STEERING_ANGLE;
     }
 
     public releaseSteering(): void {
-        this._steeringWheelDirection = 0;
+        this._carControls.steeringWheelDirection = 0;
     }
 
     public brake(): void {
-        this._isBraking = true;
-        this._lights.turnBackLightsOn();
+        this._carControls.isBraking = true;
+        this._carStructure.lights.turnBackLightsOn();
     }
 
     public reverse(): void {
-        this._isReversing = true;
+        this._carControls.isReversing = true;
     }
 
     public releaseReverse(): void {
-        this._isReversing = false;
+        this._carControls.isReversing = false;
     }
 
     public accelerate(): void {
-        this._isAcceleratorPressed = true;
+        this._carControls.isAcceleratorPressed = true;
     }
 
     public releaseAccelerator(): void {
-        this._isAcceleratorPressed = false;
+        this._carControls.isAcceleratorPressed = false;
     }
 
     public get direction(): Vector3 {
         const rotationMatrix: Matrix4 = new Matrix4();
-        const carDirection: Vector3 = this._initialDirection.clone();
+        const carDirection: Vector3 = this._carControls.initialDirection.clone();
 
         rotationMatrix.extractRotation(this._mesh.matrix);
         carDirection.applyMatrix4(rotationMatrix);
@@ -211,27 +187,28 @@ export class Car extends Object3D {
         rotationMatrix.extractRotation(this._mesh.matrix);
         const rotationQuaternion: Quaternion = new Quaternion();
         rotationQuaternion.setFromRotationMatrix(rotationMatrix);
-        this._speed.applyMatrix4(rotationMatrix);
+        this._carControls.speed.applyMatrix4(rotationMatrix);
         this.physicsUpdate(deltaTime);
 
         // Move back to world coordinates
-        this._speed = this.speed.applyQuaternion(rotationQuaternion.inverse());
+        this._carControls.speed = this.speed.applyQuaternion(rotationQuaternion.inverse());
 
         // Angular rotation of the car
-        const R: number = CarConfig.DEFAULT_WHEELBASE / Math.sin(this._steeringWheelDirection * deltaTime);
-        const omega: number = this._speed.length() / R;
+        const R: number = CarConfig.DEFAULT_WHEELBASE / Math.sin(this._carControls.steeringWheelDirection * deltaTime);
+        const omega: number = this._carControls.speed.length() / R;
         this._mesh.rotateY(omega);
     }
 
     private physicsUpdate(deltaTime: number): void {
         Physics.car = this;
-        this._rearWheel.angularVelocity += Physics.getAngularAcceleration() * deltaTime;
-        this._engine.update(this._speed.length(), this._rearWheel.radius);
-        this._weightRear = Physics.getWeightDistribution();
-        this._speed.add(Physics.getDeltaSpeed(deltaTime));
-        this._speed.setLength(this._speed.length() <= CarConfig.MINIMUM_SPEED ? 0 : this._speed.length());
+        this._carStructure.rearWheel.angularVelocity += Physics.getAngularAcceleration() * deltaTime;
+        this._carStructure.engine.update(this._carControls.speed.length(), this._carStructure.rearWheel.radius);
+        this._carStructure.weightRear = Physics.getWeightDistribution();
+        this._carControls.speed.add(Physics.getDeltaSpeed(deltaTime));
+        this._carControls.speed.setLength(this._carControls.speed.length() <= CarConfig.MINIMUM_SPEED ?
+            0 : this._carControls.speed.length());
         this._mesh.position.add(Physics.getDeltaPosition(deltaTime));
-        this._rearWheel.update(this._speed.length());
+        this._carStructure.rearWheel.update(this._carControls.speed.length());
     }
 
     private createDetectionBox(): Mesh {
@@ -243,38 +220,38 @@ export class Car extends Object3D {
     }
 
     public get rearWheel(): Wheel {
-        return this._rearWheel;
+        return this._carStructure.rearWheel;
     }
 
     public get wheelbase(): number {
-        return this._wheelbase;
+        return this._carStructure.wheelbase;
     }
 
     public get mass(): number {
-        return this._mass;
+        return this._carStructure.mass;
     }
 
     public get engine(): Engine {
-        return this._engine;
+        return this._carStructure.engine;
     }
 
     public get isAcceleratorPressed(): boolean {
-        return this._isAcceleratorPressed;
+        return this._carControls.isAcceleratorPressed;
     }
 
     public get isBraking(): boolean {
-        return this._isBraking;
+        return this._carControls.isBraking;
     }
 
     public get isReversing(): boolean {
-        return this._isReversing;
+        return this._carControls.isReversing;
     }
 
     public get dragCoefficient(): number {
-        return this._dragCoefficient;
+        return this._carStructure.dragCoefficient;
     }
 
     public get weightRear(): number {
-        return this._weightRear;
+        return this._carStructure.weightRear;
     }
 }
