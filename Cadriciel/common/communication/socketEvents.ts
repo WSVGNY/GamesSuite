@@ -1,6 +1,7 @@
 export enum SocketEvents {
     Connection = "connection",
     Disconnection = "disconnect",
+    DisconnectionAlert = "disconnect-alert",
     RoomCreate = "room-create",
     RoomCreated = "room-created",
     RoomsListQuery = "room-list-query",
