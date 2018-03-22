@@ -238,7 +238,8 @@ export class CrosswordComponent {
     }
 
     private setInputBox(): void {
-        if (this.configurationService.currentPlayer.selectedWord !== undefined) {
+        if (this.configurationService.currentPlayer.selectedWord !== undefined &&
+            !this.foundListContainsWord(this.configurationService.currentPlayer.selectedWord)) {
             if (this.foundListContainsBox(this.configurationService.grid.boxes[this.getY()][this.getX()])) {
                 this.goToNextAvailableBox();
                 this.setInputBox();
