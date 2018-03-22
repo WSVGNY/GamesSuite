@@ -17,7 +17,7 @@
                 selectedDefinition : getState(word)===1,
                 foundDefinition : getState(word)===2,
                 clearDefinition: getState(word)===0
-              }" [style.background]="getPlayerColorForDefinition(word)" (mouseup)="setSelectedWord(word)">{{getWordValue(word)}}{{getPlayerColorForDefinition(word)}}</div>
+              }" [style.background]="getPlayerColorForDefinition(word)" (mouseup)="setSelectedWord(word)">{{getWordValue(word)}}</div>
             </span>
             <span *ngIf="!isInCheatMode">
               <div id="textDefinition" [ngClass]="{
