@@ -14,7 +14,11 @@ const ERROR_STATUS_CODE: number = 500;
 export class Lexicon {
 
     private readonly BASE_URL: string = "https://api.datamuse.com/words?";
-    private _difficulty: Difficulty = Difficulty.Easy;
+    private _difficulty: Difficulty;
+
+    public constructor() {
+        this._difficulty = Difficulty.Easy;
+    }
 
     private getDefinition(word: string): string {
         const definitions: string = word["defs"];
