@@ -131,31 +131,31 @@ describe("ConfigurationComponent", () => {
         //     });
         // });
 
-        it("should have same grid on start game", () => {
+        //     it("should have same grid on start game", () => {
+        //         expect(true).toBeFalsy();
+        //     });
+
+        // });
+
+        it("game only starts when other player has join", () => {
+            expect(true).toBeFalsy();
+        });
+
+        it("show loader when looking for other player", () => {
+            component.setGameType(true);
+            expect(component.waitingForRoom).toBeTruthy();
+        });
+
+        it("When both players has join and grid is generated, the game can start", () => {
+            expect(component.configurationService.configurationDone).toEqual(true);
+        });
+
+        it("All players can see what words are selected", () => {
+            expect(true).toBeFalsy();
+        });
+
+        it("All players can see what words are found", () => {
             expect(true).toBeFalsy();
         });
 
     });
-
-    it("game only starts when other player has join", () => {
-        expect(true).toBeFalsy();
-    });
-
-    it("show loader when looking for other player", () => {
-        component.setGameType(true);
-        expect(component.waitingForRoom).toBeTruthy();
-    });
-
-    it("When both players has join and grid is generated, the game can start", () => {
-        expect(true).toBeFalsy();
-    });
-
-    it("All players can see what word is selected", () => {
-        expect(true).toBeFalsy();
-    });
-
-    it("All players can see what word is found", () => {
-        expect(true).toBeFalsy();
-    });
-
-});
