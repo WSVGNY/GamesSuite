@@ -70,11 +70,12 @@
           <div *ngFor="let gridBox of line" (mouseup)="setSelectedWordOfBox(gridBox)">
             <div (mousedown)="resetInputBox()" [ngClass]="{
               filledGridBox : gridBox.isBlack, 
-              selectedGridBox: gridBox.isColored,
+              selectedGridBox: this.selectedListsContainsBox(gridBox),
               foundGridBox: gridBox.isFound, 
               inputGridBox: gridBox===getMySelectedGridBox(),
               emptyGridBox : !gridBox.isBlack
-            }" [style.border-color]="getPlayerBorderColorForBox(gridBox)" [style.background-color]="getPlayerColorForBox(gridBox)">
+            }" [style.border-color]="getPlayerBorderColorForBox(gridBox)" [style.background]="getPlayerColorForBox(gridBox)"
+              [style.outline]="getPlayerOutlineColor(gridBox)">
               <div id="relative">
                 <div *ngIf="gridBox.inputChar != undefined && gridBox.inputChar.value != undefined" class="userInputLetter">{{gridBox.inputChar.value}}</div>
                 <div class="definitionID">{{getGridBoxID(gridBox)}}</div>

@@ -145,6 +145,11 @@ export class CrosswordComponent {
         if (box.isBlack) {
             return "black";
         } else {
+            if (this.listContainsBox(this.configurationService.currentPlayer.foundBoxes, box) &&
+                this.listContainsBox(this.configurationService.otherPlayer.foundBoxes, box)) {
+                return "repeating-linear-gradient(45deg, " + this.configurationService.currentPlayer.color +
+                    ", " + this.configurationService.otherPlayer.color + " 25px)";
+            }
             if (this.listContainsBox(this.configurationService.currentPlayer.foundBoxes, box)) {
                 return this.configurationService.currentPlayer.color;
             }
@@ -174,6 +179,17 @@ export class CrosswordComponent {
                 return "black";
             }
         }
+    }
+
+    public getPlayerOutlineColor(box: CommonGridBox): string {
+        if (this.configurationService.isTwoPlayerGame) {
+            if (this.listContainsBox(this.configurationService.currentPlayer.selectedBoxes, box) && !this.foundListContainsBox(box) &&
+                this.listContainsBox(this.configurationService.otherPlayer.selectedBoxes, box) && !this.foundListContainsBox(box)) {
+                return "4px dashed " + this.configurationService.otherPlayer.color;
+            }
+        }
+
+        return "";
     }
 
     public resetInputBox(): void {
@@ -407,6 +423,16 @@ export class CrosswordComponent {
         }
 
         return false;
+    }
+
+    public selectedListsContainsBox(box: CommonGridBox): boolean {
+        let contains: boolean = false;
+        contains = this.listContainsBox(this.configurationService.currentPlayer.selectedBoxes, box);
+        if (!contains && this.configurationService.isTwoPlayerGame) {
+            contains = this.listContainsBox(this.configurationService.otherPlayer.selectedBoxes, box);
+        }
+
+        return contains;
     }
 
     private listContainsBox(boxes: CommonGridBox[], box: CommonGridBox): boolean {
