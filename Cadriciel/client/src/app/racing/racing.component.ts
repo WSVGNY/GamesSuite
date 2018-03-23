@@ -120,7 +120,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
         this._keyboardEventHandlerService.bindFunctionToKeyDown(PLAY_MUSIC_KEYCODE, () =>
             this._soundService.play(this._soundService.music));
         this._keyboardEventHandlerService.bindFunctionToKeyDown(MUTE_KEYCODE, () => this._soundService.stop(this._soundService.music));
-        this._keyboardEventHandlerService.bindFunctionToKeyDown(ACCELERATE_KEYCODE, () =>
+        // this._keyboardEventHandlerService.bindFunctionToKeyDown(ACCELERATE_KEYCODE, () =>
         //     this._soundService.play(this._soundService.accelerationSoundEffect));
         // this._keyboardEventHandlerService.bindFunctionToKeyUp(ACCELERATE_KEYCODE, () =>
         //     this._soundService.play(this._soundService.accelerationSoundEffect));
