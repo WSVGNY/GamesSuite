@@ -14,8 +14,8 @@ import { MultiplayerCrosswordGame } from "../../../../../common/crossword/multip
 })
 
 export class ConfigurationComponent {
-    public isNewGame: boolean = false;
-    public isJoinGame: boolean = false;
+    public isNewGame: boolean;
+    public isJoinGame: boolean;
     public choseGridDifficulty: boolean = false;
     private _hasSubscribed: boolean = false;
     public waitingForRoom: boolean = false;

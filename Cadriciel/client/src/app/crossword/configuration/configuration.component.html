@@ -1,8 +1,8 @@
 <div id="modeSelection">
-  <a (click)="setNewGame()" class="push_button">New game</a>
-  <a (click)="setJoinGame()" class="push_button">Join game</a>
+  <a *ngIf="isNewGame === undefined" (click)="setNewGame()" class="push_button">New game</a>
+  <a *ngIf="isNewGame === undefined" (click)="setJoinGame()" class="push_button">Join game</a>
   <div *ngIf="isJoinGame">
-    <div id="input">
+    <div id="inputJoinGame">
       Enter Name :
       <input #player value="Player 2" />
       <h2>ROOM LIST: </h2>
@@ -27,7 +27,7 @@
     <button name="buttonDifficulty" (click)="makeHardGrid()" class="btn btn-primary">HARD</button>
   </div>
 
-  <div *ngIf="configurationService.difficulty !== undefined" id="input">
+  <div *ngIf="configurationService.difficulty !== undefined && isNewGame" id="input">
     Enter Name :
     <input #player value="Player 1" />
     <button *ngIf="!configurationService.isTwoPlayerGame" (click)="submitName(player.value)">Play</button>
@@ -40,7 +40,7 @@
   </div>
 
 
-  <div *ngIf="configurationService.isTwoPlayerGame !== undefined" id="selectedOptions">
+  <div *ngIf="configurationService.isTwoPlayerGame !== undefined && !isJoinGame" id="selectedOptions">
     <div *ngIf="!configurationService.isTwoPlayerGame"> Chosen : One player </div>
     <div *ngIf="configurationService.isTwoPlayerGame"> Chosen : Two player </div>
     <div *ngIf="configurationService.difficulty !== undefined"> Chosen : {{configurationService.difficulty}} </div>
