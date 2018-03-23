@@ -160,7 +160,7 @@ li {
     display: inline-block;
     min-width: 80px;
     vertical-align:top;
-    border: 1px solid rgb(74, 95, 84);
+    border: 2px solid rgba(0, 0, 0, 0.486);
 }
 
 .clearDefinition {
