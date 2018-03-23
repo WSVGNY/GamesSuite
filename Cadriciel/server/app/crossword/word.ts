@@ -16,7 +16,7 @@ export class Word implements CommonWord {
         public isHorizontal: boolean,
         public length: number,
         public startPosition: CommonCoordinate2D) {
-        this.constraints = new Array<Word>();
+        this.constraints = [];
         this.isComplete = false;
         this.difficulty = 0;
         this.enteredCharacters = 0;

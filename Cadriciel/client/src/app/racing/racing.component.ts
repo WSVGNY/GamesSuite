@@ -14,8 +14,10 @@ import { RenderService } from "./render-service/render.service";
 import { AIDebug } from "./artificial-intelligence/ai-debug";
 import { SoundManagerService } from "./sound-service/sound-manager.service";
 import { TopViewCamera } from "./cameras/topViewCamera";
-import { CHANGE_CAMERA_KEYCODE, DAY_KEYCODE, DEBUG_KEYCODE, AI_CARS_QUANTITY, PLAY_MUSIC_KEYCODE,
-    MUTE_KEYCODE, ACCELERATE_KEYCODE } from "./constants";
+import {
+    CHANGE_CAMERA_KEYCODE, DAY_KEYCODE, DEBUG_KEYCODE, AI_CARS_QUANTITY, PLAY_MUSIC_KEYCODE,
+    MUTE_KEYCODE, ACCELERATE_KEYCODE
+} from "./constants";
 import { TrackType } from "../../../../common/racing/trackType";
 
 @Component({
@@ -29,13 +31,13 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
     @ViewChild("container")
     private _containerRef: ElementRef;
-    private _currentTrackId: string = "";
+    private _currentTrackId: string;
     private _chosenTrack: Track;
-    private _cars: Car[] = [];
-    private _carDebugs: AIDebug[] = [];
+    private _cars: Car[];
+    private _carDebugs: AIDebug[];
     private _thirdPersonCamera: ThirdPersonCamera;
     private _topViewCamera: TopViewCamera;
-    private _useThirpPersonCamera: boolean = true;
+    private _useThirpPersonCamera: boolean;
     private _gameScene: GameScene;
     private _playerCar: Car;
     private _lastDate: number;
@@ -48,7 +50,12 @@ export class RacingComponent implements AfterViewInit, OnInit {
         private _trackService: TrackService,
         private _aiCarService: AICarService,
         private _sound: SoundManagerService
-    ) { }
+    ) {
+        this._cars = [];
+        this._carDebugs = [];
+        this._currentTrackId = "";
+        this._useThirpPersonCamera = true;
+    }
 
     public ngOnInit(): void {
         this._gameScene = new GameScene(this._keyboardEventHandlerService);
