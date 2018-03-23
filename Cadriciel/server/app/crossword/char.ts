@@ -6,7 +6,7 @@ export class Char implements CommonChar {
 
     public setValue(char: string): void {
         if (char.length !== 1) {
-            throw new Error("Wrong length for char");
+            throw new RangeError("Wrong length for char");
         } else {
             this.value = char;
         }

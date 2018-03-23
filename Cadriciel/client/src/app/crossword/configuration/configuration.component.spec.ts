@@ -9,6 +9,7 @@ import { MultiplayerCommunicationService } from "../multiplayer-communication.se
 describe("ConfigurationComponent", () => {
     let component: ConfigurationComponent;
     let fixture: ComponentFixture<ConfigurationComponent>;
+    const HIGH_NUMBER: number = 4000;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
