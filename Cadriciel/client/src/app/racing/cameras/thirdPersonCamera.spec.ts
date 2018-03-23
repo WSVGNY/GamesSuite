@@ -28,7 +28,7 @@ describe("Third Person Camera Test", () => {
         const object: Object3D = new Object3D();
         object.add(camera);
         object.position.y = 1;
-        expect(camera.position.clone().y).toEqual(INITIAL_CAMERA_POSITION_Y);
+        expect(camera.position.y).toEqual(INITIAL_CAMERA_POSITION_Y);
     });
 
     it("camera position z shouldn't change even if we move an object that it is attached to", () => {
