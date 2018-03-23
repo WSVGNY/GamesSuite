@@ -10,8 +10,11 @@ import { Track } from "../track";
 })
 export class AdminComponent implements OnInit {
 
-    public tracks: Track[] = new Array();
-    public constructor(private _trackService: TrackService) { }
+    public tracks: Track[];
+
+    public constructor(private _trackService: TrackService) {
+        this.tracks = [];
+    }
 
     public ngOnInit(): void {
         this.getTracksFromServer();

@@ -20,11 +20,13 @@ enum State {
 })
 export class CrosswordComponent {
 
-    public isInCheatMode: boolean = false;
-    private _hasSubscribed: boolean = false;
+    public isInCheatMode: boolean;
+    private _hasSubscribed: boolean;
 
     public constructor(
         public configurationService: ConfigurationService, private multiplayerCommunicationService: MultiplayerCommunicationService) {
+        this.isInCheatMode = false;
+        this._hasSubscribed = false;
     }
 
     public subscribeToMessages(): void {

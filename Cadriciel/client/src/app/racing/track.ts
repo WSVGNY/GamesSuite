@@ -8,7 +8,7 @@ export class Track {
     public description: string;
     public timesPlayed: number;
     public bestTimes: number[];
-    public vertices: Array<CommonCoordinate3D>;
+    public vertices: CommonCoordinate3D[];
     public type: TrackType;
 
     public constructor(rawTrackFromServer: TrackStructure) {

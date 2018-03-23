@@ -14,16 +14,21 @@ import { MultiplayerCrosswordGame } from "../../../../../common/crossword/multip
 })
 
 export class ConfigurationComponent {
-    public isNewGame: boolean = false;
-    public isJoinGame: boolean = false;
-    public choseGridDifficulty: boolean = false;
-    private _hasSubscribed: boolean = false;
-    public waitingForRoom: boolean = false;
+    public isNewGame: boolean;
+    public isJoinGame: boolean;
+    public choseGridDifficulty: boolean;
+    private _hasSubscribed: boolean;
+    public waitingForRoom: boolean;
 
     public constructor(
         private _gridService: GridService,
         public configurationService: ConfigurationService,
         public multiplayerCommunicationService: MultiplayerCommunicationService) {
+        this.isNewGame = false;
+        this.isJoinGame = false;
+        this.choseGridDifficulty = false;
+        this._hasSubscribed = false;
+        this.waitingForRoom = false;
     }
 
     public setNewGame(): void {

@@ -25,16 +25,18 @@ export class GameScene extends AbstractScene {
 
     private _trackPoints: TrackPointList;
     private _track: Mesh;
-    private _group: Group = new Group();
+    private _group: Group;
     private _skyBoxTexture: CubeTexture;
     private _lighting: TrackLights;
     private _centerLine: Group;
     private _debugMode: boolean;
-    private _debugElements: Group = new Group();
+    private _debugElements: Group;
     private _isDay: boolean;
 
     public constructor(private _keyBoardService: KeyboardEventHandlerService) {
         super();
+        this._group = new Group();
+        this._debugElements = new Group();
         this.add(this._group);
     }
 
