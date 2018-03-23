@@ -12,6 +12,8 @@ export class Hitbox extends Mesh {
     public constructor() {
         const geometry: BoxGeometry = new BoxGeometry(WIDTH, HEIGHT, DEPTH);
         const material: MeshBasicMaterial = new MeshBasicMaterial({wireframe: true, color: 0x00FF00 });
+        material.opacity = 0;
+        material.transparent = true;
         super(geometry, material);
         this._subPlaneVertices = [];
         this.generateSubPlanVertices();
@@ -28,5 +30,9 @@ export class Hitbox extends Mesh {
 
     public get subPlanVertices(): Vector3[] {
         return this._subPlaneVertices;
+    }
+
+    public get hitboxGeometry(): BoxGeometry {
+        return this.geometry as BoxGeometry;
     }
 }
