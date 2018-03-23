@@ -62,8 +62,9 @@ export class Physics {
 
         if (this._car.speed.length() >= CarConfig.MINIMUM_SPEED) {
             const dragForce: Vector3 = this.getDragForce();
+            const friction: Vector3 = this.getFrictionForce();
             const rollingResistance: Vector3 = this.getRollingResistance();
-            resultingForce.add(dragForce).add(rollingResistance);
+            resultingForce.add(dragForce).add(rollingResistance).add(friction);
         }
 
         if (this._car.isAcceleratorPressed) {
@@ -91,6 +92,18 @@ export class Physics {
         const rollingCoefficient: number = (1 / tirePressure) * (Math.pow(this._car.speed.length() * 3.6 / 100, 2) * 0.0095 + 0.01) + 0.005;
 
         return this._car.direction.multiplyScalar(rollingCoefficient * this._car.mass * GRAVITY);
+    }
+
+    private static getFrictionForce(): Vector3 {
+        const tireAsphaltCoefficient: number = 0.72;
+        const kineticFriction: Vector3 = new Vector3();
+        kineticFriction.x = this._car.direction.z;
+        kineticFriction.z = -this._car.direction.x;
+
+        const force: Vector3 = this._car.speed.clone().projectOnVector(kineticFriction).normalize();
+        force.multiplyScalar(tireAsphaltCoefficient * this._car.mass * GRAVITY);
+
+        return force;
     }
 
     private static getDragForce(): Vector3 {

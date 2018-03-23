@@ -1,22 +1,24 @@
 import {
-    Vector3, Matrix4, Object3D, ObjectLoader, Quaternion, Camera, Mesh, MeshBasicMaterial, BoxGeometry
+    Vector3, Matrix4, Object3D, ObjectLoader, Quaternion, Camera,
 } from "three";
 import { Engine } from "./engine";
 import {
     MS_TO_SECONDS, RAD_TO_DEG, CAR_TEXTURE, ACCELERATE_KEYCODE, LEFT_KEYCODE, BRAKE_KEYCODE,
-    RIGHT_KEYCODE, YELLOW
+    RIGHT_KEYCODE
 } from "../constants";
 import { Wheel } from "./wheel";
 import { CarConfig } from "./carConfig";
 import { CarLights } from "./carLights";
+import { Hitbox } from "../collision-manager/hitbox";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { Physics } from "./physics";
 import { CarControls, CarStructure } from "./carInformations";
 
 export class Car extends Object3D {
     private _mesh: Object3D;
-    public detectionBox: Mesh;
     public trackPortionIndex: number;
+    // public _isAI: boolean;
+    private _hitbox: Hitbox;
 
     public constructor(
         private keyBoardService: KeyboardEventHandlerService,
@@ -67,7 +69,6 @@ export class Car extends Object3D {
         this._carStructure.weightRear = CarConfig.INITIAL_WEIGHT_DISTRIBUTION;
         this._carControls.speed = new Vector3(0, 0, 0);
         this.position.add(new Vector3(0, 0, 0));
-        this.detectionBox = this.createDetectionBox();
         this._carStructure.lights = new CarLights();
     }
 
@@ -85,6 +86,8 @@ export class Car extends Object3D {
         this._mesh.position.add(startPoint);
         this._mesh.setRotationFromAxisAngle(new Vector3(0, 1, 0), rotationAngle);
         this._mesh.add(this._carStructure.lights);
+        this._hitbox = new Hitbox();
+        this._mesh.add(this._hitbox);
         this.add(this._mesh);
         this.turnLightsOff();
         this._carStructure.lights.turnBackLightsOff();
@@ -96,6 +99,10 @@ export class Car extends Object3D {
 
     public get speed(): Vector3 {
         return this._carControls.speed.clone();
+    }
+
+    public set speed(speed: Vector3) {
+        this._carControls.speed = speed;
     }
 
     public get currentGear(): number {
@@ -110,8 +117,20 @@ export class Car extends Object3D {
         return this._mesh.rotation.y * RAD_TO_DEG;
     }
 
+    public get meshMatrix(): Matrix4 {
+        return this._mesh.matrix;
+    }
+
     public get currentPosition(): Vector3 {
         return this._mesh.position;
+    }
+
+    public setCurrentPosition(position: Vector3): void {
+        this._mesh.position.set(position.x, position.y, position.z);
+    }
+
+    public get hitbox(): Hitbox {
+        return this._hitbox;
     }
 
     public getChild(childName: string): Object3D {
@@ -211,14 +230,6 @@ export class Car extends Object3D {
         this._carStructure.rearWheel.update(this._carControls.speed.length());
     }
 
-    private createDetectionBox(): Mesh {
-        const geometry: BoxGeometry = new BoxGeometry(2, 2, 2);
-        geometry.computeBoundingBox();
-        const material: MeshBasicMaterial = new MeshBasicMaterial({ color: YELLOW });
-
-        return new Mesh(geometry, material);
-    }
-
     public get rearWheel(): Wheel {
         return this._carStructure.rearWheel;
     }
@@ -254,4 +265,5 @@ export class Car extends Object3D {
     public get weightRear(): number {
         return this._carStructure.weightRear;
     }
+
 }
