@@ -81,6 +81,10 @@ export class MultiplayerCommunicationService {
                 this._currentGame = MultiplayerCrosswordGame.create(JSON.stringify(message));
                 observer.next(SocketEvents.StartGame);
             });
+
+            this._socket.on(SocketEvents.DisconnectionAlert, () => {
+                console.log("Other player disconnected");
+            });
         });
     }
 

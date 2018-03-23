@@ -193,11 +193,12 @@ export class GameScene extends AbstractScene {
         currentPoint: Vector3,
         nextPoint: Vector3,
         thickness: number): Group {
-
         const dashedLine: Group = new Group();
+        const LINE_OFFSET: number = 64;
+
         for (let i: number = 0; i < thickness * 2; i++) {
             const routerLineGeometry: Geometry = new Geometry();
-            const offset: number = i / 32;
+            const offset: number = i / LINE_OFFSET + i / LINE_OFFSET;
 
             routerLineGeometry.vertices.push(new Vector3(currentPoint.x + offset, currentPoint.y, currentPoint.z + offset));
             routerLineGeometry.vertices.push(new Vector3(nextPoint.x + offset, nextPoint.y, nextPoint.z + offset));
@@ -207,7 +208,7 @@ export class GameScene extends AbstractScene {
 
         for (let i: number = 0; i < thickness * 2; i++) {
             const routerLineGeometry: Geometry = new Geometry();
-            const offset: number = i / 32 + 1 / 64;
+            const offset: number = i / LINE_OFFSET + i / LINE_OFFSET + i / LINE_OFFSET;
 
             routerLineGeometry.vertices.push(new Vector3(currentPoint.x + offset, currentPoint.y, currentPoint.z + offset));
             routerLineGeometry.vertices.push(new Vector3(nextPoint.x + offset, nextPoint.y, nextPoint.z + offset));
