@@ -89,7 +89,9 @@ export class CrosswordComponent {
     }
 
     public setSelectedWord(word: CommonWord): void {
-        this.configuration.currentPlayer.selectedWord = word;
+        if (!ListChecker.playersFoundWord(word)) {
+            this.configuration.currentPlayer.selectedWord = word;
+        }
         this.updateGrid();
     }
 
@@ -192,7 +194,7 @@ export class CrosswordComponent {
         if (this.configuration.isTwoPlayerGame) {
             if (ListChecker.listContainsBox(this.configuration.currentPlayer.selectedBoxes, box) && !ListChecker.playersFoundBox(box) &&
                 ListChecker.listContainsBox(this.configuration.otherPlayer.selectedBoxes, box) && !ListChecker.playersFoundBox(box)) {
-                return "2px dashed " + this.configuration.otherPlayer.color;
+                return "4px dashed " + this.configuration.otherPlayer.color;
             }
         }
 

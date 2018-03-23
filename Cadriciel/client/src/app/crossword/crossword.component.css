@@ -81,12 +81,12 @@ li {
     text-align: left;    
     width: 60px;
     height: 60px;
-    border: 2px solid;
+    border: 4px solid;
     padding: 0;
     margin: 0;
     float: left;
     text-transform: uppercase;
-    outline-offset: -2px;
+    outline-offset: -4px;
 }
 
 .foundGridBox {
