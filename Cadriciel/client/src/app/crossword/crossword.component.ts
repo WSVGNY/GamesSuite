@@ -145,10 +145,12 @@ export class CrosswordComponent {
         if (box.isBlack) {
             return "black";
         } else {
-            if (this.listContainsBox(this.configurationService.currentPlayer.foundBoxes, box) &&
-                this.listContainsBox(this.configurationService.otherPlayer.foundBoxes, box)) {
-                return "repeating-linear-gradient(45deg, " + this.configurationService.currentPlayer.color +
-                    ", " + this.configurationService.otherPlayer.color + " 25px)";
+            if (this.configurationService.isTwoPlayerGame) {
+                if (this.listContainsBox(this.configurationService.currentPlayer.foundBoxes, box) &&
+                    this.listContainsBox(this.configurationService.otherPlayer.foundBoxes, box)) {
+                    return "repeating-linear-gradient(45deg, " + this.configurationService.currentPlayer.color +
+                        ", " + this.configurationService.otherPlayer.color + " 25px)";
+                }
             }
             if (this.listContainsBox(this.configurationService.currentPlayer.foundBoxes, box)) {
                 return this.configurationService.currentPlayer.color;
