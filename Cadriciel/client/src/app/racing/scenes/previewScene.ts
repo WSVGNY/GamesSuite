@@ -6,9 +6,9 @@ import {
 import { TrackType } from "../../../../../common/racing/trackType";
 import { SkyBox } from "../render-service/skybox";
 import { TrackLights } from "../render-service/light";
-import { Track } from "../track";
 import { PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE, MS_TO_SECONDS } from "../constants";
 import { TrackPointList } from "../render-service/trackPointList";
+import { Track } from "../../../../../common/racing/track";
 
 export class PreviewScene extends AbstractScene {
 

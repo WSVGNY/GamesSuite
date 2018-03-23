@@ -1,41 +1,65 @@
+import { Track } from "../../../../common/racing/track";
+import { Shape, Mesh, MeshPhongMaterial, Path, BackSide, Texture, TextureLoader, RepeatWrapping, ShapeGeometry } from "three";
 import { TrackType } from "../../../../common/racing/trackType";
-import { CommonCoordinate3D } from "../../../../common/racing/commonCoordinate3D";
-import { TrackStructure } from "../../../../common/racing/track";
+import { TrackPointList } from "./render-service/trackPointList";
+import { PI_OVER_2, ASPHALT_TEXTURE, ASPHALT_TEXTURE_FACTOR } from "./constants";
 
-export class Track {
-    private _id: string;
-    public name: string;
-    public description: string;
-    public timesPlayed: number;
-    public bestTimes: number[];
-    public vertices: Array<CommonCoordinate3D>;
-    public type: TrackType;
+export class TrackMesh extends Mesh {
+    private _trackPoints: TrackPointList;
 
-    public constructor(rawTrackFromServer: TrackStructure) {
-        this._id = rawTrackFromServer._id;
-        this.name = rawTrackFromServer.name;
-        this.description = rawTrackFromServer.description;
-        this.vertices = rawTrackFromServer.vertices;
-        this.timesPlayed = rawTrackFromServer.timesPlayed;
-        this.bestTimes = rawTrackFromServer.bestTimes;
-        this.type = rawTrackFromServer.type;
+    public constructor(private _track: Track) {
+        super();
+        this._trackPoints = new TrackPointList(this._track.vertices);
+        this.createTrackMesh();
     }
 
-    public get id(): string {
-        return this._id;
+    public set timesPlayed(timesPlayed: number) {
+        this._track.timesPlayed = timesPlayed;
     }
 
-    public toTrackStructure(): TrackStructure {
-        const trackStructure: TrackStructure = new TrackStructure();
-        trackStructure._id = this._id;
-        trackStructure._isTestTrack = false;
-        trackStructure.name = this.name;
-        trackStructure.description = this.description;
-        trackStructure.vertices = this.vertices;
-        trackStructure.bestTimes = this.bestTimes;
-        trackStructure.timesPlayed = this.timesPlayed;
-        trackStructure.type = this.type;
+    public get trackType(): TrackType {
+        return this._track.type;
+    }
 
-        return trackStructure;
+    public get trackPoints(): TrackPointList {
+        return this._trackPoints;
+    }
+
+    private createTrackMesh(): void {
+        const shape: Shape = new Shape();
+        this.createTrackExterior(shape, this._trackPoints);
+        this.drillHoleInTrackShape(shape, this._trackPoints);
+
+        this.geometry = new ShapeGeometry(shape);
+        this.material = new MeshPhongMaterial({ side: BackSide, map: this.loadRepeatingTexture(ASPHALT_TEXTURE, ASPHALT_TEXTURE_FACTOR) });
+        this.rotateX(PI_OVER_2);
+        this.name = "track";
+    }
+
+    private createTrackExterior(trackShape: Shape, trackPoints: TrackPointList): void {
+        trackShape.moveTo(trackPoints.first.exterior.x, trackPoints.first.exterior.z);
+        for (let i: number = 1; i < trackPoints.length; ++i) {
+            trackShape.lineTo(trackPoints.points[i].exterior.x, trackPoints.points[i].exterior.z);
+        }
+        trackShape.lineTo(trackPoints.first.exterior.x, trackPoints.first.exterior.z);
+    }
+
+    private drillHoleInTrackShape(trackShape: Shape, trackPoints: TrackPointList): void {
+        const holePath: Path = new Path();
+        holePath.moveTo(trackPoints.first.interior.x, trackPoints.first.interior.z);
+        for (let i: number = trackPoints.length - 1; i > 0; --i) {
+            holePath.lineTo(trackPoints.points[i].interior.x, trackPoints.points[i].interior.z);
+        }
+        holePath.lineTo(trackPoints.first.interior.x, trackPoints.first.interior.z);
+        trackShape.holes.push(holePath);
+    }
+
+    private loadRepeatingTexture(pathToImage: string, imageRatio: number): Texture {
+        const texture: Texture = new TextureLoader().load(pathToImage);
+        texture.wrapS = RepeatWrapping;
+        texture.wrapT = RepeatWrapping;
+        texture.repeat.set(imageRatio, imageRatio);
+
+        return texture;
     }
 }

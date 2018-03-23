@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, done } from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { ConfigurationComponent } from "./configuration.component";
 import { GridService } from "../grid.service";
 import { HttpClient, HttpHandler } from "@angular/common/http";
@@ -10,7 +10,7 @@ describe("ConfigurationComponent", () => {
     let component: ConfigurationComponent;
     let fixture: ComponentFixture<ConfigurationComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(async((done: () => void) => {
         TestBed.configureTestingModule({
             declarations: [ConfigurationComponent],
             providers: [
@@ -44,16 +44,6 @@ describe("ConfigurationComponent", () => {
     it("should toggle 'join game' on click", () => {
         component.setJoinGame();
         expect(component.isJoinGame).toEqual(true);
-    });
-
-    it("should toggle 'two player game' to true on click", () => {
-        component.configurationService.isTwoPlayerGame = true;
-        expect(component.configurationService.isTwoPlayerGame).toEqual(true);
-    });
-
-    it("should toggle 'single player game' on click", () => {
-        component.configurationService.isTwoPlayerGame = false;
-        expect(component.configurationService.isTwoPlayerGame).toEqual(false);
     });
 
     it("should toggle 'chose grid difficulty' on click", () => {
@@ -112,11 +102,11 @@ describe("ConfigurationComponent", () => {
 
         describe("join list query is asynchronous", () => {
             let value: number = 0;
-            beforeEach(() => {
+            beforeEach((done: () => void) => {
                 setTimeout(() => {
                     value++;
                     done();
-                }, 4000);
+                }, HIGH_NUMBER);
             });
 
             it("should query list of games", () => {
@@ -144,5 +134,28 @@ describe("ConfigurationComponent", () => {
         it("should have same grid on start game", () => {
             expect(true).toBeFalsy();
         });
+
     });
+
+    it("game only starts when other player has join", () => {
+        expect(true).toBeFalsy();
+    });
+
+    it("show loader when looking for other player", () => {
+        component.setGameType(true);
+        expect(component.waitingForRoom).toBeTruthy();
+    });
+
+    it("When both players has join and grid is generated, the game can start", () => {
+        expect(true).toBeFalsy();
+    });
+
+    it("All players can see what word is selected", () => {
+        expect(true).toBeFalsy();
+    });
+
+    it("All players can see what word is found", () => {
+        expect(true).toBeFalsy();
+    });
+
 });

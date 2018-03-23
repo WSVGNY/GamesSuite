@@ -40,3 +40,4 @@ Cadriciel/.vscode/*
 Cadriciel/node_modules/*
 Cadriciel/client/node_modules/*
 Cadriciel/server/node_modules/*
+Cadriciel/client/src/assets/sounds/carSoundEffect2.mp3

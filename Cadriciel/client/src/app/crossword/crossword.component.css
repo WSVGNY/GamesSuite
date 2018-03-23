@@ -11,6 +11,11 @@
     margin-top:200px;
 }
 
+h2 {
+    margin-right: 20px;
+    text-align: center;
+}
+
 #textDefinition::first-letter {
     font-size: 110%;
     color: rgb(27, 76, 109);
@@ -81,12 +86,7 @@ li {
     margin: 0;
     float: left;
     text-transform: uppercase;
-
-    /* pour pointillé de deux couleurs
-    outline: 3px dashed orange;
-    outline-offset: -2px; */
-
-     /* background: repeating-linear-gradient(45deg, steelblue, orangered 25px);  */
+    outline-offset: -4px;
 }
 
 .foundGridBox {
@@ -151,23 +151,23 @@ li {
 
 .selectedDefinition {
     display: inline-block;
-    min-width: 80px;
     vertical-align:top;
     border-radius: 10%;
+    max-width: 510px;
 }
 
 .foundDefinition {
     display: inline-block;
-    min-width: 80px;
     vertical-align:top;
-    border: 2px solid rgba(0, 0, 0, 0.486);
+    text-decoration: line-through;
+    max-width: 510px;
 }
 
 .clearDefinition {
     display: inline-block;
-    min-width: 80px;
     vertical-align:top;
     enable-background: 0%;
+    max-width: 510px;
 }
 
 @keyframes spin {

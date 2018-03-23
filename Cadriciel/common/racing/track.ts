@@ -1,32 +1,38 @@
 import { CommonCoordinate3D } from "./commonCoordinate3D";
 import { TrackType } from "./trackType";
 
-export class TrackStructure {
-    public _id: string;
-    public _isTestTrack: boolean = false;
-    public name: string = "New Track";
-    public description: string = "";
-    public timesPlayed: number;
-    public bestTimes: number[];
-    public type: TrackType = TrackType.Default;
-    public vertices: Array<CommonCoordinate3D> = new Array();
+export class Track {
 
-    public static getNewDefaultTrackStructure(): TrackStructure {
-        const newTrack: TrackStructure = new TrackStructure();
-        newTrack._id = undefined;
-        newTrack._isTestTrack = false;
-        newTrack.description = "";
-        newTrack.name = "New Track";
-        newTrack.bestTimes = [0, 0, 0];
-        newTrack.timesPlayed = 0;
-        newTrack.type = TrackType.Default;
-        newTrack.vertices = [
-            new CommonCoordinate3D(0, 0, 0),
-            new CommonCoordinate3D(100, 0, 0),
-            new CommonCoordinate3D(100, 0, 100),
-            new CommonCoordinate3D(0, 0, 100)
-        ];
+    public static createFromJSON(stringObject: string): Track {
+        const jsonObject = JSON.parse(stringObject) as Track;
+        return new Track(
+            jsonObject["_id"],
+            jsonObject["_isTestTrack"],
+            jsonObject["name"],
+            jsonObject["description"],
+            jsonObject["timesPlayed"],
+            jsonObject["bestTimes"],
+            jsonObject["type"],
+            jsonObject["vertices"]
+        );
+    }
 
-        return newTrack;
+    public constructor(
+        private _id: string,
+        private _isTestTrack: boolean = false,
+        public name: string = "New Track",
+        public description: string = "",
+        public timesPlayed: number = 0,
+        public bestTimes: number[] = [],
+        public type: TrackType = TrackType.Default,
+        public vertices: Array<CommonCoordinate3D> = new Array()) {
+    }
+
+    public get isTestTrack(): boolean {
+        return this._isTestTrack;
+    }
+
+    public get id(): string {
+        return this._id;
     }
 }

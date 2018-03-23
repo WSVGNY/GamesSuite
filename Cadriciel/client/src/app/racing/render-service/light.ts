@@ -28,7 +28,9 @@ export class TrackLights extends Group {
             this.add(this._ambiantLight);
         }
 
-        this._ambiantLight.intensity = this._lightingConfig.AMBIENT_LIGHT_INTENSITY;
+        this._isPerspectiveView ?
+            this._ambiantLight.intensity = this._lightingConfig.AMBIENT_LIGHT_INTENSITY :
+            this._ambiantLight.intensity = this._lightingConfig.AMBIENT_LIGHT_INTENSITY_TOP_VIEW;
     }
 
     private setDirectionalLight(): void {
@@ -46,14 +48,19 @@ export class TrackLights extends Group {
             this._lightingConfig.DIRECTIONAL_LIGHT_POSITION_Y,
             this._lightingConfig.DIRECTIONAL_LIGHT_POSITION_Z
         );
-        if (this._isPerspectiveView) { this._directionalLight.intensity = this._lightingConfig.DIRECTIONAL_LIGHT_INTENSITY; }
+        this._isPerspectiveView ?
+            this._directionalLight.intensity = this._lightingConfig.DIRECTIONAL_LIGHT_INTENSITY :
+            this._directionalLight.intensity = this._lightingConfig.DIRECTIONAL_LIGHT_INTENSITY_TOP_VIEW;
     }
 
     public changePerspective(): void {
         this._isPerspectiveView = !this._isPerspectiveView;
         this._isPerspectiveView ?
             this._directionalLight.intensity = this._lightingConfig.DIRECTIONAL_LIGHT_INTENSITY :
-            this._directionalLight.intensity = 0;
+            this._directionalLight.intensity = this._lightingConfig.DIRECTIONAL_LIGHT_INTENSITY_TOP_VIEW;
+        this._isPerspectiveView ?
+            this._ambiantLight.intensity = this._lightingConfig.AMBIENT_LIGHT_INTENSITY :
+            this._ambiantLight.intensity = this._lightingConfig.AMBIENT_LIGHT_INTENSITY_TOP_VIEW;
     }
 
     private chooseConfig(trackType: TrackType): void {
