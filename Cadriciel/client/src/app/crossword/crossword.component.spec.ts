@@ -69,7 +69,7 @@ describe("CrosswordComponent", () => {
 
     it("the name entered by the player is the one displayed ", () => {
         component.configuration.playerOne.name = "Player1";
-        expect(component.configuration.playerTwo.name).toEqual("Player1");
+        expect(component.configuration.currentPlayerName).toEqual("Player1");
     });
 
     it("the letters in the grid are uppercase", () => {
@@ -87,6 +87,7 @@ describe("CrosswordComponent", () => {
     });
 
     it("when a word is selected, its border are highligthed", () => {
+        component.setSelectedWord
         expect(true).toBeFalsy();
     });
 
