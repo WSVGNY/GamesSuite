@@ -45,4 +45,18 @@ export class ConfigurationService {
         this.configurationDone = true;
     }
 
+    public getX(): number {
+        return this.currentPlayer.selectedWord.isHorizontal ?
+            this.currentPlayer.selectedWord.startPosition.x +
+            this.currentPlayer.selectedWord.enteredCharacters :
+            this.currentPlayer.selectedWord.startPosition.x;
+    }
+
+    public getY(): number {
+        return this.currentPlayer.selectedWord.isHorizontal ?
+            this.currentPlayer.selectedWord.startPosition.y :
+            this.currentPlayer.selectedWord.startPosition.y +
+            this.currentPlayer.selectedWord.enteredCharacters;
+    }
+
 }
