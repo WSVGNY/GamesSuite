@@ -427,7 +427,7 @@ export class CrosswordComponent {
         return false;
     }
 
-    public selectedListsContainsBox(box: CommonGridBox): boolean {
+    public playersSelectedBox(box: CommonGridBox): boolean {
         let contains: boolean = false;
         contains = this.listContainsBox(this.configurationService.currentPlayer.selectedBoxes, box);
         if (!contains && this.configurationService.isTwoPlayerGame) {

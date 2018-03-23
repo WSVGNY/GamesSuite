@@ -12,38 +12,24 @@
         <h3> Horizontal : </h3>
         <div *ngFor="let word of configurationService.grid.words">
           <li *ngIf="word.isHorizontal">{{word.definitionID}})
-            <span *ngIf="isInCheatMode">
-              <div [ngClass]="{
-                selectedDefinition : getState(word)===1,
-                foundDefinition : getState(word)===2,
-                clearDefinition: getState(word)===0
-              }" [style.background]="getPlayerColorForDefinition(word)" (mouseup)="setSelectedWord(word)">{{getWordValue(word)}}</div>
-            </span>
-            <span *ngIf="!isInCheatMode">
-              <div id="textDefinition" [ngClass]="{
-                selectedDefinition : getState(word)===1,
-                foundDefinition : getState(word)===2,
-                clearDefinition: getState(word)===0
-              }" [style.background]="getPlayerColorForDefinition(word)" (mouseup)="setSelectedWord(word)">{{word.definition}}</div>
+            <span [ngClass]="{ 
+              selectedDefinition : getState(word)===1,
+              foundDefinition : getState(word)===2,
+              clearDefinition: getState(word)===0}">
+              <div *ngIf="isInCheatMode" [style.background]="getPlayerColorForDefinition(word)" (mouseup)="setSelectedWord(word)">{{getWordValue(word)}}</div>
+              <div id="textDefinition" *ngIf="!isInCheatMode" [style.background]="getPlayerColorForDefinition(word)" (mouseup)="setSelectedWord(word)">{{word.definition}}</div>
             </span>
           </li>
         </div>
         <h3> Vertical : </h3>
         <div *ngFor="let word of configurationService.grid.words">
           <li *ngIf="!word.isHorizontal">{{word.definitionID}})
-            <span *ngIf="isInCheatMode">
-              <div [ngClass]="{
-                selectedDefinition : getState(word)===1,
-                foundDefinition : getState(word)===2,
-                clearDefinition: getState(word)===0
-              }" [style.background]="getPlayerColorForDefinition(word)" (mouseup)="setSelectedWord(word)">{{getWordValue(word)}}</div>
-            </span>
-            <span *ngIf="!isInCheatMode">
-              <div id="textDefinition" [ngClass]="{
-                selectedDefinition : getState(word)===1,
-                foundDefinition : getState(word)===2,
-                clearDefinition: getState(word)===0
-              }" [style.background]="getPlayerColorForDefinition(word)" (mouseup)="setSelectedWord(word)">{{word.definition}}</div>
+            <span [ngClass]="{ 
+              selectedDefinition : getState(word)===1,
+              foundDefinition : getState(word)===2,
+              clearDefinition: getState(word)===0}">
+              <div *ngIf="isInCheatMode" [style.background]="getPlayerColorForDefinition(word)" (mouseup)="setSelectedWord(word)">{{getWordValue(word)}}</div>
+              <div id="textDefinition" *ngIf="!isInCheatMode" [style.background]="getPlayerColorForDefinition(word)" (mouseup)="setSelectedWord(word)">{{word.definition}}</div>
             </span>
           </li>
         </div>
@@ -57,7 +43,7 @@
         <h4> {{configurationService.currentPlayer.score}} words found</h4>
       </h3>
       <h3 *ngIf="configurationService.isTwoPlayerGame" id="secondPlayer" [style.background]="this.configurationService.otherPlayer.color">
-      {{configurationService.otherPlayer.name}} :
+        {{configurationService.otherPlayer.name}} :
         <h4> {{configurationService.otherPlayer.score}} words found</h4>
       </h3>
     </div>
@@ -70,8 +56,7 @@
           <div *ngFor="let gridBox of line" (mouseup)="setSelectedWordOfBox(gridBox)">
             <div (mousedown)="resetInputBox()" [ngClass]="{
               filledGridBox : gridBox.isBlack, 
-              selectedGridBox: this.selectedListsContainsBox(gridBox),
-              foundGridBox: gridBox.isFound, 
+              selectedGridBox: this.playersSelectedBox(gridBox),
               inputGridBox: gridBox===getMySelectedGridBox(),
               emptyGridBox : !gridBox.isBlack
             }" [style.border-color]="getPlayerBorderColorForBox(gridBox)" [style.background]="getPlayerColorForBox(gridBox)"
