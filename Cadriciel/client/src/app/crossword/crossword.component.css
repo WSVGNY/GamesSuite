@@ -85,12 +85,7 @@ li {
     margin: 0;
     float: left;
     text-transform: uppercase;
-
-    /* pour pointillé de deux couleurs
-    outline: 3px dashed orange;
-    outline-offset: -2px; */
-
-     /* background: repeating-linear-gradient(45deg, steelblue, orangered 25px);  */
+    outline-offset: -4px;
 }
 
 .foundGridBox {
