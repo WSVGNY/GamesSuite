@@ -31,15 +31,9 @@ export class CrosswordComponent {
 
     public subscribeToMessages(): void {
         this.multiplayerCommunicationService.getMessagesCrosswordComponent().subscribe((message: string) => {
-            // console.log(message);
             if (message === SocketEvents.PlayerUpdate) {
                 this.configurationService.updateOtherPlayer(this.multiplayerCommunicationService.updatedPlayer);
-                // console.log(this.configurationService.otherPlayer.color);
-                // console.log(this.configurationService.otherPlayer.selectedBoxes);
-                // console.log(this.configurationService.otherPlayer.selectedWord);
-                // console.log(this.configurationService.otherPlayer.foundBoxes);
-                // console.log(this.configurationService.otherPlayer.foundWords);
-                this.updateGrid();
+                this.updateInputCharInBoxes();
             }
         });
     }
@@ -245,6 +239,20 @@ export class CrosswordComponent {
                 this.setInputBox();
             } else {
                 this.inputGridBox = this.configurationService.grid.boxes[this.getY()][this.getX()];
+            }
+        }
+    }
+
+    private updateInputCharInBoxes(): void {
+        if (this.configurationService.isTwoPlayerGame) {
+            for (const line of this.configurationService.grid.boxes) {
+                for (const box1 of line) {
+                    for (const box2 of this.configurationService.otherPlayer.foundBoxes) {
+                        if (box1.id.x === box2.id.x && box1.id.y === box2.id.y) {
+                            box1.inputChar = box2.inputChar;
+                        }
+                    }
+                }
             }
         }
     }
