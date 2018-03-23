@@ -107,19 +107,8 @@ describe("CrosswordComponent", () => {
         expect(true).toBeFalsy();
     });
 
-    it("the backspace key allows the player to delete letters", () => {
-        // peut-etre pas a faire selon Trello
-        expect(true).toBeFalsy();
-    });
-
-    it("when selecting a definition, i can start writing letters", () => {
-        // peut-etre pas a faire selon Trello
-        expect(true).toBeFalsy();
-    });
-
     it("when all letters are correct, the word is automatically set to found (whitout having to press enter)", () => {
-        component.
-            expect(true).toBeFalsy();
+        expect(true).toBeFalsy();
     });
 
     it("when a word is found, the answer is visible by all players", () => {
