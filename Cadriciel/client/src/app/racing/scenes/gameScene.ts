@@ -19,7 +19,7 @@ import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-ha
 import { Track } from "../../../../../common/racing/track";
 import { TrackMesh } from "../track";
 
-const START_POSITION_OFFSET: number = 4;
+const START_POSITION_OFFSET: number = -15;
 
 export class GameScene extends AbstractScene {
 

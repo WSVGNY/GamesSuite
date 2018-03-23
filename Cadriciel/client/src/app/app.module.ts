@@ -7,7 +7,7 @@ import { AppRoutingModule } from "./app-routing/app-routing.module";
 import { CrosswordComponent } from "./crossword/crossword.component";
 import { GridService } from "./crossword/grid.service";
 import { AdminComponent } from "./racing/admin/admin.component";
-import { RacingComponent } from "./racing/racing.component";
+import { RacingComponent } from "./racing/race-game/racing.component";
 import { TrackService } from "./racing/track-service/track.service";
 import { EditorComponent } from "./racing/editor/editor.component";
 import { MouseEventHandlerService } from "./racing/event-handlers/mouse-event-handler.service";
@@ -19,7 +19,7 @@ import { ChooseTrackComponent } from "./racing/choose-track/choose-track.compone
 import { RenderService } from "./racing/render-service/render.service";
 import { SoundManagerService } from "./racing/sound-service/sound-manager.service";
 import { MultiplayerCommunicationService } from "./crossword/multiplayer-communication.service";
-import { CollisionManagerService } from "./racing/collision-service/collision-manager.service";
+import { CollisionManagerService } from "./racing/collision-manager/collision-manager.service";
 
 @NgModule({
     declarations: [
