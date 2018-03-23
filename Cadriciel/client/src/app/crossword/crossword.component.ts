@@ -191,7 +191,7 @@ export class CrosswordComponent {
         if (this.configuration.isTwoPlayerGame) {
             if (ListChecker.listContainsBox(this.configuration.currentPlayer.selectedBoxes, box) && !ListChecker.playersFoundBox(box) &&
                 ListChecker.listContainsBox(this.configuration.otherPlayer.selectedBoxes, box) && !ListChecker.playersFoundBox(box)) {
-                return "4px dashed " + this.configuration.otherPlayer.color;
+                return "2px dashed " + this.configuration.otherPlayer.color;
             }
         }
 
