@@ -12,6 +12,7 @@
 }
 
 h2 {
+    margin-top:5px;
     margin-right: 20px;
     text-align: center;
 }
@@ -153,18 +154,21 @@ li {
     display: inline-block;
     vertical-align:top;
     border-radius: 10%;
+    max-width: 510px;
 }
 
 .foundDefinition {
     display: inline-block;
     vertical-align:top;
     text-decoration: line-through;
+    max-width: 510px;
 }
 
 .clearDefinition {
     display: inline-block;
     vertical-align:top;
     enable-background: 0%;
+    max-width: 510px;
 }
 
 @keyframes spin {
