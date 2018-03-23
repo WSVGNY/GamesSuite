@@ -9,12 +9,13 @@ export class AIDebug {
     private readonly Z_AXIS: number = 2;
 
     private _debugGroup: Group;
-    private _axis: VectorHelper[] = [];
+    private _axis: VectorHelper[];
     private _carVectorHelper: VectorHelper;
     private _distanceVectorHelper: VectorHelper;
     private _turningVectorHelper: VectorHelper;
 
     public constructor() {
+        this._axis = [];
         this.initializeDebugMode();
     }
     private initializeDebugMode(): void {

@@ -2,8 +2,8 @@ import { Injectable } from "@angular/core";
 
 @Injectable()
 export class KeyboardEventHandlerService {
-    private _keyDownFunctions: Map<number, Array<() => void>>;
-    private _keyUpFunctions: Map<number, Array<() => void>>;
+    private _keyDownFunctions: Map<number, (() => void)[]>;
+    private _keyUpFunctions: Map<number, (() => void)[]>;
 
     public initialize(): void {
         this._keyDownFunctions = new Map();
@@ -14,11 +14,11 @@ export class KeyboardEventHandlerService {
         if (this._keyDownFunctions.get(keyCode) === undefined) {
             this._keyDownFunctions.set(keyCode, new Array());
         }
-        const wdsf: Array<() => void> = this._keyDownFunctions.get(keyCode);
-        wdsf.push(functionToBind);
+        const lambdas: (() => void)[] = this._keyDownFunctions.get(keyCode);
+        lambdas.push(functionToBind);
         this._keyDownFunctions.set(
             keyCode,
-            wdsf
+            lambdas
         );
     }
 
@@ -31,14 +31,14 @@ export class KeyboardEventHandlerService {
 
     public handleKeyDown(keyCode: number): void {
         if (this._keyDownFunctions.get(keyCode) !== undefined) {
-            const functionsToExecute: Array<() => void> = this._keyDownFunctions.get(keyCode);
+            const functionsToExecute: (() => void)[] = this._keyDownFunctions.get(keyCode);
             functionsToExecute.forEach((callback: () => void) => callback());
         }
     }
 
     public handleKeyUp(keyCode: number): void {
         if (this._keyUpFunctions.get(keyCode) !== undefined) {
-            const functionsToExecute: Array<() => void> = this._keyUpFunctions.get(keyCode);
+            const functionsToExecute: (() => void)[] = this._keyUpFunctions.get(keyCode);
             functionsToExecute.forEach((callback: () => void) => callback());
         }
     }

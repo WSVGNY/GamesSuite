@@ -31,11 +31,11 @@ export class RacingComponent implements AfterViewInit, OnInit {
     @ViewChild("container")
     private _containerRef: ElementRef;
     private _chosenTrack: Track;
-    private _cars: Car[] = [];
-    private _carDebugs: AIDebug[] = [];
+    private _cars: Car[];
+    private _carDebugs: AIDebug[];
     private _thirdPersonCamera: ThirdPersonCamera;
     private _topViewCamera: TopViewCamera;
-    private _useThirpPersonCamera: boolean = true;
+    private _useThirpPersonCamera: boolean;
     private _gameScene: GameScene;
     private _playerCar: Car;
     private _lastDate: number;
@@ -48,7 +48,11 @@ export class RacingComponent implements AfterViewInit, OnInit {
         private _aiCarService: AICarService,
         private _collisionManagerService: CollisionManagerService,
         private _soundService: SoundManagerService
-    ) { }
+    ) {
+        this._cars = [];
+        this._carDebugs = [];
+        this._useThirpPersonCamera = true;
+    }
 
     public ngOnInit(): void {
         this._gameScene = new GameScene(this._keyboardEventHandlerService);

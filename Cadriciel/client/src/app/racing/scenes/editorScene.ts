@@ -16,9 +16,8 @@ export const START_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ 
 export const SIMPLE_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: BLUE });
 
 export class EditorScene extends AbstractScene {
-    // private _scene: Scene;
-    private _vertices: Array<Mesh>;
-    private _connections: Array<Line>;
+    private _vertices: Mesh[];
+    private _connections: Line[];
     private _firstVertex: Mesh;
     private _lastVertex: Mesh;
     private _selectedVertex: Mesh;
@@ -26,13 +25,12 @@ export class EditorScene extends AbstractScene {
 
     public constructor() {
         super();
-        // this._scene = new Scene();
         this.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
         this._vertices = [];
         this._connections = [];
     }
 
-    public importTrackVertices(trackVertices: Array<CommonCoordinate3D>): void {
+    public importTrackVertices(trackVertices: CommonCoordinate3D[]): void {
         this.clear();
         for (const entry of trackVertices) {
             this.addVertex(new Vector3(entry.z, entry.x, 0));
@@ -53,8 +51,8 @@ export class EditorScene extends AbstractScene {
         this._connections = [];
     }
 
-    public exportTrackVertices(): Array<CommonCoordinate3D> {
-        const trackVertices: Array<CommonCoordinate3D> = new Array();
+    public exportTrackVertices(): CommonCoordinate3D[] {
+        const trackVertices: CommonCoordinate3D[] = new Array();
         for (const entry of this._vertices) {
             trackVertices.push(new CommonCoordinate3D(entry.position.y, entry.position.z, entry.position.x));
         }

@@ -9,10 +9,11 @@ export class TrackLights extends Group {
     private _lightingConfig: AbstractLightingConfig;
     private _ambiantLight: AmbientLight;
     private _directionalLight: DirectionalLight;
-    private _isPerspectiveView: boolean = true;
+    private _isPerspectiveView: boolean;
 
     public constructor(trackType: TrackType) {
         super();
+        this._isPerspectiveView = true;
         this.updateLightsToTrackType(trackType);
     }
 

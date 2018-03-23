@@ -24,17 +24,19 @@ const START_POSITION_OFFSET: number = -15;
 export class GameScene extends AbstractScene {
 
     private _trackShape: TrackMesh;
-    private _group: Group = new Group();
+    private _group: Group;
     private _skyBoxTextures: Map<TrackType, CubeTexture>;
     private _lighting: TrackLights;
     private _centerLine: Group;
     private _debugMode: boolean;
-    private _debugElements: Group = new Group();
+    private _debugElements: Group;
     private _isDay: boolean;
 
     public constructor(private _keyBoardService: KeyboardEventHandlerService) {
         super();
         this._skyBoxTextures = new Map();
+        this._group = new Group();
+        this._debugElements = new Group();
         this.add(this._group);
     }
 
