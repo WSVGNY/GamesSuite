@@ -28,10 +28,12 @@ export class ConfigurationComponent {
 
     public setNewGame(): void {
         this.isNewGame = true;
+        this.isJoinGame = false;
     }
 
     public setJoinGame(): void {
         this.isJoinGame = true;
+        this.isNewGame = false;
         this.configurationService.isTwoPlayerGame = true;
         this.multiplayerCommunicationService.connectToSocket();
         this.subscribeToMessages();
@@ -93,7 +95,7 @@ export class ConfigurationComponent {
     }
 
     public submitName(playerName: string): void {
-        this.configurationService.playerOne = { name: playerName, color: "teal", score: 0 };
+        this.configurationService.playerOne = { name: playerName, color: "steelBlue", score: 0 };
         this.configurationService.currentPlayerName = this.configurationService.playerOne.name;
         this.configurationService.configurationDone = true;
     }
