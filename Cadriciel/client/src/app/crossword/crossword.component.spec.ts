@@ -90,6 +90,11 @@ describe("CrosswordComponent", () => {
         expect(true).toBeFalsy();
     });
 
+    it("when clicking somewhere else, the word become unselected", () => {
+        component.resetInputBox();
+        expect(component.inputGridBox).toBeUndefined();
+    });
+
     it("when a player select a word, its border becomes of the color of the player", () => {
         expect(true).toBeFalsy();
     });
@@ -113,7 +118,8 @@ describe("CrosswordComponent", () => {
     });
 
     it("when all letters are correct, the word is automatically set to found (whitout having to press enter)", () => {
-        expect(true).toBeFalsy();
+        component.
+            expect(true).toBeFalsy();
     });
 
     it("when a word is found, the answer is visible by all players", () => {
