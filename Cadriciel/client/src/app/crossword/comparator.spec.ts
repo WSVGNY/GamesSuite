@@ -33,5 +33,19 @@ describe("Comparator", () => {
         expect(Comparator.compareWords(word, word2)).toEqual(true);
     });
 
+    it("Should not find equivalent in list", () => {
+        const word1: CommonWord = createMockWord(4);
+        const word2: CommonWord = createMockWord(5);
+        const words: CommonWord[] = [word2];
+        expect(Comparator.findEquivalent(word1, words)).toEqual(undefined);
+    });
+
+    it("Should find equivalent in list", () => {
+        const word1: CommonWord = createMockWord(4);
+        const word2: CommonWord = createMockWord(4);
+        const words: CommonWord[] = [word2];
+        expect(Comparator.findEquivalent(word1, words)).toEqual(word2);
+    });
+
 });
 

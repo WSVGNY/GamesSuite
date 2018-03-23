@@ -26,8 +26,8 @@ export abstract class Comparator {
         }
     }
 
-    public static findEquivalent(badWord: CommonWord, configuration: ConfigurationService): CommonWord {
-        for (const word of configuration.grid.words) {
+    public static findEquivalent(badWord: CommonWord, words: CommonWord[]): CommonWord {
+        for (const word of words) {
             if (word.id === badWord.id) {
                 return word;
             }

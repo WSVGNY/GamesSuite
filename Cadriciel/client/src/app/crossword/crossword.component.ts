@@ -85,7 +85,7 @@ export class CrosswordComponent {
 
     public setSelectedWordOfBox(gridBox: CommonGridBox): void {
         if (gridBox.constraints[0] !== undefined) {
-            this.setSelectedWord(Comparator.findEquivalent(gridBox.constraints[0], this.configuration));
+            this.setSelectedWord(Comparator.findEquivalent(gridBox.constraints[0], this.configuration.grid.words));
         }
     }
 
