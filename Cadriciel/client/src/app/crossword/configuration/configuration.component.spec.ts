@@ -46,16 +46,6 @@ describe("ConfigurationComponent", () => {
         expect(component.isJoinGame).toEqual(true);
     });
 
-    it("should toggle 'two player game' to true on click", () => {
-        component.configurationService.isTwoPlayerGame = true;
-        expect(component.configurationService.isTwoPlayerGame).toEqual(true);
-    });
-
-    it("should toggle 'single player game' on click", () => {
-        component.configurationService.isTwoPlayerGame = false;
-        expect(component.configurationService.isTwoPlayerGame).toEqual(false);
-    });
-
     it("should toggle 'chose grid difficulty' on click", () => {
         component.makeEasyGrid();
         expect(component.choseGridDifficulty).toEqual(true);
