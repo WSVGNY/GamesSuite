@@ -1,10 +1,12 @@
-// // tslint:disable:no-magic-numbers
+// tslint:disable:no-magic-numbers
 
 import { GameScene } from "./gameScene";
-import { Vector3, Mesh, Geometry } from "three";
-import { TrackPointList } from "../render-service/trackPointList";
+import { Vector3, Geometry } from "three";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { TestBed } from "@angular/core/testing";
+import { TrackMesh } from "../track";
+import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
+import { Track } from "../../../../../common/racing/track";
 
 describe("Game Scene", () => {
 
@@ -24,14 +26,15 @@ describe("Game Scene", () => {
     });
 
     it("should create a track Mesh from trackPoints", () => {
-        const MOCK_TRACK: Vector3[] = [
-            new Vector3(0, 0, 0),
-            new Vector3(100, 0, 0),
-            new Vector3(100, 0, 100),
-            new Vector3(0, 0, 100),
+        const MOCK_TRACK: CommonCoordinate3D[] = [
+            new CommonCoordinate3D(0, 0, 0),
+            new CommonCoordinate3D(100, 0, 0),
+            new CommonCoordinate3D(100, 0, 100),
+            new CommonCoordinate3D(0, 0, 100),
         ];
-        const points: TrackPointList = new TrackPointList(MOCK_TRACK);
-        const shape: Mesh = gameScene.createTrackMesh(points);
+        const track: Track = new Track("");
+        track.vertices = MOCK_TRACK;
+        const shape: TrackMesh = new TrackMesh(track);
         const EXPECTED_MOCK_TRACK: Vector3[] = [
             new Vector3(-10, -10, 0),
             new Vector3(-10, 110, 0),

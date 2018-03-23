@@ -1,14 +1,13 @@
 import { Component, AfterViewInit, HostListener, ElementRef, ViewChild, Input, OnInit } from "@angular/core";
 import { ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
-import { TrackStructure } from "../../../../../common/racing/track";
+import { Track } from "../../../../../common/racing/track";
 import { TrackService } from "../track-service/track.service";
 import { EditorCamera } from "../cameras/editorCamera";
 import { EditorScene } from "../scenes/editorScene";
 import { MouseEventHandlerService } from "../event-handlers/mouse-event-handler.service";
 import { Vector3 } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
-import { Track } from "../track";
 import { RenderService } from "../render-service/render.service";
 
 const CAMERA_Z_POSITION: number = 480;
@@ -39,7 +38,7 @@ export class EditorComponent implements AfterViewInit, OnInit {
         private _editorRenderService: RenderService,
         private _mouseEventHandlerService: MouseEventHandlerService) {
 
-        this.currentTrack = new Track(TrackStructure.getNewDefaultTrackStructure());
+        this.currentTrack = new Track(undefined);
     }
 
     public ngOnInit(): void {
@@ -74,9 +73,8 @@ export class EditorComponent implements AfterViewInit, OnInit {
 
     public getTrack(): void {
         this._trackService.getTrackFromId(this._route.snapshot.paramMap.get("id"))
-            .subscribe((trackFromServer: string) => {
-                const iTrack: TrackStructure = JSON.parse(JSON.stringify(trackFromServer));
-                this._trackChosenFromAdmin = new Track(iTrack);
+            .subscribe((trackFromServer: Track) => {
+                this._trackChosenFromAdmin = Track.createFromJSON(JSON.stringify(trackFromServer));
                 this.currentTrack.name = this._trackChosenFromAdmin.name;
                 this.currentTrack.description = this._trackChosenFromAdmin.description;
                 this.currentTrack.timesPlayed = this._trackChosenFromAdmin.timesPlayed;
@@ -91,19 +89,12 @@ export class EditorComponent implements AfterViewInit, OnInit {
         this._trackChosenFromAdmin.description = this.currentTrack.description;
         this._trackChosenFromAdmin.vertices = this._editorScene.exportTrackVertices();
         this._trackChosenFromAdmin.type = this.currentTrack.type;
-        this._trackService.putTrack(this._trackChosenFromAdmin.id, this._trackChosenFromAdmin.toTrackStructure())
-            .subscribe(
-                (trackFromServer: string) => {
-                    const iTrack: TrackStructure = JSON.parse(JSON.stringify(trackFromServer));
-                    this._trackChosenFromAdmin = new Track(iTrack);
-                    this.goBack();
-                },
-                (error: Error) => console.error(error)
-            );
+        this._trackService.putTrack(this._trackChosenFromAdmin.id, this._trackChosenFromAdmin)
+            .subscribe(() => this.goBack(), (error: Error) => console.error(error));
     }
 
     public saveTrackName(trackName: string): void {
-        this.currentTrack.name = trackName;
+        this._trackChosenFromAdmin.name = trackName;
     }
 
     public saveTrackDescription(trackDescription: string): void {

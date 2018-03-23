@@ -2,10 +2,10 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { ChooseTrackComponent } from "./choose-track.component";
 import { TrackService } from "../track-service/track.service";
-import { Track } from "../track";
 import { RouterModule } from "@angular/router";
 import { HttpClientModule } from "@angular/common/http";
 import { RenderService } from "../render-service/render.service";
+import { Track } from "../../../../../common/racing/track";
 
 describe("ChooseTrackComponent", () => {
     let component: ChooseTrackComponent;
