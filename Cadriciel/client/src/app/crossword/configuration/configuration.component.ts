@@ -101,7 +101,7 @@ export class ConfigurationComponent {
     }
 
     public submitName(playerName: string): void {
-        this.configurationService.playerOne = { name: playerName, color: "teal", score: 0 };
+        this.configurationService.playerOne = { name: playerName, color: "steelBlue", score: 0 };
         this.configurationService.currentPlayerName = this.configurationService.playerOne.name;
         this.configurationService.configurationDone = true;
     }
