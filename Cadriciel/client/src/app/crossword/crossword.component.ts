@@ -71,21 +71,11 @@ export class CrosswordComponent {
         if (this.foundListContainsWord(word)) {
             return State.FOUND;
         }
-        if (word.isHorizontal) {
-            if (this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x].isColored &&
-                this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + 1].isColored) {
-                return State.SELECTED;
-            }
-
-            return State.FREE;
-        } else {
-            if (this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x].isColored &&
-                this.configurationService.grid.boxes[word.startPosition.y + 1][word.startPosition.x].isColored) {
-                return State.SELECTED;
-            }
-
-            return State.FREE;
+        if (this.wordEqualsWord(this.configurationService.currentPlayer.selectedWord, word)) {
+            return State.SELECTED;
         }
+
+        return State.FREE;
     }
 
     public setSelectedWordOfBox(gridBox: CommonGridBox): void {
@@ -169,15 +159,15 @@ export class CrosswordComponent {
 
     public getPlayerBorderColorForBox(box: CommonGridBox): string {
         if (this.configurationService.isTwoPlayerGame) {
-            if (this.listContainsBox(this.configurationService.currentPlayer.selectedBoxes, box)) {
+            if (this.listContainsBox(this.configurationService.currentPlayer.selectedBoxes, box) && !this.foundListContainsBox(box)) {
                 return this.configurationService.currentPlayer.color;
-            } else if (this.listContainsBox(this.configurationService.otherPlayer.selectedBoxes, box)) {
+            } else if (this.listContainsBox(this.configurationService.otherPlayer.selectedBoxes, box) && !this.foundListContainsBox(box)) {
                 return this.configurationService.otherPlayer.color;
             } else {
                 return "black";
             }
         } else {
-            if (box.isColored && !box.isFound) {
+            if (this.listContainsBox(this.configurationService.currentPlayer.selectedBoxes, box) && !this.foundListContainsBox(box)) {
                 return this.configurationService.currentPlayer.color;
             } else {
                 return "black";
