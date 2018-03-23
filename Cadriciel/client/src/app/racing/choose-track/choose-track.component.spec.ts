@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from "@angular/core/testing";
 
 import { ChooseTrackComponent } from "./choose-track.component";
 import { TrackService } from "../track-service/track.service";
-import { Track } from "../track";
+import { TrackShape } from "../track";
 import { RouterModule } from "@angular/router";
 import { HttpClientModule } from "@angular/common/http";
 import { RenderService } from "../render-service/render.service";
@@ -39,22 +39,22 @@ describe("ChooseTrackComponent", () => {
     });
 
     it("track should have the number of times played", () => {
-        component.tracks.forEach((track: Track) => expect(track.timesPlayed).toBeDefined());
+        component.tracks.forEach((track: TrackShape) => expect(track.timesPlayed).toBeDefined());
     });
 
     it("track should have a description", () => {
-        component.tracks.forEach((track: Track) => expect(track.description).toBeDefined());
+        component.tracks.forEach((track: TrackShape) => expect(track.description).toBeDefined());
     });
 
     it("track should have best times", () => {
-        component.tracks.forEach((track: Track) => expect(track.bestTimes).toBeDefined());
+        component.tracks.forEach((track: TrackShape) => expect(track.bestTimes).toBeDefined());
     });
 
     it("track should have verticies", () => {
-        component.tracks.forEach((track: Track) => expect(track.vertices).toBeDefined());
+        component.tracks.forEach((track: TrackShape) => expect(track.vertices).toBeDefined());
     });
 
     it("track should have a type", () => {
-        component.tracks.forEach((track: Track) => expect(track.type).toBeDefined());
+        component.tracks.forEach((track: TrackShape) => expect(track.type).toBeDefined());
     });
 });

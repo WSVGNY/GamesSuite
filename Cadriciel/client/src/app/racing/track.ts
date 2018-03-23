@@ -1,41 +1,43 @@
+import { Track } from "../../../../common/racing/track";
+import { Shape } from "three";
 import { TrackType } from "../../../../common/racing/trackType";
 import { CommonCoordinate3D } from "../../../../common/racing/commonCoordinate3D";
-import { TrackStructure } from "../../../../common/racing/track";
 
-export class Track {
-    private _id: string;
-    public name: string;
-    public description: string;
-    public timesPlayed: number;
-    public bestTimes: number[];
-    public vertices: Array<CommonCoordinate3D>;
-    public type: TrackType;
+export class TrackShape extends Shape {
 
-    public constructor(rawTrackFromServer: TrackStructure) {
-        this._id = rawTrackFromServer._id;
-        this.name = rawTrackFromServer.name;
-        this.description = rawTrackFromServer.description;
-        this.vertices = rawTrackFromServer.vertices;
-        this.timesPlayed = rawTrackFromServer.timesPlayed;
-        this.bestTimes = rawTrackFromServer.bestTimes;
-        this.type = rawTrackFromServer.type;
+    public constructor(private _track: Track) {
+        super();
     }
 
-    public get id(): string {
-        return this._id;
+    public get name(): string {
+        return this._track.name;
     }
 
-    public toTrackStructure(): TrackStructure {
-        const trackStructure: TrackStructure = new TrackStructure();
-        trackStructure._id = this._id;
-        trackStructure._isTestTrack = false;
-        trackStructure.name = this.name;
-        trackStructure.description = this.description;
-        trackStructure.vertices = this.vertices;
-        trackStructure.bestTimes = this.bestTimes;
-        trackStructure.timesPlayed = this.timesPlayed;
-        trackStructure.type = this.type;
-
-        return trackStructure;
+    public get description(): string {
+        return this._track.description;
     }
+
+    public get bestTimes(): number[] {
+        return this._track.bestTimes;
+    }
+
+    public get timesPlayed(): number {
+        return this._track.timesPlayed;
+    }
+
+    public set timesPlayed(timesPlayed: number) {
+        this._track.timesPlayed = timesPlayed;
+    }
+
+    public get type(): TrackType {
+        return this._track.type;
+    }
+
+    public get vertices(): CommonCoordinate3D[] {
+        return this._track.vertices;
+    }
+
+    // public get name(): string {
+    //     return this._track.;
+    // }
 }

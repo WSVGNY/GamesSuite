@@ -5,9 +5,9 @@ import { CommonGrid } from "./commonGrid";
 export class MultiplayerCrosswordGame {
     public readonly MAX_PLAYER_NUMBER: number = 2;
 
-    static create(stringObject: string): MultiplayerCrosswordGame {
+    public static create(stringObject: string): MultiplayerCrosswordGame {
         const jsonObject = JSON.parse(stringObject) as MultiplayerCrosswordGame;
-        return new MultiplayerCrosswordGame(jsonObject["_roomName"], jsonObject["_difficulty"], jsonObject["_players"], jsonObject["grid"]);
+        return new MultiplayerCrosswordGame(jsonObject._roomName, jsonObject._difficulty, jsonObject._players, jsonObject.grid);
     }
 
     public constructor(

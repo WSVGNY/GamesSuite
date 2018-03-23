@@ -1,10 +1,10 @@
 import { AfterViewInit, Component, ElementRef, ViewChild, HostListener, OnInit } from "@angular/core";
 import { Car } from "./car/car";
 import { KeyboardEventHandlerService } from "./event-handlers/keyboard-event-handler.service";
-import { TrackStructure } from "../../../../common/racing/track";
+import { Track } from "../../../../common/racing/track";
 import { TrackService } from "./track-service/track.service";
 import { ActivatedRoute } from "@angular/router";
-import { Track } from "./track";
+import { TrackShape } from "./track";
 import { ThirdPersonCamera } from "./cameras/thirdPersonCamera";
 import { GameScene } from "./scenes/gameScene";
 import { AICarService } from "./artificial-intelligence/ai-car.service";
@@ -14,8 +14,10 @@ import { RenderService } from "./render-service/render.service";
 import { AIDebug } from "./artificial-intelligence/ai-debug";
 import { SoundManagerService } from "./sound-service/sound-manager.service";
 import { TopViewCamera } from "./cameras/topViewCamera";
-import { CHANGE_CAMERA_KEYCODE, DAY_KEYCODE, DEBUG_KEYCODE, AI_CARS_QUANTITY, PLAY_MUSIC_KEYCODE,
-    MUTE_KEYCODE, ACCELERATE_KEYCODE } from "./constants";
+import {
+    CHANGE_CAMERA_KEYCODE, DAY_KEYCODE, DEBUG_KEYCODE, AI_CARS_QUANTITY, PLAY_MUSIC_KEYCODE,
+    MUTE_KEYCODE, ACCELERATE_KEYCODE
+} from "./constants";
 import { TrackType } from "../../../../common/racing/trackType";
 
 @Component({
@@ -30,7 +32,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
     @ViewChild("container")
     private _containerRef: ElementRef;
     private _currentTrackId: string = "";
-    private _chosenTrack: Track;
+    private _chosenTrack: TrackShape;
     private _cars: Car[] = [];
     private _carDebugs: AIDebug[] = [];
     private _thirdPersonCamera: ThirdPersonCamera;
@@ -98,9 +100,8 @@ export class RacingComponent implements AfterViewInit, OnInit {
     public getTrack(): void {
         this._currentTrackId = this._route.snapshot.paramMap.get("id");
         this._trackService.getTrackFromId(this._currentTrackId)
-            .subscribe(async (trackFromServer: string) => {
-                const iTrack: TrackStructure = JSON.parse(JSON.stringify(trackFromServer));
-                this._chosenTrack = new Track(iTrack);
+            .subscribe(async (trackFromServer: Track) => {
+                this._chosenTrack = new TrackShape(Track.createFromJSON(JSON.stringify(trackFromServer)));
                 this._trackPoints = new TrackPointList(this._chosenTrack.vertices);
 
                 this.initializeCars(this._chosenTrack.type);

@@ -8,7 +8,7 @@ import {
 import { TrackType } from "../../../../../common/racing/trackType";
 import { SkyBox } from "../render-service/skybox";
 import { TrackLights } from "../render-service/light";
-import { Track } from "../track";
+import { TrackShape } from "../track";
 import {
     PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE,
     CHANGE_CAMERA_KEYCODE, YELLOW, ASPHALT_TEXTURE_FACTOR
@@ -38,7 +38,7 @@ export class GameScene extends AbstractScene {
         this.add(this._group);
     }
 
-    public loadTrack(track: Track): void {
+    public loadTrack(track: TrackShape): void {
         if (this._track !== undefined) {
             this._group.remove(this._track);
         }
@@ -53,7 +53,7 @@ export class GameScene extends AbstractScene {
         this._group.add(this.createWalls(this._trackPoints));
     }
 
-    public async loadCars(cars: Car[], carDebugs: AIDebug[], camera: Camera, track: Track): Promise<void> {
+    public async loadCars(cars: Car[], carDebugs: AIDebug[], camera: Camera, track: TrackShape): Promise<void> {
         for (let i: number = 0; i < cars.length; ++i) {
             const startPos: Vector3 = new Vector3(
                 this._trackPoints.first.coordinate.x - i * START_POSITION_OFFSET,

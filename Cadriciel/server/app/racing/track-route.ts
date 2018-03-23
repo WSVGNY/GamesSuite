@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import "reflect-metadata";
 import { injectable, } from "inversify";
-import { TrackStructure } from "../../../common/racing/track";
+import { Track } from "../../../common/racing/track";
 import { MongoClient, InsertOneWriteOpResult, UpdateWriteOpResult } from "mongodb";
 import { ObjectId } from "bson";
 
@@ -15,8 +15,8 @@ export class TrackRoute {
         MongoClient.connect(DATABASE_URL).then((dbConnection: MongoClient) => {
             dbConnection.db(DATABASE).collection(COLLECTION).find().toArray().then((tracksCollection: string[]) => {
                 const noTestTracks: string[] = tracksCollection.filter(
-                    (document: string) => !((JSON.parse(JSON.stringify(document)) as TrackStructure)._isTestTrack));
-                res.json(JSON.stringify(noTestTracks));
+                    (document: string) => !Track.createFromJSON(JSON.stringify(document)).isTestTrack);
+                res.send(noTestTracks);
                 dbConnection.close().catch((e: Error) => res.send(e));
             }).catch((e: Error) => console.error(e));
         }).catch((e: Error) => console.error(e));
@@ -26,8 +26,7 @@ export class TrackRoute {
         MongoClient.connect(DATABASE_URL).then((dbConnection: MongoClient) => {
             dbConnection.db("log2990").collection(COLLECTION)
                 .findOne({ "_id": new ObjectId(req.params.id) }).then((document: string) => {
-                    const iTrack: TrackStructure = JSON.parse(JSON.stringify(document));
-                    res.send(JSON.stringify(iTrack));
+                    res.send(Track.createFromJSON(JSON.stringify(document)));
                     dbConnection.close().catch((e: Error) => res.send(e));
                 }).catch((e: Error) => res.send(e));
         }).catch((e: Error) => res.send(e));

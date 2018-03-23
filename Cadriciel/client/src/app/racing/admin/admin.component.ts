@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
-import { TrackStructure } from "../../../../../common/racing/track";
+import { Track } from "../../../../../common/racing/track";
 import { TrackService } from "../track-service/track.service";
-import { Track } from "../track";
+import { TrackShape } from "../track";
 
 @Component({
     selector: "app-admin",
@@ -20,39 +20,36 @@ export class AdminComponent implements OnInit {
     private getTracksFromServer(): void {
         this._trackService.getTrackList()
             .subscribe(
-            (tracksFromServer: string) => {
-                this.tracks = [];
-                JSON.parse(tracksFromServer).forEach((document: string) => {
-                    const iTrack: TrackStructure = JSON.parse(JSON.stringify(document));
-                    this.tracks.push(new Track(iTrack));
-                });
-            },
-            (error: Error) => console.error(error)
+                (tracksFromServer: Track[]) => {
+                    this.tracks = [];
+                    tracksFromServer.forEach((document: Track) => {
+                        this.tracks.push(Track.createFromJSON(JSON.stringify(document)));
+                    });
+                },
+                (error: Error) => console.error(error)
             );
     }
 
     public newTrack(trackName: string): void {
         this._trackService.newTrack(trackName)
             .subscribe(
-            (trackFromServer: string) => {
-                const iTrack: TrackStructure = JSON.parse(JSON.stringify(trackFromServer));
-                this.tracks.push(new Track(iTrack));
-            },
-            (error: Error) => console.error(error)
+                (trackFromServer: Track) => {
+                    this.tracks.push(Track.createFromJSON(JSON.stringify(trackFromServer)));
+                },
+                (error: Error) => console.error(error)
             );
     }
 
     public deleteTrack(id: string): void {
         this._trackService.deleteTrack(id)
             .subscribe(
-            (tracksFromServer: string) => {
-                this.tracks = [];
-                JSON.parse(tracksFromServer).forEach((document: string) => {
-                    const iTrack: TrackStructure = JSON.parse(JSON.stringify(document));
-                    this.tracks.push(new Track(iTrack));
-                });
-            },
-            (error: Error) => console.error(error)
+                (tracksFromServer: Track[]) => {
+                    this.tracks = [];
+                    tracksFromServer.forEach((document: Track) => {
+                        this.tracks.push(Track.createFromJSON(JSON.stringify(document)));
+                    });
+                },
+                (error: Error) => console.error(error)
             );
     }
 }
