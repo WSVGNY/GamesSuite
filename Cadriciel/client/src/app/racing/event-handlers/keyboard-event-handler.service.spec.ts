@@ -2,18 +2,8 @@
 import { TestBed, inject } from "@angular/core/testing";
 import { KeyboardEventHandlerService } from "./keyboard-event-handler.service";
 import { RenderService } from "../render-service/render.service";
-import { Car } from "../car/car";
-import { Vector3 } from "three";
-import { ACCELERATE_KEYCODE } from "../constants";
-import { Engine } from "../car/engine";
 
 const TEST_KEYCODE: number = 0;
-
-class MockEngine extends Engine {
-    public getDriveTorque(): number {
-        return 10000;
-    }
-}
 
 describe("KeyboardEventHandlerService", () => {
     beforeEach(() => {
@@ -50,7 +40,7 @@ describe("KeyboardEventHandlerService", () => {
 
     it("should execute a function on key down", inject(
         [KeyboardEventHandlerService], async (keyBoardService: KeyboardEventHandlerService) => {
-            let testnumber: number = 0;
+            const testnumber: number = 0;
             keyBoardService.handleKeyDown(TEST_KEYCODE);
             expect(testnumber).toEqual(5);
         })
@@ -58,7 +48,7 @@ describe("KeyboardEventHandlerService", () => {
 
     it("should execute a function on key up", inject(
         [KeyboardEventHandlerService], async (keyBoardService: KeyboardEventHandlerService) => {
-            let testnumber: number = 0;
+            const testnumber: number = 0;
             keyBoardService.handleKeyUp(TEST_KEYCODE);
             expect(testnumber).toEqual(5);
         })
