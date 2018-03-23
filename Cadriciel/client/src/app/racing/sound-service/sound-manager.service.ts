@@ -23,7 +23,7 @@ export class SoundManagerService {
             soundName,
             (audioBuffer: AudioBuffer) => {
                 sound.setBuffer(audioBuffer);
-                sound.stop();
+                sound.stop(); // should be play but stop is for debug
             },
             (xhr: XMLHttpRequest) => { },
             (err: Event) => { }
