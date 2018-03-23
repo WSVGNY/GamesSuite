@@ -1,11 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Car } from "../car/car";
-<<<<<<< HEAD
 import { Vector3, Raycaster, Intersection} from "three";
-=======
-import { Vector3, Raycaster, Intersection } from "three";
-import { GameScene } from "../scenes/gameScene";
->>>>>>> 04df200106798b9a788e85068f32ae644cb69c08
 
 const MINIMUM_CAR_DISTANCE: number = 5;
 
@@ -180,7 +175,7 @@ export class CollisionManagerService {
     }
 
     private getCarSpeed(movingCar: Car): Vector3 {
-        return movingCar.direction.clone().multiplyScalar(-movingCar._speed.z);
+        return movingCar.direction.clone().multiplyScalar(-movingCar.speed.z);
     }
 
     private getTangentialForce(movingCarSpeed: Vector3, collisionAxis: Vector3): Vector3 {
@@ -196,7 +191,7 @@ export class CollisionManagerService {
     }
 
     private applyForces(firstCar: Car, secondCar: Car, forces: Vector3[]): void {
-        firstCar._speed = forces[0].clone().add(forces[3]);
-        secondCar._speed = forces[1].clone().add(forces[2]);
+        firstCar.speed = forces[0].clone().add(forces[3]);
+        secondCar.speed = forces[1].clone().add(forces[2]);
     }
 }

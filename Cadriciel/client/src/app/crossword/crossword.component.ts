@@ -1,41 +1,69 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, HostListener } from "@angular/core";
 import { CommonGridBox } from "../../../../common/crossword/commonGridBox";
 import { CommonWord } from "../../../../common/crossword/commonWord";
-import { ConfigurationService } from "./configuration.service";
+import { ConfigurationService } from "./configuration/configuration.service";
 import { MultiplayerCommunicationService } from "./multiplayer-communication.service";
+import { SocketEvents } from "../../../../common/communication/socketEvents";
+import { ListChecker } from "./listChecker";
+import { Comparator } from "./comparator";
+import { Updater } from "./updater";
+
+const BACKSPACE_KEYCODE: number = 8;
+
+enum State {
+    FREE = 0,
+    SELECTED,
+    FOUND
+}
 
 @Component({
     selector: "app-crossword",
     templateUrl: "./crossword.component.html",
     styleUrls: ["./crossword.component.css"]
 })
-export class CrosswordComponent implements OnInit {
+export class CrosswordComponent {
 
-    public selectedGridBox: CommonGridBox;
-    public correctWordCount: number = 0;
+    public inputGridBox: CommonGridBox;
     public isInCheatMode: boolean = false;
-
-    private message: string;
-    private messages: string[] = [];
+    private _hasSubscribed: boolean = false;
 
     public constructor(
-        public configurationService: ConfigurationService,
-        private multiplayerCommunicationService: MultiplayerCommunicationService) {
+        public configuration: ConfigurationService, private multiplayerCommunicationService: MultiplayerCommunicationService) {
+
     }
 
-    public ngOnInit(): void {
-        this.multiplayerCommunicationService.getMessages().subscribe((message: string) => {
-            this.messages.push(message);
+    public subscribeToMessages(): void {
+        this.multiplayerCommunicationService.getMessagesCrosswordComponent().subscribe((message: string) => {
+            if (message === SocketEvents.PlayerUpdate) {
+                this.configuration.updateOtherPlayer(this.multiplayerCommunicationService.updatedPlayer);
+                Updater.updateInputCharInBoxes(this.configuration);
+                this.inputGridBox = Updater.setInputBox(this.configuration, this.inputGridBox);
+            }
         });
     }
 
-    public sendMessage(): void {
-        this.multiplayerCommunicationService.sendMessage(this.message);
-        this.message = "";
+    public isConfigurationDone(): boolean {
+        if (!this._hasSubscribed && this.multiplayerCommunicationService.isSocketDefined) {
+            this.subscribeToMessages();
+            this._hasSubscribed = true;
+        }
+        if (this.configuration.configurationDone && this.configuration.currentPlayer.foundWords === undefined) {
+            ListChecker.setConfiguration(this.configuration);
+            this.configuration.currentPlayer.foundBoxes = [];
+            this.configuration.currentPlayer.foundWords = [];
+            this.configuration.currentPlayer.selectedBoxes = [];
+            if (this.configuration.isTwoPlayerGame) {
+                this.configuration.otherPlayer.foundBoxes = [];
+                this.configuration.otherPlayer.foundWords = [];
+                this.configuration.otherPlayer.selectedBoxes = [];
+            }
+        }
+
+        return this.configuration.configurationDone;
     }
 
-    public isConfigurationDone(): boolean {
-        return this.configurationService.configurationDone;
+    public getMySelectedGridBox(): CommonGridBox {
+        return this.inputGridBox;
     }
 
     public changeMode(): void {
@@ -44,64 +72,39 @@ export class CrosswordComponent implements OnInit {
             this.isInCheatMode = true;
     }
 
-    public highlightedWord(word: CommonWord): boolean {
-        if (word.isHorizontal) {
-            if (this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x].isColored &&
-                this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + 1].isColored) {
-                return true;
-            }
-
-            return false;
-        } else {
-            if (this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x].isColored &&
-                this.configurationService.grid.boxes[word.startPosition.y + 1][word.startPosition.x].isColored) {
-                return true;
-            }
-
-            return false;
+    public getState(word: CommonWord): State {
+        if (ListChecker.playersFoundWord(word)) {
+            return State.FOUND;
         }
+        if (Comparator.compareWords(this.configuration.currentPlayer.selectedWord, word)) {
+            return State.SELECTED;
+        }
+
+        return State.FREE;
     }
 
-    public highlightWordOfBox(gridBox: CommonGridBox): void {
+    public setSelectedWordOfBox(gridBox: CommonGridBox): void {
         if (gridBox.constraints[0] !== undefined) {
-            this.highlightWord((gridBox as CommonGridBox).constraints[0]);
+            this.setSelectedWord(Comparator.findEquivalent(gridBox.constraints[0], this.configuration));
         }
     }
 
-    public highlightWord(word: CommonWord): void {
-        if (!word.isComplete) {
-            this.deselectWords();
-            if (word.isHorizontal) {
-                for (let i: number = 0; i < word.length; i++) {
-                    this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + i].isColored = true;
-                }
-            } else {
-                for (let i: number = 0; i < word.length; i++) {
-                    this.configurationService.grid.boxes[word.startPosition.y + i][word.startPosition.x].isColored = true;
-                }
-            }
+    public setSelectedWord(word: CommonWord): void {
+        if (!ListChecker.playersFoundWord(word)) {
+            this.configuration.currentPlayer.selectedWord = word;
         }
-    }
-
-    public deselectWords(): void {
-        if (this.configurationService.grid !== undefined) {
-            for (const line of this.configurationService.grid.boxes) {
-                for (const box of line) {
-                    box.isColored = false;
-                }
-            }
-        }
+        this.updateGrid();
     }
 
     public getWordValue(word: CommonWord): string {
         let value: string = "";
         if (word.isHorizontal) {
             for (let i: number = 0; i < word.length; i++) {
-                value += this.configurationService.grid.boxes[word.startPosition.y][word.startPosition.x + i].char.value;
+                value += this.configuration.grid.boxes[word.startPosition.y][word.startPosition.x + i].char.value;
             }
         } else {
             for (let i: number = 0; i < word.length; i++) {
-                value += this.configurationService.grid.boxes[word.startPosition.y + i][word.startPosition.x].char.value;
+                value += this.configuration.grid.boxes[word.startPosition.y + i][word.startPosition.x].char.value;
             }
         }
 
@@ -123,22 +126,163 @@ export class CrosswordComponent implements OnInit {
         return undefined;
     }
 
+    public getPlayerColorForDefinition(word: CommonWord): string {
+        if (this.configuration.isTwoPlayerGame) {
+            if (Comparator.compareWords(this.configuration.currentPlayer.selectedWord, word)
+                || ListChecker.listContainsWord(this.configuration.currentPlayer.foundWords, word)) {
+                return this.configuration.currentPlayer.color;
+            } else if (Comparator.compareWords(this.configuration.otherPlayer.selectedWord, word)
+                || ListChecker.listContainsWord(this.configuration.otherPlayer.foundWords, word)) {
+                return this.configuration.otherPlayer.color;
+            } else {
+                return "transparent";
+            }
+        } else {
+            if (this.configuration.currentPlayer.selectedWord === word ||
+                ListChecker.listContainsWord(this.configuration.currentPlayer.foundWords, word)) {
+                return this.configuration.currentPlayer.color;
+            } else {
+                return "transparent";
+            }
+        }
+    }
+
+    public getPlayerColorForBox(box: CommonGridBox): string {
+        if (box.isBlack) {
+            return "black";
+        } else {
+            if (this.configuration.isTwoPlayerGame) {
+                if (ListChecker.listContainsBox(this.configuration.currentPlayer.foundBoxes, box) &&
+                    ListChecker.listContainsBox(this.configuration.otherPlayer.foundBoxes, box)) {
+                    return "repeating-linear-gradient(45deg, " + this.configuration.currentPlayer.color +
+                        ", " + this.configuration.otherPlayer.color + " 25px)";
+                }
+            }
+            if (ListChecker.listContainsBox(this.configuration.currentPlayer.foundBoxes, box)) {
+                return this.configuration.currentPlayer.color;
+            }
+            if (this.configuration.isTwoPlayerGame) {
+                if (ListChecker.listContainsBox(this.configuration.otherPlayer.foundBoxes, box)) {
+                    return this.configuration.otherPlayer.color;
+                }
+            }
+        }
+
+        return "white";
+    }
+
+    public getPlayerBorderColorForBox(box: CommonGridBox): string {
+        if (this.configuration.isTwoPlayerGame) {
+            if (ListChecker.listContainsBox(this.configuration.currentPlayer.selectedBoxes, box) && !ListChecker.playersFoundBox(box)) {
+                return this.configuration.currentPlayer.color;
+            } else if (ListChecker.listContainsBox(this.configuration.otherPlayer.selectedBoxes, box) &&
+                !ListChecker.playersFoundBox(box)) {
+                return this.configuration.otherPlayer.color;
+            } else {
+                return "black";
+            }
+        } else {
+            if (ListChecker.listContainsBox(this.configuration.currentPlayer.selectedBoxes, box) &&
+                !ListChecker.playersFoundBox(box)) {
+                return this.configuration.currentPlayer.color;
+            } else {
+                return "black";
+            }
+        }
+    }
+
+    public getPlayerOutlineColor(box: CommonGridBox): string {
+        if (this.configuration.isTwoPlayerGame) {
+            if (ListChecker.listContainsBox(this.configuration.currentPlayer.selectedBoxes, box) && !ListChecker.playersFoundBox(box) &&
+                ListChecker.listContainsBox(this.configuration.otherPlayer.selectedBoxes, box) && !ListChecker.playersFoundBox(box)) {
+                return "4px dashed " + this.configuration.otherPlayer.color;
+            }
+        }
+
+        return "";
+    }
+
+    public resetInputBox(): void {
+        this.inputGridBox = undefined;
+        this.configuration.currentPlayer.selectedWord = undefined;
+        this.updateGrid();
+    }
+
+    private updateGrid(): void {
+        this.inputGridBox = Updater.updateGrid(this.configuration, this.inputGridBox);
+        this.multiplayerCommunicationService.playerUpdate(this.configuration.currentPlayer);
+    }
+
+    private verifyCompletedWords(): void {
+        for (const word of this.configuration.grid.words) {
+            this.verifyCompletedWord(word);
+        }
+    }
+
+    private verifyCompletedWord(word: CommonWord): CommonWord {
+        let wordValue: string = "";
+        for (let i: number = 0; i < word.length; i++) {
+            if (word.isHorizontal) {
+                if (this.configuration.grid.boxes[word.startPosition.y][word.startPosition.x + i].inputChar.value !== undefined) {
+                    wordValue += this.configuration.grid.boxes[word.startPosition.y][word.startPosition.x + i].inputChar.value;
+                }
+            } else {
+                if (this.configuration.grid.boxes[word.startPosition.y + i][word.startPosition.x].inputChar.value !== undefined) {
+                    wordValue += this.configuration.grid.boxes[word.startPosition.y + i][word.startPosition.x].inputChar.value;
+                }
+            }
+        }
+        if (wordValue === this.getWordValue(word) && !ListChecker.playersFoundWord(word)) {
+            this.configuration.currentPlayer.foundWords.push(word);
+            this.addToScore();
+            Updater.setFoundBoxes(this.configuration);
+            if (Comparator.compareWords(this.configuration.currentPlayer.selectedWord, word)) {
+                this.resetInputBox();
+            }
+        }
+
+        return word;
+    }
+
+    @HostListener("window:keydown", ["$event"])
+    public inputChar(event: KeyboardEvent): void {
+        if (this.configuration.configurationDone && this.configuration.grid !== undefined) {
+            if (this.inputGridBox !== undefined && !ListChecker.playersFoundWord(this.configuration.currentPlayer.selectedWord)) {
+                if (event.key.match(/^[a-z]$/i) !== null) {
+                    this.enterNextCharacter(event.key.toUpperCase());
+                    this.inputGridBox = Updater.setInputBox(this.configuration, this.inputGridBox);
+                }
+                if (event.keyCode === BACKSPACE_KEYCODE) {
+                    this.eraseLastCharacter();
+                    this.inputGridBox = Updater.setInputBox(this.configuration, this.inputGridBox);
+                }
+            }
+            this.verifyCompletedWords();
+        }
+    }
+
     private isStartingBox(gridBox: CommonGridBox, index: number): boolean {
         return gridBox.id.x === gridBox.constraints[index].startPosition.x
             && gridBox.id.y === gridBox.constraints[index].startPosition.y;
     }
 
-    public isCompletedWord(word: CommonWord, wordEntered: string): boolean {
-        return this.getWordValue(word) === wordEntered;
+    private addToScore(): void {
+        this.configuration.currentPlayer.score++;
+        this.updateGrid();
     }
 
-    public addToScore(word: CommonWord): void {
-        word.isComplete = true;
-        this.correctWordCount++;
+    private enterNextCharacter(char: string): void {
+        this.configuration.grid.boxes[this.configuration.getY()][this.configuration.getX()].inputChar.value = char;
+        Comparator.goToNextAvailableBox(this.configuration);
     }
 
-    public getFirstLetter(): void {
+    private eraseLastCharacter(): void {
+        Comparator.goBackOneCharacter(this.configuration);
+        this.configuration.grid.boxes[this.configuration.getY()][this.configuration.getX()].inputChar.value = "";
+    }
 
+    public playersSelectedBox(box: CommonGridBox): boolean {
+        return ListChecker.playersSelectedBox(box);
     }
 
 }

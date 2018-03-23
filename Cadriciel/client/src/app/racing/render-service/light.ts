@@ -9,6 +9,7 @@ export class TrackLights extends Group {
     private _lightingConfig: AbstractLightingConfig;
     private _ambiantLight: AmbientLight;
     private _directionalLight: DirectionalLight;
+    private _isPerspectiveView: boolean = true;
 
     public constructor(trackType: TrackType) {
         super();
@@ -45,7 +46,14 @@ export class TrackLights extends Group {
             this._lightingConfig.DIRECTIONAL_LIGHT_POSITION_Y,
             this._lightingConfig.DIRECTIONAL_LIGHT_POSITION_Z
         );
-        this._directionalLight.intensity = this._lightingConfig.DIRECTIONAL_LIGHT_INTENSITY;
+        if (this._isPerspectiveView) { this._directionalLight.intensity = this._lightingConfig.DIRECTIONAL_LIGHT_INTENSITY; }
+    }
+
+    public changePerspective(): void {
+        this._isPerspectiveView = !this._isPerspectiveView;
+        this._isPerspectiveView ?
+            this._directionalLight.intensity = this._lightingConfig.DIRECTIONAL_LIGHT_INTENSITY :
+            this._directionalLight.intensity = 0;
     }
 
     private chooseConfig(trackType: TrackType): void {
@@ -59,4 +67,5 @@ export class TrackLights extends Group {
                 break;
         }
     }
+
 }

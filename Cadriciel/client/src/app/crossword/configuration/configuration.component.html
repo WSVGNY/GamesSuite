@@ -1,33 +1,48 @@
 <div id="modeSelection">
-  <a (click)="setNewGame()" class="push_button">New game</a>
-  <a (click)="setJoinGame()" class="push_button">Join game</a>
+  <a *ngIf="isNewGame === undefined" (click)="setNewGame()" class="push_button">New game</a>
+  <a *ngIf="isNewGame === undefined" (click)="setJoinGame()" class="push_button">Join game</a>
+  <div *ngIf="isJoinGame">
+    <div id="inputJoinGame">
+      Enter Name :
+      <input #player value="Player 2" />
+      <h2>ROOM LIST: </h2>
+      <button *ngFor="let room of multiplayerCommunicationService.availableGames" (click)="onRoomSelect(room, player.value)">
+        {{room["_roomName"]}} of difficulty {{room["_difficulty"]}} created by {{room["_players"][0].name}}
+      </button>
+    </div>
+    <div *ngIf="configurationService.isTwoPlayerGame">
+      <div id="waiter" *ngIf="waitingForRoom"></div>
+      <div id="waiterText" *ngIf="waitingForRoom">waiting for grid to generate ...</div>
+    </div>
+  </div>
   <div *ngIf="isNewGame" id="buttongroup" class="btn-group">
-    <button (click)="configurationService.isTwoPlayerGame = false" class="btn btn-primary">One player</button>
-    <button (click)="configurationService.isTwoPlayerGame = true" class="btn btn-primary">Two players</button>
+    <button (click)="setGameType(false)" class="btn btn-primary">One player</button>
+    <button (click)="setGameType(true)" class="btn btn-primary">Two players</button>
   </div>
 
-  <div *ngIf="configurationService.isTwoPlayerGame !== undefined && difficulty === undefined" id="buttongroupDifficulty" class="btn-group">
+  <div *ngIf="configurationService.isTwoPlayerGame !== undefined && configurationService.difficulty === undefined && !isJoinGame"
+    id="buttongroupDifficulty" class="btn-group">
     <button name="buttonDifficulty" (click)="makeEasyGrid()" class="btn btn-primary">EASY</button>
     <button name="buttonDifficulty" (click)="makeMediumGrid()" class="btn btn-primary">MEDIUM</button>
     <button name="buttonDifficulty" (click)="makeHardGrid()" class="btn btn-primary">HARD</button>
   </div>
 
-  <div *ngIf="difficulty !== undefined" id="input">
+  <div *ngIf="configurationService.difficulty !== undefined && isNewGame" id="input">
     Enter Name :
     <input #player value="Player 1" />
-    <button *ngIf="!configurationService.isTwoPlayerGame" (click)="configurationService.playerName = player.value" (click)="submitName()">Play</button>
-    <button *ngIf="configurationService.isTwoPlayerGame" (click)="configurationService.playerName = player.value" (click)="configurationService.lookingForPlayer = true">Find second player</button>
+    <button *ngIf="!configurationService.isTwoPlayerGame" (click)="submitName(player.value)">Play</button>
+    <button *ngIf="configurationService.isTwoPlayerGame" (click)="configurationService.lookingForPlayer = true" (click)="createRoom(player.value)">Find second player</button>
   </div>
 
   <div *ngIf="configurationService.isTwoPlayerGame">
-    <div id="waiter" *ngIf="configurationService.lookingForPlayer == true"></div>
-    <div id="waiterText" *ngIf="configurationService.lookingForPlayer == true">waiting for another player...</div>
+    <div id="waiter" *ngIf="configurationService.lookingForPlayer"></div>
+    <div id="waiterText" *ngIf="configurationService.lookingForPlayer">waiting for another player...</div>
   </div>
 
 
-  <div *ngIf="configurationService.isTwoPlayerGame !== undefined" id="selectedOptions">
+  <div *ngIf="configurationService.isTwoPlayerGame !== undefined && !isJoinGame" id="selectedOptions">
     <div *ngIf="!configurationService.isTwoPlayerGame"> Chosen : One player </div>
     <div *ngIf="configurationService.isTwoPlayerGame"> Chosen : Two player </div>
-    <div *ngIf="difficulty !== undefined"> Chosen : {{difficulty}} </div>
+    <div *ngIf="configurationService.difficulty !== undefined"> Chosen : {{configurationService.difficulty}} </div>
   </div>
 </div>

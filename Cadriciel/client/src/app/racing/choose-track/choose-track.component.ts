@@ -1,7 +1,6 @@
 import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from "@angular/core";
 import { TrackService } from "../track-service/track.service";
-import { TrackStructure } from "../../../../../common/racing/track";
-import { Track } from "../track";
+import { Track } from "../../../../../common/racing/track";
 import { PreviewCamera } from "../cameras/previewCamera";
 import { PreviewScene } from "../scenes/previewScene";
 import { RenderService } from "../render-service/render.service";
@@ -15,7 +14,7 @@ export class ChooseTrackComponent implements OnInit, AfterViewInit {
 
     @ViewChild("preview")
     private _containerRef: ElementRef;
-    public tracks: Track[] = new Array();
+    public tracks: Track[] = [];
 
     private _previewCamera: PreviewCamera;
     private _previewScene: PreviewScene;
@@ -52,11 +51,10 @@ export class ChooseTrackComponent implements OnInit, AfterViewInit {
 
     private getTracksFromServer(): void {
         this._trackService.getTrackList()
-            .subscribe((tracksFromServer: string) => {
+            .subscribe((tracksFromServer: Track[]) => {
                 this.tracks = [];
-                JSON.parse(tracksFromServer).forEach((document: string) => {
-                    const iTrack: TrackStructure = JSON.parse(JSON.stringify(document));
-                    this.tracks.push(new Track(iTrack));
+                tracksFromServer.forEach((document: Track) => {
+                    this.tracks.push(Track.createFromJSON(JSON.stringify(document)));
                 });
             });
     }
@@ -71,6 +69,6 @@ export class ChooseTrackComponent implements OnInit, AfterViewInit {
     }
 
     private saveTrack(track: Track): void {
-        this._trackService.putTrack(track.id, track.toTrackStructure()).subscribe();
+        this._trackService.putTrack(track.id, track).subscribe();
     }
 }

@@ -1,68 +1,84 @@
 import { AbstractScene } from "./abstractScene";
 import { TrackPoint } from "./../render-service/trackPoint";
-import { Group, PlaneGeometry, MeshPhongMaterial, BackSide, Texture, TextureLoader,
-         RepeatWrapping, Mesh, CubeTexture, Shape, ShapeGeometry, Path, CubeTextureLoader,
-         Vector3, Geometry, LineBasicMaterial, Line, Camera } from "three";
+import {
+    Group, PlaneGeometry, MeshPhongMaterial, BackSide, Texture, TextureLoader,
+    RepeatWrapping, Mesh, CubeTexture, CubeTextureLoader,
+    Vector3, Geometry, Line, Camera, LineBasicMaterial
+} from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { SkyBox } from "../render-service/skybox";
 import { TrackLights } from "../render-service/light";
-import { Track } from "../track";
-import { PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE, MS_TO_SECONDS } from "../constants";
+import {
+    PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, GRASS_TEXTURE, CHANGE_CAMERA_KEYCODE, YELLOW
+} from "../constants";
 import { Car } from "../car/car";
-import { GREEN } from ".././constants";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
 import { Wall } from "../render-service/wall";
 import { TrackPointList } from "../render-service/trackPointList";
+import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
+import { Track } from "../../../../../common/racing/track";
+import { TrackMesh } from "../track";
 
 const START_POSITION_OFFSET: number = -15;
 
 export class GameScene extends AbstractScene {
 
-    private _trackPoints: TrackPointList;
-    private _track: Mesh;
+    private _trackShape: TrackMesh;
     private _group: Group = new Group();
     private _skyBoxTexture: CubeTexture;
     private _lighting: TrackLights;
-    private _centerLine: Line;
+    private _centerLine: Group;
     private _debugMode: boolean;
     private _debugElements: Group = new Group();
+    private _isDay: boolean;
 
-    public constructor() {
+    public constructor(private _keyBoardService: KeyboardEventHandlerService) {
         super();
         this.add(this._group);
     }
 
     public loadTrack(track: Track): void {
-        if (this._track !== undefined) {
-            this._group.remove(this._track);
+        if (this._trackShape !== undefined) {
+            this._group.remove(this._trackShape);
         }
-        this._trackPoints = new TrackPointList(track.vertices);
-        this._track = this.createTrackMesh(this._trackPoints);
-        this._group.add(this._track);
+        this._isDay = track.type === TrackType.Default ? true : false;
+        this._group.add(this.createWalls(new TrackPointList(track.vertices)));
+        this._trackShape = new TrackMesh(track);
+        this._group.add(this._trackShape);
         this.addGround();
         this.setSkyBox(track.type);
         this.loadLights(track.type);
-        this._group.add(this.createWalls(this._trackPoints));
+        this.setCenterLine();
     }
 
-    public async loadCars(cars: Car[], carDebugs: AIDebug[], camera: Camera): Promise<void> {
+    public async loadCars(cars: Car[], carDebugs: AIDebug[], camera: Camera, trackType: TrackType): Promise<void> {
         for (let i: number = 0; i < cars.length; ++i) {
             const startPos: Vector3 = new Vector3(
-                this._trackPoints.first.coordinate.x /*- i * START_POSITION_OFFSET*/,
-                this._trackPoints.first.coordinate.y,
-                this._trackPoints.first.coordinate.z - i * START_POSITION_OFFSET);
+                this._trackShape.trackPoints.first.coordinate.x - i * START_POSITION_OFFSET,
+                this._trackShape.trackPoints.first.coordinate.y,
+                this._trackShape.trackPoints.first.coordinate.z - i * START_POSITION_OFFSET);
 
             await cars[i].init(startPos, this.findFirstTrackSegmentAngle());
             this._debugElements.add(carDebugs[i].debugGroup);
-            if (!cars[i]._isAI) {
+            if (!cars[i].isAI) {
                 cars[i].attachCamera(camera);
             }
             this._group.add(cars[i]);
+        }
+        switch (trackType) {
+            case TrackType.Night:
+                this.setNight(cars);
+                break;
+            case TrackType.Default:
+            default:
+                this.setDay(cars);
+                break;
         }
     }
 
     private loadLights(trackType: TrackType): void {
         this._lighting = new TrackLights(trackType);
+        this._keyBoardService.bindFunctionToKeyDown(CHANGE_CAMERA_KEYCODE, () => this._lighting.changePerspective());
         this._group.add(this._lighting);
     }
 
@@ -77,7 +93,7 @@ export class GameScene extends AbstractScene {
     private addGround(): void {
         const groundGeometry: PlaneGeometry = new PlaneGeometry(GROUND_SIZE, GROUND_SIZE, 1, 1);
         const groundMaterial: MeshPhongMaterial =
-            new MeshPhongMaterial({ side: BackSide, map: this.loadRepeatingTexture(GRASS_TEXTURE, MS_TO_SECONDS) });
+            new MeshPhongMaterial({ side: BackSide, map: this.loadRepeatingTexture(GRASS_TEXTURE, GROUND_TEXTURE_FACTOR) });
 
         const ground: Mesh = new Mesh(groundGeometry, groundMaterial);
         ground.rotateX(PI_OVER_2);
@@ -107,40 +123,6 @@ export class GameScene extends AbstractScene {
         }
     }
 
-    public createTrackMesh(trackPoints: TrackPointList): Mesh {
-        const shape: Shape = new Shape();
-        this.createTrackExterior(shape, trackPoints);
-        this.drillHoleInTrackShape(shape, trackPoints);
-
-        const geometry: ShapeGeometry = new ShapeGeometry(shape);
-        const trackMaterial: MeshPhongMaterial =
-            new MeshPhongMaterial({ side: BackSide, map: this.loadRepeatingTexture(ASPHALT_TEXTURE, GROUND_TEXTURE_FACTOR) });
-
-        const trackMesh: Mesh = new Mesh(geometry, trackMaterial);
-        trackMesh.rotateX(PI_OVER_2);
-        trackMesh.name = "track";
-
-        return trackMesh;
-    }
-
-    private createTrackExterior(trackShape: Shape, trackPoints: TrackPointList): void {
-        trackShape.moveTo(trackPoints.first.exterior.x, trackPoints.first.exterior.z);
-        for (let i: number = 1; i < trackPoints.length; ++i) {
-            trackShape.lineTo(trackPoints.points[i].exterior.x, trackPoints.points[i].exterior.z);
-        }
-        trackShape.lineTo(trackPoints.first.exterior.x, trackPoints.first.exterior.z);
-    }
-
-    private drillHoleInTrackShape(trackShape: Shape, trackPoints: TrackPointList): void {
-        const holePath: Path = new Path();
-        holePath.moveTo(trackPoints.first.interior.x, trackPoints.first.interior.z);
-        for (let i: number = trackPoints.length - 1; i > 0; --i) {
-            holePath.lineTo(trackPoints.points[i].interior.x, trackPoints.points[i].interior.z);
-        }
-        holePath.lineTo(trackPoints.first.interior.x, trackPoints.first.interior.z);
-        trackShape.holes.push(holePath);
-    }
-
     private loadRepeatingTexture(pathToImage: string, imageRatio: number): Texture {
         const texture: Texture = new TextureLoader().load(pathToImage);
         texture.wrapS = RepeatWrapping;
@@ -151,8 +133,8 @@ export class GameScene extends AbstractScene {
     }
 
     private findFirstTrackSegmentAngle(): number {
-        const carfinalFacingVector: Vector3 = this._trackPoints.points[1].coordinate.clone()
-            .sub(this._trackPoints.points[0].coordinate)
+        const carfinalFacingVector: Vector3 = this._trackShape.trackPoints.points[1].coordinate.clone()
+            .sub(this._trackShape.trackPoints.points[0].coordinate)
             .normalize();
 
         return new Vector3(0, 0, -1).cross(carfinalFacingVector).y > 0 ?
@@ -160,40 +142,77 @@ export class GameScene extends AbstractScene {
             - new Vector3(0, 0, -1).angleTo(carfinalFacingVector);
     }
 
-    public setCenterLine(): void {
-        const geometryPoints: Geometry = new Geometry();
-        this._trackPoints.points.forEach((currentPoint: TrackPoint) => geometryPoints.vertices.push(currentPoint.coordinate));
-        geometryPoints.vertices.push(this._trackPoints.points[0].coordinate);
+    private setCenterLine(): void {
+        const material: LineBasicMaterial = new LineBasicMaterial({ color: YELLOW, linewidth: 3 });
+        this._centerLine = new Group();
 
-        this._centerLine = new Line(geometryPoints, new LineBasicMaterial({ color: GREEN, linewidth: 3 }));
+        this._trackShape.trackPoints.points.forEach((currentPoint: TrackPoint) => {
+            this._centerLine.add(this.drawLine(material, currentPoint.coordinate, currentPoint.next.coordinate, 2));
+        });
     }
 
-    public changeTimeOfDay(isDay: boolean, cars: Car[]): void {
-        if (isDay) {
-            this.setSkyBox(TrackType.Default);
-            this._lighting.updateLightsToTrackType(TrackType.Default);
-            cars.forEach((car: Car) => car.dettachLights());
-        } else {
-            this.setSkyBox(TrackType.Night);
-            this._lighting.updateLightsToTrackType(TrackType.Night);
-            cars.forEach((car: Car) => car.attachLights());
+    // https://stackoverflow.com/questions/21067461/workaround-for-lack-of-line-width-on-windows-when-using-three-js
+    private drawLine(
+        lineMaterial: LineBasicMaterial,
+        currentPoint: Vector3,
+        nextPoint: Vector3,
+        thickness: number): Group {
+        const dashedLine: Group = new Group();
+        const LINE_OFFSET: number = 64;
+
+        for (let i: number = 0; i < thickness * 2; i++) {
+            const routerLineGeometry: Geometry = new Geometry();
+            const offset: number = i / LINE_OFFSET + i / LINE_OFFSET;
+
+            routerLineGeometry.vertices.push(new Vector3(currentPoint.x + offset, currentPoint.y, currentPoint.z + offset));
+            routerLineGeometry.vertices.push(new Vector3(nextPoint.x + offset, nextPoint.y, nextPoint.z + offset));
+
+            dashedLine.add(new Line(routerLineGeometry, lineMaterial));
         }
+
+        for (let i: number = 0; i < thickness * 2; i++) {
+            const routerLineGeometry: Geometry = new Geometry();
+            const offset: number = i / LINE_OFFSET + i / LINE_OFFSET + i / LINE_OFFSET;
+
+            routerLineGeometry.vertices.push(new Vector3(currentPoint.x + offset, currentPoint.y, currentPoint.z + offset));
+            routerLineGeometry.vertices.push(new Vector3(nextPoint.x + offset, nextPoint.y, nextPoint.z + offset));
+
+            dashedLine.add(new Line(routerLineGeometry, lineMaterial));
+        }
+
+        return dashedLine;
     }
 
-    public enableDebugMode(): void {
-        if (!this._debugMode) {
-            this._debugMode = true;
-            this.add(this._debugElements);
-            this.add(this._centerLine);
-        }
+    public changeTimeOfDay(cars: Car[]): void {
+        this._isDay = !this._isDay;
+        this._isDay ? this.setDay(cars) : this.setNight(cars);
     }
 
-    public disableDebugMode(): void {
-        if (this._debugMode) {
-            this._debugMode = false;
-            this.remove(this._debugElements);
-            this.remove(this._centerLine);
-        }
+    private setDay(cars: Car[]): void {
+        this.setSkyBox(TrackType.Default);
+        this._lighting.updateLightsToTrackType(TrackType.Default);
+        cars.forEach((car: Car) => car.turnLightsOff());
+    }
+
+    private setNight(cars: Car[]): void {
+        this.setSkyBox(TrackType.Night);
+        this._lighting.updateLightsToTrackType(TrackType.Night);
+        cars.forEach((car: Car) => car.turnLightsOn());
+    }
+
+    public changeDebugMode(): void {
+        this._debugMode = !this._debugMode;
+        this._debugMode ? this.enableDebugMode() : this.disableDebugMode();
+    }
+
+    private enableDebugMode(): void {
+        this.add(this._debugElements);
+        this.add(this._centerLine);
+    }
+
+    private disableDebugMode(): void {
+        this.remove(this._debugElements);
+        this.remove(this._centerLine);
     }
 
     public get debugMode(): boolean {
