@@ -1,8 +1,13 @@
 import { Injectable } from "@angular/core";
 import { Car } from "../car/car";
+<<<<<<< HEAD
 import { Vector3, Raycaster, Intersection} from "three";
+=======
+import { Vector3, Raycaster, Intersection } from "three";
+import { GameScene } from "../scenes/gameScene";
+>>>>>>> 04df200106798b9a788e85068f32ae644cb69c08
 
-const MINIMUM_CAR_DISTANCE: number  = 5;
+const MINIMUM_CAR_DISTANCE: number = 5;
 
 // === TESTS ===
 // détecter une collision
