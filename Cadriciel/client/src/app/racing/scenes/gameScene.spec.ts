@@ -4,7 +4,7 @@ import { GameScene } from "./gameScene";
 import { Vector3, Mesh, Geometry } from "three";
 import { TrackPointList } from "../render-service/trackPointList";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
-import { inject, TestBed } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 
 describe("Game Scene", () => {
 
