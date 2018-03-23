@@ -88,6 +88,17 @@ li {
     outline-offset: -4px;
 }
 
+.foundGridBox {
+    text-align: left;
+    width: 60px;
+    height: 60px;
+    border: 2px solid;
+    padding: 0;
+    margin: 0;
+    float: left;
+    text-transform: uppercase;
+}
+
 .inputGridBox {
     text-align: left;    
     width: 60px;
@@ -149,6 +160,7 @@ li {
     min-width: 80px;
     vertical-align:top;
     border: 2px solid rgba(0, 0, 0, 0.486);
+    text-decoration: line-through;
 }
 
 .clearDefinition {

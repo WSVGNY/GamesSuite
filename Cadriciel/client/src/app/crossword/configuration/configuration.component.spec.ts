@@ -46,16 +46,6 @@ describe("ConfigurationComponent", () => {
         expect(component.isJoinGame).toEqual(true);
     });
 
-    it("should toggle 'two player game' to true on click", () => {
-        component.configurationService.isTwoPlayerGame = true;
-        expect(component.configurationService.isTwoPlayerGame).toEqual(true);
-    });
-
-    it("should toggle 'single player game' on click", () => {
-        component.configurationService.isTwoPlayerGame = false;
-        expect(component.configurationService.isTwoPlayerGame).toEqual(false);
-    });
-
     it("should toggle 'chose grid difficulty' on click", () => {
         component.makeEasyGrid();
         expect(component.choseGridDifficulty).toEqual(true);
@@ -116,7 +106,7 @@ describe("ConfigurationComponent", () => {
                 setTimeout(() => {
                     value++;
                     done();
-                },         HIGH_NUMBER);
+                }, HIGH_NUMBER);
             });
 
             it("should query list of games", () => {
@@ -144,5 +134,28 @@ describe("ConfigurationComponent", () => {
         it("should have same grid on start game", () => {
             expect(true).toBeFalsy();
         });
+
     });
+
+    it("game only starts when other player has join", () => {
+        expect(true).toBeFalsy();
+    });
+
+    it("show loader when looking for other player", () => {
+        component.setGameType(true);
+        expect(component.waitingForRoom).toBeTruthy();
+    });
+
+    it("When both players has join and grid is generated, the game can start", () => {
+        expect(true).toBeFalsy();
+    });
+
+    it("All players can see what word is selected", () => {
+        expect(true).toBeFalsy();
+    });
+
+    it("All players can see what word is found", () => {
+        expect(true).toBeFalsy();
+    });
+
 });

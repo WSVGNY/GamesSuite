@@ -86,4 +86,37 @@ describe("CrosswordComponent", () => {
         });
     });
 
+    it("when a word is selected, its border are highligthed", () => {
+        expect(true).toBeFalsy();
+    });
+
+    it("when a player select a word, its border becomes of the color of the player", () => {
+        expect(true).toBeFalsy();
+    });
+
+    it("if a word is selected by both players, its borders becomes dashed", () => {
+        expect(true).toBeFalsy();
+    });
+
+    it("only letters can be inputed", () => {
+        expect(true).toBeFalsy();
+    });
+
+    it("the backspace key allows the player to delete letters", () => {
+        // peut-etre pas a faire selon Trello
+        expect(true).toBeFalsy();
+    });
+
+    it("when selecting a definition, i can start writing letters", () => {
+        // peut-etre pas a faire selon Trello
+        expect(true).toBeFalsy();
+    });
+
+    it("when all letters are correct, the word is automatically set to found (whitout having to press enter)", () => {
+        expect(true).toBeFalsy();
+    });
+
+    it("when a word is found, the answer is visible by all players", () => {
+        expect(true).toBeFalsy();
+    });
 });
