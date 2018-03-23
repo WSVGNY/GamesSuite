@@ -1,8 +1,8 @@
 import {
-    Vector3, Matrix4, Object3D, /*ObjectLoader,*/ Quaternion, Camera, MeshBasicMaterial, BoxGeometry, Mesh
+    Vector3, Matrix4, Object3D, ObjectLoader, Quaternion, Camera,
 } from "three";
 import { Engine } from "./engine";
-import { MS_TO_SECONDS, GRAVITY, RAD_TO_DEG, /*CAR_TEXTURE*/ } from "../constants";
+import { MS_TO_SECONDS, GRAVITY, RAD_TO_DEG, CAR_TEXTURE } from "../constants";
 import { Wheel } from "./wheel";
 import { CarConfig } from "./carConfig";
 import { CarLights } from "./carLights";
@@ -27,8 +27,6 @@ export class Car extends Object3D {
     private _initialDirection: Vector3 = new Vector3(0, 0, -1);
     public _isAI: boolean;
     private _hitbox: Hitbox;
-
-    // public detectionShpere: Mesh = this.createDetectionSphere();
 
     public constructor(
         engine: Engine = new Engine(),
@@ -64,20 +62,15 @@ export class Car extends Object3D {
         this._weightRear = CarConfig.INITIAL_WEIGHT_DISTRIBUTION;
         this._speed = new Vector3(0, 0, 0);
         this.position.add(new Vector3(0, 0, 0));
-        // this.detectionBox = this.createDetectionBox();
     }
 
     private async load(): Promise<Object3D> {
-        // return new Promise<Object3D>((resolve, reject) => {
-        //     const loader: ObjectLoader = new ObjectLoader();
-        //     loader.load(CAR_TEXTURE, (object) => {
-        //         resolve(object);
-        //     });
-        // });
-        const geometry: BoxGeometry = new BoxGeometry(0.1, 0.1, 0.1);
-        const material: MeshBasicMaterial = new MeshBasicMaterial({color: 0xFFFA00 });
-
-        return new Mesh(geometry, material);
+        return new Promise<Object3D>((resolve, reject) => {
+            const loader: ObjectLoader = new ObjectLoader();
+            loader.load(CAR_TEXTURE, (object) => {
+                resolve(object);
+            });
+        });
     }
 
     public async init(startPoint: Vector3, rotationAngle: number): Promise<void> {
@@ -114,6 +107,10 @@ export class Car extends Object3D {
 
     public get currentPosition(): Vector3 {
         return this._mesh.position;
+    }
+
+    public setCurrentPosition(position: Vector3): void {
+        this._mesh.position.set(position.x, position.y, position.z);
     }
 
     public get hitbox(): Hitbox {
@@ -331,12 +328,4 @@ export class Car extends Object3D {
         // tslint:disable-next-line:no-magic-numbers
         return this.speed.normalize().dot(this.direction) > 0.05;
     }
-
-    // private createDetectionSphere(): Mesh {
-    //     const geometry: SphereGeometry = new SphereGeometry(2, 32, 32);
-    //     geometry.computeBoundingSphere();
-    //     const material: MeshBasicMaterial = new MeshBasicMaterial({ color: 0xFFF069 });
-
-    //     return new Mesh(geometry, material);
-    // }
 }
