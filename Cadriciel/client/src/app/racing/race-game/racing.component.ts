@@ -85,7 +85,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
                     // this._aiCarService.update(this._cars[i], this._carDebugs[i]);
                 }
             }
-            this._collisionManagerService.computeCollisions(this._cars, this._gameScene);
+            this._collisionManagerService.computeCollisions(this._cars);
             this._renderService.render(this._gameScene, this._thirdPersonCamera);
             this.update();
         });
