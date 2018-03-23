@@ -14,7 +14,7 @@ export class ChooseTrackComponent implements OnInit, AfterViewInit {
 
     @ViewChild("preview")
     private _containerRef: ElementRef;
-    public tracks: Track[];
+    public tracks: Track[] = [];
 
     private _previewCamera: PreviewCamera;
     private _previewScene: PreviewScene;

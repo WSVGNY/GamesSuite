@@ -1,7 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Track } from "../../../../../common/racing/track";
 import { TrackService } from "../track-service/track.service";
-import { TrackShape } from "../track";
 
 @Component({
     selector: "app-admin",

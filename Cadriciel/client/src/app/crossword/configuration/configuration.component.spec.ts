@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, done } from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { ConfigurationComponent } from "./configuration.component";
 import { GridService } from "../grid.service";
 import { HttpClient, HttpHandler } from "@angular/common/http";
@@ -10,7 +10,7 @@ describe("ConfigurationComponent", () => {
     let component: ConfigurationComponent;
     let fixture: ComponentFixture<ConfigurationComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(async((done: () => void) => {
         TestBed.configureTestingModule({
             declarations: [ConfigurationComponent],
             providers: [
@@ -112,7 +112,7 @@ describe("ConfigurationComponent", () => {
 
         describe("join list query is asynchronous", () => {
             let value: number = 0;
-            beforeEach(() => {
+            beforeEach((done: () => void) => {
                 setTimeout(() => {
                     value++;
                     done();
