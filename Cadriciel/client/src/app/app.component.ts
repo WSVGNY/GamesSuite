@@ -8,11 +8,7 @@ import { Component } from "@angular/core";
 export class AppComponent {
 
     public readonly title: string = "LOG2990";
-    public imageIsShown: boolean;
-
-    public constructor() {
-        this.imageIsShown = false;
-    }
+    public imageIsShown: boolean = false;
 
     public showImages(): void {
         this.imageIsShown = true;

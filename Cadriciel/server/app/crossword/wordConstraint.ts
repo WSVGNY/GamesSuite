@@ -2,12 +2,9 @@ import { Word } from "./word";
 import { GridBox } from "./gridBox";
 
 export class WordConstraint {
-    private _readyValue: string;
-    private _originalValue: string;
+    private _readyValue: string = "";
+    private _originalValue: string = "";
     constructor(word: Word, grid: GridBox[][]) {
-
-        this._readyValue = "";
-        this._originalValue = "";
 
         for (let i: number = 0; i < word.length; ++i) {
             let charToAdd: string;

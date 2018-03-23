@@ -9,31 +9,24 @@ const FREQUENCY_DELIMITER: number = 6;
 const MIN_NUMBER_OF_DEFINITION: number = 2;
 const UNWANTED_CHARACTERS_LENGTH: number = 2;
 const ERROR_STATUS_CODE: number = 500;
-const DEFINITION_INDEX: string = "defs";
-const TAGS_INDEX: string = "tags";
-const ADVERBS: string = "a";
 
 @injectable()
 export class Lexicon {
 
     private readonly BASE_URL: string = "https://api.datamuse.com/words?";
-    private _difficulty: Difficulty;
-
-    public constructor() {
-        this._difficulty = Difficulty.Easy;
-    }
+    private _difficulty: Difficulty = Difficulty.Easy;
 
     private getDefinition(word: string): string {
-        const definitions: string = word[DEFINITION_INDEX];
+        const definitions: string = word["defs"];
         if (definitions === undefined || definitions === "") {
             return "";
         }
 
-        for (let i: number = word[DEFINITION_INDEX].length - 1; i >= 0; i--) {
-            let counter: number = word[DEFINITION_INDEX].length;
+        for (let i: number = word["defs"].length - 1; i >= 0; i--) {
+            let counter: number = word["defs"].length;
             // s'assurer que le mot ne soit ni un adverbe ni un adjectif
-            if (definitions[i][0] === ADVERBS) {
-                word[DEFINITION_INDEX].splice(i, 1);
+            if (definitions[i][0] === "a") {
+                word["defs"].splice(i, 1);
                 counter--;
                 if (counter === 0) {
                     return "";
@@ -53,7 +46,7 @@ export class Lexicon {
     }
 
     private checkFrequency(word: string): boolean {
-        const frequency: number = word[TAGS_INDEX][0].substring(UNWANTED_CHARACTERS_LENGTH);
+        const frequency: number = word["tags"][0].substring(UNWANTED_CHARACTERS_LENGTH);
         if (this._difficulty === Difficulty.Hard) {
             return frequency < FREQUENCY_DELIMITER ? true : false;
         } else {

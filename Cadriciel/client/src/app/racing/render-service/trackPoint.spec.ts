@@ -1,5 +1,7 @@
 import { TestBed } from "@angular/core/testing";
 import { TrackPoint } from "./trackPoint";
+// import { Object3D } from "three";
+// import assert = require("assert");
 import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
 import { Vector3 } from "three";
 import { TrackPointList } from "./trackPointList";

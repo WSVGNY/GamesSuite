@@ -13,7 +13,7 @@ export class Server {
     private readonly appPort: string | number | boolean = this.normalizePort(process.env.PORT || "3000");
     private readonly baseDix: number = 10;
     private _server: http.Server;
-    public serverSockets: ServerSockets;
+    private _serverSockets: ServerSockets;
 
     constructor( @inject(Types.Application) private application: Application) { }
 
@@ -22,7 +22,7 @@ export class Server {
 
         this._server = http.createServer(this.application.app);
 
-        this.serverSockets = new ServerSockets(this._server, true);
+        this._serverSockets = new ServerSockets(this._server, true);
 
         this._server.listen(this.appPort);
         this._server.on("error", (error: NodeJS.ErrnoException) => this.onError(error));

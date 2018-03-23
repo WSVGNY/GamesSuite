@@ -23,7 +23,7 @@ export class WordFiller {
 
     private _longestWord: Word;
     private _filledWords: Word[];
-    private _backTrackCounter: number;
+    private _backTrackCounter: number = 0;
     private _backTrackingWord: Word;
     public isGenerated: boolean = false;
 
@@ -31,7 +31,6 @@ export class WordFiller {
         private _gridDifficulty: Difficulty,
         private _grid: GridBox[][],
         private _words: Word[]) {
-        this._backTrackCounter = 0;
     }
 
     public async wordFillControler(): Promise<boolean> {

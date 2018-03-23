@@ -3,10 +3,9 @@ import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinat
 import { TrackPoint } from "./trackPoint";
 
 export class TrackPointList {
-    private _trackPoints: TrackPoint[];
+    private _trackPoints: TrackPoint[] = new Array<TrackPoint>();
 
     public constructor(_trackPoints: CommonCoordinate3D[]) {
-        this._trackPoints = [];
         this.fillFromVector3Array(_trackPoints)
             .checkTrackPointsOrientation();
     }

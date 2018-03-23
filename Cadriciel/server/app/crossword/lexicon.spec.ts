@@ -8,8 +8,6 @@ const SERVICE_BASE_URL: string = "http://localhost:3000/lexicon/";
 const DATAMUSE_BASE_URL: string = "https://api.datamuse.com/words?md=fd&sp=";
 const UNWANTED_CHARACTERS_LENGTH: number = 2;
 const FREQUENCY_DELIMITER: number = 6;
-const DEFINITION_INDEX: string = "defs";
-const TAGS_INDEX: string = "tags";
 
 describe("LEXICON TESTS", () => {
     it("is datamuse up", (done: MochaDone) => {
@@ -162,7 +160,7 @@ describe("LEXICON TESTS", () => {
                 wordFromService = JSON.parse(responseFromService);
                 requestPromise(DATAMUSE_BASE_URL + "test").then((responseFromDataMuse: string) => {
                     wordFromDataMuse = JSON.parse(responseFromDataMuse);
-                    assert(wordFromDataMuse[0][DEFINITION_INDEX][0] === wordFromService["definition"]);
+                    assert(wordFromDataMuse[0]["defs"][0] === wordFromService["definition"]);
                     done();
                 }).catch((e: Error) => {
                     console.error(e.message);
@@ -183,7 +181,7 @@ describe("LEXICON TESTS", () => {
                 wordFromService = JSON.parse(responseFromService);
                 requestPromise(DATAMUSE_BASE_URL + "test").then((responseFromDataMuse: string) => {
                     wordFromDataMuse = JSON.parse(responseFromDataMuse);
-                    assert(wordFromDataMuse[0][DEFINITION_INDEX][1] === wordFromService["definition"]);
+                    assert(wordFromDataMuse[0]["defs"][1] === wordFromService["definition"]);
                     done();
                 }).catch((e: Error) => {
                     console.error(e.message);
@@ -204,7 +202,7 @@ describe("LEXICON TESTS", () => {
                 wordFromService = JSON.parse(responseFromService);
                 requestPromise(DATAMUSE_BASE_URL + "bail").then((responseFromDataMuse: string) => {
                     wordFromDataMuse = JSON.parse(responseFromDataMuse);
-                    assert(wordFromDataMuse[0][DEFINITION_INDEX][1] === wordFromService["definition"]);
+                    assert(wordFromDataMuse[0]["defs"][1] === wordFromService["definition"]);
                     done();
                 }).catch((e: Error) => {
                     console.error(e.message);
@@ -225,7 +223,7 @@ describe("LEXICON TESTS", () => {
                 wordFromService = JSON.parse(responseFromService);
                 requestPromise(DATAMUSE_BASE_URL + "test").then((responseFromDataMuse: string) => {
                     wordFromDataMuse = JSON.parse(responseFromDataMuse);
-                    const frequency: number = wordFromDataMuse[0][][0].substring(UNWANTED_CHARACTERS_LENGTH);
+                    const frequency: number = wordFromDataMuse[0]["tags"][0].substring(UNWANTED_CHARACTERS_LENGTH);
                     assert(
                         wordFromDataMuse[0]["word"].toUpperCase() === wordFromService["word"].toUpperCase()
                         && (frequency > FREQUENCY_DELIMITER)
@@ -250,7 +248,7 @@ describe("LEXICON TESTS", () => {
                 wordFromService = JSON.parse(responseFromService);
                 requestPromise(DATAMUSE_BASE_URL + "test").then((responseFromDataMuse: string) => {
                     wordFromDataMuse = JSON.parse(responseFromDataMuse);
-                    const frequency: number = wordFromDataMuse[0][TAGS_INDEX][0].substring(UNWANTED_CHARACTERS_LENGTH);
+                    const frequency: number = wordFromDataMuse[0]["tags"][0].substring(UNWANTED_CHARACTERS_LENGTH);
                     assert(
                         wordFromDataMuse[0]["word"].toUpperCase() === wordFromService["word"].toUpperCase()
                         && (frequency > FREQUENCY_DELIMITER)
@@ -275,7 +273,7 @@ describe("LEXICON TESTS", () => {
                 wordFromService = JSON.parse(responseFromService);
                 requestPromise(DATAMUSE_BASE_URL + "bail").then((responseFromDataMuse: string) => {
                     wordFromDataMuse = JSON.parse(responseFromDataMuse);
-                    const frequency: number = wordFromDataMuse[0][TAGS_INDEX][0].substring(UNWANTED_CHARACTERS_LENGTH);
+                    const frequency: number = wordFromDataMuse[0]["tags"][0].substring(UNWANTED_CHARACTERS_LENGTH);
                     assert(
                         wordFromDataMuse[0]["word"].toUpperCase() === wordFromService["word"].toUpperCase()
                         && (frequency < FREQUENCY_DELIMITER)

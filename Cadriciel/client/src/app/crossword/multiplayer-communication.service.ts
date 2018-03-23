@@ -13,15 +13,11 @@ const SERVER_URL: string = "http://localhost:3000";
 @Injectable()
 export class MultiplayerCommunicationService {
 
-    public availableGames: MultiplayerCrosswordGame[];
+    public availableGames: MultiplayerCrosswordGame[] = [];
 
     private _socket: SocketIOClient.Socket;
     private _currentGame: MultiplayerCrosswordGame;
     private _temporaryPlayerHolder: Player;
-
-    public constructor() {
-        this.availableGames = [];
-    }
 
     public get currentGame(): MultiplayerCrosswordGame {
         return this._currentGame;

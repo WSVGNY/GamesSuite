@@ -25,13 +25,8 @@ export class MouseEventHandlerService {
     private _mouseWorldCoordinates: Vector3;
     private _divOffset: Vector3;
     private _centerOffset: Vector3;
-    private _selectedVertexName: string;
-    private _isMouseDown: boolean;
-
-    public constructor() {
-        this._selectedVertexName = "";
-        this._isMouseDown = false;
-    }
+    private _selectedVertexName: string = "";
+    private _isMouseDown: boolean = false;
 
     public async initialize(containerEditor: HTMLDivElement, viewSize: number): Promise<void> {
         if (containerEditor) {
