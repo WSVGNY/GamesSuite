@@ -25,7 +25,7 @@ export class GameScene extends AbstractScene {
 
     private _trackShape: TrackMesh;
     private _group: Group = new Group();
-    private _skyBoxTexture: CubeTexture;
+    private _skyBoxTextures: Map<TrackType, CubeTexture>;
     private _lighting: TrackLights;
     private _centerLine: Group;
     private _debugMode: boolean;
@@ -34,6 +34,7 @@ export class GameScene extends AbstractScene {
 
     public constructor(private _keyBoardService: KeyboardEventHandlerService) {
         super();
+        this._skyBoxTextures = new Map();
         this.add(this._group);
     }
 
@@ -103,11 +104,14 @@ export class GameScene extends AbstractScene {
     }
 
     private setSkyBox(trackType: TrackType): void {
-        this.loadSkyBox(SkyBox.getPath(trackType));
+        if (this._skyBoxTextures.get(trackType) === undefined) {
+            this._skyBoxTextures.set(trackType, this.loadSkyBox(SkyBox.getPath(trackType)));
+        }
+        this.background = this._skyBoxTextures.get(trackType);
     }
 
-    public loadSkyBox(pathToImages: string): void {
-        this._skyBoxTexture = new CubeTextureLoader()
+    private loadSkyBox(pathToImages: string): CubeTexture {
+        return new CubeTextureLoader()
             .setPath(pathToImages)
             .load([
                 "px.jpg",
@@ -117,10 +121,6 @@ export class GameScene extends AbstractScene {
                 "pz.jpg",
                 "nz.jpg"
             ]);
-
-        if (this !== undefined) {
-            this.background = this._skyBoxTexture;
-        }
     }
 
     private loadRepeatingTexture(pathToImage: string, imageRatio: number): Texture {
