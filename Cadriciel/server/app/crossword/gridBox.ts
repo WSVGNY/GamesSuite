@@ -31,7 +31,7 @@ export class GridBox implements CommonGridBox {
                 return constraint;
             }
         }
-        throw new Error("No corresponding constraint found");
+        throw new ReferenceError("No corresponding constraint found");
     }
 
     public eliminateConstraints(): void {
