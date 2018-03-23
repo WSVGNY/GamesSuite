@@ -147,15 +147,14 @@ describe("ConfigurationComponent", () => {
     });
 
     it("When both players has join and grid is generated, the game can start", () => {
+        expect(component.configurationService.configurationDone).toEqual(true);
+    });
+
+    it("All players can see what words are selected", () => {
         expect(true).toBeFalsy();
     });
 
-    it("All players can see what word is selected", () => {
+    it("All players can see what words are found", () => {
         expect(true).toBeFalsy();
     });
-
-    it("All players can see what word is found", () => {
-        expect(true).toBeFalsy();
-    });
-
 });
