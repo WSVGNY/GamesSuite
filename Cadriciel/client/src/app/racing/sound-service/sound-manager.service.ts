@@ -80,4 +80,14 @@ export class SoundManagerService {
     public isPlaying(): boolean { return this._isPlayingAcceleration; }
     public isDetected(): boolean { return this._isDetected; }
     public isPlayingMusic(): boolean { return this._isPlayingMusic; }
+
+    public setVolumeAcceleration(car: Car): void {
+        this._accelerationSoundEffect.setVolume(this.calculateSpeed(car));
+    }
+
+    private calculateSpeed(car: Car): number {
+        const relativeSpeed: number = car.speed.length() * 3.6;
+
+        return Math.min((relativeSpeed/300), 1);
+    }
 }

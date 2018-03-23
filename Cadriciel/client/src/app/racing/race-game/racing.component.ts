@@ -1,22 +1,23 @@
 import { AfterViewInit, Component, ElementRef, ViewChild, HostListener, OnInit } from "@angular/core";
-import { Car } from "./car/car";
-import { KeyboardEventHandlerService } from "./event-handlers/keyboard-event-handler.service";
-import { Track } from "../../../../common/racing/track";
-import { TrackService } from "./track-service/track.service";
+import { Car } from "../car/car";
+import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
+import { Track } from "../../../../../common/racing/track";
+import { TrackService } from "../track-service/track.service";
 import { ActivatedRoute } from "@angular/router";
-import { ThirdPersonCamera } from "./cameras/thirdPersonCamera";
-import { GameScene } from "./scenes/gameScene";
-import { AICarService } from "./artificial-intelligence/ai-car.service";
-import { Difficulty } from "../../../../common/crossword/difficulty";
-import { RenderService } from "./render-service/render.service";
-import { AIDebug } from "./artificial-intelligence/ai-debug";
-import { SoundManagerService } from "./sound-service/sound-manager.service";
-import { TopViewCamera } from "./cameras/topViewCamera";
+import { ThirdPersonCamera } from "../cameras/thirdPersonCamera";
+import { GameScene } from "../scenes/gameScene";
+import { AICarService } from "../artificial-intelligence/ai-car.service";
+import { Difficulty } from "../../../../../common/crossword/difficulty";
+import { RenderService } from "../render-service/render.service";
+import { AIDebug } from "../artificial-intelligence/ai-debug";
+import { SoundManagerService } from "../sound-service/sound-manager.service";
+import { TopViewCamera } from "../cameras/topViewCamera";
 import {
     CHANGE_CAMERA_KEYCODE, DAY_KEYCODE, DEBUG_KEYCODE, AI_CARS_QUANTITY, PLAY_MUSIC_KEYCODE,
     MUTE_KEYCODE, ACCELERATE_KEYCODE
-} from "./constants";
-import { TrackType } from "../../../../common/racing/trackType";
+} from "../constants";
+import { TrackType } from "../../../../../common/racing/trackType";
+import { CollisionManagerService } from "../collision-manager/collision-manager.service";
 
 @Component({
     moduleId: module.id,
@@ -45,6 +46,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
         private _keyboardEventHandlerService: KeyboardEventHandlerService,
         private _trackService: TrackService,
         private _aiCarService: AICarService,
+        private _collisionManagerService: CollisionManagerService,
         private _soundService: SoundManagerService
     ) { }
 
@@ -85,11 +87,14 @@ export class RacingComponent implements AfterViewInit, OnInit {
                     this._aiCarService.update(this._cars[i], this._carDebugs[i]);
                 }
             }
+            this._collisionManagerService.computeCollisions(this._cars);
             this._useThirpPersonCamera ?
                 this._renderService.render(this._gameScene, this._thirdPersonCamera) :
                 this._renderService.render(this._gameScene, this._topViewCamera);
             this._topViewCamera.updatePosition(this._playerCar);
+            this._soundService.setVolumeAcceleration(this._playerCar);
             this.update();
+            this._soundService.play(this._soundService.accelerationSoundEffect);
         });
     }
 
@@ -118,10 +123,10 @@ export class RacingComponent implements AfterViewInit, OnInit {
         this._keyboardEventHandlerService.bindFunctionToKeyDown(PLAY_MUSIC_KEYCODE, () =>
             this._soundService.play(this._soundService.music));
         this._keyboardEventHandlerService.bindFunctionToKeyDown(MUTE_KEYCODE, () => this._soundService.stop(this._soundService.music));
-        this._keyboardEventHandlerService.bindFunctionToKeyDown(ACCELERATE_KEYCODE, () =>
-            this._soundService.play(this._soundService.accelerationSoundEffect));
-        this._keyboardEventHandlerService.bindFunctionToKeyUp(ACCELERATE_KEYCODE, () =>
-            this._soundService.stop(this._soundService.accelerationSoundEffect));
+        // this._keyboardEventHandlerService.bindFunctionToKeyDown(ACCELERATE_KEYCODE, () =>
+        //     this._soundService.play(this._soundService.accelerationSoundEffect));
+        // this._keyboardEventHandlerService.bindFunctionToKeyUp(ACCELERATE_KEYCODE, () =>
+        //     this._soundService.play(this._soundService.accelerationSoundEffect));
     }
 
     private initializeCars(trackType: TrackType): void {
