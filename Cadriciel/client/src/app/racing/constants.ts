@@ -24,6 +24,7 @@ export const RED: number = 0xFF0000;
 export const GREEN: number = 0x00FF00;
 export const ORANGE: number = 0xFF6600;
 export const YELLOW: number = 0xFFFF00;
+export const AI_CARS_QUANTITY: number = 1;
 
 // Texture Paths
 const BASE_URL: string = "http://localhost:4200/";
@@ -39,8 +40,27 @@ export const ROME_SKYBOX: string = SKYBOX_PATH + "rome/";
 export const SPACE_SKYBOX: string = SKYBOX_PATH + "space/";
 export const ATMOSPHERE_SKYBOX: string = SKYBOX_PATH + "atmosphere/";
 export const GROUND_SIZE: number = 10000;
-export const GROUND_TEXTURE_FACTOR: number = 0.045;
+export const GROUND_TEXTURE_FACTOR: number = 800;
 export const ASPHALT_TEXTURE: string = BASE_TEXTURE_PATH + "asphalte.jpg";
+export const ASPHALT_TEXTURE_FACTOR: number = 0.03;
 export const GRASS_TEXTURE: string = BASE_TEXTURE_PATH + "grass.jpg";
 export const WALL_TEXTURE: string = BASE_TEXTURE_PATH + "brick.jpg";
+
+// Sound Paths
+const BASE_SOUND_PATH: string = BASE_ASSETS_PATH + "../../assets/sounds/";
+export const MUSIC_PATH: string = BASE_SOUND_PATH + "rainbowRoad.mp3";
+export const ACCELERATION_PATH: string = BASE_SOUND_PATH + "carAcceleration.mp3";
+export const STARTING_PATH: string = BASE_SOUND_PATH + "startingSound.mp3";
+export const COLLISION_PATH: string = BASE_SOUND_PATH + "collision-sound.mp3";
+
 export const WALL_TEXTURE_FACTOR: number = 1;
+
+export const ACCELERATE_KEYCODE: number = 87;       // w
+export const LEFT_KEYCODE: number = 65;             // a
+export const BRAKE_KEYCODE: number = 83;            // s
+export const RIGHT_KEYCODE: number = 68;            // d
+export const DAY_KEYCODE: number = 74;              // j
+export const DEBUG_KEYCODE: number = 48;            // 0
+export const MUTE_KEYCODE: number = 77;             // m
+export const CHANGE_CAMERA_KEYCODE: number = 67;    // c
+export const PLAY_MUSIC_KEYCODE: number = 80;       // p

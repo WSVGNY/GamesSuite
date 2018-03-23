@@ -23,7 +23,7 @@ export class ConfigurationComponent {
     public constructor(
         private _gridService: GridService,
         public configurationService: ConfigurationService,
-        private _multiplayerCommunicationService: MultiplayerCommunicationService) {
+        public multiplayerCommunicationService: MultiplayerCommunicationService) {
     }
 
     public setNewGame(): void {
@@ -33,26 +33,25 @@ export class ConfigurationComponent {
     public setJoinGame(): void {
         this.isJoinGame = true;
         this.configurationService.isTwoPlayerGame = true;
-        this._multiplayerCommunicationService.connectToSocket();
+        this.multiplayerCommunicationService.connectToSocket();
         this.subscribeToMessages();
-        this._multiplayerCommunicationService.roomListQuery();
-        this.configurationService.isSocketConnected = true;
+        this.multiplayerCommunicationService.roomListQuery();
     }
 
     public setGameType(isTwoPlayerGame: boolean): void {
         this.configurationService.isTwoPlayerGame = isTwoPlayerGame;
         if (isTwoPlayerGame) {
-            this._multiplayerCommunicationService.connectToSocket();
+            this.multiplayerCommunicationService.connectToSocket();
         }
     }
 
     public subscribeToMessages(): void {
         if (!this._hasSubscribed) {
-            this._multiplayerCommunicationService.getMessagesConfigurationComponent().subscribe((message: string) => {
+            this.multiplayerCommunicationService.getMessagesConfigurationComponent().subscribe((message: string) => {
                 if (message === SocketEvents.StartGame) {
                     this.configurationService.handleGameStart(
-                        this._multiplayerCommunicationService.grid,
-                        this._multiplayerCommunicationService.currentGame.players);
+                        this.multiplayerCommunicationService.grid,
+                        this.multiplayerCommunicationService.currentGame.players);
                 }
             });
             this._hasSubscribed = true;
@@ -62,7 +61,7 @@ export class ConfigurationComponent {
     public onRoomSelect(room: MultiplayerCrosswordGame, playerName: string): void {
         this.waitingForRoom = true;
         this.configurationService.currentPlayerName = playerName;
-        this._multiplayerCommunicationService.connectToRoom({ roomInfo: room, playerName: playerName });
+        this.multiplayerCommunicationService.connectToRoom({ roomInfo: room, playerName: playerName });
     }
 
     public createGrid(): void {
@@ -100,11 +99,10 @@ export class ConfigurationComponent {
     }
 
     public createRoom(name: string): void {
-        this._multiplayerCommunicationService.connectToSocket();
+        this.multiplayerCommunicationService.connectToSocket();
         this.configurationService.currentPlayerName = name;
         this.subscribeToMessages();
-        this._multiplayerCommunicationService.createRoom(name, this.configurationService.difficulty);
-        this.configurationService.isSocketConnected = true;
+        this.multiplayerCommunicationService.createRoom(name, this.configurationService.difficulty);
     }
 
 }

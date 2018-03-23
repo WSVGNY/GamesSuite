@@ -1,8 +1,9 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { CrosswordComponent } from "./crossword.component";
 import assert = require("assert");
-import { ConfigurationService } from "./configuration.service";
+import { ConfigurationService } from "./configuration/configuration.service";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
+import { MultiplayerCommunicationService } from "./multiplayer-communication.service";
 
 describe("CrosswordComponent", () => {
     let component: CrosswordComponent;
@@ -13,7 +14,8 @@ describe("CrosswordComponent", () => {
             schemas: [NO_ERRORS_SCHEMA],
             declarations: [CrosswordComponent],
             providers: [
-                ConfigurationService
+                ConfigurationService,
+                MultiplayerCommunicationService
             ]
         })
             .compileComponents()
@@ -47,12 +49,12 @@ describe("CrosswordComponent", () => {
     });
 
     it("the game information view contain the name of the player", () => {
-        component.configurationService.playerName = "Player1";
-        expect(component.configurationService.playerName).toBeTruthy();
+        component.configurationService.playerOne.name = "Player1";
+        expect(component.configurationService.playerOne.name).toBeTruthy();
     });
 
     it("the game information view contain the numer of words found", () => {
-        expect(component.correctWordCount).toEqual(0);
+        expect(component.configurationService.currentPlayer.score).toEqual(0);
     });
 
     it("should have 2 players, if the game is set to two players ", () => {
@@ -66,8 +68,8 @@ describe("CrosswordComponent", () => {
     });
 
     it("the name entered by the player is the one displayed ", () => {
-        component.configurationService.playerName = "Player1";
-        expect(component.configurationService.playerName).toEqual("Player1");
+        component.configurationService.playerOne.name = "Player1";
+        expect(component.configurationService.playerTwo.name).toEqual("Player1");
     });
 
     it("the letters in the grid are uppercase", () => {
