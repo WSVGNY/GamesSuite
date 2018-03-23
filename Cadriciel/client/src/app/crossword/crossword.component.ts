@@ -5,6 +5,7 @@ import { ConfigurationService } from "./configuration/configuration.service";
 import { MultiplayerCommunicationService } from "./multiplayer-communication.service";
 import { SocketEvents } from "../../../../common/communication/socketEvents";
 import { ListChecker } from "./listChecker";
+import { Comparator } from "./comparator";
 
 const BACKSPACE_KEYCODE: number = 8;
 
@@ -74,7 +75,7 @@ export class CrosswordComponent {
         if (ListChecker.playersFoundWord(word)) {
             return State.FOUND;
         }
-        if (this.compareWords(this.configuration.currentPlayer.selectedWord, word)) {
+        if (Comparator.compareWords(this.configuration.currentPlayer.selectedWord, word)) {
             return State.SELECTED;
         }
 
@@ -83,7 +84,7 @@ export class CrosswordComponent {
 
     public setSelectedWordOfBox(gridBox: CommonGridBox): void {
         if (gridBox.constraints[0] !== undefined) {
-            this.setSelectedWord(this.findEquivalent(gridBox.constraints[0]));
+            this.setSelectedWord(Comparator.findEquivalent(gridBox.constraints[0], this.configuration));
         }
     }
 
@@ -124,10 +125,10 @@ export class CrosswordComponent {
 
     public getPlayerColorForDefinition(word: CommonWord): string {
         if (this.configuration.isTwoPlayerGame) {
-            if (this.compareWords(this.configuration.currentPlayer.selectedWord, word)
+            if (Comparator.compareWords(this.configuration.currentPlayer.selectedWord, word)
                 || ListChecker.listContainsWord(this.configuration.currentPlayer.foundWords, word)) {
                 return this.configuration.currentPlayer.color;
-            } else if (this.compareWords(this.configuration.otherPlayer.selectedWord, word)
+            } else if (Comparator.compareWords(this.configuration.otherPlayer.selectedWord, word)
                 || ListChecker.listContainsWord(this.configuration.otherPlayer.foundWords, word)) {
                 return this.configuration.otherPlayer.color;
             } else {
@@ -248,7 +249,7 @@ export class CrosswordComponent {
         if (this.configuration.currentPlayer.selectedWord !== undefined &&
             !ListChecker.playersFoundWord(this.configuration.currentPlayer.selectedWord)) {
             if (ListChecker.playersFoundBox(this.configuration.grid.boxes[this.configuration.getY()][this.configuration.getX()])) {
-                this.goToNextAvailableBox();
+                Comparator.goToNextAvailableBox(this.configuration);
                 this.setInputBox();
             } else {
                 this.inputGridBox = this.configuration.grid.boxes[this.configuration.getY()][this.configuration.getX()];
@@ -303,7 +304,7 @@ export class CrosswordComponent {
             this.configuration.currentPlayer.foundWords.push(word);
             this.addToScore();
             this.setFoundBoxes();
-            if (this.compareWords(this.configuration.currentPlayer.selectedWord, word)) {
+            if (Comparator.compareWords(this.configuration.currentPlayer.selectedWord, word)) {
                 this.resetInputBox();
             }
         }
@@ -330,54 +331,12 @@ export class CrosswordComponent {
 
     private enterNextCharacter(char: string): void {
         this.configuration.grid.boxes[this.configuration.getY()][this.configuration.getX()].inputChar.value = char;
-        this.goToNextAvailableBox();
-    }
-
-    private goToNextAvailableBox(): void {
-        this.configuration.currentPlayer.selectedWord.enteredCharacters + 1 <
-            this.configuration.currentPlayer.selectedWord.length ?
-            this.configuration.currentPlayer.selectedWord.enteredCharacters++ :
-            this.configuration.currentPlayer.selectedWord.enteredCharacters = 0;
-        if (ListChecker.playersFoundBox(
-            this.configuration.grid.boxes[this.configuration.getY()][this.configuration.getX()])) {
-            this.goToNextAvailableBox();
-        }
+        Comparator.goToNextAvailableBox(this.configuration);
     }
 
     private eraseLastCharacter(): void {
-        this.goBackOneCharacter();
+        Comparator.goBackOneCharacter(this.configuration);
         this.configuration.grid.boxes[this.configuration.getY()][this.configuration.getX()].inputChar.value = "";
-    }
-
-    private goBackOneCharacter(): void {
-        this.configuration.currentPlayer.selectedWord.enteredCharacters > 0 ?
-            this.configuration.currentPlayer.selectedWord.enteredCharacters-- :
-            this.configuration.currentPlayer.selectedWord.enteredCharacters =
-            this.configuration.currentPlayer.selectedWord.length - 1;
-        if (ListChecker.playersFoundBox(
-            this.configuration.grid.boxes[this.configuration.getY()][this.configuration.getX()])) {
-            this.goBackOneCharacter();
-        }
-    }
-
-    private findEquivalent(badWord: CommonWord): CommonWord {
-        for (const word of this.configuration.grid.words) {
-            if (this.getWordValue(word) === this.getWordValue(badWord)) {
-                return word;
-            }
-        }
-
-        return undefined;
-    }
-
-    private compareWords(word1: CommonWord, word2: CommonWord): boolean {
-        if (word1 === undefined || word2 === undefined) {
-            return false;
-        } else if (word1.id === word2.id) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     public playersSelectedBox(box: CommonGridBox): boolean {
