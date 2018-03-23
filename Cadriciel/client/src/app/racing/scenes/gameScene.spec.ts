@@ -1,5 +1,4 @@
-// // tslint:disable:no-magic-numbers
-
+// tslint:disable:no-magic-numbers
 import { GameScene } from "./gameScene";
 import { Vector3, Mesh, Geometry } from "three";
 import { TrackPointList } from "../render-service/trackPointList";
