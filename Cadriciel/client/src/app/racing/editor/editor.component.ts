@@ -98,7 +98,7 @@ export class EditorComponent implements AfterViewInit, OnInit {
                     this._trackChosenFromAdmin = new Track(iTrack);
                     this.goBack();
                 },
-                (error: ReferenceError) => console.error(error)
+                (error: Error) => console.error(error)
             );
     }
 
