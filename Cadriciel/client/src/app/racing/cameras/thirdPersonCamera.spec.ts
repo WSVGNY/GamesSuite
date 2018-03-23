@@ -5,13 +5,12 @@ import { PerspectiveCamera, Object3D, Vector3 } from "three";
 
 describe("Third Person Camera Test", () => {
 
-    let camera: ThirdPersonCamera;
     const ASPECTRATIO: number = 1;
     const INITIAL_CAMERA_POSITION_Z: number = 10;
     const INITIAL_CAMERA_POSITION_Y: number = 5;
 
+    const camera: ThirdPersonCamera = new ThirdPersonCamera(ASPECTRATIO);
     beforeEach(() => {
-        camera = new ThirdPersonCamera(ASPECTRATIO);
     });
 
     it("the camera created should be perspective camera", () => {
