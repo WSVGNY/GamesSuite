@@ -15,11 +15,13 @@ export class ServerSockets {
 
     private _io: SocketIO.Server;
     private _httpServer: http.Server;
-    private _games: MultiplayerCrosswordGame[] = [];
-    private _socketIdentification: { id: string, room: string }[] = [];
+    private _games: MultiplayerCrosswordGame[];
+    private _socketIdentification: { id: string, room: string }[];
 
     public constructor(server: http.Server, initialize: boolean = false) {
         this._httpServer = server;
+        this._games = [];
+        this._socketIdentification = [];
         if (initialize) {
             this.initSocket();
         }
