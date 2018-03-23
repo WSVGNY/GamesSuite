@@ -35,7 +35,6 @@ export class CrosswordComponent {
             if (message === SocketEvents.PlayerUpdate) {
                 this.configurationService.updateOtherPlayer(this.multiplayerCommunicationService.updatedPlayer);
                 this.updateInputCharInBoxes();
-                this.setInputBox();
             }
         });
     }

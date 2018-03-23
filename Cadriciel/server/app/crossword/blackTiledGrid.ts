@@ -88,7 +88,7 @@ export class BlackTiledGrid {
                 }
             }
         }
-        throw new ReferenceError("GridTile not found");
+        throw new Error("GridTile not found");
     }
 
     private verifyBlackGridValidity(): boolean {

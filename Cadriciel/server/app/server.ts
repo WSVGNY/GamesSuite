@@ -39,10 +39,10 @@ export class Server {
         }
     }
 
-    private onError(accesError: NodeJS.ErrnoException): void {
-        if (accesError.syscall !== "listen") { throw accesError; }
+    private onError(error: NodeJS.ErrnoException): void {
+        if (error.syscall !== "listen") { throw error; }
         const bind: string = (typeof this.appPort === "string") ? PIPE + this.appPort : PORT + this.appPort;
-        switch (accesError.code) {
+        switch (error.code) {
             case "EACCES":
                 console.error(`${bind} requires elevated privileges`);
                 process.exit(1);
@@ -52,7 +52,7 @@ export class Server {
                 process.exit(1);
                 break;
             default:
-                throw accesError;
+                throw error;
         }
     }
 }
