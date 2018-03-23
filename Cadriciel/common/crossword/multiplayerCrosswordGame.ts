@@ -7,7 +7,7 @@ export class MultiplayerCrosswordGame {
 
     public static create(stringObject: string): MultiplayerCrosswordGame {
         const jsonObject = JSON.parse(stringObject) as MultiplayerCrosswordGame;
-        return new MultiplayerCrosswordGame(jsonObject._roomName, jsonObject._difficulty, jsonObject._players, jsonObject.grid);
+        return new MultiplayerCrosswordGame(jsonObject["_roomName"], jsonObject["_difficulty"], jsonObject["_players"], jsonObject["grid"]);
     }
 
     public constructor(

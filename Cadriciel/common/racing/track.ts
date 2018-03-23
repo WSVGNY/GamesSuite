@@ -6,14 +6,14 @@ export class Track {
     public static createFromJSON(stringObject: string): Track {
         const jsonObject = JSON.parse(stringObject) as Track;
         return new Track(
-            jsonObject._id,
-            jsonObject._isTestTrack,
-            jsonObject.name,
-            jsonObject.description,
-            jsonObject.timesPlayed,
-            jsonObject.bestTimes,
-            jsonObject.type,
-            jsonObject.vertices
+            jsonObject["_id"],
+            jsonObject["_isTestTrack"],
+            jsonObject["name"],
+            jsonObject["description"],
+            jsonObject["timesPlayed"],
+            jsonObject["bestTimes"],
+            jsonObject["type"],
+            jsonObject["vertices"]
         );
     }
 
