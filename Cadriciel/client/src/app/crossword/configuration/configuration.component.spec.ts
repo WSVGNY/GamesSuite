@@ -157,5 +157,4 @@ describe("ConfigurationComponent", () => {
     it("All players can see what words are found", () => {
         expect(true).toBeFalsy();
     });
-
 });
