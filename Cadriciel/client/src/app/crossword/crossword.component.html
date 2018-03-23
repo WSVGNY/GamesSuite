@@ -39,13 +39,13 @@
 
   <div *ngIf="isConfigurationDone()">
     <div id="gameInformations" (mousedown)="resetInputBox()">
-      <h3 [style.background]="this.configuration.currentPlayer.color"> {{configuration.currentPlayer.name}} :
+      <h2 [style.background]="this.configuration.currentPlayer.color"> {{configuration.currentPlayer.name}} :
         <h4> {{configuration.currentPlayer.score}} words found</h4>
-      </h3>
-      <h3 *ngIf="configuration.isTwoPlayerGame" id="secondPlayer" [style.background]="this.configuration.otherPlayer.color">
+      </h2>
+      <h2 *ngIf="configuration.isTwoPlayerGame" id="secondPlayer" [style.background]="this.configuration.otherPlayer.color">
         {{configuration.otherPlayer.name}} :
         <h4> {{configuration.otherPlayer.score}} words found</h4>
-      </h3>
+      </h2>
     </div>
   </div>
 
