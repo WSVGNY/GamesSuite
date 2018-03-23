@@ -11,8 +11,9 @@
     margin-top:200px;
 }
 
-h3 {
+h2 {
     margin-right: 20px;
+    text-align: center;
 }
 
 #textDefinition::first-letter {
@@ -150,22 +151,18 @@ li {
 
 .selectedDefinition {
     display: inline-block;
-    min-width: 80px;
     vertical-align:top;
     border-radius: 10%;
 }
 
 .foundDefinition {
     display: inline-block;
-    min-width: 80px;
     vertical-align:top;
-    border: 2px solid rgba(0, 0, 0, 0.486);
     text-decoration: line-through;
 }
 
 .clearDefinition {
     display: inline-block;
-    min-width: 80px;
     vertical-align:top;
     enable-background: 0%;
 }
