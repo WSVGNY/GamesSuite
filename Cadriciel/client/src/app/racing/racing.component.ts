@@ -14,7 +14,9 @@ import { RenderService } from "./render-service/render.service";
 import { AIDebug } from "./artificial-intelligence/ai-debug";
 import { SoundManagerService } from "./sound-service/sound-manager.service";
 import { TopViewCamera } from "./cameras/topViewCamera";
-import { CHANGE_CAMERA_KEYCODE, DAY_KEYCODE, DEBUG_KEYCODE, AI_CARS_QUANTITY } from "./constants";
+import { CHANGE_CAMERA_KEYCODE, DAY_KEYCODE, DEBUG_KEYCODE, AI_CARS_QUANTITY, PLAY_MUSIC_KEYCODE,
+    MUTE_KEYCODE, ACCELERATE_KEYCODE } from "./constants";
+import { TrackType } from "../../../../common/racing/trackType";
 
 @Component({
     moduleId: module.id,
@@ -70,6 +72,8 @@ export class RacingComponent implements AfterViewInit, OnInit {
     public startGameLoop(): void {
         this._lastDate = Date.now();
         this._sound.createStartingSound(this._thirdPersonCamera);
+        this._sound.createMusic(this._playerCar);
+        this._sound.createAccelerationEffect(this._playerCar);
         this.update();
     }
 
@@ -99,9 +103,9 @@ export class RacingComponent implements AfterViewInit, OnInit {
                 this._chosenTrack = new Track(iTrack);
                 this._trackPoints = new TrackPointList(this._chosenTrack.vertices);
 
-                this.initializeCars();
+                this.initializeCars(this._chosenTrack.type);
                 await this._gameScene.loadTrack(this._chosenTrack);
-                await this._gameScene.loadCars(this._cars, this._carDebugs, this._thirdPersonCamera);
+                await this._gameScene.loadCars(this._cars, this._carDebugs, this._thirdPersonCamera, this._chosenTrack);
                 await this._aiCarService
                     .initialize(this._trackPoints.pointVectors, Difficulty.Medium)
                     .then(/* do nothing */)
@@ -117,9 +121,15 @@ export class RacingComponent implements AfterViewInit, OnInit {
         this._keyboardEventHandlerService.bindFunctionToKeyDown(CHANGE_CAMERA_KEYCODE, () =>
             this._useThirpPersonCamera = !this._useThirpPersonCamera
         );
+        this._keyboardEventHandlerService.bindFunctionToKeyDown(PLAY_MUSIC_KEYCODE, () => this._sound.play(this._sound.music));
+        this._keyboardEventHandlerService.bindFunctionToKeyDown(MUTE_KEYCODE, () => this._sound.stop(this._sound.music));
+        this._keyboardEventHandlerService.bindFunctionToKeyDown(ACCELERATE_KEYCODE, () =>
+            this._sound.play(this._sound.accelerationSoundEffect));
+        this._keyboardEventHandlerService.bindFunctionToKeyUp(ACCELERATE_KEYCODE, () =>
+            this._sound.stop(this._sound.accelerationSoundEffect));
     }
 
-    private initializeCars(): void {
+    private initializeCars(trackType: TrackType): void {
         for (let i: number = 0; i < AI_CARS_QUANTITY + 1; ++i) {
 
             if (i === 0) {

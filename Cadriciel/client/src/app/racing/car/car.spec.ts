@@ -1,121 +1,148 @@
-// import { Car } from "./car";
-// import { CarConfig } from "./carConfig";
-// import { Engine } from "./engine";
-// import { Wheel } from "./wheel";
-// import { Vector3 } from "three";
+import { Car } from "./car";
+import { CarConfig } from "./carConfig";
+import { Engine } from "./engine";
+import { Vector3 } from "three";
+import { TestBed, inject } from "@angular/core/testing";
+import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
+import { Physics } from "./physics";
+import { CarStructure } from "./carInformations";
 
-// const MS_BETWEEN_FRAMES: number = 16.6667;
+const MS_BETWEEN_FRAMES: number = 16.6667;
 
-// /* tslint:disable: no-magic-numbers */
-// class MockEngine extends Engine {
-//     public getDriveTorque(): number {
-//         return 10000;
-//     }
-// }
+/* tslint:disable: no-magic-numbers */
+class MockEngine extends Engine {
+    public getDriveTorque(): number {
+        return 10000;
+    }
+}
 
-// describe("Car", () => {
-//     let car: Car;
+describe("Car", () => {
+    // const keyBoardHandler: KeyboardEventHandlerService;
+    let car: Car;
 
-//     beforeEach(async (done: () => void) => {
-//         car = new Car(new MockEngine());
-//         await car.init(new Vector3(0, 0, 0), Math.PI);
+    beforeEach(async (done: () => void) => {
+        TestBed.configureTestingModule({
+            providers: [KeyboardEventHandlerService]
+        }).compileComponents()
+            .then()
+            .catch((e: Error) => console.error(e.message));
 
-//         car.accelerate();
-//         car.update(MS_BETWEEN_FRAMES);
-//         car.releaseAccelerator();
-//         done();
-//     });
+        car = new Car(undefined, true);
+        await car.init(new Vector3(0, 0, 0), Math.PI);
 
-//     it("should be instantiable using default constructor", () => {
-//         car = new Car(new MockEngine());
-//         expect(car).toBeDefined();
-//         expect(car.speed.length()).toBe(0);
-//     });
+        car.accelerate();
+        car.update(MS_BETWEEN_FRAMES);
+        car.releaseAccelerator();
+        done();
+    });
 
-//     it("should accelerate when accelerator is pressed", () => {
-//         const initialSpeed: number = car.speed.length();
-//         car.accelerate();
-//         car.update(MS_BETWEEN_FRAMES);
-//         expect(car.speed.length()).toBeGreaterThan(initialSpeed);
-//     });
+    it("should be instantiable using default constructor", inject(
+        [KeyboardEventHandlerService], (keyBoardHandler: KeyboardEventHandlerService) => {
+            car = new Car(keyBoardHandler, true, new CarStructure(new MockEngine));
+            expect(car).toBeDefined();
+            expect(car.speed.length()).toBe(0);
+        }
+    ));
 
-//     it("should decelerate when brake is pressed", () => {
-//         // Remove rolling resistance and drag force so the only force slowing down the car is the brakes.
-//         car["getRollingResistance"] = () => {
-//             return new Vector3(0, 0, 0);
-//         };
+    it("should accelerate when accelerator is pressed", () => {
+        const initialSpeed: number = car.speed.length();
+        car.accelerate();
+        car.update(MS_BETWEEN_FRAMES);
+        expect(car.speed.length()).toBeGreaterThan(initialSpeed);
+    });
 
-//         car["getDragForce"] = () => {
-//             return new Vector3(0, 0, 0);
-//         };
+    it("should decelerate when brake is pressed", () => {
+        // Remove rolling resistance and drag force so the only force slowing down the car is the brakes.
+        const getRollingResistance: () => Vector3 = Physics["getRollingResistance"];
+        const getDragForce: () => Vector3 = Physics["getDragForce"];
+        Physics["getRollingResistance"] = () => {
+            return new Vector3(0, 0, 0);
+        };
 
-//         car.accelerate();
-//         car.update(MS_BETWEEN_FRAMES);
-//         car.releaseAccelerator();
+        Physics["getDragForce"] = () => {
+            return new Vector3(0, 0, 0);
+        };
 
-//         const initialSpeed: number = car.speed.length();
-//         car.brake();
-//         car.update(MS_BETWEEN_FRAMES);
-//         expect(car.speed.length()).toBeLessThan(initialSpeed);
-//     });
+        car.accelerate();
+        car.update(MS_BETWEEN_FRAMES);
+        car.releaseAccelerator();
 
-//     it("should decelerate without brakes", () => {
-//         const initialSpeed: number = car.speed.length();
+        const initialSpeed: number = car.speed.length();
+        car.brake();
+        car.update(MS_BETWEEN_FRAMES);
 
-//         car.releaseBrakes();
-//         car.update(MS_BETWEEN_FRAMES);
-//         expect(car.speed.length()).toBeLessThan(initialSpeed);
-//     });
+        Physics["getRollingResistance"] = getRollingResistance;
+        Physics["getDragForce"] = getDragForce;
 
-//     it("should turn left when left turn key is pressed", () => {
-//         const initialAngle: number = car.angle;
-//         car.accelerate();
-//         car.steerLeft();
-//         car.update(MS_BETWEEN_FRAMES * 2);
-//         expect(car.angle).toBeLessThan(initialAngle);
-//     });
+        expect(car.speed.length()).toBeLessThan(initialSpeed);
+    });
 
-//     it("should turn right when right turn key is pressed", () => {
-//         const initialAngle: number = car.angle;
-//         car.accelerate();
-//         car.steerRight();
-//         car.update(MS_BETWEEN_FRAMES * 2);
-//         expect(car.angle).toBeGreaterThan(initialAngle);
-//     });
+    it("should decelerate without brakes", () => {
+        const initialSpeed: number = car.speed.length();
 
-//     it("should not turn when steering keys are released", () => {
-//         car.accelerate();
-//         car.steerRight();
-//         car.update(MS_BETWEEN_FRAMES);
+        car.releaseBrakes();
+        car.update(MS_BETWEEN_FRAMES);
+        expect(car.speed.length()).toBeLessThan(initialSpeed);
+    });
 
-//         const initialAngle: number = car.angle;
-//         car.releaseSteering();
-//         car.update(MS_BETWEEN_FRAMES);
-//         expect(car.angle).toBe(initialAngle);
-//     });
+    it("should turn left when left turn key is pressed", () => {
+        const initialAngle: number = car.angle;
+        car.accelerate();
+        car.steerLeft();
+        car.update(MS_BETWEEN_FRAMES * 2);
+        expect(car.angle).toBeLessThan(initialAngle);
+    });
 
-//     it("should use default engine parameter when none is provided", () => {
-//         car = new Car(undefined);
-//         expect(car["_engine"]).toBeDefined();
-//     });
+    it("should turn right when right turn key is pressed", () => {
+        const initialAngle: number = car.angle;
+        car.accelerate();
+        car.steerRight();
+        car.update(MS_BETWEEN_FRAMES * 2);
+        expect(car.angle).toBeGreaterThan(initialAngle);
+    });
 
-//     it("should use default Wheel parameter when none is provided", () => {
-//         car = new Car(new MockEngine(), undefined);
-//         expect(car["_rearWheel"]).toBeDefined();
-//     });
+    it("should not turn when steering keys are released", () => {
+        car.accelerate();
+        car.steerRight();
+        car.update(MS_BETWEEN_FRAMES);
 
-//     it("should check validity of wheelbase parameter", () => {
-//         car = new Car(new MockEngine(), new Wheel(), 0);
-//         expect(car["_wheelbase"]).toBe(CarConfig.DEFAULT_WHEELBASE);
-//     });
+        const initialAngle: number = car.angle;
+        car.releaseSteering();
+        car.update(MS_BETWEEN_FRAMES);
+        expect(car.angle).toBe(initialAngle);
+    });
 
-//     it("should check validity of mass parameter", () => {
-//         car = new Car(new MockEngine(), new Wheel(), CarConfig.DEFAULT_WHEELBASE, 0);
-//         expect(car["_mass"]).toBe(CarConfig.DEFAULT_MASS);
-//     });
+    it("should use default engine parameter when none is provided", inject(
+        [KeyboardEventHandlerService], (keyBoardHandler: KeyboardEventHandlerService) => {
+            car = new Car(keyBoardHandler, true);
+            expect(car["_carStructure"].engine).toBeDefined();
+        }));
 
-//     it("should check validity of dragCoefficient parameter", () => {
-//         car = new Car(new MockEngine(), new Wheel(), CarConfig.DEFAULT_WHEELBASE, CarConfig.DEFAULT_MASS, -10);
-//         expect(car["_dragCoefficient"]).toBe(CarConfig.DEFAULT_DRAG_COEFFICIENT);
-//     });
-// });
+    it("should use default Wheel parameter when none is provided", inject(
+        [KeyboardEventHandlerService], (keyBoardHandler: KeyboardEventHandlerService) => {
+            car = new Car(keyBoardHandler, true, new CarStructure(new MockEngine), undefined);
+            expect(car["_carStructure"].rearWheel).toBeDefined();
+        }
+    ));
+
+    it("should check validity of wheelbase parameter", inject(
+        [KeyboardEventHandlerService], (keyBoardHandler: KeyboardEventHandlerService) => {
+            car = new Car(keyBoardHandler, true, new CarStructure(new MockEngine));
+            expect(car["_carStructure"].wheelbase).toBe(CarConfig.DEFAULT_WHEELBASE);
+        }
+    ));
+
+    it("should check validity of mass parameter", inject(
+        [KeyboardEventHandlerService], (keyBoardHandler: KeyboardEventHandlerService) => {
+            car = new Car(keyBoardHandler, true, new CarStructure(new MockEngine));
+            expect(car["_carStructure"].mass).toBe(CarConfig.DEFAULT_MASS);
+        }
+    ));
+
+    it("should check validity of dragCoefficient parameter", inject(
+        [KeyboardEventHandlerService], (keyBoardHandler: KeyboardEventHandlerService) => {
+            car = new Car(keyBoardHandler, true, new CarStructure(new MockEngine));
+            expect(car["_carStructure"].dragCoefficient).toBe(CarConfig.DEFAULT_DRAG_COEFFICIENT);
+        }
+    ));
+});
