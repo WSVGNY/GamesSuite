@@ -14,7 +14,7 @@ import { SoundManagerService } from "../sound-service/sound-manager.service";
 import { TopViewCamera } from "../cameras/topViewCamera";
 import {
     CHANGE_CAMERA_KEYCODE, DAY_KEYCODE, DEBUG_KEYCODE, AI_CARS_QUANTITY, PLAY_MUSIC_KEYCODE,
-    MUTE_KEYCODE, ACCELERATE_KEYCODE
+    MUTE_KEYCODE
 } from "../constants";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { CollisionManagerService } from "../collision-manager/collision-manager.service";
