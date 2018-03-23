@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, done } from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { ConfigurationComponent } from "./configuration.component";
 import { GridService } from "../grid.service";
 import { HttpClient, HttpHandler } from "@angular/common/http";
@@ -100,36 +100,36 @@ describe("ConfigurationComponent", () => {
             expect(component["_hasSubscribed"]).toBeTruthy();
         });
 
-        describe("join list query is asynchronous", () => {
-            let value: number = 0;
-            beforeEach(() => {
-                setTimeout(() => {
-                    value++;
-                    done();
-                }, HIGH_NUMBER);
-            });
+        // describe("join list query is asynchronous", () => {
+        //     let value: number = 0;
+        //     beforeEach(() => {
+        //         setTimeout(() => {
+        //             value++;
+        //             done();
+        //         }, HIGH_NUMBER);
+        //     });
 
-            it("should query list of games", () => {
-                component.setJoinGame();
-                value++;
-                expect(value).toEqual(2);
+        //     it("should query list of games", () => {
+        //         component.setJoinGame();
+        //         value++;
+        //         expect(value).toEqual(2);
 
-                // TODO: should wait for responce
-                // spyOnProperty(component.multiplayerCommunicationService, "availableGames", "get");
+        //         // TODO: should wait for responce
+        //         // spyOnProperty(component.multiplayerCommunicationService, "availableGames", "get");
 
-                // waitsFor(
-                //     () => component.multiplayerCommunicationService.availableGames.length > 1,
-                //     "didnt receive available games", 10000);
+        //         // waitsFor(
+        //         //     () => component.multiplayerCommunicationService.availableGames.length > 1,
+        //         //     "didnt receive available games", 10000);
 
-                // runs(() => {
-                // expect(component.multiplayerCommunicationService.availableGames.length).toBeGreaterThan(1);
-                // const lastIndex: number = component.multiplayerCommunicationService.availableGames.length - 1;
-                // expect(component.multiplayerCommunicationService.availableGames[lastIndex].difficulty).toEqual(Difficulty.Easy);
-                // expect(component.multiplayerCommunicationService.availableGames[lastIndex].players[0].name).toEqual("player");
-                // });
+        //         // runs(() => {
+        //         // expect(component.multiplayerCommunicationService.availableGames.length).toBeGreaterThan(1);
+        //         // const lastIndex: number = component.multiplayerCommunicationService.availableGames.length - 1;
+        //         // expect(component.multiplayerCommunicationService.availableGames[lastIndex].difficulty).toEqual(Difficulty.Easy);
+        //         // expect(component.multiplayerCommunicationService.availableGames[lastIndex].players[0].name).toEqual("player");
+        //         // });
 
-            });
-        });
+        //     });
+        // });
 
         it("should have same grid on start game", () => {
             expect(true).toBeFalsy();
