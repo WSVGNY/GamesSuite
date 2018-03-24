@@ -28,9 +28,9 @@ export class CollisionManagerService {
                         this.collisionPoint.y = 0;
                         this.resolveHitboxOverlap();
 
-                        if (this.collisionEmitter.hitbox._inCollision === false && this.collisionReceiver.hitbox._inCollision === false) {
-                            this.collisionEmitter.hitbox._inCollision = true;
-                            this.collisionReceiver.hitbox._inCollision = true;
+                        if (this.collisionEmitter.hitbox.inCollision === false && this.collisionReceiver.hitbox.inCollision === false) {
+                            this.collisionEmitter.hitbox.inCollision = true;
+                            this.collisionReceiver.hitbox.inCollision = true;
                             const resultingForces: Vector3[] = [];
                             const forces1: Vector3[] = this.computeResultingForces(
                                 this.collisionEmitter,
@@ -49,8 +49,8 @@ export class CollisionManagerService {
                             this.applyForces(this.collisionEmitter, this.collisionReceiver, resultingForces);
                         }
                     } else {
-                        cars[firstCarIndex].hitbox._inCollision = false;
-                        cars[secondCarIndex].hitbox._inCollision = false;
+                        cars[firstCarIndex].hitbox.inCollision = false;
+                        cars[secondCarIndex].hitbox.inCollision = false;
                     }
                 }
             }
