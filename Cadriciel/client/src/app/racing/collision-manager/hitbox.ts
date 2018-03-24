@@ -7,7 +7,7 @@ const DEPTH: number = 3.1;
 export class Hitbox extends Mesh {
 
     private _subPlaneVertices: Vector3[];
-    public _inCollision: boolean;
+    public inCollision: boolean;
 
     public constructor() {
         const geometry: BoxGeometry = new BoxGeometry(WIDTH, HEIGHT, DEPTH);
@@ -17,7 +17,7 @@ export class Hitbox extends Mesh {
         super(geometry, material);
         this._subPlaneVertices = [];
         this.generateSubPlanVertices();
-        this._inCollision = false;
+        this.inCollision = false;
     }
 
     private generateSubPlanVertices(): void {
