@@ -12,7 +12,7 @@ import { Vector3 } from "three";
 describe("CollisionManagerService", () => {
 
     let car1: Car;
-    // let car2: Car;
+    let car2: Car;
     const cars: Car[] = [];
     beforeEach(async (done: () => void) => {
         TestBed.configureTestingModule({
@@ -20,12 +20,12 @@ describe("CollisionManagerService", () => {
         });
         car1 = new Car(undefined, true);
         await car1.init(new Vector3(0, 0, 0), Math.PI);
-        done();
-        // car2 = new Car(undefined, true);
-        //await car2.init(new Vector3(0, 0, 0), Math.PI);
         // done();
-        // cars.push(car1);
-        // cars.push(car2);
+        car2 = new Car(undefined, true);
+        await car2.init(new Vector3(0, 0, 0), Math.PI);
+        done();
+        cars.push(car1);
+        cars.push(car2);
     });
 
     it("should be created", inject([CollisionManagerService], (service: CollisionManagerService) => {
