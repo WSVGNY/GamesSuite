@@ -87,7 +87,7 @@ describe("CrosswordComponent", () => {
     });
 
     it("when a word is selected, its border are highligthed", () => {
-        component.setSelectedWord
+        // component.setSelectedWord
         expect(true).toBeFalsy();
     });
 
