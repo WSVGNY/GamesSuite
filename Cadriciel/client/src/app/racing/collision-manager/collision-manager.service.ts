@@ -22,7 +22,7 @@ export class CollisionManagerService {
     public computeCollisions(cars: Car[]): void {
         for (let firstCarIndex: number = 0; firstCarIndex < cars.length; ++firstCarIndex) {
             for (let secondCarIndex: number = firstCarIndex + 1; secondCarIndex < cars.length; ++secondCarIndex) {
-                if (cars[firstCarIndex].currentPosition.distanceTo(cars[secondCarIndex].currentPosition) < MINIMUM_CAR_DISTANCE) {
+                if (this.checkIfCarsAreClose(cars[firstCarIndex], cars[secondCarIndex])) {
                     this.collisionPoint = this.findCollisionPoint(cars[firstCarIndex], cars[secondCarIndex]);
                     if (this.collisionPoint !== undefined) {
                         this.collisionPoint.y = 0;
@@ -95,6 +95,10 @@ export class CollisionManagerService {
         const destinationPoint: Vector3 = pointA.clone().add(ap.clone().projectOnVector(ab));
 
         return destinationPoint.clone().sub(sourcePoint);
+    }
+
+    private checkIfCarsAreClose(firstCar: Car, secondCar: Car): boolean {
+        return (firstCar.currentPosition.distanceTo(secondCar.currentPosition) < MINIMUM_CAR_DISTANCE) ? true : false;
     }
 
     private findCollisionPoint(firstCar: Car, secondCar: Car): Vector3 {
