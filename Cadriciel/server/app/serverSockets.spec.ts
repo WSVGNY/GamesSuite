@@ -4,11 +4,13 @@ import { SocketEvents } from "../../common/communication/socketEvents";
 import { Difficulty } from "../../common/crossword/difficulty";
 import { MultiplayerCrosswordGame } from "../../common/crossword/multiplayerCrosswordGame";
 import { Player } from "../../common/crossword/player";
+import { Word } from "./crossword/word";
+import { CommonCoordinate3D } from "../../common/racing/commonCoordinate3D";
 
 const SERVER_URL: string = "http://localhost:3000";
 
 // tslint:disable-next-line:max-func-body-length
-describe("Socket.IO tests", () => {
+describe.only("Socket.IO tests", () => {
     const client1: SocketIOClient.Socket = sio(SERVER_URL);
     const client2: SocketIOClient.Socket = sio(SERVER_URL);
     const games: MultiplayerCrosswordGame[] = [];
@@ -40,26 +42,21 @@ describe("Socket.IO tests", () => {
                 games.push(MultiplayerCrosswordGame.create(JSON.stringify(game)));
             }
 
-            let isValid: boolean = true;
             for (let i: number = 0; i < message.length; ++i) {
+
                 for (let j: number = i + 1; j < message.length; ++j) {
-                    if (games[i].roomName === games[j].roomName) {
-                        isValid = false;
-                    }
+                    assert(!(games[i].roomName === games[j].roomName));
                 }
-                if (games[i].difficulty !== Difficulty.Easy &&
+
+                assert(!(games[i].difficulty !== Difficulty.Easy &&
                     games[i].difficulty !== Difficulty.Medium &&
-                    games[i].difficulty !== Difficulty.Hard) {
-                    isValid = false;
-                }
-                if (games[i].isFull()) {
-                    isValid = false;
-                }
-                if (games[i].grid !== undefined) {
-                    isValid = false;
-                }
+                    games[i].difficulty !== Difficulty.Hard));
+
+                assert(!(games[i].isFull()));
+
+                assert(!(games[i].grid !== undefined || games[i].players[0].name === undefined));
             }
-            assert(isValid);
+
             done();
         });
     });
@@ -106,15 +103,16 @@ describe("Socket.IO tests", () => {
     });
 
     it("should update player", (done: MochaDone) => {
+        client1Game.players[0].foundWords = [];
+        client1Game.players[0].foundWords.push(new Word(1, 1, true, 1, new CommonCoordinate3D(1, 1, 0)));
+        client1Game.players[0].selectedWord = new Word(-1, 0, true, 0, new CommonCoordinate3D(0, 0, 0));
         client1.emit(SocketEvents.PlayerUpdate, client1Game.players[0]);
         client2.on(SocketEvents.PlayerUpdate, (player: Player) => {
             assert(player.name === client1Game.players[0].name);
             assert(player.color === client1Game.players[0].color);
-            assert(player.foundBoxes === client1Game.players[0].foundBoxes);
-            assert(player.foundWords === client1Game.players[0].foundWords);
             assert(player.score === client1Game.players[0].score);
-            assert(player.selectedBoxes === client1Game.players[0].selectedBoxes);
-            assert(player.selectedWord === client1Game.players[0].selectedWord);
+            assert(player.selectedWord.id === client1Game.players[0].selectedWord.id);
+            assert(player.foundWords[0].id === client1Game.players[0].foundWords[0].id);
             done();
         });
     });
