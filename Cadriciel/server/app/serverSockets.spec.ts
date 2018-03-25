@@ -3,6 +3,7 @@ import * as sio from "socket.io-client";
 import { SocketEvents } from "../../common/communication/socketEvents";
 import { Difficulty } from "../../common/crossword/difficulty";
 import { MultiplayerCrosswordGame } from "../../common/crossword/multiplayerCrosswordGame";
+import { Player } from "../../common/crossword/player";
 
 const SERVER_URL: string = "http://localhost:3000";
 
@@ -10,6 +11,9 @@ const SERVER_URL: string = "http://localhost:3000";
 describe.only("Socket.IO tests", () => {
     const client1: SocketIOClient.Socket = sio(SERVER_URL);
     const client2: SocketIOClient.Socket = sio(SERVER_URL);
+    const games: MultiplayerCrosswordGame[] = [];
+    let client1Game: MultiplayerCrosswordGame;
+    let client2Game: MultiplayerCrosswordGame;
 
     it("clients should be defined", (done: MochaDone) => {
         assert(client1 !== undefined && client2 !== undefined);
@@ -32,34 +36,87 @@ describe.only("Socket.IO tests", () => {
         client1.emit(SocketEvents.RoomCreate, { creator: "testPlayer", difficulty: Difficulty.Easy });
         client1.emit(SocketEvents.RoomsListQuery);
         client1.on(SocketEvents.RoomsListsQueryResponse, (message: MultiplayerCrosswordGame[]) => {
-            const availableGames: MultiplayerCrosswordGame[] = [];
             for (const game of message) {
-                availableGames.push(MultiplayerCrosswordGame.create(JSON.stringify(game)));
+                games.push(MultiplayerCrosswordGame.create(JSON.stringify(game)));
             }
-            let isValid: boolean = true;
 
+            let isValid: boolean = true;
             for (let i: number = 0; i < message.length; ++i) {
                 for (let j: number = i + 1; j < message.length; ++j) {
-                    if (availableGames[i].roomName === availableGames[j].roomName) {
+                    if (games[i].roomName === games[j].roomName) {
                         isValid = false;
                     }
-
+                }
+                if (games[i].difficulty !== Difficulty.Easy &&
+                    games[i].difficulty !== Difficulty.Medium &&
+                    games[i].difficulty !== Difficulty.Hard) {
+                    isValid = false;
+                }
+                if (games[i].isFull()) {
+                    isValid = false;
+                }
+                if (games[i].grid !== undefined) {
+                    isValid = false;
                 }
             }
-
             assert(isValid);
             done();
         });
     });
 
-    it("should setup a join game", (done: MochaDone) => {
-        assert(client1 !== undefined && client2 !== undefined);
-        done();
+    it("should be able to join and start game", (done: MochaDone) => {
+        client2.emit(SocketEvents.RoomConnect, { roomInfo: games[0], playerName: "player2" });
+        client1.on(SocketEvents.StartGame, (message: MultiplayerCrosswordGame) => {
+            client1Game = MultiplayerCrosswordGame.create(JSON.stringify(message));
+            if (client2Game !== undefined) {
+                assert(client1Game.roomName === client2Game.roomName);
+                done();
+            } else {
+                assert(client1Game.roomName === games[0].roomName);
+            }
+
+        });
+        client2.on(SocketEvents.StartGame, (message: MultiplayerCrosswordGame) => {
+            client2Game = MultiplayerCrosswordGame.create(JSON.stringify(message));
+            if (client1Game !== undefined) {
+                assert(client1Game.roomName === client2Game.roomName);
+                done();
+            } else {
+                assert(client2Game.roomName === games[0].roomName);
+            }
+        });
     });
 
     it("should have same grid on start game", (done: MochaDone) => {
-        assert(client1 !== undefined && client2 !== undefined);
+        for (let i: number = 0; i < client1Game.grid.words.length; ++i) {
+            assert(client1Game.grid.words[i].value === client2Game.grid.words[i].value);
+        }
+
+        for (let i: number = 0; i < client1Game.grid.words.length; ++i) {
+            assert(client1Game.grid.words[i].definition === client2Game.grid.words[i].definition);
+        }
+
+        for (let i: number = 0; i < client1Game.grid.boxes.length; ++i) {
+            for (let j: number = 0; j < client1Game.grid.boxes[i].length; ++j) {
+                assert(client1Game.grid.boxes[i][j].isBlack === client2Game.grid.boxes[i][j].isBlack);
+            }
+        }
+
         done();
+    });
+
+    it("should update player", (done: MochaDone) => {
+        client1.emit(SocketEvents.PlayerUpdate, client1Game.players[0]);
+        client2.on(SocketEvents.PlayerUpdate, (player: Player) => {
+            assert(player.name === client1Game.players[0].name);
+            assert(player.color === client1Game.players[0].color);
+            assert(player.foundBoxes === client1Game.players[0].foundBoxes);
+            assert(player.foundWords === client1Game.players[0].foundWords);
+            assert(player.score === client1Game.players[0].score);
+            assert(player.selectedBoxes === client1Game.players[0].selectedBoxes);
+            assert(player.selectedWord === client1Game.players[0].selectedWord);
+            done();
+        });
     });
 
 });
