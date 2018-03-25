@@ -106,7 +106,7 @@ describe("ConfigurationComponent", () => {
                 setTimeout(() => {
                     value++;
                     done();
-                }, HIGH_NUMBER);
+                }, 4000);
             });
 
             it("should query list of games", () => {
