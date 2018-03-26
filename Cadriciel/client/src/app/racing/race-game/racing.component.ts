@@ -90,10 +90,10 @@ export class RacingComponent implements AfterViewInit, OnInit {
                     this._aiCarService.update(this._cars[i], this._carDebugs[i]);
                 }
             }
-            this._collisionManagerService.computeCollisions(this._cars);
-            if (this._collisionManagerService.isInCollision) {
+            this._collisionManagerService.update(this._cars);
+            if (this._collisionManagerService.shouldPlaySound) {
                 this._soundService.play(this._soundService.collisionSound);
-                this._collisionManagerService.isInCollision = false;
+                this._collisionManagerService.shouldPlaySound = false;
             }
             this._useThirpPersonCamera ?
                 this._renderService.render(this._gameScene, this._thirdPersonCamera) :

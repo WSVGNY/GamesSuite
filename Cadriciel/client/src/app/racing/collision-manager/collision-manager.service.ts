@@ -9,17 +9,17 @@ const RECEIVER_SPEED_AFTER_COLLISION: number = 1;
 @Injectable()
 export class CollisionManagerService {
 
-    public isInCollision: boolean;
+    public shouldPlaySound: boolean;
 
     private _collisionEmitter: Car;
     private _collisionReceiver: Car;
     private _collisionPoint: Vector3;
 
     public constructor() {
-        this.isInCollision = false;
+        this.shouldPlaySound = false;
     }
 
-    public computeCollisions(cars: Car[]): void {
+    public update(cars: Car[]): void {
         for (let firstCarIndex: number = 0; firstCarIndex < cars.length; ++firstCarIndex) {
             for (let secondCarIndex: number = firstCarIndex + 1; secondCarIndex < cars.length; ++secondCarIndex) {
                 if (this.checkIfCarsAreClose(cars[firstCarIndex], cars[secondCarIndex])) {
@@ -40,14 +40,14 @@ export class CollisionManagerService {
         } else {
             cars[firstCarIndex].hitbox.inCollision = false;
             cars[secondCarIndex].hitbox.inCollision = false;
-            this.isInCollision = false;
+            this.shouldPlaySound = false;
         }
     }
 
     private applyCollisionPhysics(): void {
         this._collisionEmitter.hitbox.inCollision = true;
         this._collisionReceiver.hitbox.inCollision = true;
-        this.isInCollision = true;
+        this.shouldPlaySound = true;
         const forces1: Vector3[] = this.computeResultingForces(
             this._collisionEmitter,
             this._collisionReceiver,
@@ -62,7 +62,7 @@ export class CollisionManagerService {
     }
 
     public get inCollision(): boolean {
-        return this.isInCollision;
+        return this.shouldPlaySound;
     }
 
     private resolveHitboxOverlap(): void {
