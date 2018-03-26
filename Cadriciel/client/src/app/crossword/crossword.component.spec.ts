@@ -69,7 +69,7 @@ describe("CrosswordComponent", () => {
 
     it("the name entered by the player is the one displayed ", () => {
         component.configuration.playerOne.name = "Player1";
-        expect(component.configuration.playerTwo.name).toEqual("Player1");
+        expect(component.configuration.currentPlayerName).toEqual("Player1");
     });
 
     it("the letters in the grid are uppercase", () => {
@@ -87,7 +87,13 @@ describe("CrosswordComponent", () => {
     });
 
     it("when a word is selected, its border are highligthed", () => {
+        // component.setSelectedWord
         expect(true).toBeFalsy();
+    });
+
+    it("when clicking somewhere else, the word become unselected", () => {
+        component.resetInputBox();
+        expect(component.inputGridBox).toBeUndefined();
     });
 
     it("when a player select a word, its border becomes of the color of the player", () => {
@@ -99,16 +105,6 @@ describe("CrosswordComponent", () => {
     });
 
     it("only letters can be inputed", () => {
-        expect(true).toBeFalsy();
-    });
-
-    it("the backspace key allows the player to delete letters", () => {
-        // peut-etre pas a faire selon Trello
-        expect(true).toBeFalsy();
-    });
-
-    it("when selecting a definition, i can start writing letters", () => {
-        // peut-etre pas a faire selon Trello
         expect(true).toBeFalsy();
     });
 

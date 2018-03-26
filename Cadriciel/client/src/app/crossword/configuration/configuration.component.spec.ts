@@ -99,42 +99,6 @@ describe("ConfigurationComponent", () => {
             expect(component.multiplayerCommunicationService.isSocketDefined).toBeTruthy();
             expect(component["_hasSubscribed"]).toBeTruthy();
         });
-
-        describe("join list query is asynchronous", () => {
-            let value: number = 0;
-            beforeEach((done: () => void) => {
-                setTimeout(() => {
-                    value++;
-                    done();
-                }, HIGH_NUMBER);
-            });
-
-            it("should query list of games", () => {
-                component.setJoinGame();
-                value++;
-                expect(value).toEqual(2);
-
-                // TODO: should wait for responce
-                // spyOnProperty(component.multiplayerCommunicationService, "availableGames", "get");
-
-                // waitsFor(
-                //     () => component.multiplayerCommunicationService.availableGames.length > 1,
-                //     "didnt receive available games", 10000);
-
-                // runs(() => {
-                // expect(component.multiplayerCommunicationService.availableGames.length).toBeGreaterThan(1);
-                // const lastIndex: number = component.multiplayerCommunicationService.availableGames.length - 1;
-                // expect(component.multiplayerCommunicationService.availableGames[lastIndex].difficulty).toEqual(Difficulty.Easy);
-                // expect(component.multiplayerCommunicationService.availableGames[lastIndex].players[0].name).toEqual("player");
-                // });
-
-            });
-        });
-
-        it("should have same grid on start game", () => {
-            expect(true).toBeFalsy();
-        });
-
     });
 
     it("game only starts when other player has join", () => {
@@ -147,15 +111,14 @@ describe("ConfigurationComponent", () => {
     });
 
     it("When both players has join and grid is generated, the game can start", () => {
+        expect(component.configurationService.configurationDone).toEqual(true);
+    });
+
+    it("All players can see what words are selected", () => {
         expect(true).toBeFalsy();
     });
 
-    it("All players can see what word is selected", () => {
+    it("All players can see what words are found", () => {
         expect(true).toBeFalsy();
     });
-
-    it("All players can see what word is found", () => {
-        expect(true).toBeFalsy();
-    });
-
 });

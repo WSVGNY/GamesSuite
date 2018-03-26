@@ -15,11 +15,12 @@ export class PreviewScene extends AbstractScene {
     private _trackType: TrackType;
     private _trackPoints: TrackPointList;
     private _track: Mesh;
-    private _group: Group = new Group();
+    private _group: Group;
     private _skyBoxTexture: CubeTexture;
 
     public constructor() {
         super();
+        this._group = new Group();
         this.addGround();
         this._group.add(new TrackLights(TrackType.Default));
         this.add(this._group);

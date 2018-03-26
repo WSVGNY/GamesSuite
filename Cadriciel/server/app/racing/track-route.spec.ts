@@ -3,7 +3,7 @@ import * as requestPromise from "request-promise-native";
 import { Track } from "../../../common/racing/track";
 
 const SERVICE_BASE_URL: string = "http://localhost:3000/track/";
-describe.only("TRACK SERVICE TESTS", () => {
+describe("TRACK SERVICE TESTS", () => {
 
     it("should get a list of tracks", (done: MochaDone) => {
         const tracks: Track[] = [];
