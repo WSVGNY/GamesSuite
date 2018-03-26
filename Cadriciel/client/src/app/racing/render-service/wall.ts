@@ -41,12 +41,21 @@ export class Wall extends Mesh {
     }
 
     private createWallShape(): Wall {
+        this.drawExteriorShape();
+        this.drillHoleInShape();
+
+        return this;
+    }
+
+    private drawExteriorShape(): void {
         this._wallShape.moveTo(this._shapePoints[0].x, this._shapePoints[0].z);
         for (let i: number = 1; i < this._shapePoints.length; ++i) {
             this._wallShape.lineTo(this._shapePoints[i].x, this._shapePoints[i].z);
         }
         this._wallShape.lineTo(this._shapePoints[0].x, this._shapePoints[0].z);
+    }
 
+    private drillHoleInShape(): void {
         const holePath: Path = new Path();
         holePath.moveTo(this._holePoints[0].x, this._holePoints[0].z);
         for (let i: number = this._holePoints.length - 1; i > 0; --i) {
@@ -54,8 +63,6 @@ export class Wall extends Mesh {
         }
         holePath.lineTo(this._holePoints[0].x, this._holePoints[0].z);
         this._wallShape.holes.push(holePath);
-
-        return this;
     }
 
     private findInteriorWallPoints(trackPoints: TrackPointList): void {
@@ -74,13 +81,13 @@ export class Wall extends Mesh {
     private findVectorToInteriorWall(trackPoint: TrackPoint): Vector3 {
         return trackPoint.vectorToInteriorPoint.normalize()
             .multiplyScalar(
-                (HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK) / Math.sin(Math.abs(trackPoint.halfOfSmallAngle)));
+            (HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK) / Math.sin(Math.abs(trackPoint.halfOfSmallAngle)));
     }
 
     private findVectorToInteriorWallWidth(trackPoint: TrackPoint): Vector3 {
         return trackPoint.vectorToInteriorPoint.normalize()
             .multiplyScalar(
-                (HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH) / Math.sin(Math.abs(trackPoint.halfOfSmallAngle)));
+            (HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH) / Math.sin(Math.abs(trackPoint.halfOfSmallAngle)));
     }
 
     private findExteriorWallPoints(trackPoints: TrackPointList): void {
@@ -99,14 +106,14 @@ export class Wall extends Mesh {
     private findVectorToExteriorWall(trackPoint: TrackPoint): Vector3 {
         return trackPoint.vectorToInteriorPoint.normalize()
             .multiplyScalar(
-                (HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK) / Math.sin(Math.abs(trackPoint.halfOfSmallAngle)))
+            (HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK) / Math.sin(Math.abs(trackPoint.halfOfSmallAngle)))
             .negate();
     }
 
     private findVectorToExteriorWallWidth(trackPoint: TrackPoint): Vector3 {
         return trackPoint.vectorToInteriorPoint.normalize()
             .multiplyScalar(
-                (HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH) / Math.sin(Math.abs(trackPoint.halfOfSmallAngle)))
+            (HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH) / Math.sin(Math.abs(trackPoint.halfOfSmallAngle)))
             .negate();
     }
 
