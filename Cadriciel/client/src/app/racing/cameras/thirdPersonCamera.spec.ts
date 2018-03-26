@@ -8,6 +8,7 @@ describe("Third Person Camera Test", () => {
     const ASPECTRATIO: number = 1;
     const INITIAL_CAMERA_POSITION_Z: number = 10;
     const INITIAL_CAMERA_POSITION_Y: number = 5;
+    const FIELD_OF_VIEW: number = 70;
 
     const camera: ThirdPersonCamera = new ThirdPersonCamera(ASPECTRATIO);
     beforeEach(() => {
@@ -45,7 +46,10 @@ describe("Third Person Camera Test", () => {
         expect(camera.position).toEqual(new Vector3(0, INITIAL_CAMERA_POSITION_Y, INITIAL_CAMERA_POSITION_Z));
     });
 
-    it("camera should be in the right position and angle", () => {
-        expect(true).toBeFalsy();
+    it("camera should be in the right angle", () => {
+        const object: Object3D = new Object3D();
+        object.add(camera);
+        object.position.set(1, 2, 1);
+        expect(camera.getEffectiveFOV()).toEqual(FIELD_OF_VIEW);
     });
 });
