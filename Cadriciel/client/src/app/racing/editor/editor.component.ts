@@ -27,7 +27,6 @@ export class EditorComponent implements AfterViewInit, OnInit {
     @Input()
     public currentTrack: Track;
     private _trackChosenFromAdmin: Track;
-
     private _editorCamera: EditorCamera;
     private _editorScene: EditorScene;
 
@@ -37,7 +36,6 @@ export class EditorComponent implements AfterViewInit, OnInit {
         private _location: Location,
         private _editorRenderService: RenderService,
         private _mouseEventHandlerService: MouseEventHandlerService) {
-
         this.currentTrack = new Track(undefined);
     }
 
