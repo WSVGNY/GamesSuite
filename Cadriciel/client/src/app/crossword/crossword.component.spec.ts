@@ -7,7 +7,6 @@ import { MultiplayerCommunicationService } from "./multiplayer-communication.ser
 import { Player } from "../../../../common/crossword/player";
 import { CommonWord } from "../../../../common/crossword/commonWord";
 import { CommonGridBox } from "../../../../common/crossword/commonGridBox";
-import { Key } from "selenium-webdriver";
 import { CommonCoordinate2D } from "../../../../common/crossword/commonCoordinate2D";
 
 describe("CrosswordComponent", () => {
@@ -224,7 +223,6 @@ describe("CrosswordComponent", () => {
         component.setSelectedWord(word);
         component.inputGridBox.inputChar = { value: "" };
         component.inputGridBox.char = { value: "A" };
-        const tmp: CommonGridBox = component.inputGridBox;
         const event: KeyboardEvent = new KeyboardEvent("keypress", {
             key: "a"
         });
