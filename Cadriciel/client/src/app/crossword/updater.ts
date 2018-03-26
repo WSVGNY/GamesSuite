@@ -63,7 +63,7 @@ export abstract class Updater {
         }
         for (const line of configuration.grid.boxes) {
             for (const box1 of line) {
-                this.handleBox(box1, configuration.currentPlayer.foundBoxes);
+                this.handleBox(box1, configuration.otherPlayer.foundBoxes);
             }
         }
 

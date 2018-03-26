@@ -12,17 +12,17 @@ import { CarLights } from "./carLights";
 import { Hitbox } from "../collision-manager/hitbox";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { Physics } from "./physics";
-import { CarControls, CarStructure } from "./carInformations";
+import { CarControls } from "./carControls";
+import { CarStructure } from "./carStructure";
 
 export class Car extends Object3D {
     private _mesh: Object3D;
     public trackPortionIndex: number;
-    // public _isAI: boolean;
     private _hitbox: Hitbox;
 
     public constructor(
         private keyBoardService: KeyboardEventHandlerService,
-        private _isAI: boolean,
+        private _isAI: boolean = false,
         private _carStructure: CarStructure = new CarStructure(),
         private _carControls: CarControls = new CarControls()
     ) {
@@ -82,13 +82,25 @@ export class Car extends Object3D {
     }
 
     public async init(startPoint: Vector3, rotationAngle: number): Promise<void> {
+        await this.initMesh(startPoint, rotationAngle);
+        this.initHitBox();
+        this.initLights();
+    }
+
+    private async initMesh(startPoint: Vector3, rotationAngle: number): Promise<void> {
         this._mesh = await this.load();
         this._mesh.position.add(startPoint);
         this._mesh.setRotationFromAxisAngle(new Vector3(0, 1, 0), rotationAngle);
-        this._mesh.add(this._carStructure.lights);
+        this.add(this._mesh);
+    }
+
+    private initHitBox(): void {
         this._hitbox = new Hitbox();
         this._mesh.add(this._hitbox);
-        this.add(this._mesh);
+    }
+
+    private initLights(): void {
+        this._mesh.add(this._carStructure.lights);
         this.turnLightsOff();
         this._carStructure.lights.turnBackLightsOff();
     }

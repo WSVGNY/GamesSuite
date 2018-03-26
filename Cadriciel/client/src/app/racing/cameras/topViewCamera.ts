@@ -4,7 +4,6 @@ import { Car } from "../car/car";
 
 const NEAR_CLIPPING_PLANE: number = 1;
 const FAR_CLIPPING_PLANE: number = 1000;
-
 const INITIAL_CAMERA_POSITION_Y: number = 10;
 const VIEW_SIZE: number = 150;
 
