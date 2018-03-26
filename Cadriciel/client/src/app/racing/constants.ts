@@ -13,6 +13,8 @@ export const TRACK_WIDTH: number = 20;
 export const HALF_TRACK_WIDTH: number = TRACK_WIDTH * HALF;
 export const WALL_DISTANCE_TO_TRACK: number = 10;
 export const WALL_WIDTH: number = 0.5;
+export const SPEED_COEF: number = 3;
+export const SPEED_FACTOR: number = 300;
 
 export const LOWER_GROUND: number = 0.01;
 export const SKYBOX_SIZE: number = 700;

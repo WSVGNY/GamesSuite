@@ -14,7 +14,8 @@ import { SoundManagerService } from "../sound-service/sound-manager.service";
 import { TopViewCamera } from "../cameras/topViewCamera";
 import {
     CHANGE_CAMERA_KEYCODE, DAY_KEYCODE, DEBUG_KEYCODE, AI_CARS_QUANTITY, PLAY_MUSIC_KEYCODE,
-    MUTE_KEYCODE
+    MUTE_KEYCODE,
+    ACCELERATE_KEYCODE
 } from "../constants";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { CollisionManagerService } from "../collision-manager/collision-manager.service";
@@ -98,7 +99,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
             this._topViewCamera.updatePosition(this._playerCar);
             this._soundService.setVolumeAcceleration(this._playerCar);
             this.update();
-            this._soundService.play(this._soundService.accelerationSoundEffect);
+            // this._soundService.play(this._soundService.accelerationSoundEffect);
         });
     }
 
@@ -127,10 +128,8 @@ export class RacingComponent implements AfterViewInit, OnInit {
         this._keyboardEventHandlerService.bindFunctionToKeyDown(PLAY_MUSIC_KEYCODE, () =>
             this._soundService.play(this._soundService.music));
         this._keyboardEventHandlerService.bindFunctionToKeyDown(MUTE_KEYCODE, () => this._soundService.stop(this._soundService.music));
-        // this._keyboardEventHandlerService.bindFunctionToKeyDown(ACCELERATE_KEYCODE, () =>
-        //     this._soundService.play(this._soundService.accelerationSoundEffect));
-        // this._keyboardEventHandlerService.bindFunctionToKeyUp(ACCELERATE_KEYCODE, () =>
-        //     this._soundService.play(this._soundService.accelerationSoundEffect));
+        this._keyboardEventHandlerService.bindFunctionToKeyDown(ACCELERATE_KEYCODE, () =>
+            this._soundService.play(this._soundService.accelerationSoundEffect));
     }
 
     private initializeCars(trackType: TrackType): void {
