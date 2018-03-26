@@ -71,34 +71,47 @@ describe("Collision Manager Service", () => {
         expect(collisionResult.length > 0 && collisionResult[0].distance < direction.length()).toEqual(false);
     }));
 
-    // it("should find the deplacement vector is car1 is Emitter", inject([CollisionManagerService], (service: CollisionManagerService) => {
-    //     service["collisionEmitter"] = car1;
-    //     service["collisionReceiver"] = car2;
-    //     const deplacementVector: Vector3 = service["findDisplacementVector"]();
-    //     expect(deplacementVector).toEqual(new Vector3(0, 0, 1)); // Confirmer avec will pour le calcul
-    // }));
+    it("collision should be elastic (no energy loss)", inject([CollisionManagerService], (collisionManager: CollisionManagerService) => {
+        firstCar["_mesh"].position.set(-2, 0, 1);
+        firstCar["_mesh"].updateMatrix();
+        collisionManager["collisionEmitter"] = firstCar;
+        collisionManager["collisionReceiver"] = secondCar;
+        collisionManager["collisionPoint"] = firstCar.hitbox.subPlanVertices[0].clone().applyMatrix4(firstCar.meshMatrix);
+        firstCar.speed = new Vector3(0, 0, -5);
+        secondCar.speed = new Vector3(0, 0, 0);
+        const resultingForces: Vector3[] = collisionManager["computeResultingForces"](
+            collisionManager["collisionEmitter"],
+            collisionManager["collisionReceiver"],
+            collisionManager["collisionPoint"]
+        );
+        const forcesBeforeImpact: number = firstCar.speed.length();
+        const forcesAfterImpact: number = (resultingForces[0].clone().add(resultingForces[1])).length();
+        expect(Math.abs(forcesBeforeImpact - forcesAfterImpact)).toBeLessThan(0.0001);
+    }));
 
-    // it("should find the deplacement vector is car2 is Emitter", inject([CollisionManagerService], (service: CollisionManagerService) => {
-    //     service["collisionEmitter"] = car2;
-    //     service["collisionReceiver"] = car1;
-    //     const deplacementVector: Vector3 = service["findDisplacementVector"]();
-    //     expect(deplacementVector).toEqual(new Vector3(0, 0, 1)); // Confirmer avec will pour le calcul
-    // }));
+    it("should push car in the direction it is facing", inject([CollisionManagerService], (collisionManager: CollisionManagerService) => {
+        const force: Vector3 = new Vector3(1, 0, 1);
+        const zComponent: number = collisionManager["computeSpeedZComponent"](force, firstCar.direction);
+        expect(zComponent).toBeGreaterThanOrEqual(0);
+    }));
 
-    // it("should find the distance from a simple point to a vector3 segment",
-    //    inject([CollisionManagerService], (service: CollisionManagerService) => {
-    //         const distance: Vector3 = service["findDistanceToSegment"](new Vector3(0, 0, 0), new Vector3(1, 0, 0), new Vector3(1, 0, 1));
-    //         expect(distance).toEqual(new Vector3(0, 0, 0));
-    // }));
+    it("should push car in the opposite direction it is facing",
+       inject([CollisionManagerService], (collisionManager: CollisionManagerService) => {
+        const force: Vector3 = new Vector3(-1, 0, -1);
+        const zComponent: number = collisionManager["computeSpeedZComponent"](force, firstCar.direction);
+        expect(zComponent).toBeLessThanOrEqual(0);
+    }));
 
-    // it("should find the collision point between two cars", inject([CollisionManagerService], (service: CollisionManagerService) => {
-    //         car1["_mesh"].position.set(1, 0, 1);
-    //         expect(service["findCollisionPoint"](car1, car2)).toEqual(new Vector3(0.5, 0, 0.5));
-    // }));
+    it("should push car to its left", inject([CollisionManagerService], (collisionManager: CollisionManagerService) => {
+        const force: Vector3 = new Vector3(1, 0, 1);
+        const xComponent: number = collisionManager["computeSpeedXComponent"](force, firstCar.direction);
+        expect(xComponent).toBeGreaterThanOrEqual(0);
+    }));
 
-    // it("should find the axe of collision",
-    //    inject([CollisionManagerService], (service: CollisionManagerService) => {
-    //         car1["_mesh"].position.set(1, 0, 1);
-    //         expect(service["computeCollisionAxis"](car1, car2, service["collisionPoint"])).toEqual(new Vector3(1, 0, 0));
-    // }));
+    it("should push car to its right", inject([CollisionManagerService], (collisionManager: CollisionManagerService) => {
+        const force: Vector3 = new Vector3(-1, 0, -1);
+        const xComponent: number = collisionManager["computeSpeedXComponent"](force, firstCar.direction);
+        expect(xComponent).toBeLessThanOrEqual(0);
+    }));
+
 });
