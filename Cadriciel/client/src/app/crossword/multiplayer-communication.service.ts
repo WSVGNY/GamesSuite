@@ -86,7 +86,8 @@ export class MultiplayerCommunicationService {
             });
 
             this._socket.on(SocketEvents.DisconnectionAlert, () => {
-                process.stdout.write("Other player disconnected\n");
+                // tslint:disable:no-console
+                console.log("Other player disconnected");
             });
         });
     }
