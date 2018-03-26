@@ -90,10 +90,10 @@ export class RacingComponent implements AfterViewInit, OnInit {
                     this._aiCarService.update(this._cars[i], this._carDebugs[i]);
                 }
             }
-            this._collisionManagerService.computeCollisions(this._cars);
-            if (this._collisionManagerService.isInCollision) {
+            this._collisionManagerService.update(this._cars);
+            if (this._collisionManagerService.shouldPlaySound) {
                 this._soundService.play(this._soundService.collisionSound);
-                this._collisionManagerService.isInCollision = false;
+                this._collisionManagerService.shouldPlaySound = false;
             }
             this._useThirpPersonCamera ?
                 this._renderService.render(this._gameScene, this._thirdPersonCamera) :
@@ -148,7 +148,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
         for (let i: number = 0; i < AI_CARS_QUANTITY + 1; ++i) {
 
             if (i === 0) {
-                this._cars.push(new Car(this._keyboardEventHandlerService, false));
+                this._cars.push(new Car(this._keyboardEventHandlerService));
                 this._playerCar = this._cars[0];
             } else {
                 this._cars.push(new Car(this._keyboardEventHandlerService, true));

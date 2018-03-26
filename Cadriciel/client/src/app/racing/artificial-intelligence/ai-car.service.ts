@@ -73,11 +73,9 @@ export class AICarService {
     private updateCarDirection(lineDistance: number, car: Car, goingStraightToLine: boolean): void {
         if (Math.abs(lineDistance) > this._aiConfig.distanceBeforeReplacement && !goingStraightToLine) {
             this.accelerate(car);
-            if (lineDistance < 0) {
-                this.goLeft(car);
-            } else {
+            lineDistance < 0 ?
+                this.goLeft(car) :
                 this.goRight(car);
-            }
         } else {
             this.goForward(car);
         }
@@ -117,9 +115,7 @@ export class AICarService {
 
     private projectInFrontOfCar(car: Car): Vector3 {
         const dir: Vector3 = car.direction.normalize();
-        const positionInFront: Vector3 = new Vector3(
-            car.position.x + car.currentPosition.x, 0,
-            car.position.z + car.currentPosition.z);
+        const positionInFront: Vector3 = new Vector3(car.position.x + car.currentPosition.x, 0, car.position.z + car.currentPosition.z);
         positionInFront.x += dir.x * this._aiConfig.distanceFromVehicule;
         positionInFront.z += dir.z * this._aiConfig.distanceFromVehicule;
 
