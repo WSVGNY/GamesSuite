@@ -5,7 +5,7 @@ import { Vector3 } from "three";
 import { TestBed, inject } from "@angular/core/testing";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { Physics } from "./physics";
-import { CarStructure } from "./carInformations";
+import { CarStructure } from "./carStructure";
 
 const MS_BETWEEN_FRAMES: number = 16.6667;
 
