@@ -10,7 +10,7 @@ export abstract class Comparator {
             configuration.currentPlayer.selectedWord.enteredCharacters++ :
             configuration.currentPlayer.selectedWord.enteredCharacters = 0;
         if (ListChecker.playersFoundBox(
-            configuration.grid.boxes[configuration.getY()][configuration.getX()])) {
+            configuration.grid.boxes[configuration.getY()][configuration.getX()], configuration)) {
             Comparator.goToNextAvailableBox(configuration);
         }
     }
@@ -21,13 +21,13 @@ export abstract class Comparator {
             configuration.currentPlayer.selectedWord.enteredCharacters =
             configuration.currentPlayer.selectedWord.length - 1;
         if (ListChecker.playersFoundBox(
-            configuration.grid.boxes[configuration.getY()][configuration.getX()])) {
+            configuration.grid.boxes[configuration.getY()][configuration.getX()], configuration)) {
             Comparator.goBackOneCharacter(configuration);
         }
     }
 
-    public static findEquivalent(badWord: CommonWord, configuration: ConfigurationService): CommonWord {
-        for (const word of configuration.grid.words) {
+    public static findEquivalent(badWord: CommonWord, words: CommonWord[]): CommonWord {
+        for (const word of words) {
             if (word.id === badWord.id) {
                 return word;
             }

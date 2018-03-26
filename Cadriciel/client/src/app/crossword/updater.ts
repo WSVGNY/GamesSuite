@@ -47,8 +47,8 @@ export abstract class Updater {
 
     public static setInputBox(configuration: ConfigurationService, inputGridBox: CommonGridBox): CommonGridBox {
         if (configuration.currentPlayer.selectedWord !== undefined &&
-            !ListChecker.playersFoundWord(configuration.currentPlayer.selectedWord)) {
-            if (ListChecker.playersFoundBox(configuration.grid.boxes[configuration.getY()][configuration.getX()])) {
+            !ListChecker.playersFoundWord(configuration.currentPlayer.selectedWord, configuration)) {
+            if (ListChecker.playersFoundBox(configuration.grid.boxes[configuration.getY()][configuration.getX()], configuration)) {
                 Comparator.goToNextAvailableBox(configuration);
                 this.setInputBox(configuration, inputGridBox);
             } else {

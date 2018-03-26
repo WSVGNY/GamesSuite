@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { AudioListener, AudioLoader, AudioBuffer, Audio, PerspectiveCamera } from "three";
 import { Car } from "../car/car";
-import { MUSIC_PATH, ACCELERATION_PATH, COLLISION_PATH, STARTING_PATH } from "../constants";
+import { MUSIC_PATH, ACCELERATION_PATH, COLLISION_PATH, STARTING_PATH, SPEED_FACTOR, SPEED_COEF } from "../constants";
 
 @Injectable()
 export class SoundManagerService {
@@ -14,6 +14,7 @@ export class SoundManagerService {
     private _isDetected: boolean = true;
     private _isPlayingMusic: boolean = true;
     private _collisionSound: Audio;
+    private _startingSound: Audio;
 
     private createSound(soundName: string): Audio {
         const listener: AudioListener = new AudioListener();
@@ -23,7 +24,7 @@ export class SoundManagerService {
             soundName,
             (audioBuffer: AudioBuffer) => {
                 sound.setBuffer(audioBuffer);
-                sound.stop();
+                sound.play();
             },
             (xhr: XMLHttpRequest) => { },
             (err: Event) => { }
@@ -46,16 +47,17 @@ export class SoundManagerService {
         this._isPlayingAcceleration = false;
     }
 
-    public createCollisionSound(camera: PerspectiveCamera, car: Car): void {
+    public createCollisionSound(car: Car): void {
         const sound: Audio = this.createSound(COLLISION_PATH);
         car.add(sound);
-        camera.add(sound);
         this._isDetected = false;
         this._collisionSound = sound;
     }
 
     public createStartingSound(camera: PerspectiveCamera): void {
-        camera.add(this.createSound(STARTING_PATH));
+        const startSound: Audio = this.createSound(STARTING_PATH);
+        camera.add(startSound);
+        this._startingSound = startSound;
     }
 
     public play(sound: Audio): void {
@@ -74,10 +76,23 @@ export class SoundManagerService {
         return this._accelerationSoundEffect;
     }
 
+    public get startingSound(): Audio {
+        return this._startingSound;
+    }
     public get collisionSound(): Audio {
         return this._collisionSound;
     }
     public isPlaying(): boolean { return this._isPlayingAcceleration; }
     public isDetected(): boolean { return this._isDetected; }
     public isPlayingMusic(): boolean { return this._isPlayingMusic; }
+
+    public setVolumeAcceleration(car: Car): void {
+        this._accelerationSoundEffect.setVolume(this.calculVolume(car));
+    }
+
+    private calculVolume(car: Car): number {
+        const speed: number = car.speed.length() * SPEED_COEF;
+
+        return Math.min((speed /SPEED_FACTOR), 1);
+    }
 }

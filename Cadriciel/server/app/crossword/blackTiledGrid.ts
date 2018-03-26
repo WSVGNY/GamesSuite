@@ -9,7 +9,7 @@ import { CommonGridBox } from "../../../common/crossword/commonGridBox";
 @injectable()
 export class BlackTiledGrid {
 
-    private _wordId: number = 0;
+    private _wordId: number;
     private _wordDefinitionID: number;
     private _words: Word[];
 
@@ -19,6 +19,7 @@ export class BlackTiledGrid {
 
     public constructor(
         private _grid: GridBox[][]) {
+        this._wordId = 0;
         this._words = this.placeBlackGridTiles();
     }
 

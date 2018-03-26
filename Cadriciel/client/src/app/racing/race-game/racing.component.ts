@@ -14,7 +14,8 @@ import { SoundManagerService } from "../sound-service/sound-manager.service";
 import { TopViewCamera } from "../cameras/topViewCamera";
 import {
     CHANGE_CAMERA_KEYCODE, DAY_KEYCODE, DEBUG_KEYCODE, AI_CARS_QUANTITY, PLAY_MUSIC_KEYCODE,
-    MUTE_KEYCODE, ACCELERATE_KEYCODE
+    MUTE_KEYCODE,
+    ACCELERATE_KEYCODE
 } from "../constants";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { CollisionManagerService } from "../collision-manager/collision-manager.service";
@@ -31,11 +32,11 @@ export class RacingComponent implements AfterViewInit, OnInit {
     @ViewChild("container")
     private _containerRef: ElementRef;
     private _chosenTrack: Track;
-    private _cars: Car[] = [];
-    private _carDebugs: AIDebug[] = [];
+    private _cars: Car[];
+    private _carDebugs: AIDebug[];
     private _thirdPersonCamera: ThirdPersonCamera;
     private _topViewCamera: TopViewCamera;
-    private _useThirpPersonCamera: boolean = true;
+    private _useThirpPersonCamera: boolean;
     private _gameScene: GameScene;
     private _playerCar: Car;
     private _lastDate: number;
@@ -48,7 +49,11 @@ export class RacingComponent implements AfterViewInit, OnInit {
         private _aiCarService: AICarService,
         private _collisionManagerService: CollisionManagerService,
         private _soundService: SoundManagerService
-    ) { }
+    ) {
+        this._cars = [];
+        this._carDebugs = [];
+        this._useThirpPersonCamera = true;
+    }
 
     public ngOnInit(): void {
         this._gameScene = new GameScene(this._keyboardEventHandlerService);
@@ -71,9 +76,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
     public startGameLoop(): void {
         this._lastDate = Date.now();
-        this._soundService.createStartingSound(this._thirdPersonCamera);
-        this._soundService.createMusic(this._playerCar);
-        this._soundService.createAccelerationEffect(this._playerCar);
+        this.createSounds();
         this.update();
     }
 
@@ -88,12 +91,24 @@ export class RacingComponent implements AfterViewInit, OnInit {
                 }
             }
             this._collisionManagerService.computeCollisions(this._cars);
+            if (this._collisionManagerService.isInCollision === true) {
+                this._soundService.play(this._soundService.collisionSound);
+                this._collisionManagerService.isInCollision = false;
+            }
             this._useThirpPersonCamera ?
                 this._renderService.render(this._gameScene, this._thirdPersonCamera) :
                 this._renderService.render(this._gameScene, this._topViewCamera);
             this._topViewCamera.updatePosition(this._playerCar);
+            this._soundService.setVolumeAcceleration(this._playerCar);
             this.update();
         });
+    }
+
+    private createSounds(): void {
+        this._soundService.createStartingSound(this._thirdPersonCamera);
+        this._soundService.createMusic(this._playerCar);
+        this._soundService.createAccelerationEffect(this._playerCar);
+        this._soundService.createCollisionSound(this._playerCar);
     }
 
     public getTrack(): void {
@@ -123,8 +138,6 @@ export class RacingComponent implements AfterViewInit, OnInit {
         this._keyboardEventHandlerService.bindFunctionToKeyDown(MUTE_KEYCODE, () => this._soundService.stop(this._soundService.music));
         this._keyboardEventHandlerService.bindFunctionToKeyDown(ACCELERATE_KEYCODE, () =>
             this._soundService.play(this._soundService.accelerationSoundEffect));
-        this._keyboardEventHandlerService.bindFunctionToKeyUp(ACCELERATE_KEYCODE, () =>
-            this._soundService.stop(this._soundService.accelerationSoundEffect));
     }
 
     private initializeCars(trackType: TrackType): void {
