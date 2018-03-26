@@ -2,9 +2,7 @@
 import { TopViewCamera } from "./topViewCamera";
 import { OrthographicCamera, Vector3 } from "three";
 import { Car } from "../car/car";
-// import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
-// import { Engine } from "../car/engine";
-// import { TestBed } from "@angular/core/testing";
+
 const INITIAL_CAMERA_POSITION_Y: number = 10;
 
 describe("Top View Camera Test", () => {
@@ -43,5 +41,9 @@ describe("Top View Camera Test", () => {
         car["_mesh"].position.set(10, 23, 5);
         camera.updatePosition(car);
         expect(camera.position).toEqual(new Vector3(10, INITIAL_CAMERA_POSITION_Y, 5));
+    });
+
+    it("camera shouldnt rotate", () => {
+        expect(true).toBeFalsy();
     });
 });

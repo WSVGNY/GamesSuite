@@ -15,6 +15,7 @@ export const WALL_DISTANCE_TO_TRACK: number = 10;
 export const WALL_WIDTH: number = 0.5;
 export const RPM_FACTOR: number = 1700;
 export const VOLUME: number = 0.2;
+export const TIRE_ASPHALT_COEFFICIENT: number = 0.9;
 
 export const LOWER_GROUND: number = 0.01;
 export const SKYBOX_SIZE: number = 700;

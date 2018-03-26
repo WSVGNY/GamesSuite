@@ -17,7 +17,6 @@ class MockEngine extends Engine {
 }
 
 describe("Car", () => {
-    // const keyBoardHandler: KeyboardEventHandlerService;
     let car: Car;
 
     beforeEach(async (done: () => void) => {

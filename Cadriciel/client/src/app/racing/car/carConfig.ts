@@ -7,5 +7,4 @@ export class CarConfig {
     public static readonly MINIMUM_SPEED: number = 0.05;
     public static readonly NUMBER_REAR_WHEELS: number = 2;
     public static readonly NUMBER_WHEELS: number = 4;
-
 }
