@@ -71,6 +71,42 @@ describe("Collision Manager Service", () => {
         expect(collisionResult.length > 0 && collisionResult[0].distance < direction.length()).toEqual(false);
     }));
 
+    it("should create a resulting force in the right direction on the collision emitter",
+       inject([CollisionManagerService], (collisionManager: CollisionManagerService) => {
+        firstCar["_mesh"].position.set(-2, 0, 1);
+        firstCar["_mesh"].updateMatrix();
+        collisionManager["collisionEmitter"] = firstCar;
+        collisionManager["collisionReceiver"] = secondCar;
+        collisionManager["collisionPoint"] = firstCar.hitbox.subPlanVertices[0].clone().applyMatrix4(firstCar.meshMatrix);
+        firstCar.speed = new Vector3(0, 0, -5);
+        secondCar.speed = new Vector3(0, 0, 0);
+        const resultingForces: Vector3[] = collisionManager["computeResultingForces"](
+            collisionManager["collisionEmitter"],
+            collisionManager["collisionReceiver"],
+            collisionManager["collisionPoint"]
+        );
+        expect(resultingForces[0].x).toBeLessThan(0);
+        expect(resultingForces[0].z).toBeLessThan(0);
+    }));
+
+    it("should create a resulting force in the right direction on the collision receiver",
+       inject([CollisionManagerService], (collisionManager: CollisionManagerService) => {
+        firstCar["_mesh"].position.set(-2, 0, 1);
+        firstCar["_mesh"].updateMatrix();
+        collisionManager["collisionEmitter"] = firstCar;
+        collisionManager["collisionReceiver"] = secondCar;
+        collisionManager["collisionPoint"] = firstCar.hitbox.subPlanVertices[0].clone().applyMatrix4(firstCar.meshMatrix);
+        firstCar.speed = new Vector3(0, 0, -5);
+        secondCar.speed = new Vector3(0, 0, 0);
+        const resultingForces: Vector3[] = collisionManager["computeResultingForces"](
+            collisionManager["collisionEmitter"],
+            collisionManager["collisionReceiver"],
+            collisionManager["collisionPoint"]
+        );
+        expect(resultingForces[1].x).toBeLessThan(0);
+        expect(resultingForces[1].z).toBeGreaterThan(0);
+    }));
+
     it("collision should be elastic (no energy loss)", inject([CollisionManagerService], (collisionManager: CollisionManagerService) => {
         firstCar["_mesh"].position.set(-2, 0, 1);
         firstCar["_mesh"].updateMatrix();
