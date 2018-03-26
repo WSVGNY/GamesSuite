@@ -216,7 +216,7 @@ describe("CrosswordComponent", () => {
         expect(component.configuration.currentPlayer.foundBoxes).toContain(tmp);
     });
 
-    fit("when a word is found, the answer is visible by all players", () => {
+    it("when a word is found, the answer is visible by all players", () => {
         createMockConfiguration(false);
         const word: CommonWord = createMockWord(0);
         component.configuration.grid.words = [word];
