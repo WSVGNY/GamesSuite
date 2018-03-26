@@ -13,11 +13,12 @@ import { RenderService } from "../render-service/render.service";
 export class ChooseTrackComponent implements OnInit, AfterViewInit {
 
     @ViewChild("preview")
-    public tracks: Track[];
-
     private _containerRef: ElementRef;
+
     private _previewCamera: PreviewCamera;
     private _previewScene: PreviewScene;
+
+    public tracks: Track[];
 
     public constructor(
         private _trackService: TrackService,
