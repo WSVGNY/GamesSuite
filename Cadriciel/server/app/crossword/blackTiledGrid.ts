@@ -31,11 +31,10 @@ export class BlackTiledGrid {
         }
         if (this.verifyBlackGridValidity()) {
             const totalDifficulty: number = this.calculateGridDifficulty();
-            if (totalDifficulty < MAX_DIFFICULTY) {
-                return this.words;
-            } else {
-                return undefined;
-            }
+
+            return totalDifficulty < MAX_DIFFICULTY ?
+                this.words :
+                undefined;
         } else {
             return undefined;
         }
