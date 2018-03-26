@@ -7,6 +7,8 @@ import { MultiplayerCommunicationService } from "../multiplayer-communication.se
 import { SocketEvents } from "../../../../../common/communication/socketEvents";
 import { MultiplayerCrosswordGame } from "../../../../../common/crossword/multiplayerCrosswordGame";
 
+const FIRST_PLAYER_COLOR: string = "steelblue";
+
 @Component({
     selector: "app-configuration",
     templateUrl: "./configuration.component.html",
@@ -16,14 +18,17 @@ import { MultiplayerCrosswordGame } from "../../../../../common/crossword/multip
 export class ConfigurationComponent {
     public isNewGame: boolean;
     public isJoinGame: boolean;
-    public choseGridDifficulty: boolean = false;
-    private _hasSubscribed: boolean = false;
-    public waitingForRoom: boolean = false;
+    public choseGridDifficulty: boolean;
+    public waitingForRoom: boolean;
+    private _hasSubscribed: boolean;
 
     public constructor(
         private _gridService: GridService,
         public configurationService: ConfigurationService,
         public multiplayerCommunicationService: MultiplayerCommunicationService) {
+        this.choseGridDifficulty = false;
+        this.waitingForRoom = false;
+        this._hasSubscribed = false;
     }
 
     public setNewGame(): void {
@@ -95,7 +100,7 @@ export class ConfigurationComponent {
     }
 
     public submitName(playerName: string): void {
-        this.configurationService.playerOne = { name: playerName, color: "steelBlue", score: 0 };
+        this.configurationService.playerOne = { name: playerName, color: FIRST_PLAYER_COLOR, score: 0 };
         this.configurationService.currentPlayerName = this.configurationService.playerOne.name;
         this.configurationService.configurationDone = true;
     }
