@@ -86,7 +86,7 @@ export class MultiplayerCommunicationService {
             });
 
             this._socket.on(SocketEvents.DisconnectionAlert, () => {
-                console.log("Other player disconnected");
+                process.stdout.write("Other player disconnected\n");
             });
         });
     }
