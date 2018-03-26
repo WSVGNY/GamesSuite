@@ -206,14 +206,12 @@ export class CrosswordComponent {
     }
 
     public resetInputBox(): void {
-        console.log("resetInputBox");
         this.inputGridBox = undefined;
         this.configuration.currentPlayer.selectedWord = undefined;
         this.updateGrid();
     }
 
     private updateGrid(): void {
-        console.log(this.inputGridBox);
         this.inputGridBox = Updater.updateGrid(this.configuration, this.inputGridBox);
         this.multiplayerCommunicationService.playerUpdate(this.configuration.currentPlayer);
     }
@@ -273,7 +271,6 @@ export class CrosswordComponent {
     }
 
     private addToScore(): void {
-        console.log("addToScore");
         this.configuration.currentPlayer.score++;
         this.updateGrid();
     }
