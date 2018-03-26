@@ -7,7 +7,7 @@ export class MultiplayerCrosswordGame {
 
     public static create(stringObject: string): MultiplayerCrosswordGame {
         const jsonObject: MultiplayerCrosswordGame = JSON.parse(stringObject) as MultiplayerCrosswordGame;
-        // tslint:disable:no-string-literal
+        // tslint:disable-next-line:no-string-literal
         return new MultiplayerCrosswordGame(jsonObject["_roomName"], jsonObject["_difficulty"], jsonObject["_players"], jsonObject["grid"]);
     }
 

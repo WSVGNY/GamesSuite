@@ -2,7 +2,7 @@ import { CommonCoordinate3D } from "./commonCoordinate3D";
 import { TrackType } from "./trackType";
 
 export class Track {
-
+    // tslint:disable:no-string-literal
     public static createFromJSON(stringObject: string): Track {
         const jsonObject = JSON.parse(stringObject) as Track;
         return new Track(
@@ -16,6 +16,7 @@ export class Track {
             jsonObject["vertices"]
         );
     }
+    // tslint:enable:no-string-literal
 
     public constructor(
         private _id: string,
