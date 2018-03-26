@@ -4,13 +4,10 @@ import { CommonGridBox } from "../../../../common/crossword/commonGridBox";
 
 export abstract class ListChecker {
     public static playersFoundWord(word: CommonWord, configuration: ConfigurationService): boolean {
-        let contains: boolean = false;
-        contains = this.listContainsWord(configuration.currentPlayer.foundWords, word);
-        if (!contains && configuration.isTwoPlayerGame) {
-            contains = this.listContainsWord(configuration.otherPlayer.foundWords, word);
-        }
-
-        return contains;
+        return configuration.isTwoPlayerGame ?
+            this.listContainsWord(configuration.otherPlayer.foundWords, word) ||
+            this.listContainsWord(configuration.currentPlayer.foundWords, word) :
+            this.listContainsWord(configuration.currentPlayer.foundWords, word);
     }
 
     public static listContainsWord(words: CommonWord[], wordToFind: CommonWord): boolean {
@@ -22,23 +19,17 @@ export abstract class ListChecker {
     }
 
     public static playersFoundBox(box: CommonGridBox, configuration: ConfigurationService): boolean {
-        if (ListChecker.listContainsBox(configuration.currentPlayer.foundBoxes, box)) {
-            return true;
-        } else if (configuration.isTwoPlayerGame) {
-            return ListChecker.listContainsBox(configuration.otherPlayer.foundBoxes, box);
-        }
-
-        return false;
+        return configuration.isTwoPlayerGame ?
+            ListChecker.listContainsBox(configuration.otherPlayer.foundBoxes, box) ||
+            ListChecker.listContainsBox(configuration.currentPlayer.foundBoxes, box) :
+            ListChecker.listContainsBox(configuration.currentPlayer.foundBoxes, box);
     }
 
     public static playersSelectedBox(box: CommonGridBox, configuration: ConfigurationService): boolean {
-        if (ListChecker.listContainsBox(configuration.currentPlayer.selectedBoxes, box)) {
-            return true;
-        } else if (configuration.isTwoPlayerGame) {
-            return ListChecker.listContainsBox(configuration.otherPlayer.selectedBoxes, box);
-        }
-
-        return false;
+        return configuration.isTwoPlayerGame ?
+            ListChecker.listContainsBox(configuration.otherPlayer.selectedBoxes, box) ||
+            ListChecker.listContainsBox(configuration.currentPlayer.selectedBoxes, box) :
+            ListChecker.listContainsBox(configuration.currentPlayer.selectedBoxes, box);
     }
 
 }
