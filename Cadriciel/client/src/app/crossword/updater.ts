@@ -22,11 +22,7 @@ export abstract class Updater {
     private static setSelectedBoxes(word: CommonWord, configuration: ConfigurationService): void {
         if (word !== undefined) {
             for (let i: number = 0; i < word.length; i++) {
-                let box: CommonGridBox;
-                word.isHorizontal ?
-                    box = configuration.grid.boxes[word.startPosition.y][word.startPosition.x + i] :
-                    box = configuration.grid.boxes[word.startPosition.y + i][word.startPosition.x];
-                configuration.currentPlayer.selectedBoxes.push(box);
+                configuration.currentPlayer.selectedBoxes.push(this.getBox(word, configuration, i));
             }
         }
     }
@@ -34,13 +30,15 @@ export abstract class Updater {
     public static setFoundBoxes(configuration: ConfigurationService): void {
         for (const word of configuration.currentPlayer.foundWords) {
             for (let i: number = 0; i < word.length; i++) {
-                let box: CommonGridBox;
-                word.isHorizontal ?
-                    box = configuration.grid.boxes[word.startPosition.y][word.startPosition.x + i] :
-                    box = configuration.grid.boxes[word.startPosition.y + i][word.startPosition.x];
-                configuration.currentPlayer.foundBoxes.push(box);
+                configuration.currentPlayer.foundBoxes.push(this.getBox(word, configuration, i));
             }
         }
+    }
+
+    private static getBox(word: CommonWord, configuration: ConfigurationService, index: number): CommonGridBox {
+        return word.isHorizontal ?
+            configuration.grid.boxes[word.startPosition.y][word.startPosition.x + index] :
+            configuration.grid.boxes[word.startPosition.y + index][word.startPosition.x];
     }
 
     public static setInputBox(configuration: ConfigurationService, inputGridBox: CommonGridBox): CommonGridBox {
@@ -71,7 +69,7 @@ export abstract class Updater {
 
     private static handleBox(box1: CommonGridBox, boxes: CommonGridBox[]): void {
         for (const box2 of boxes) {
-            if (box1.id.x === box2.id.x && box1.id.y === box2.id.y) {
+            if (Comparator.compareBoxes(box1, box2)) {
                 box1.inputChar = box2.inputChar;
             }
         }

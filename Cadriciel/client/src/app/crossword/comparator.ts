@@ -1,6 +1,7 @@
 import { ConfigurationService } from "./configuration/configuration.service";
 import { ListChecker } from "./listChecker";
 import { CommonWord } from "../../../../common/crossword/commonWord";
+import { CommonGridBox } from "../../../../common/crossword/commonGridBox";
 
 export abstract class Comparator {
 
@@ -34,11 +35,15 @@ export abstract class Comparator {
     }
 
     public static compareWords(word1: CommonWord, word2: CommonWord): boolean {
-        if (word1 === undefined || word2 === undefined) {
-            return false;
-        }
+        return word1 === undefined || word2 === undefined ?
+            false :
+            word1.id === word2.id;
+    }
 
-        return word1.id === word2.id;
+    public static compareBoxes(box1: CommonGridBox, box2: CommonGridBox): boolean {
+        return box1 === undefined || box2 === undefined ?
+            false :
+            box1.id.x === box2.id.x && box1.id.y === box2.id.y;
     }
 
 }
