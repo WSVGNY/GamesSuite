@@ -91,7 +91,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
                 }
             }
             this._collisionManagerService.computeCollisions(this._cars);
-            if (this._collisionManagerService.isInCollision === true) {
+            if (this._collisionManagerService.isInCollision) {
                 this._soundService.play(this._soundService.collisionSound);
                 this._collisionManagerService.isInCollision = false;
             }
@@ -99,7 +99,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
                 this._renderService.render(this._gameScene, this._thirdPersonCamera) :
                 this._renderService.render(this._gameScene, this._topViewCamera);
             this._topViewCamera.updatePosition(this._playerCar);
-            this._soundService.setVolumeAcceleration(this._playerCar);
+            this._soundService.setAccelerationSound(this._playerCar);
             this.update();
         });
     }
@@ -136,8 +136,12 @@ export class RacingComponent implements AfterViewInit, OnInit {
         this._keyboardEventHandlerService.bindFunctionToKeyDown(PLAY_MUSIC_KEYCODE, () =>
             this._soundService.play(this._soundService.music));
         this._keyboardEventHandlerService.bindFunctionToKeyDown(MUTE_KEYCODE, () => this._soundService.stop(this._soundService.music));
-        this._keyboardEventHandlerService.bindFunctionToKeyDown(ACCELERATE_KEYCODE, () =>
-            this._soundService.play(this._soundService.accelerationSoundEffect));
+        this._keyboardEventHandlerService.bindFunctionToKeyDown(ACCELERATE_KEYCODE, () => {
+            if (!this._soundService.isAccelerating()) {
+                this._soundService.play(this._soundService.accelerationSoundEffect);
+                this._soundService.setAccelerating(true);
+            }
+        });
     }
 
     private initializeCars(trackType: TrackType): void {

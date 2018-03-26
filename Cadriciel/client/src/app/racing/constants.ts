@@ -13,8 +13,8 @@ export const TRACK_WIDTH: number = 20;
 export const HALF_TRACK_WIDTH: number = TRACK_WIDTH * HALF;
 export const WALL_DISTANCE_TO_TRACK: number = 10;
 export const WALL_WIDTH: number = 0.5;
-export const SPEED_COEF: number = 3;
-export const SPEED_FACTOR: number = 300;
+export const RPM_FACTOR: number = 1700;
+export const VOLUME: number = 0.2;
 
 export const LOWER_GROUND: number = 0.01;
 export const SKYBOX_SIZE: number = 700;
@@ -51,9 +51,9 @@ export const WALL_TEXTURE: string = BASE_TEXTURE_PATH + "brick.jpg";
 // Sound Paths
 const BASE_SOUND_PATH: string = BASE_ASSETS_PATH + "../../assets/sounds/";
 export const MUSIC_PATH: string = BASE_SOUND_PATH + "rainbowRoad.mp3";
-export const ACCELERATION_PATH: string = BASE_SOUND_PATH + "carAcceleration.mp3";
+export const ACCELERATION_PATH: string = BASE_SOUND_PATH + "carSound.mp3";
 export const STARTING_PATH: string = BASE_SOUND_PATH + "startingSound.mp3";
-export const COLLISION_PATH: string = BASE_SOUND_PATH + "collision-sound.mp3";
+export const COLLISION_PATH: string = BASE_SOUND_PATH + "collisionSound.mp3";
 
 export const WALL_TEXTURE_FACTOR: number = 1;
 

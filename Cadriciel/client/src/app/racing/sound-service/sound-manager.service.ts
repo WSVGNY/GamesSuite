@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { AudioListener, AudioLoader, AudioBuffer, Audio, PerspectiveCamera } from "three";
 import { Car } from "../car/car";
-import { MUSIC_PATH, ACCELERATION_PATH, COLLISION_PATH, STARTING_PATH, SPEED_FACTOR, SPEED_COEF } from "../constants";
+import { MUSIC_PATH, ACCELERATION_PATH, COLLISION_PATH, STARTING_PATH, VOLUME, RPM_FACTOR } from "../constants";
 
 @Injectable()
 export class SoundManagerService {
@@ -10,21 +10,20 @@ export class SoundManagerService {
 
     private _music: Audio;
     private _accelerationSoundEffect: Audio;
-    private _isPlayingAcceleration: boolean = true;
-    private _isDetected: boolean = true;
-    private _isPlayingMusic: boolean = true;
+    private _isPlayingAcceleration: boolean = false;
+    private _isDetected: boolean = false;
+    private _isPlayingMusic: boolean = false;
     private _collisionSound: Audio;
     private _startingSound: Audio;
 
     private createSound(soundName: string): Audio {
         const listener: AudioListener = new AudioListener();
-        const sound: Audio = new Audio(listener); // Maybe positionnal audio
+        const sound: Audio = new Audio(listener);
         const loader: AudioLoader = new AudioLoader();
         loader.load(
             soundName,
             (audioBuffer: AudioBuffer) => {
                 sound.setBuffer(audioBuffer);
-                sound.play();
             },
             (xhr: XMLHttpRequest) => { },
             (err: Event) => { }
@@ -34,30 +33,30 @@ export class SoundManagerService {
     }
 
     public createMusic(car: Car): void {
-        const music: Audio = this.createSound(MUSIC_PATH);
-        car.add(music);
-        this._music = music;
+        this._music = this.createSound(MUSIC_PATH);
+        this._music.setVolume(VOLUME);
+        this._music.setLoop(true);
+        car.add(this._music);
         this._isPlayingMusic = false;
     }
 
     public createAccelerationEffect(car: Car): void {
-        const soundEffect: Audio = this.createSound(ACCELERATION_PATH);
-        car.add(soundEffect);
-        this._accelerationSoundEffect = soundEffect;
+        this._accelerationSoundEffect = this.createSound(ACCELERATION_PATH);
+        car.add(this._accelerationSoundEffect);
+        this._accelerationSoundEffect.setLoop(true);
         this._isPlayingAcceleration = false;
     }
 
     public createCollisionSound(car: Car): void {
-        const sound: Audio = this.createSound(COLLISION_PATH);
-        car.add(sound);
+        this._collisionSound = this.createSound(COLLISION_PATH);
+        car.add(this._collisionSound);
         this._isDetected = false;
-        this._collisionSound = sound;
     }
 
     public createStartingSound(camera: PerspectiveCamera): void {
-        const startSound: Audio = this.createSound(STARTING_PATH);
-        camera.add(startSound);
-        this._startingSound = startSound;
+        this._startingSound = this.createSound(STARTING_PATH);
+        this._startingSound.setVolume(VOLUME);
+        camera.add(this._startingSound);
     }
 
     public play(sound: Audio): void {
@@ -79,20 +78,22 @@ export class SoundManagerService {
     public get startingSound(): Audio {
         return this._startingSound;
     }
+
     public get collisionSound(): Audio {
         return this._collisionSound;
     }
-    public isPlaying(): boolean { return this._isPlayingAcceleration; }
+
+    public isAccelerating(): boolean { return this._isPlayingAcceleration; }
+    public setAccelerating(value: boolean): void { this._isPlayingAcceleration = value; }
     public isDetected(): boolean { return this._isDetected; }
     public isPlayingMusic(): boolean { return this._isPlayingMusic; }
 
-    public setVolumeAcceleration(car: Car): void {
-        this._accelerationSoundEffect.setVolume(this.calculVolume(car));
+    public setAccelerationSound(car: Car): void {
+        this._accelerationSoundEffect.setVolume(VOLUME * 2);
+        this._accelerationSoundEffect.setPlaybackRate(this.calculateRate(car));
     }
 
-    private calculVolume(car: Car): number {
-        const speed: number = car.speed.length() * SPEED_COEF;
-
-        return Math.min((speed /SPEED_FACTOR), 1);
+    private calculateRate(car: Car): number {
+        return Math.max(1, car.rpm / RPM_FACTOR);
     }
 }
