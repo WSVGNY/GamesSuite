@@ -1,7 +1,7 @@
 import { TestBed, inject } from "@angular/core/testing";
 import { CollisionManagerService } from "./collision-manager.service";
 import { Car } from "../car/car";
-import { Vector3 } from "three";
+import { Vector3, Raycaster, Intersection } from "three";
 
 // === TESTS ===
 // détecter une collision
@@ -49,23 +49,27 @@ describe("Collision Manager Service", () => {
        inject([CollisionManagerService], (collisionManager: CollisionManagerService) => {
         firstCar["_mesh"].position.set(1, 0, 1);
         firstCar["_mesh"].updateMatrix();
-        const collidingVertex: Vector3 = firstCar.hitbox.subPlanVertices[0].clone();
+        const collidingVertex: Vector3 = firstCar.hitbox.subPlanVertices[0].clone().applyMatrix4(firstCar.meshMatrix);
         const collisionPoint: Vector3 = collisionManager["checkIfColliding"](firstCar, secondCar);
         expect(collidingVertex).toEqual(collisionPoint);
     }));
 
-    /*it("should compute speed direction for the First car", inject([CollisionManagerService], (service: CollisionManagerService) => {
-        car1["_mesh"].position.set(1, 0, 1);
-        service.computeCollisions(cars);
-        const expectedSpeed: Vector3 = service["computeResultingForces"](car1, car2, service["collisionPoint"]);
-        expect(car1.speed).toEqual(expectedSpeed);
-    }));*/
-
-    /*it("should compute speed direction for the second car", inject([CollisionManagerService], (service: CollisionManagerService) => {
-        car2["_mesh"].position.set(1, 0, 1);
-        service.computeCollisions(cars);
-        expect(car2.speed).toEqual(service["computeResultingForces"](car2, car1, service["collisionPoint"]));
-    }));*/
+    it("should resolve the hitbox overlap", inject([CollisionManagerService], (collisionManager: CollisionManagerService) => {
+        firstCar["_mesh"].position.set(1, 0, 1);
+        firstCar["_mesh"].updateMatrix();
+        collisionManager["collisionEmitter"] = firstCar;
+        collisionManager["collisionReceiver"] = secondCar;
+        collisionManager["collisionPoint"] = firstCar.hitbox.subPlanVertices[0].clone().applyMatrix4(firstCar.meshMatrix);
+        collisionManager["resolveHitboxOverlap"]();
+        collisionManager["collisionEmitter"]["_mesh"].updateMatrix();
+        collisionManager["collisionReceiver"]["_mesh"].updateMatrix();
+        const collidingVertex: Vector3 = collisionManager["collisionReceiver"].hitbox.subPlanVertices[0]
+                                        .clone().applyMatrix4(firstCar.meshMatrix);
+        const direction: Vector3 = collidingVertex.sub(collisionManager["collisionEmitter"].currentPosition);
+        const ray: Raycaster = new Raycaster(collisionManager["collisionEmitter"].currentPosition.clone(), direction.clone().normalize());
+        const collisionResult: Intersection[] = ray.intersectObject(collisionManager["collisionReceiver"].hitbox);
+        expect(collisionResult.length > 0 && collisionResult[0].distance < direction.length()).toEqual(false);
+    }));
 
     // it("should find the deplacement vector is car1 is Emitter", inject([CollisionManagerService], (service: CollisionManagerService) => {
     //     service["collisionEmitter"] = car1;
@@ -90,12 +94,6 @@ describe("Collision Manager Service", () => {
     // it("should find the collision point between two cars", inject([CollisionManagerService], (service: CollisionManagerService) => {
     //         car1["_mesh"].position.set(1, 0, 1);
     //         expect(service["findCollisionPoint"](car1, car2)).toEqual(new Vector3(0.5, 0, 0.5));
-    // }));
-
-    // it("should when two car are colliding who is the Emitter and the reciever and return the sum on the emitter position and the direction",
-    //    inject([CollisionManagerService], (service: CollisionManagerService) => {
-    //         car1["_mesh"].position.set(1, 0, 1);
-    //         expect(service["checkIfColliding"](car1, car2)).toEqual(new Vector3(1.75, 0, 1.75));
     // }));
 
     // it("should find the axe of collision",
