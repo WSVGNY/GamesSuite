@@ -36,7 +36,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private _carDebugs: AIDebug[];
     private _thirdPersonCamera: ThirdPersonCamera;
     private _topViewCamera: TopViewCamera;
-    private _useThirpPersonCamera: boolean;
+    private _useThirdPersonCamera: boolean;
     private _gameScene: GameScene;
     private _playerCar: Car;
     private _lastDate: number;
@@ -52,7 +52,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
     ) {
         this._cars = [];
         this._carDebugs = [];
-        this._useThirpPersonCamera = true;
+        this._useThirdPersonCamera = true;
     }
 
     public ngOnInit(): void {
@@ -95,7 +95,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
                 this._soundService.play(this._soundService.collisionSound);
                 this._collisionManagerService.shouldPlaySound = false;
             }
-            this._useThirpPersonCamera ?
+            this._useThirdPersonCamera ?
                 this._renderService.render(this._gameScene, this._thirdPersonCamera) :
                 this._renderService.render(this._gameScene, this._topViewCamera);
             this._topViewCamera.updatePosition(this._playerCar);
@@ -132,7 +132,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
         this._keyboardEventHandlerService.bindFunctionToKeyDown(DAY_KEYCODE, () => this._gameScene.changeTimeOfDay(this._cars));
         this._keyboardEventHandlerService.bindFunctionToKeyDown(DEBUG_KEYCODE, () => this._gameScene.changeDebugMode());
         this._keyboardEventHandlerService.bindFunctionToKeyDown(CHANGE_CAMERA_KEYCODE, () =>
-            this._useThirpPersonCamera = !this._useThirpPersonCamera);
+            this._useThirdPersonCamera = !this._useThirdPersonCamera);
         this._keyboardEventHandlerService.bindFunctionToKeyDown(PLAY_MUSIC_KEYCODE, () =>
             this._soundService.play(this._soundService.music));
         this._keyboardEventHandlerService.bindFunctionToKeyDown(MUTE_KEYCODE, () => this._soundService.stop(this._soundService.music));
