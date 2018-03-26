@@ -47,10 +47,9 @@ export class SoundManagerService {
         this._isPlayingAcceleration = false;
     }
 
-    public createCollisionSound(camera: PerspectiveCamera, car: Car): void {
+    public createCollisionSound(car: Car): void {
         const sound: Audio = this.createSound(COLLISION_PATH);
         car.add(sound);
-        camera.add(sound);
         this._isDetected = false;
         this._collisionSound = sound;
     }
