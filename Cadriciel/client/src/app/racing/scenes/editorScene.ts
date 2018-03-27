@@ -52,7 +52,7 @@ export class EditorScene extends AbstractScene {
     }
 
     public exportTrackVertices(): CommonCoordinate3D[] {
-        const trackVertices: CommonCoordinate3D[] = new Array();
+        const trackVertices: CommonCoordinate3D[] = [];
         for (const entry of this._vertices) {
             trackVertices.push(new CommonCoordinate3D(entry.position.y, entry.position.z, entry.position.x));
         }
@@ -84,11 +84,11 @@ export class EditorScene extends AbstractScene {
         return this._selectedVertex;
     }
 
-    public get vertices(): Array<Mesh> {
+    public get vertices(): Mesh[] {
         return this._vertices;
     }
 
-    public get connections(): Array<Line> {
+    public get connections(): Line[] {
         return this._connections;
     }
 

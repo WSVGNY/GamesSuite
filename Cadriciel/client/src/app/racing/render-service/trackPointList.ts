@@ -13,7 +13,7 @@ export class TrackPointList {
 
     private fillFromVector3Array(_trackPoints: CommonCoordinate3D[]): TrackPointList {
         if (_trackPoints !== undefined && _trackPoints.length !== 0) {
-            this._trackPoints = new Array<TrackPoint>();
+            this._trackPoints = [];
 
             _trackPoints.forEach((currentPoint: CommonCoordinate3D, i: number) => {
                 this._trackPoints.push(new TrackPoint(new Vector3(currentPoint.x, currentPoint.y, currentPoint.z)));
@@ -42,7 +42,7 @@ export class TrackPointList {
                 (currentPoint.vectorToNextCenterPoint.length() + currentPoint.vectorToPreviousCenterPoint.length());
         });
         if (angleSum > 0) {
-            const reversePoints: Vector3[] = Array<Vector3>(this._trackPoints.length);
+            const reversePoints: Vector3[] = [];
             this._trackPoints.forEach((currentPoint: TrackPoint, i: number) => {
                 reversePoints[this._trackPoints.length - 1 - i] = new Vector3(
                     currentPoint.coordinate.x,
@@ -68,7 +68,7 @@ export class TrackPointList {
     }
 
     public get pointVectors(): Vector3[] {
-        const points: Vector3[] = new Array(this._trackPoints.length);
+        const points: Vector3[] = [];
         this._trackPoints.forEach((currentPoint: TrackPoint, i: number) => {
             points[i] = currentPoint.coordinate.clone();
         });

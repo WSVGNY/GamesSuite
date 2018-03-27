@@ -13,7 +13,7 @@ export class Grid implements CommonGrid {
     public constructor() {
         this.boxes = new Array<Array<GridBox>>();
         for (let i: number = 0; i < SIZE_GRID_Y; i++) {
-            const row: GridBox[] = new Array<GridBox>();
+            const row: GridBox[] = [];
             for (let j: number = 0; j < SIZE_GRID_X; j++) {
                 row.push(new GridBox(new Coordinate2D(i, j), false));
             }

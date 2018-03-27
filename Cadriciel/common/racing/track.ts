@@ -26,7 +26,7 @@ export class Track {
         public timesPlayed: number = 0,
         public bestTimes: number[] = [],
         public type: TrackType = TrackType.Default,
-        public vertices: Array<CommonCoordinate3D> = new Array()) {
+        public vertices: CommonCoordinate3D[] = []) {
     }
 
     public get isTestTrack(): boolean {

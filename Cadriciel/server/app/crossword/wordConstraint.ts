@@ -1,6 +1,8 @@
 import { Word } from "./word";
 import { GridBox } from "./gridBox";
 
+const HTML_QUESTION_MARK: string = "%3f";
+
 export class WordConstraint {
     private _readyValue: string;
     private _originalValue: string;
@@ -16,7 +18,7 @@ export class WordConstraint {
                 charToAdd = grid[word.startPosition.y + i][word.startPosition.x].char.value;
             this._originalValue += charToAdd;
             if (charToAdd === "?") {
-                charToAdd = "%3f";
+                charToAdd = HTML_QUESTION_MARK;
             }
             this._readyValue += charToAdd;
         }

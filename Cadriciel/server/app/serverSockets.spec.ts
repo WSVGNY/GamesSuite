@@ -9,7 +9,6 @@ import { CommonCoordinate3D } from "../../common/racing/commonCoordinate3D";
 
 const SERVER_URL: string = "http://localhost:3000";
 
-// tslint:disable-next-line:max-func-body-length
 describe("Socket.IO tests", () => {
     const client1: SocketIOClient.Socket = sio(SERVER_URL);
     const client2: SocketIOClient.Socket = sio(SERVER_URL);
