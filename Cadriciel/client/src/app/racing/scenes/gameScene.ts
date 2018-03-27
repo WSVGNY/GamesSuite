@@ -1,15 +1,12 @@
 import { AbstractScene } from "./abstractScene";
 import { TrackPoint } from "./../render-service/trackPoint";
 import {
-    Group, PlaneGeometry, MeshPhongMaterial, BackSide, Texture, TextureLoader,
-    RepeatWrapping, Mesh, CubeTexture, CubeTextureLoader,
-    Vector3, Geometry, Line, Camera, LineBasicMaterial
+    Group, Vector3, Geometry, Line, Camera, LineBasicMaterial
 } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
-import { SkyBox } from "../render-service/skybox";
 import { TrackLights } from "../render-service/light";
 import {
-    PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, GRASS_TEXTURE, CHANGE_CAMERA_KEYCODE, YELLOW
+    CHANGE_CAMERA_KEYCODE, YELLOW
 } from "../constants";
 import { Car } from "../car/car";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
@@ -25,7 +22,6 @@ export class GameScene extends AbstractScene {
 
     private _trackShape: TrackMesh;
     private _group: Group;
-    private _skyBoxTextures: Map<TrackType, CubeTexture>;
     private _lighting: TrackLights;
     private _centerLine: Group;
     private _debugMode: boolean;
@@ -91,47 +87,6 @@ export class GameScene extends AbstractScene {
         walls.add(Wall.createExteriorWall(trackPoints));
 
         return walls;
-    }
-
-    private addGround(): void {
-        const groundGeometry: PlaneGeometry = new PlaneGeometry(GROUND_SIZE, GROUND_SIZE, 1, 1);
-        const groundMaterial: MeshPhongMaterial =
-            new MeshPhongMaterial({ side: BackSide, map: this.loadRepeatingTexture(GRASS_TEXTURE, GROUND_TEXTURE_FACTOR) });
-
-        const ground: Mesh = new Mesh(groundGeometry, groundMaterial);
-        ground.rotateX(PI_OVER_2);
-        ground.translateZ(LOWER_GROUND);
-        ground.name = "ground";
-        this.add(ground);
-    }
-
-    private setSkyBox(trackType: TrackType): void {
-        if (this._skyBoxTextures.get(trackType) === undefined) {
-            this._skyBoxTextures.set(trackType, this.loadSkyBox(SkyBox.getPath(trackType)));
-        }
-        this.background = this._skyBoxTextures.get(trackType);
-    }
-
-    private loadSkyBox(pathToImages: string): CubeTexture {
-        return new CubeTextureLoader()
-            .setPath(pathToImages)
-            .load([
-                "px.jpg",
-                "nx.jpg",
-                "py.jpg",
-                "ny.jpg",
-                "pz.jpg",
-                "nz.jpg"
-            ]);
-    }
-
-    private loadRepeatingTexture(pathToImage: string, imageRatio: number): Texture {
-        const texture: Texture = new TextureLoader().load(pathToImage);
-        texture.wrapS = RepeatWrapping;
-        texture.wrapT = RepeatWrapping;
-        texture.repeat.set(imageRatio, imageRatio);
-
-        return texture;
     }
 
     private findFirstTrackSegmentAngle(): number {
