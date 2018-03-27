@@ -1,12 +1,10 @@
-import { AbstractScene } from "./abstractScene";
+import { AbstractScene } from "./abstractRacingScene";
 import {
-    Group, PlaneGeometry, MeshPhongMaterial, BackSide, Texture, TextureLoader,
-    RepeatWrapping, Mesh, CubeTexture, Shape, ShapeGeometry, Path, CubeTextureLoader
+    Group, MeshPhongMaterial, BackSide, Mesh, Shape, ShapeGeometry, Path
 } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
-import { SkyBox } from "../render-service/skybox";
 import { TrackLights } from "../render-service/light";
-import { PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE, GRASS_TEXTURE, MS_TO_SECONDS } from "../constants";
+import { PI_OVER_2, GROUND_TEXTURE_FACTOR, ASPHALT_TEXTURE} from "../constants";
 import { TrackPointList } from "../render-service/trackPointList";
 import { Track } from "../../../../../common/racing/track";
 
@@ -16,7 +14,6 @@ export class PreviewScene extends AbstractScene {
     private _trackPoints: TrackPointList;
     private _track: Mesh;
     private _group: Group;
-    private _skyBoxTexture: CubeTexture;
 
     public constructor() {
         super();
@@ -24,6 +21,7 @@ export class PreviewScene extends AbstractScene {
         this.addGround();
         this._group.add(new TrackLights(TrackType.Default));
         this.add(this._group);
+        this._skyBoxTextures = new Map();
     }
 
     public loadTrack(track: Track): void {
@@ -35,39 +33,6 @@ export class PreviewScene extends AbstractScene {
         this._track = this.createTrackMesh(this._trackPoints);
         this._group.add(this._track);
         this.setSkyBox(track.type);
-    }
-
-    private addGround(): void {
-        const groundGeometry: PlaneGeometry = new PlaneGeometry(GROUND_SIZE, GROUND_SIZE, 1, 1);
-        const groundMaterial: MeshPhongMaterial =
-            new MeshPhongMaterial({ side: BackSide, map: this.loadRepeatingTexture(GRASS_TEXTURE, MS_TO_SECONDS) });
-
-        const ground: Mesh = new Mesh(groundGeometry, groundMaterial);
-        ground.rotateX(PI_OVER_2);
-        ground.translateZ(LOWER_GROUND);
-        ground.name = "ground";
-        this.add(ground);
-    }
-
-    private setSkyBox(trackType: TrackType): void {
-        this.loadSkyBox(SkyBox.getPath(trackType));
-    }
-
-    public loadSkyBox(pathToImages: string): void {
-        this._skyBoxTexture = new CubeTextureLoader()
-            .setPath(pathToImages)
-            .load([
-                "px.jpg",
-                "nx.jpg",
-                "py.jpg",
-                "ny.jpg",
-                "pz.jpg",
-                "nz.jpg"
-            ]);
-
-        if (this !== undefined) {
-            this.background = this._skyBoxTexture;
-        }
     }
 
     public createTrackMesh(trackPoints: TrackPointList): Mesh {
@@ -102,15 +67,6 @@ export class PreviewScene extends AbstractScene {
         }
         holePath.lineTo(trackPoints.first.interior.x, trackPoints.first.interior.z);
         trackShape.holes.push(holePath);
-    }
-
-    private loadRepeatingTexture(pathToImage: string, imageRatio: number): Texture {
-        const texture: Texture = new TextureLoader().load(pathToImage);
-        texture.wrapS = RepeatWrapping;
-        texture.wrapT = RepeatWrapping;
-        texture.repeat.set(imageRatio, imageRatio);
-
-        return texture;
     }
 
     public set isDay(isDay: boolean) {
