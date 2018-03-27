@@ -8,6 +8,7 @@ describe("Third Person Camera Test", () => {
     const ASPECTRATIO: number = 1;
     const INITIAL_CAMERA_POSITION_Z: number = 10;
     const INITIAL_CAMERA_POSITION_Y: number = 5;
+    const EXPECTED_ANGLE: number = 1.3789287653092055;
 
     const camera: ThirdPersonCamera = new ThirdPersonCamera(ASPECTRATIO);
     beforeEach(() => {
@@ -45,7 +46,13 @@ describe("Third Person Camera Test", () => {
         expect(camera.position).toEqual(new Vector3(0, INITIAL_CAMERA_POSITION_Y, INITIAL_CAMERA_POSITION_Z));
     });
 
-    it("camera should be in the right position and angle", () => {
-        expect(true).toBeFalsy();
+    it("camera should be in the right angle", () => {
+        const car: Object3D = new Object3D();
+        car.add(camera);
+        car.position.set(2, 0, 1);
+        const cameraToCar: Vector3 = camera.position.clone().sub(car.position);
+        const carToFloor: Vector3 = new Vector3(-1, 0, 0);
+        const angleCarToCamera: number = cameraToCar.normalize().angleTo(carToFloor.normalize());
+        expect(angleCarToCamera).toEqual(EXPECTED_ANGLE);
     });
 });

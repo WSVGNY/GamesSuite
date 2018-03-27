@@ -1,9 +1,10 @@
 // tslint:disable:no-magic-numbers
 import { TopViewCamera } from "./topViewCamera";
-import { OrthographicCamera, Vector3 } from "three";
+import { OrthographicCamera, Vector3, Euler } from "three";
 import { Car } from "../car/car";
 
 const INITIAL_CAMERA_POSITION_Y: number = 10;
+const PI_OVER_2: number = 1.5707963267948963;
 
 describe("Top View Camera Test", () => {
 
@@ -43,7 +44,10 @@ describe("Top View Camera Test", () => {
         expect(camera.position).toEqual(new Vector3(10, INITIAL_CAMERA_POSITION_Y, 5));
     });
 
-    it("camera shouldnt rotate", () => {
-        expect(true).toBeFalsy();
+    it("camera shouldn't  rotate", () => {
+        car["_mesh"].position.set(2, 0, 1);
+        camera.updatePosition(car);
+        const angle: Euler = new Euler( -PI_OVER_2, 0, -PI_OVER_2);
+        expect(camera.getWorldRotation()).toEqual(angle);
     });
 });
