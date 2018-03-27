@@ -1,4 +1,4 @@
-import { AbstractScene } from "./abstractScene";
+import { AbstractScene } from "./abstractRacingScene";
 import {
     Group, MeshPhongMaterial, BackSide, Mesh, Shape, ShapeGeometry, Path
 } from "three";

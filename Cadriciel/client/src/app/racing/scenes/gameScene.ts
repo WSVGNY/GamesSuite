@@ -1,4 +1,4 @@
-import { AbstractScene } from "./abstractScene";
+import { AbstractScene } from "./abstractRacingScene";
 import { TrackPoint } from "./../render-service/trackPoint";
 import {
     Group, Vector3, Geometry, Line, Camera, LineBasicMaterial
