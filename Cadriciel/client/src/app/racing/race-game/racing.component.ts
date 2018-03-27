@@ -4,21 +4,20 @@ import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-ha
 import { Track } from "../../../../../common/racing/track";
 import { TrackService } from "../track-service/track.service";
 import { ActivatedRoute } from "@angular/router";
-import { ThirdPersonCamera } from "../cameras/thirdPersonCamera";
 import { GameScene } from "../scenes/gameScene";
 import { AICarService } from "../artificial-intelligence/ai-car.service";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { RenderService } from "../render-service/render.service";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
 import { SoundManagerService } from "../sound-service/sound-manager.service";
-import { TopViewCamera } from "../cameras/topViewCamera";
 import {
-    CHANGE_CAMERA_KEYCODE, DAY_KEYCODE, DEBUG_KEYCODE, AI_CARS_QUANTITY, PLAY_MUSIC_KEYCODE,
+    DAY_KEYCODE, DEBUG_KEYCODE, AI_CARS_QUANTITY, PLAY_MUSIC_KEYCODE,
     MUTE_KEYCODE,
     ACCELERATE_KEYCODE
 } from "../constants";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { CollisionManagerService } from "../collision-manager/collision-manager.service";
+import { CameraManagerService } from "../cameras/camera-manager.service";
 
 @Component({
     moduleId: module.id,
@@ -34,9 +33,6 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private _chosenTrack: Track;
     private _cars: Car[];
     private _carDebugs: AIDebug[];
-    private _thirdPersonCamera: ThirdPersonCamera;
-    private _topViewCamera: TopViewCamera;
-    private _useThirdPersonCamera: boolean;
     private _gameScene: GameScene;
     private _playerCar: Car;
     private _lastDate: number;
@@ -44,29 +40,28 @@ export class RacingComponent implements AfterViewInit, OnInit {
     public constructor(
         private _renderService: RenderService,
         private _route: ActivatedRoute,
-        private _keyboardEventHandlerService: KeyboardEventHandlerService,
+        private _keyBoardHandler: KeyboardEventHandlerService,
         private _trackService: TrackService,
         private _aiCarService: AICarService,
         private _collisionManagerService: CollisionManagerService,
-        private _soundService: SoundManagerService
+        private _soundService: SoundManagerService,
+        private _cameraManager: CameraManagerService
     ) {
         this._cars = [];
         this._carDebugs = [];
-        this._useThirdPersonCamera = true;
     }
 
     public ngOnInit(): void {
-        this._gameScene = new GameScene(this._keyboardEventHandlerService);
+        this._gameScene = new GameScene(this._keyBoardHandler);
     }
 
     public async ngAfterViewInit(): Promise<void> {
-        this._thirdPersonCamera = new ThirdPersonCamera(this.computeAspectRatio());
-        this._topViewCamera = new TopViewCamera(this.computeAspectRatio());
+        this._cameraManager.initializeCameras(this.computeAspectRatio());
         this._renderService
-            .initialize(this._containerRef.nativeElement, this._gameScene, this._thirdPersonCamera)
+            .initialize(this._containerRef.nativeElement, this._gameScene, this._cameraManager.getCurrentCamera())
             .then(/* do nothing */)
             .catch((err) => console.error(err));
-        this._keyboardEventHandlerService.initialize();
+        this._keyBoardHandler.initialize();
         this.getTrack();
     }
 
@@ -95,17 +90,15 @@ export class RacingComponent implements AfterViewInit, OnInit {
                 this._soundService.play(this._soundService.collisionSound);
                 this._collisionManagerService.shouldPlaySound = false;
             }
-            this._useThirdPersonCamera ?
-                this._renderService.render(this._gameScene, this._thirdPersonCamera) :
-                this._renderService.render(this._gameScene, this._topViewCamera);
-            this._topViewCamera.updatePosition(this._playerCar);
+            this._renderService.render(this._gameScene, this._cameraManager.getCurrentCamera());
             this._soundService.setAccelerationSound(this._playerCar);
+            this._cameraManager.updateCameraPositions(this._playerCar);
             this.update();
         });
     }
 
     private createSounds(): void {
-        this._soundService.createStartingSound(this._thirdPersonCamera);
+        // this._soundService.createStartingSound(this._thirdPersonCamera);
         this._soundService.createMusic(this._playerCar);
         this._soundService.createAccelerationEffect(this._playerCar);
         this._soundService.createCollisionSound(this._playerCar);
@@ -118,7 +111,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
                 this.initializeCars(this._chosenTrack.type);
                 await this._gameScene.loadTrack(this._chosenTrack);
-                await this._gameScene.loadCars(this._cars, this._carDebugs, this._thirdPersonCamera, this._chosenTrack.type);
+                await this._gameScene.loadCars(this._cars, this._carDebugs, this._cameraManager.getCurrentCamera(), this._chosenTrack.type);
                 await this._aiCarService
                     .initialize(this._chosenTrack.vertices, Difficulty.Medium)
                     .then(/* do nothing */)
@@ -129,14 +122,13 @@ export class RacingComponent implements AfterViewInit, OnInit {
     }
 
     private bindKeys(): void {
-        this._keyboardEventHandlerService.bindFunctionToKeyDown(DAY_KEYCODE, () => this._gameScene.changeTimeOfDay(this._cars));
-        this._keyboardEventHandlerService.bindFunctionToKeyDown(DEBUG_KEYCODE, () => this._gameScene.changeDebugMode());
-        this._keyboardEventHandlerService.bindFunctionToKeyDown(CHANGE_CAMERA_KEYCODE, () =>
-            this._useThirdPersonCamera = !this._useThirdPersonCamera);
-        this._keyboardEventHandlerService.bindFunctionToKeyDown(PLAY_MUSIC_KEYCODE, () =>
+        this._cameraManager.bindCameraKey();
+        this._keyBoardHandler.bindFunctionToKeyDown(DAY_KEYCODE, () => this._gameScene.changeTimeOfDay(this._cars));
+        this._keyBoardHandler.bindFunctionToKeyDown(DEBUG_KEYCODE, () => this._gameScene.changeDebugMode());
+        this._keyBoardHandler.bindFunctionToKeyDown(PLAY_MUSIC_KEYCODE, () =>
             this._soundService.play(this._soundService.music));
-        this._keyboardEventHandlerService.bindFunctionToKeyDown(MUTE_KEYCODE, () => this._soundService.stop(this._soundService.music));
-        this._keyboardEventHandlerService.bindFunctionToKeyDown(ACCELERATE_KEYCODE, () => {
+        this._keyBoardHandler.bindFunctionToKeyDown(MUTE_KEYCODE, () => this._soundService.stop(this._soundService.music));
+        this._keyBoardHandler.bindFunctionToKeyDown(ACCELERATE_KEYCODE, () => {
             if (!this._soundService.isAccelerating()) {
                 this._soundService.play(this._soundService.accelerationSoundEffect);
                 this._soundService.setAccelerating(true);
@@ -148,10 +140,10 @@ export class RacingComponent implements AfterViewInit, OnInit {
         for (let i: number = 0; i < AI_CARS_QUANTITY + 1; ++i) {
 
             if (i === 0) {
-                this._cars.push(new Car(this._keyboardEventHandlerService));
+                this._cars.push(new Car(this._keyBoardHandler));
                 this._playerCar = this._cars[0];
             } else {
-                this._cars.push(new Car(this._keyboardEventHandlerService, true));
+                this._cars.push(new Car(this._keyBoardHandler, true));
             }
             this._carDebugs.push(new AIDebug());
         }
@@ -169,14 +161,14 @@ export class RacingComponent implements AfterViewInit, OnInit {
     @HostListener("window:keydown", ["$event"])
     public onKeyDown(event: KeyboardEvent): void {
         if (this._gameScene !== undefined) {
-            this._keyboardEventHandlerService.handleKeyDown(event.keyCode);
+            this._keyBoardHandler.handleKeyDown(event.keyCode);
         }
     }
 
     @HostListener("window:keyup", ["$event"])
     public onKeyUp(event: KeyboardEvent): void {
         if (this._gameScene !== undefined) {
-            this._keyboardEventHandlerService.handleKeyUp(event.keyCode);
+            this._keyBoardHandler.handleKeyUp(event.keyCode);
         }
     }
 

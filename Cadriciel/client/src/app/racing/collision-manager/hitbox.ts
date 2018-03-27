@@ -4,9 +4,14 @@ const WIDTH: number = 1.5;
 const HEIGHT: number = 0.01;
 const DEPTH: number = 3.1;
 
+const TOP_LEFT_VERTEX_INDEX: number = 2;
+const TOP_RIGHT_VERTEX_INDEX: number = 3;
+const BOTTOM_LEFT_VERTEX_INDEX: number = 6;
+const BOTTOM_RIGHT_VERTEX_INDEX: number = 7;
+
 export class Hitbox extends Mesh {
 
-    private _subPlaneVertices: Vector3[];
+    private _bottomPlaneVertices: Vector3[];
     public inCollision: boolean;
 
     public constructor() {
@@ -15,21 +20,21 @@ export class Hitbox extends Mesh {
         material.opacity = 0;
         material.transparent = true;
         super(geometry, material);
-        this._subPlaneVertices = [];
+        this._bottomPlaneVertices = [];
         this.generateSubPlanVertices();
         this.inCollision = false;
     }
 
     private generateSubPlanVertices(): void {
-        this._subPlaneVertices = [];
-        this._subPlaneVertices.push((this.geometry as BoxGeometry).vertices[2]);
-        this._subPlaneVertices.push((this.geometry as BoxGeometry).vertices[3]);
-        this._subPlaneVertices.push((this.geometry as BoxGeometry).vertices[6]);
-        this._subPlaneVertices.push((this.geometry as BoxGeometry).vertices[7]);
+        this._bottomPlaneVertices = [];
+        this._bottomPlaneVertices.push((this.geometry as BoxGeometry).vertices[TOP_LEFT_VERTEX_INDEX]);
+        this._bottomPlaneVertices.push((this.geometry as BoxGeometry).vertices[TOP_RIGHT_VERTEX_INDEX]);
+        this._bottomPlaneVertices.push((this.geometry as BoxGeometry).vertices[BOTTOM_LEFT_VERTEX_INDEX]);
+        this._bottomPlaneVertices.push((this.geometry as BoxGeometry).vertices[BOTTOM_RIGHT_VERTEX_INDEX]);
     }
 
-    public get subPlanVertices(): Vector3[] {
-        return this._subPlaneVertices;
+    public get bottomPlaneVertices(): Vector3[] {
+        return this._bottomPlaneVertices;
     }
 
     public get hitboxGeometry(): BoxGeometry {

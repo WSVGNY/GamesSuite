@@ -24,7 +24,7 @@ export class TrackRoute {
 
     public getTrackFromID(req: Request, res: Response): void {
         MongoClient.connect(DATABASE_URL).then((dbConnection: MongoClient) => {
-            dbConnection.db("log2990").collection(COLLECTION)
+            dbConnection.db(DATABASE).collection(COLLECTION)
                 .findOne({ "_id": new ObjectId(req.params.id) }).then((document: string) => {
                     res.send(Track.createFromJSON(JSON.stringify(document)));
                     dbConnection.close().catch((e: Error) => res.send(e));
@@ -34,7 +34,7 @@ export class TrackRoute {
 
     public newTrack(req: Request, res: Response): void {
         MongoClient.connect(DATABASE_URL).then((dbConnection: MongoClient) => {
-            dbConnection.db("log2990").collection(COLLECTION)
+            dbConnection.db(DATABASE).collection(COLLECTION)
                 .insertOne(req.body).then((result: InsertOneWriteOpResult) => {
                     req.params.id = result.insertedId;
                     dbConnection.close().then(() => this.getTrackFromID(req, res)).catch((e: Error) => res.send(e));
@@ -45,7 +45,7 @@ export class TrackRoute {
     public editTrack(req: Request, res: Response): void {
         delete req.body._id;
         MongoClient.connect(DATABASE_URL).then((dbConnection: MongoClient) => {
-            dbConnection.db("log2990").collection(COLLECTION)
+            dbConnection.db(DATABASE).collection(COLLECTION)
                 .updateOne({ "_id": new ObjectId(req.params.id) }, { $set: req.body }).then((result: UpdateWriteOpResult) => {
                     dbConnection.close().then(() => this.getTrackFromID(req, res)).catch((e: Error) => res.send(e));
                 }).catch((e: Error) => res.send(e));
@@ -54,7 +54,7 @@ export class TrackRoute {
 
     public deleteTrack(req: Request, res: Response): void {
         MongoClient.connect(DATABASE_URL).then((dbConnection: MongoClient) => {
-            dbConnection.db("log2990").collection(COLLECTION)
+            dbConnection.db(DATABASE).collection(COLLECTION)
                 .deleteOne({ "_id": new ObjectId(req.params.id) }).then(() => {
                     dbConnection.close().then(() => this.getTrackList(req, res)).catch((e: Error) => res.send(e));
                 }).catch((e: Error) => res.send(e));

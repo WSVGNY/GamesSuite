@@ -1,4 +1,4 @@
 export enum TrackType {
-    Default = "DAY", 
+    Default = "DAY",
     Night = "NIGHT"
 }

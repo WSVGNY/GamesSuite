@@ -2,9 +2,9 @@ import { CommonCoordinate3D } from "./commonCoordinate3D";
 import { TrackType } from "./trackType";
 
 export class Track {
-
+    // tslint:disable:no-string-literal
     public static createFromJSON(stringObject: string): Track {
-        const jsonObject = JSON.parse(stringObject) as Track;
+        const jsonObject: Track = JSON.parse(stringObject) as Track;
         return new Track(
             jsonObject["_id"],
             jsonObject["_isTestTrack"],
@@ -16,6 +16,7 @@ export class Track {
             jsonObject["vertices"]
         );
     }
+    // tslint:enable:no-string-literal
 
     public constructor(
         private _id: string,
@@ -25,7 +26,7 @@ export class Track {
         public timesPlayed: number = 0,
         public bestTimes: number[] = [],
         public type: TrackType = TrackType.Default,
-        public vertices: Array<CommonCoordinate3D> = new Array()) {
+        public vertices: CommonCoordinate3D[] = []) {
     }
 
     public get isTestTrack(): boolean {

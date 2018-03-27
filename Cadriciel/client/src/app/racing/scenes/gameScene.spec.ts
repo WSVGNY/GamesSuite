@@ -1,13 +1,12 @@
-// tslint:disable:no-magic-numbers
-
 import { GameScene } from "./gameScene";
-import { Vector3, Geometry } from "three";
+import { Vector3, Geometry, Mesh, MeshPhongMaterial } from "three";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { TestBed } from "@angular/core/testing";
-import { TrackMesh } from "../track";
+import { TrackMesh } from "../track-service/track";
 import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
 import { Track } from "../../../../../common/racing/track";
 
+// tslint:disable:no-magic-numbers
 describe("Game Scene", () => {
 
     let gameScene: GameScene;
@@ -46,5 +45,22 @@ describe("Game Scene", () => {
             new Vector3(10, 90, 0),
         ];
         expect((shape.geometry as Geometry)["vertices"]).toEqual(EXPECTED_MOCK_TRACK);
+    });
+
+    it("on-track and off-track should be different meshes", () => {
+        const MOCK_TRACK: CommonCoordinate3D[] = [
+            new CommonCoordinate3D(0, 0, 0),
+            new CommonCoordinate3D(100, 0, 0),
+            new CommonCoordinate3D(100, 0, 100),
+            new CommonCoordinate3D(0, 0, 100),
+        ];
+        const mockTrack: Track = new Track("");
+        mockTrack.vertices = MOCK_TRACK;
+        gameScene["_trackShape"] = new TrackMesh(mockTrack);
+        gameScene["_group"].add(gameScene["_trackShape"]);
+        gameScene["addGround"]();
+        const track: Mesh = gameScene.getObjectByName("track") as Mesh;
+        const ground: Mesh = gameScene.getObjectByName("ground") as Mesh;
+        expect((track.material as MeshPhongMaterial).map).not.toEqual((ground.material as MeshPhongMaterial).map);
     });
 });

@@ -39,7 +39,7 @@ export class WordFiller {
         let isFull: boolean = false;
         this.createCharGrid();
         this.generateConstraints();
-        this._filledWords = new Array<Word>();
+        this._filledWords = [];
         do {
             await this.fillWord(this._longestWord).then(
                 (result: Token) => {

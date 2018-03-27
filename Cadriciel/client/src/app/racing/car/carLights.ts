@@ -8,7 +8,7 @@ export class CarLights extends Group {
 
     public constructor() {
         super();
-        this._spotlights = new Array();
+        this._spotlights = [];
         this.createSpotlight(true, true);
         this.createSpotlight(false, true);
         this.createSpotlight(true, false);
