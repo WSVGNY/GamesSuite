@@ -78,7 +78,7 @@ export class CollisionManagerService {
     private findDisplacementVector(): Vector3 {
         let smallestDistance: number = 2e19;
         let displacement: Vector3;
-        for (let i: number = 0; i < this._collisionReceiver.hitbox.subPlanVertices.length; ++i) {
+        for (let i: number = 0; i < this._collisionReceiver.hitbox.bottomPlaneVertices.length; ++i) {
             const desiredGlobalVertices: Vector3[] = this.computeIntersectingHitboxSide(i);
             const possibleDisplacement: Vector3 =
                 this.findDistanceToSegment(
@@ -97,10 +97,10 @@ export class CollisionManagerService {
     }
 
     private computeIntersectingHitboxSide(index: number): Vector3[] {
-        const localVertexA: Vector3 = this._collisionReceiver.hitbox.subPlanVertices[index].clone();
-        const localVertexB: Vector3 = ((index + 1) === this._collisionReceiver.hitbox.subPlanVertices.length) ?
-            this._collisionReceiver.hitbox.subPlanVertices[0].clone() :
-            this._collisionReceiver.hitbox.subPlanVertices[index + 1].clone();
+        const localVertexA: Vector3 = this._collisionReceiver.hitbox.bottomPlaneVertices[index].clone();
+        const localVertexB: Vector3 = ((index + 1) === this._collisionReceiver.hitbox.bottomPlaneVertices.length) ?
+            this._collisionReceiver.hitbox.bottomPlaneVertices[0].clone() :
+            this._collisionReceiver.hitbox.bottomPlaneVertices[index + 1].clone();
         const globalVertices: Vector3[] = [];
         globalVertices.push(localVertexA.applyMatrix4(this._collisionReceiver.meshMatrix));
         globalVertices.push(localVertexB.applyMatrix4(this._collisionReceiver.meshMatrix));
@@ -130,7 +130,7 @@ export class CollisionManagerService {
     }
 
     private checkIfColliding(collisionEmitter: Car, collisionReceiver: Car): Vector3 {
-        for (const vertex of collisionEmitter.hitbox.subPlanVertices) {
+        for (const vertex of collisionEmitter.hitbox.bottomPlaneVertices) {
 
             const localVertex: Vector3 = vertex.clone();
             const globalVertex: Vector3 = localVertex.applyMatrix4(collisionEmitter.meshMatrix);
