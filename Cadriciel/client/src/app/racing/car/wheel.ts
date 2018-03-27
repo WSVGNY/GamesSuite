@@ -17,7 +17,6 @@ export class Wheel {
     }
 
     public get inertia(): number {
-        // tslint:disable-next-line:no-magic-numbers
         return this._mass * this._radius * this._radius / 2;
     }
 
