@@ -1,11 +1,12 @@
 import { TestBed, inject } from "@angular/core/testing";
 
 import { SoundManagerService } from "./sound-manager.service";
+import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 
 describe("SoundManagerService", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [SoundManagerService]
+            providers: [SoundManagerService, KeyboardEventHandlerService]
         });
     });
 

@@ -21,7 +21,7 @@ describe("ChooseTrackComponent", () => {
             providers: [TrackService, RenderService]
         })
             .compileComponents().catch((error: Error) => console.error(error));
-        await component["getTracksFromServer"]();
+        component["getTracksFromServer"]();
     });
 
     beforeEach(() => {

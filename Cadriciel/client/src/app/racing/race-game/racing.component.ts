@@ -106,7 +106,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
                 this._chosenTrack = Track.createFromJSON(JSON.stringify(trackFromServer));
 
                 this.initializeCars(this._chosenTrack.type);
-                await this._gameScene.loadTrack(this._chosenTrack);
+                this._gameScene.loadTrack(this._chosenTrack);
                 await this._gameScene.loadCars(this._cars, this._carDebugs, this._cameraManager.getCurrentCamera(), this._chosenTrack.type);
                 await this._aiCarService
                     .initialize(this._chosenTrack.vertices, Difficulty.Medium)

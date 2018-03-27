@@ -42,7 +42,8 @@ describe("Collision Manager Service", () => {
         expect(collisionPoint).toBeDefined();
     }));
 
-    it("should detect if cars are colliding in an array of cars that are colliding",
+    it(
+        "should detect if cars are colliding in an array of cars that are colliding",
         inject([CollisionManagerService], (collisionManager: CollisionManagerService) => {
             const cars: Car[] = [];
             cars.push(firstCar);
@@ -53,7 +54,8 @@ describe("Collision Manager Service", () => {
             expect(collisionManager["shouldPlaySound"]).toEqual(true);
         }));
 
-    it("should not detect if cars are colliding in an array of cars that aren't colliding",
+    it(
+        "should not detect if cars are colliding in an array of cars that aren't colliding",
         inject([CollisionManagerService], (collisionManager: CollisionManagerService) => {
             const cars: Car[] = [];
             cars.push(firstCar);
