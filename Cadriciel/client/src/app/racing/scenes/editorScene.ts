@@ -1,7 +1,6 @@
-import { AbstractScene } from "./abstractScene";
 import {
     Vector3, AmbientLight, Mesh, Line, SphereGeometry,
-    MeshBasicMaterial, LineBasicMaterial, Geometry, BackSide
+    MeshBasicMaterial, LineBasicMaterial, Geometry, BackSide, Scene
 } from "three";
 import { WHITE, PINK, BLUE } from "../constants";
 import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
@@ -15,7 +14,7 @@ export const SIMPLE_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ c
 export const START_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: PINK });
 export const SIMPLE_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: BLUE });
 
-export class EditorScene extends AbstractScene {
+export class EditorScene extends Scene {
     private _vertices: Mesh[];
     private _connections: Line[];
     private _firstVertex: Mesh;
