@@ -2,11 +2,11 @@ import { Vector3 } from "three";
 import { HALF, HALF_TRACK_WIDTH } from "../constants";
 
 export class TrackPoint {
+    public next: TrackPoint;
+    public previous: TrackPoint;
     private _interior: Vector3;
     private _exterior: Vector3;
     private _smallAngle: number;
-    public next: TrackPoint;
-    public previous: TrackPoint;
 
     public constructor(private _coordinate: Vector3 = new Vector3(0, 0, 0)) {
     }

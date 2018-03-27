@@ -17,7 +17,7 @@ import { Wall } from "../render-service/wall";
 import { TrackPointList } from "../render-service/trackPointList";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { Track } from "../../../../../common/racing/track";
-import { TrackMesh } from "../track";
+import { TrackMesh } from "../track-service/track";
 
 const START_POSITION_OFFSET: number = -15;
 
