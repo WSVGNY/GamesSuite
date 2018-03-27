@@ -34,7 +34,7 @@ export class CollisionManagerService {
         if (this._collisionPoint !== undefined) {
             this._collisionPoint.y = 0;
             this.resolveHitboxOverlap();
-            if (this._collisionEmitter.hitbox.inCollision === false && this._collisionReceiver.hitbox.inCollision === false) {
+            if (!this._collisionEmitter.hitbox.inCollision && !this._collisionReceiver.hitbox.inCollision) {
                 this.applyCollisionPhysics();
             }
         } else {

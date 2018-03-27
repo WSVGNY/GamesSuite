@@ -1,6 +1,5 @@
 // tslint:disable:no-magic-numbers
 
-import { RenderService } from "../render-service/render.service";
 import { PreviewScene } from "./previewScene";
 import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
 import { Track } from "../../../../../common/racing/track";

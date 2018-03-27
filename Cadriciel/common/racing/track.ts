@@ -4,7 +4,7 @@ import { TrackType } from "./trackType";
 export class Track {
     // tslint:disable:no-string-literal
     public static createFromJSON(stringObject: string): Track {
-        const jsonObject = JSON.parse(stringObject) as Track;
+        const jsonObject: Track = JSON.parse(stringObject) as Track;
         return new Track(
             jsonObject["_id"],
             jsonObject["_isTestTrack"],
