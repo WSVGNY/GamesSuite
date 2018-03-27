@@ -10,11 +10,7 @@ import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { RenderService } from "../render-service/render.service";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
 import { SoundManagerService } from "../sound-service/sound-manager.service";
-import {
-    DAY_KEYCODE, DEBUG_KEYCODE, AI_CARS_QUANTITY, PLAY_MUSIC_KEYCODE,
-    MUTE_KEYCODE,
-    ACCELERATE_KEYCODE
-} from "../constants";
+import { AI_CARS_QUANTITY } from "../constants";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { CollisionManagerService } from "../collision-manager/collision-manager.service";
 import { CameraManagerService } from "../cameras/camera-manager.service";
@@ -123,17 +119,8 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
     private bindKeys(): void {
         this._cameraManager.bindCameraKey();
-        this._keyBoardHandler.bindFunctionToKeyDown(DAY_KEYCODE, () => this._gameScene.changeTimeOfDay(this._cars));
-        this._keyBoardHandler.bindFunctionToKeyDown(DEBUG_KEYCODE, () => this._gameScene.changeDebugMode());
-        this._keyBoardHandler.bindFunctionToKeyDown(PLAY_MUSIC_KEYCODE, () =>
-            this._soundService.play(this._soundService.music));
-        this._keyBoardHandler.bindFunctionToKeyDown(MUTE_KEYCODE, () => this._soundService.stop(this._soundService.music));
-        this._keyBoardHandler.bindFunctionToKeyDown(ACCELERATE_KEYCODE, () => {
-            if (!this._soundService.isAccelerating()) {
-                this._soundService.play(this._soundService.accelerationSoundEffect);
-                this._soundService.setAccelerating(true);
-            }
-        });
+        this._soundService.bindSoundKeys();
+        this._gameScene.bindGameSceneKeys(this._cars);
     }
 
     private initializeCars(trackType: TrackType): void {

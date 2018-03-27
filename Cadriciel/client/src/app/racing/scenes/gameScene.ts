@@ -6,7 +6,7 @@ import {
 import { TrackType } from "../../../../../common/racing/trackType";
 import { TrackLights } from "../render-service/light";
 import {
-    CHANGE_CAMERA_KEYCODE, YELLOW
+    CHANGE_CAMERA_KEYCODE, YELLOW, DAY_KEYCODE, DEBUG_KEYCODE
 } from "../constants";
 import { Car } from "../car/car";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
@@ -28,7 +28,7 @@ export class GameScene extends AbstractScene {
     private _debugElements: Group;
     private _isDay: boolean;
 
-    public constructor(private _keyBoardService: KeyboardEventHandlerService) {
+    public constructor(private _keyBoardHandler: KeyboardEventHandlerService) {
         super();
         this._skyBoxTextures = new Map();
         this._group = new Group();
@@ -75,9 +75,14 @@ export class GameScene extends AbstractScene {
         }
     }
 
+    public bindGameSceneKeys(cars: Car[]): void {
+        this._keyBoardHandler.bindFunctionToKeyDown(DAY_KEYCODE, () => this.changeTimeOfDay(cars));
+        this._keyBoardHandler.bindFunctionToKeyDown(DEBUG_KEYCODE, () => this.changeDebugMode());
+    }
+
     private loadLights(trackType: TrackType): void {
         this._lighting = new TrackLights(trackType);
-        this._keyBoardService.bindFunctionToKeyDown(CHANGE_CAMERA_KEYCODE, () => this._lighting.changePerspective());
+        this._keyBoardHandler.bindFunctionToKeyDown(CHANGE_CAMERA_KEYCODE, () => this._lighting.changePerspective());
         this._group.add(this._lighting);
     }
 
