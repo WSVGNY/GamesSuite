@@ -212,7 +212,7 @@ export class ConstraintValidator {
         const perpendicularVector: Vector3 = normalVector.applyAxisAngle(new Vector3(0, 0, 1), PI_OVER_2);
         perpendicularVector.normalize();
 
-        const vector3: Vector3[] = new Array<Vector3>(vector.length);
+        const vector3: Vector3[] = [];
         vector3[0] = new Vector3(vector[0].x + perpendicularVector.x * offset, vector[0].y + perpendicularVector.y * offset);
         vector3[1] = new Vector3(vector[1].x + perpendicularVector.x * offset, vector[1].y + perpendicularVector.y * offset);
 
@@ -224,7 +224,7 @@ export class ConstraintValidator {
         const perpendicularVector: Vector3 = normalVector.applyAxisAngle(new Vector3(0, 0, 1), PI_OVER_2);
         perpendicularVector.normalize();
 
-        const vector3: Vector3[] = new Array<Vector3>(vector.length);
+        const vector3: Vector3[] = [];
         vector3[0] = new Vector3(vector[0].x, vector[0].y, 0);
         vector3[1] = new Vector3(
             vector[0].x + perpendicularVector.x * offset,

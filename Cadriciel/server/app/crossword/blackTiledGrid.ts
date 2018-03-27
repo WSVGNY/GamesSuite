@@ -62,8 +62,8 @@ export class BlackTiledGrid {
         return totalDifficulty;
     }
 
-    private createShuffledArray(): Array<Coordinate2D> {
-        const array: Array<Coordinate2D> = [];
+    private createShuffledArray(): Coordinate2D[] {
+        const array: Coordinate2D[] = [];
         let arrayIndex: number = 0;
         for (let i: number = 0; i < SIZE_GRID_Y; i++) {
             for (let j: number = 0; j < SIZE_GRID_X; j++) {

@@ -12,7 +12,7 @@ export class KeyboardEventHandlerService {
 
     public bindFunctionToKeyDown(keyCode: number, functionToBind: () => void): void {
         if (this._keyDownFunctions.get(keyCode) === undefined) {
-            this._keyDownFunctions.set(keyCode, new Array());
+            this._keyDownFunctions.set(keyCode, []);
         }
         const lambdas: (() => void)[] = this._keyDownFunctions.get(keyCode);
         lambdas.push(functionToBind);
@@ -24,7 +24,7 @@ export class KeyboardEventHandlerService {
 
     public bindFunctionToKeyUp(keyCode: number, functionToBind: () => void): void {
         if (this._keyUpFunctions.get(keyCode) === undefined) {
-            this._keyUpFunctions.set(keyCode, new Array());
+            this._keyUpFunctions.set(keyCode, []);
         }
         this._keyUpFunctions.get(keyCode).push(functionToBind);
     }
