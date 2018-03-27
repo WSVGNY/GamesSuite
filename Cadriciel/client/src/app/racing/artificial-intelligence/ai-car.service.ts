@@ -149,7 +149,9 @@ export class AICarService {
         const c: number = -a * point.z - b * point.x;
         const pointOnLine: Vector3 = new Vector3();
 
-        pointOnLine.x = b !== 0 ? (line.c * a - line.a * c) / (line.a * b - a * line.b) : this._trackVertices[car.trackPortionIndex].x;
+        pointOnLine.x = (a !== 0 && b !== 0 && line.a !== 0 && line.b !== 0) ?
+            (line.c * a - line.a * c) / (line.a * b - a * line.b) :
+            this._trackVertices[car.trackPortionIndex].x;
         pointOnLine.z = a !== 0 ? (-c - b * pointOnLine.x) / a : this._trackVertices[car.trackPortionIndex].z;
 
         return pointOnLine;
@@ -161,9 +163,10 @@ export class AICarService {
             this._trackVertices[car.trackPortionIndex + 1];
 
         const currentPoint: Vector3 = this._trackVertices[car.trackPortionIndex];
-
-        const dx: number = (nextPoint.x - currentPoint.x) / Math.sqrt(Math.pow(nextPoint.x, SQUARED) + Math.pow(currentPoint.x, SQUARED));
-        const dz: number = (nextPoint.z - currentPoint.z) / Math.sqrt(Math.pow(nextPoint.z, SQUARED) + Math.pow(currentPoint.z, SQUARED));
+        const denominatorX: number = Math.sqrt(Math.pow(nextPoint.x, SQUARED) + Math.pow(currentPoint.x, SQUARED));
+        const denominatorZ: number = Math.sqrt(Math.pow(nextPoint.z, SQUARED) + Math.pow(currentPoint.z, SQUARED));
+        const dx: number = (denominatorX !== 0) ? (nextPoint.x - currentPoint.x) / denominatorX : 0;
+        const dz: number = (denominatorZ !== 0) ? (nextPoint.z - currentPoint.z) / denominatorZ : 0;
 
         return new Vector3(
             (nextPoint.x + dx * AIConfig.TURNING_POINT_DISTANCE), 0,
