@@ -47,7 +47,7 @@ describe("Collision Manager Service", () => {
         inject([CollisionManagerService], (collisionManager: CollisionManagerService) => {
             firstCar["_mesh"].position.set(1, 0, 1);
             firstCar["_mesh"].updateMatrix();
-            const collidingVertex: Vector3 = firstCar.hitbox.subPlanVertices[0].clone().applyMatrix4(firstCar.meshMatrix);
+            const collidingVertex: Vector3 = firstCar.hitbox.bottomPlaneVertices[0].clone().applyMatrix4(firstCar.meshMatrix);
             const collisionPoint: Vector3 = collisionManager["checkIfColliding"](firstCar, secondCar);
             expect(collidingVertex).toEqual(collisionPoint);
         }));
@@ -57,11 +57,11 @@ describe("Collision Manager Service", () => {
         firstCar["_mesh"].updateMatrix();
         collisionManager["_collisionEmitter"] = firstCar;
         collisionManager["_collisionReceiver"] = secondCar;
-        collisionManager["_collisionPoint"] = firstCar.hitbox.subPlanVertices[0].clone().applyMatrix4(firstCar.meshMatrix);
+        collisionManager["_collisionPoint"] = firstCar.hitbox.bottomPlaneVertices[0].clone().applyMatrix4(firstCar.meshMatrix);
         collisionManager["resolveHitboxOverlap"]();
         collisionManager["_collisionEmitter"]["_mesh"].updateMatrix();
         collisionManager["_collisionReceiver"]["_mesh"].updateMatrix();
-        const collidingVertex: Vector3 = collisionManager["_collisionReceiver"].hitbox.subPlanVertices[0]
+        const collidingVertex: Vector3 = collisionManager["_collisionReceiver"].hitbox.bottomPlaneVertices[0]
             .clone().applyMatrix4(firstCar.meshMatrix);
         const direction: Vector3 = collidingVertex.sub(collisionManager["_collisionEmitter"].currentPosition);
         const ray: Raycaster = new Raycaster(collisionManager["_collisionEmitter"].currentPosition.clone(), direction.clone().normalize());
@@ -76,7 +76,7 @@ describe("Collision Manager Service", () => {
             firstCar["_mesh"].updateMatrix();
             collisionManager["_collisionEmitter"] = firstCar;
             collisionManager["_collisionReceiver"] = secondCar;
-            collisionManager["_collisionPoint"] = firstCar.hitbox.subPlanVertices[0].clone().applyMatrix4(firstCar.meshMatrix);
+            collisionManager["_collisionPoint"] = firstCar.hitbox.bottomPlaneVertices[0].clone().applyMatrix4(firstCar.meshMatrix);
             firstCar.speed = new Vector3(0, 0, -5);
             secondCar.speed = new Vector3(0, 0, 0);
             const resultingForces: Vector3[] = collisionManager["computeResultingForces"](
@@ -95,7 +95,7 @@ describe("Collision Manager Service", () => {
             firstCar["_mesh"].updateMatrix();
             collisionManager["_collisionEmitter"] = firstCar;
             collisionManager["_collisionReceiver"] = secondCar;
-            collisionManager["_collisionPoint"] = firstCar.hitbox.subPlanVertices[0].clone().applyMatrix4(firstCar.meshMatrix);
+            collisionManager["_collisionPoint"] = firstCar.hitbox.bottomPlaneVertices[0].clone().applyMatrix4(firstCar.meshMatrix);
             firstCar.speed = new Vector3(0, 0, -5);
             secondCar.speed = new Vector3(0, 0, 0);
             const resultingForces: Vector3[] = collisionManager["computeResultingForces"](
@@ -112,7 +112,7 @@ describe("Collision Manager Service", () => {
         firstCar["_mesh"].updateMatrix();
         collisionManager["_collisionEmitter"] = firstCar;
         collisionManager["_collisionReceiver"] = secondCar;
-        collisionManager["_collisionPoint"] = firstCar.hitbox.subPlanVertices[0].clone().applyMatrix4(firstCar.meshMatrix);
+        collisionManager["_collisionPoint"] = firstCar.hitbox.bottomPlaneVertices[0].clone().applyMatrix4(firstCar.meshMatrix);
         firstCar.speed = new Vector3(0, 0, -5);
         secondCar.speed = new Vector3(0, 0, 0);
         const resultingForces: Vector3[] = collisionManager["computeResultingForces"](
