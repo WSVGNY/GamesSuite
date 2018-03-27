@@ -14,10 +14,9 @@ const SERVER_URL: string = "http://localhost:3000";
 export class MultiplayerCommunicationService {
 
     public availableGames: MultiplayerCrosswordGame[];
-
     private _socket: SocketIOClient.Socket;
     private _currentGame: MultiplayerCrosswordGame;
-    private _temporaryPlayerHolder: Player;
+    private _playerHolder: Player;
 
     public constructor() {
         this.availableGames = [];
@@ -32,7 +31,7 @@ export class MultiplayerCommunicationService {
     }
 
     public get updatedPlayer(): Player {
-        return this._temporaryPlayerHolder;
+        return this._playerHolder;
     }
 
     public get isSocketDefined(): boolean {
@@ -87,6 +86,7 @@ export class MultiplayerCommunicationService {
             });
 
             this._socket.on(SocketEvents.DisconnectionAlert, () => {
+                // tslint:disable:no-console
                 console.log("Other player disconnected");
             });
         });
@@ -99,7 +99,7 @@ export class MultiplayerCommunicationService {
 
         return Observable.create((observer: Observer<string>) => {
             this._socket.on(SocketEvents.PlayerUpdate, (player: Player) => {
-                this._temporaryPlayerHolder = player;
+                this._playerHolder = player;
                 observer.next(SocketEvents.PlayerUpdate);
             });
         });

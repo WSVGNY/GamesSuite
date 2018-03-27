@@ -66,7 +66,7 @@ describe("TRACK SERVICE TESTS", () => {
         const newTrack: Track = new Track(undefined, true);
         delete newTrack["_id"];
         newTrack.name = trackName;
-        const options: requestPromise.OptionsWithUrl = {
+        let options: requestPromise.OptionsWithUrl = {
             method: "POST",
             url: SERVICE_BASE_URL + "new",
             body: newTrack,
@@ -75,10 +75,15 @@ describe("TRACK SERVICE TESTS", () => {
         requestPromise(options).then((responseFromNew: Track) => {
             const iTrack: Track = Track.createFromJSON(JSON.stringify(responseFromNew));
             assert(trackName === iTrack.name);
-            requestPromise(SERVICE_BASE_URL + "delete/" + iTrack.id).then((responseFromDelete: Track[]) => {
+            options = {
+                method: "DELETE",
+                url: SERVICE_BASE_URL + "delete/" + iTrack.id,
+                json: true
+            };
+            requestPromise(options).then((responseFromDelete: Track[]) => {
                 const tracks: Track[] = responseFromDelete;
                 for (const track of tracks) {
-                    assert(trackName !== track.name);
+                    assert(trackName !== track.name, trackName + "  " + track.name);
                 }
                 done();
             }).catch((e: Error) => {
@@ -86,7 +91,6 @@ describe("TRACK SERVICE TESTS", () => {
                 assert(false);
                 done();
             });
-            done();
         }).catch((e: Error) => {
             console.error(e.message);
             assert(false);

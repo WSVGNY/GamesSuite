@@ -1,20 +1,34 @@
 import { Injectable } from "@angular/core";
 import { AudioListener, AudioLoader, AudioBuffer, Audio, PerspectiveCamera } from "three";
 import { Car } from "../car/car";
-import { MUSIC_PATH, ACCELERATION_PATH, COLLISION_PATH, STARTING_PATH, VOLUME, RPM_FACTOR } from "../constants";
+import {
+    MUSIC_PATH, ACCELERATION_PATH, COLLISION_PATH, STARTING_PATH, VOLUME,
+    RPM_FACTOR, PLAY_MUSIC_KEYCODE, MUTE_KEYCODE, ACCELERATE_KEYCODE } from "../constants";
+import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 
 @Injectable()
 export class SoundManagerService {
 
-    public constructor() { }
-
     private _music: Audio;
     private _accelerationSoundEffect: Audio;
     private _isPlayingAcceleration: boolean = false;
-    private _isDetected: boolean = false;
     private _isPlayingMusic: boolean = false;
     private _collisionSound: Audio;
     private _startingSound: Audio;
+
+    public constructor(private _keyBoardHandler: KeyboardEventHandlerService) {}
+
+    public bindSoundKeys(): void {
+        this._keyBoardHandler.bindFunctionToKeyDown(PLAY_MUSIC_KEYCODE, () =>
+            this.play(this.music));
+        this._keyBoardHandler.bindFunctionToKeyDown(MUTE_KEYCODE, () => this.stop(this.music));
+        this._keyBoardHandler.bindFunctionToKeyDown(ACCELERATE_KEYCODE, () => {
+            if (!this.isAccelerating()) {
+                this.play(this.accelerationSoundEffect);
+                this.setAccelerating(true);
+            }
+        });
+    }
 
     private createSound(soundName: string): Audio {
         const listener: AudioListener = new AudioListener();
@@ -50,7 +64,6 @@ export class SoundManagerService {
     public createCollisionSound(car: Car): void {
         this._collisionSound = this.createSound(COLLISION_PATH);
         car.add(this._collisionSound);
-        this._isDetected = false;
     }
 
     public createStartingSound(camera: PerspectiveCamera): void {
@@ -85,7 +98,6 @@ export class SoundManagerService {
 
     public isAccelerating(): boolean { return this._isPlayingAcceleration; }
     public setAccelerating(value: boolean): void { this._isPlayingAcceleration = value; }
-    public isDetected(): boolean { return this._isDetected; }
     public isPlayingMusic(): boolean { return this._isPlayingMusic; }
 
     public setAccelerationSound(car: Car): void {

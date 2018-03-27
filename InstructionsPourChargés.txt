@@ -1,0 +1,20 @@
+﻿--  http://localhost:4200/mot-croise :  affiche le jeu du mot croise
+--  http://localhost:4200/course : affiche le jeu de course
+--  http://localhost:4200/admin : affiche la liste des pistes en donnant l'option d'en creer ou d'en deleter
+--  http://localhost:4200/admin/:id : ouvre l'editeur de la piste dont l'id est celui entre
+--  http://localhost:3000/grid/gridGet: retourne un JSON contenant tous les details d'une grille de mot croise
+-- http://localhost:3000/grid:
+-- http://localhost:3000/lexicon/:constraints/:difficulty : affiche un JSON contenant le mot retourne ainsi que sa definition. :constraints est la contrainte du mot desire ex : r%3f%3f serait un mot de 3 lettre commencant par r. :difficulty est la difficulte desiree entre EASY, MEDIUM ou HARD
+
+
+Dans tous les cas, il faut toujours partir le serveur avant de runner le code.
+
+
+ca arrive souvent qu'il y a des mots etranges ex: tau, xiii, rh qui apparaissent dans la grille. malgre ce quon pense ces mots existent reellement sur datamuse. ex : tau ---> the 19th letter of the Greek alphabet 
+
+
+Dans le jeu de course, quand tu appuie sur la touche 0 ca fait afficher les vecteurs pour voir comment les AI fonctionnent.
+
+
+Parfois, il arrive que certains test semblent ne pas passer sur l`interface, cependant ils passent. En effet, une fois qu`on clique dessus, on voit que les tests ont passés.
+

@@ -53,7 +53,7 @@ describe("Constraints Validator", () => {
         lineGeometry2.vertices.push(new Vector3(100, 100, 0));
         lineGeometry2.vertices.push(new Vector3(0, 100, 0));
         const line2: Line = new Line(lineGeometry2, SIMPLE_LINE_MATERIAL);
-        const lines: Array<Line> = [line, line2];
+        const lines: Line[] = [line, line2];
         expect(ConstraintValidator.checkAngle(lines, false)).toEqual(true);
     });
 
@@ -63,7 +63,7 @@ describe("Constraints Validator", () => {
         lineGeometry2.vertices.push(new Vector3(100, 100, 0));
         lineGeometry2.vertices.push(new Vector3(0, 99, 0));
         const line2: Line = new Line(lineGeometry2, SIMPLE_LINE_MATERIAL);
-        const lines: Array<Line> = [line, line2];
+        const lines: Line[] = [line, line2];
         expect(ConstraintValidator.checkAngle(lines, false)).toEqual(false);
     });
 
@@ -73,7 +73,7 @@ describe("Constraints Validator", () => {
         lineGeomerty2.vertices.push(new Vector3(200, 200, 0));
         lineGeomerty2.vertices.push(new Vector3(300, 300, 0));
         const line2: Line = new Line(lineGeomerty2, SIMPLE_LINE_MATERIAL);
-        const lines: Array<Line> = [line1, line2];
+        const lines: Line[] = [line1, line2];
         const intersectionOK: boolean = ConstraintValidator.checkIntersection(lines, false);
         expect(intersectionOK).toEqual(true);
     });
@@ -92,7 +92,7 @@ describe("Constraints Validator", () => {
         lineGeomerty4.vertices.push(new Vector3(100, 0, 0));
         lineGeomerty4.vertices.push(new Vector3(0, 100, 0));
         const line4: Line = new Line(lineGeomerty4, SIMPLE_LINE_MATERIAL);
-        const lines: Array<Line> = [line1, line2, line3, line4];
+        const lines: Line[] = [line1, line2, line3, line4];
         const intersectionOK: boolean = ConstraintValidator.checkIntersection(lines, false);
         expect(intersectionOK).toEqual(false);
     });
@@ -115,7 +115,7 @@ describe("Constraints Validator", () => {
         lineGeomerty5.vertices.push(new Vector3(150, 110, 0));
         lineGeomerty5.vertices.push(new Vector3(100, 110, 0));
         const line5: Line = new Line(lineGeomerty5, SIMPLE_LINE_MATERIAL);
-        const lines: Array<Line> = [line1, line2, line3, line4, line5];
+        const lines: Line[] = [line1, line2, line3, line4, line5];
         const intersectionOK: boolean = ConstraintValidator.checkIntersection(lines, true);
         expect(intersectionOK).toEqual(false);
     });
@@ -138,7 +138,7 @@ describe("Constraints Validator", () => {
         lineGeomerty5.vertices.push(new Vector3(150, 90, 0));
         lineGeomerty5.vertices.push(new Vector3(90, 90, 0));
         const line5: Line = new Line(lineGeomerty5, SIMPLE_LINE_MATERIAL);
-        const lines: Array<Line> = [line1, line2, line3, line4, line5];
+        const lines: Line[] = [line1, line2, line3, line4, line5];
         const intersectionOK: boolean = ConstraintValidator.checkIntersection(lines, true);
         expect(intersectionOK).toEqual(false);
     });
@@ -148,7 +148,7 @@ describe("Constraints Validator", () => {
         lineGeomerty.vertices.push(new Vector3(0, 0, 0));
         lineGeomerty.vertices.push(new Vector3(0, HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH, 0));
         const line1: Line = new Line(lineGeomerty, SIMPLE_LINE_MATERIAL);
-        const lines: Array<Line> = [line1];
+        const lines: Line[] = [line1];
         expect(ConstraintValidator.checkLength(lines)).toEqual(true);
     });
 
@@ -157,7 +157,7 @@ describe("Constraints Validator", () => {
         lineGeomerty.vertices.push(new Vector3(0, 0, 0));
         lineGeomerty.vertices.push(new Vector3(0, HALF_TRACK_WIDTH - 1, 0));
         const line1: Line = new Line(lineGeomerty, SIMPLE_LINE_MATERIAL);
-        const lines: Array<Line> = [line1];
+        const lines: Line[] = [line1];
         expect(ConstraintValidator.checkLength(lines)).toEqual(false);
     });
 });

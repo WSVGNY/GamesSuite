@@ -6,7 +6,8 @@ export class MultiplayerCrosswordGame {
     public readonly MAX_PLAYER_NUMBER: number = 2;
 
     public static create(stringObject: string): MultiplayerCrosswordGame {
-        const jsonObject = JSON.parse(stringObject) as MultiplayerCrosswordGame;
+        const jsonObject: MultiplayerCrosswordGame = JSON.parse(stringObject) as MultiplayerCrosswordGame;
+        // tslint:disable-next-line:no-string-literal
         return new MultiplayerCrosswordGame(jsonObject["_roomName"], jsonObject["_difficulty"], jsonObject["_players"], jsonObject["grid"]);
     }
 

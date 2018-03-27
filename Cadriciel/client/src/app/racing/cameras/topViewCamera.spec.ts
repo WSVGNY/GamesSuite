@@ -1,11 +1,10 @@
 // tslint:disable:no-magic-numbers
 import { TopViewCamera } from "./topViewCamera";
-import { OrthographicCamera, Vector3 } from "three";
+import { OrthographicCamera, Vector3, Euler } from "three";
 import { Car } from "../car/car";
-// import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
-// import { Engine } from "../car/engine";
-// import { TestBed } from "@angular/core/testing";
+
 const INITIAL_CAMERA_POSITION_Y: number = 10;
+const PI_OVER_2: number = 1.5707963267948963;
 
 describe("Top View Camera Test", () => {
 
@@ -43,5 +42,12 @@ describe("Top View Camera Test", () => {
         car["_mesh"].position.set(10, 23, 5);
         camera.updatePosition(car);
         expect(camera.position).toEqual(new Vector3(10, INITIAL_CAMERA_POSITION_Y, 5));
+    });
+
+    it("camera shouldn't  rotate", () => {
+        car["_mesh"].position.set(2, 0, 1);
+        camera.updatePosition(car);
+        const angle: Euler = new Euler( -PI_OVER_2, 0, -PI_OVER_2);
+        expect(camera.getWorldRotation()).toEqual(angle);
     });
 });

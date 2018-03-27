@@ -12,9 +12,4 @@ describe("MultiplayerCommunicationService", () => {
         expect(service).toBeTruthy();
     }));
 
-    it("should connect to server", inject([MultiplayerCommunicationService], (service: MultiplayerCommunicationService) => {
-        service.connectToSocket();
-        expect(service.isSocketDefined).toBeDefined();
-    }));
-
 });

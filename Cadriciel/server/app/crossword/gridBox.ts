@@ -14,7 +14,7 @@ export class GridBox implements CommonGridBox {
 
     public constructor(public id: Coordinate2D, public isBlack: boolean) {
         this.difficulty = 0;
-        this.constraints = new Array<Word>();
+        this.constraints = [];
         this.isColored = false;
         this.isFound = false;
         this.inputChar = new Char;
@@ -31,7 +31,7 @@ export class GridBox implements CommonGridBox {
                 return constraint;
             }
         }
-        throw new Error("No corresponding constraint found");
+        throw new ReferenceError("No corresponding constraint found");
     }
 
     public eliminateConstraints(): void {

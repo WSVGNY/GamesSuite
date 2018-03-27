@@ -1,5 +1,5 @@
 import { Vector3 } from "three";
-import { GRAVITY } from "../constants";
+import { GRAVITY, TIRE_ASPHALT_COEFFICIENT } from "../constants";
 import { CarConfig } from "./carConfig";
 import { Car } from "./car";
 
@@ -95,13 +95,12 @@ export class Physics {
     }
 
     private static getFrictionForce(): Vector3 {
-        const tireAsphaltCoefficient: number = 0.72;
         const kineticFriction: Vector3 = new Vector3();
         kineticFriction.x = this._car.direction.z;
         kineticFriction.z = -this._car.direction.x;
 
         const force: Vector3 = this._car.speed.clone().projectOnVector(kineticFriction).normalize();
-        force.multiplyScalar(tireAsphaltCoefficient * this._car.mass * GRAVITY);
+        force.multiplyScalar(TIRE_ASPHALT_COEFFICIENT * this._car.mass * GRAVITY);
 
         return force;
     }

@@ -35,7 +35,7 @@ export class ServerSockets {
             this.onDisconnect(socket);
             this.onRoomCreate(socket);
             this.onRoomsListQuery(socket);
-            this.onRoomConnect(socket);
+            this.onRoomConnect(socket).then().catch((e: Error) => console.error(e.message));
             this.onPlayerUpdate(socket);
         });
     }

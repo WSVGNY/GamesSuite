@@ -31,7 +31,7 @@ export class Lexicon {
 
         for (let i: number = word[DEFINITION_INDEX].length - 1; i >= 0; i--) {
             let counter: number = word[DEFINITION_INDEX].length;
-            // s'assurer que le mot ne soit ni un adverbe ni un adjectif
+            // Verify that the word isnt an adverb or a word
             if (definitions[i][0] === ADVERBS) {
                 word[DEFINITION_INDEX].splice(i, 1);
                 counter--;
