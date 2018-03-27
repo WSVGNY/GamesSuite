@@ -47,7 +47,7 @@ describe("Game Scene", () => {
         expect((shape.geometry as Geometry)["vertices"]).toEqual(EXPECTED_MOCK_TRACK);
     });
 
-    it("should create a different track from the ground (OFF PISTE)", () => {
+    it("on-track and off-track should be different meshes", () => {
         const MOCK_TRACK: CommonCoordinate3D[] = [
             new CommonCoordinate3D(0, 0, 0),
             new CommonCoordinate3D(100, 0, 0),
@@ -56,7 +56,9 @@ describe("Game Scene", () => {
         ];
         const mockTrack: Track = new Track("");
         mockTrack.vertices = MOCK_TRACK;
-        gameScene.loadTrack(mockTrack);
+        gameScene["_trackShape"] = new TrackMesh(mockTrack);
+        gameScene["_group"].add(gameScene["_trackShape"]);
+        gameScene["addGround"]();
         const track: Mesh = gameScene.getObjectByName("track") as Mesh;
         const ground: Mesh = gameScene.getObjectByName("ground") as Mesh;
         expect((track.material as MeshPhongMaterial).map).not.toEqual((ground.material as MeshPhongMaterial).map);
