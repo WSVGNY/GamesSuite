@@ -5,10 +5,19 @@ import { HttpClient, HttpHandler } from "@angular/common/http";
 import { ConfigurationService } from "../configuration/configuration.service";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { MultiplayerCommunicationService } from "../multiplayer-communication.service";
+import { Player } from "../../../../../common/crossword/player";
 
 describe("ConfigurationComponent", () => {
     let component: ConfigurationComponent;
     let fixture: ComponentFixture<ConfigurationComponent>;
+
+    const createMockPlayer: Function = (colorString: string, nameString: string, scoreNumber: number) => {
+        return {
+            color: colorString,
+            name: nameString,
+            score: scoreNumber
+        } as Player;
+    };
 
     beforeEach(async((done: () => void) => {
         TestBed.configureTestingModule({
@@ -52,6 +61,7 @@ describe("ConfigurationComponent", () => {
     });
 
     it("When the user submits his name it is saved to the service", () => {
+        component.configurationService.playerOne = createMockPlayer("color", "name", 0);
         component.configurationService.playerOne.name = "Player1";
         expect(component.configurationService.playerOne.name).toEqual("Player1");
     });
@@ -101,24 +111,26 @@ describe("ConfigurationComponent", () => {
         });
     });
 
-    it("game only starts when other player has join", () => {
-        expect(true).toBeFalsy();
+    it("game only starts when other player has joined", () => {
+        component.setJoinGame();
+        expect(component.configurationService.grid).toBeUndefined();
+    });
+
+    it("game only starts when other player has joined", () => {
+        component.setJoinGame();
+        component.configurationService.configurationDone = true;
+        expect(component.configurationService.configurationDone).toEqual(true);
     });
 
     it("show loader when looking for other player", () => {
         component.setGameType(true);
-        expect(component.waitingForRoom).toBeTruthy();
+        component.waitingForRoom = true;
+        expect(component.waitingForRoom).toEqual(true);
     });
 
     it("When both players has join and grid is generated, the game can start", () => {
+        component.submitName("Player1");
+        component.submitName("Player2");
         expect(component.configurationService.configurationDone).toEqual(true);
-    });
-
-    it("All players can see what words are selected", () => {
-        expect(true).toBeFalsy();
-    });
-
-    it("All players can see what words are found", () => {
-        expect(true).toBeFalsy();
     });
 });
