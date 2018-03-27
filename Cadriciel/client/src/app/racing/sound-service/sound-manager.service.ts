@@ -11,7 +11,6 @@ export class SoundManagerService {
     private _music: Audio;
     private _accelerationSoundEffect: Audio;
     private _isPlayingAcceleration: boolean = false;
-    private _isDetected: boolean = false;
     private _isPlayingMusic: boolean = false;
     private _collisionSound: Audio;
     private _startingSound: Audio;
@@ -50,7 +49,6 @@ export class SoundManagerService {
     public createCollisionSound(car: Car): void {
         this._collisionSound = this.createSound(COLLISION_PATH);
         car.add(this._collisionSound);
-        this._isDetected = false;
     }
 
     public createStartingSound(camera: PerspectiveCamera): void {
@@ -85,7 +83,6 @@ export class SoundManagerService {
 
     public isAccelerating(): boolean { return this._isPlayingAcceleration; }
     public setAccelerating(value: boolean): void { this._isPlayingAcceleration = value; }
-    public isDetected(): boolean { return this._isDetected; }
     public isPlayingMusic(): boolean { return this._isPlayingMusic; }
 
     public setAccelerationSound(car: Car): void {
