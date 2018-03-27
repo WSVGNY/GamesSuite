@@ -2,6 +2,7 @@ import { TestBed, inject } from "@angular/core/testing";
 import { CollisionManagerService } from "./collision-manager.service";
 import { Car } from "../car/car";
 import { Vector3, Raycaster, Intersection } from "three";
+import { first } from "rxjs/operators";
 
 // tslint:disable:no-magic-numbers
 describe("Collision Manager Service", () => {
@@ -40,6 +41,28 @@ describe("Collision Manager Service", () => {
         firstCar["_mesh"].updateMatrix();
         const collisionPoint: Vector3 = collisionManager["checkIfColliding"](firstCar, secondCar);
         expect(collisionPoint).toBeDefined();
+    }));
+
+    it("should detect if cars are colliding in an array of cars that are colliding",
+       inject([CollisionManagerService], (collisionManager: CollisionManagerService) => {
+        const cars: Car[] = [];
+        cars.push(firstCar);
+        cars.push(secondCar);
+        cars[0]["_mesh"].position.set(1, 0, 0);
+        cars[0]["_mesh"].updateMatrix();
+        collisionManager.update(cars);
+        expect(collisionManager["shouldPlaySound"]).toEqual(true);
+    }));
+
+    it("should not detect if cars are colliding in an array of cars that aren't colliding",
+       inject([CollisionManagerService], (collisionManager: CollisionManagerService) => {
+        const cars: Car[] = [];
+        cars.push(firstCar);
+        cars.push(secondCar);
+        cars[0]["_mesh"].position.set(2, 0, 5);
+        cars[0]["_mesh"].updateMatrix();
+        collisionManager.update(cars);
+        expect(collisionManager["shouldPlaySound"]).toEqual(false);
     }));
 
     it(
