@@ -1,7 +1,6 @@
 import { ConfigurationService } from "./configuration/configuration.service";
 import { CommonWord } from "../../../../common/crossword/commonWord";
 import { CommonGridBox } from "../../../../common/crossword/commonGridBox";
-import { Comparator } from "./comparator";
 
 export abstract class ListChecker {
     public static playersFoundWord(word: CommonWord, configuration: ConfigurationService): boolean {
@@ -16,7 +15,7 @@ export abstract class ListChecker {
     }
 
     public static listContainsBox(boxes: CommonGridBox[], box: CommonGridBox): boolean {
-        return boxes.find((box1: CommonGridBox) => Comparator.compareBoxes(box, box1)) !== undefined;
+        return boxes.find((box1: CommonGridBox) => box1.id.x === box.id.x && box1.id.y === box.id.y) !== undefined;
     }
 
     public static playersFoundBox(box: CommonGridBox, configuration: ConfigurationService): boolean {
