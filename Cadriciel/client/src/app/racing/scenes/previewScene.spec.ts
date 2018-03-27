@@ -1,9 +1,8 @@
-// tslint:disable:no-magic-numbers
-
 import { PreviewScene } from "./previewScene";
 import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
 import { Track } from "../../../../../common/racing/track";
 
+// tslint:disable:no-magic-numbers
 describe("Preview Scene", () => {
 
     let previewScene: PreviewScene;
