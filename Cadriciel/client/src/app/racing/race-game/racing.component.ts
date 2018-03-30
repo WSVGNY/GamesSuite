@@ -127,10 +127,10 @@ export class RacingComponent implements AfterViewInit, OnInit {
         for (let i: number = 0; i < AI_CARS_QUANTITY + 1; ++i) {
 
             if (i === 0) {
-                this._cars.push(new Car(this._keyBoardHandler));
+                this._cars.push(new Car(this._keyBoardHandler, false));
                 this._playerCar = this._cars[0];
             } else {
-                this._cars.push(new Car(this._keyBoardHandler, true));
+                this._cars.push(new Car(this._keyBoardHandler));
             }
             this._carDebugs.push(new AIDebug());
         }

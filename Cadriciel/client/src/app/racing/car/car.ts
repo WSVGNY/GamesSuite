@@ -22,7 +22,7 @@ export class Car extends Object3D {
 
     public constructor(
         private keyBoardService: KeyboardEventHandlerService,
-        private _isAI: boolean = false,
+        private _isAI: boolean = true,
         private _carStructure: CarStructure = new CarStructure(),
         private _carControls: CarControls = new CarControls()
     ) {

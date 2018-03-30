@@ -26,7 +26,7 @@ describe("Car", () => {
             .then()
             .catch((e: Error) => console.error(e.message));
 
-        car = new Car(undefined, true);
+        car = new Car(undefined);
         await car.init(new Vector3(0, 0, 0), Math.PI);
 
         car.accelerate();

@@ -16,7 +16,7 @@ describe("Top View Camera Test", () => {
         done();
     });
 
-    it("the camera created should be orthographic camera", () => {
+    it("the camera created should be orthographic camera", async () => {
         expect(camera).toEqual(jasmine.any(OrthographicCamera));
     });
 
@@ -47,7 +47,7 @@ describe("Top View Camera Test", () => {
     it("camera shouldn't  rotate", () => {
         car["_mesh"].position.set(2, 0, 1);
         camera.updatePosition(car);
-        const angle: Euler = new Euler( -PI_OVER_2, 0, -PI_OVER_2);
+        const angle: Euler = new Euler(-PI_OVER_2, 0, -PI_OVER_2);
         expect(camera.getWorldRotation()).toEqual(angle);
     });
 });
