@@ -8,7 +8,7 @@ import { CHANGE_CAMERA_KEYCODE } from "../constants";
 describe("CameraManagerService", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [CameraManagerService, KeyboardEventHandlerService]
+            providers: [KeyboardEventHandlerService, CameraManagerService]
         }).compileComponents()
             .then()
             .catch((e: Error) => console.error(e.message));
@@ -22,6 +22,7 @@ describe("CameraManagerService", () => {
         [CameraManagerService, KeyboardEventHandlerService],
         (cameraManager: CameraManagerService, keyboardManager: KeyboardEventHandlerService) => {
             cameraManager.initializeCameras(1);
+            keyboardManager.initialize();
             cameraManager.bindCameraKey();
             const oldCamera: Camera = cameraManager.getCurrentCamera();
             keyboardManager.handleKeyDown(CHANGE_CAMERA_KEYCODE);
