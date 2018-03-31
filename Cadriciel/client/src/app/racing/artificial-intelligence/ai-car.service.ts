@@ -149,9 +149,7 @@ export class AICarService {
         const c: number = -a * point.z - b * point.x;
         const pointOnLine: Vector3 = new Vector3();
 
-        pointOnLine.x = (a !== 0 && b !== 0 && line.a !== 0 && line.b !== 0) ?
-            (line.c * a - line.a * c) / (line.a * b - a * line.b) :
-            this._trackVertices[car.trackPortionIndex].x;
+        pointOnLine.x = b !== 0 ? (line.c * a - line.a * c) / (line.a * b - a * line.b) : this._trackVertices[car.trackPortionIndex].x;
         pointOnLine.z = a !== 0 ? (-c - b * pointOnLine.x) / a : this._trackVertices[car.trackPortionIndex].z;
 
         return pointOnLine;
