@@ -48,7 +48,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
     }
 
     public ngOnInit(): void {
-        this._gameScene = new GameScene(this._keyBoardHandler);
+        this._gameScene = new GameScene(this._keyBoardHandler, this._collisionManagerService);
     }
 
     public async ngAfterViewInit(): Promise<void> {
@@ -102,19 +102,20 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
     public getTrack(): void {
         this._trackService.getTrackFromId(this._route.snapshot.paramMap.get("id"))
-            .subscribe(async (trackFromServer: Track) => {
+            .subscribe((trackFromServer: Track) => {
                 this._chosenTrack = Track.createFromJSON(JSON.stringify(trackFromServer));
-
-                this.initializeCars(this._chosenTrack.type);
-                this._gameScene.loadTrack(this._chosenTrack);
-                await this._gameScene.loadCars(this._cars, this._carDebugs, this._cameraManager.getCurrentCamera(), this._chosenTrack.type);
-                await this._aiCarService
-                    .initialize(this._chosenTrack.vertices, Difficulty.Medium)
-                    .then(/* do nothing */)
-                    .catch((err) => console.error(err));
-                this.bindKeys();
-                this.startGameLoop();
+                this.initializeGameFromTrack(this._chosenTrack);
             });
+    }
+
+    private async initializeGameFromTrack(track: Track): Promise<void> {
+        this.initializeCars(this._chosenTrack.type);
+        this._gameScene.loadTrack(this._chosenTrack);
+        await this._gameScene.loadCars(this._cars, this._carDebugs, this._cameraManager.getCurrentCamera(), this._chosenTrack.type);
+        await this._aiCarService.initialize(this._chosenTrack.vertices, Difficulty.Medium).then().catch((err) => console.error(err));
+        this.bindKeys();
+
+        this.startGameLoop();
     }
 
     private bindKeys(): void {

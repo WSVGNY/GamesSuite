@@ -1,7 +1,9 @@
-import { Scene, PlaneGeometry, MeshPhongMaterial, BackSide, Mesh, Texture, TextureLoader,
-    RepeatWrapping, CubeTexture, CubeTextureLoader } from "three";
 import {
-    PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, GRASS_TEXTURE
+    Scene, PlaneGeometry, MeshPhongMaterial, BackSide, Mesh, Texture, TextureLoader,
+    RepeatWrapping, CubeTexture, CubeTextureLoader
+} from "three";
+import {
+    PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, GRASS_TEXTURE_PATH
 } from "../constants";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { SkyBox } from "../render-service/skybox";
@@ -13,7 +15,7 @@ export abstract class AbstractScene extends Scene {
     protected addGround(): void {
         const groundGeometry: PlaneGeometry = new PlaneGeometry(GROUND_SIZE, GROUND_SIZE, 1, 1);
         const groundMaterial: MeshPhongMaterial =
-            new MeshPhongMaterial({ side: BackSide, map: this.loadRepeatingTexture(GRASS_TEXTURE, GROUND_TEXTURE_FACTOR) });
+            new MeshPhongMaterial({ side: BackSide, map: this.loadRepeatingTexture(GRASS_TEXTURE_PATH, GROUND_TEXTURE_FACTOR) });
 
         const ground: Mesh = new Mesh(groundGeometry, groundMaterial);
         ground.rotateX(PI_OVER_2);

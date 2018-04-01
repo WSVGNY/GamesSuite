@@ -15,6 +15,7 @@ import { TrackPointList } from "../render-service/trackPointList";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { Track } from "../../../../../common/racing/track";
 import { TrackMesh } from "../track-service/track";
+import { CollisionManagerService } from "../collision-manager/collision-manager.service";
 
 const START_POSITION_OFFSET: number = -15;
 
@@ -28,7 +29,7 @@ export class GameScene extends AbstractScene {
     private _debugElements: Group;
     private _isDay: boolean;
 
-    public constructor(private _keyBoardHandler: KeyboardEventHandlerService) {
+    public constructor(private _keyBoardHandler: KeyboardEventHandlerService, private _collisionManager: CollisionManagerService) {
         super();
         this._skyBoxTextures = new Map();
         this._group = new Group();
@@ -41,8 +42,9 @@ export class GameScene extends AbstractScene {
             this._group.remove(this._trackShape);
         }
         this._isDay = track.type === TrackType.Default ? true : false;
-        this._group.add(this.createWalls(new TrackPointList(track.vertices)));
         this._trackShape = new TrackMesh(track);
+        this._group.add(this.createWalls(this._trackShape.trackPoints));
+        this._collisionManager.setWalls(this._trackShape);
         this._group.add(this._trackShape);
         this.addGround();
         this.setSkyBox(track.type);
