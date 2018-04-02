@@ -40,11 +40,11 @@
   <div *ngIf="isConfigurationDone()">
     <div id="gameInformations" (mousedown)="resetInputBox()">
       <h2 [style.background]="this.configuration.currentPlayer.color"> {{configuration.currentPlayer.name}} :
-        <h4> {{configuration.currentPlayer.score}} words found</h4>
+        <h5> {{configuration.currentPlayer.score}} words found</h5>
       </h2>
-      <h2 *ngIf="configuration.isTwoPlayerGame" id="secondPlayer" [style.background]="this.configuration.otherPlayer.color">
+      <h2 *ngIf="configuration.isTwoPlayerGame" [style.background]="this.configuration.otherPlayer.color">
         {{configuration.otherPlayer.name}} :
-        <h4> {{configuration.otherPlayer.score}} words found</h4>
+        <h5> {{configuration.otherPlayer.score}} words found</h5>
       </h2>
     </div>
   </div>
@@ -71,4 +71,23 @@
       </div>
     </div>
   </div>
+
+
+  <div *ngIf="!configuration.isTwoPlayerGame && configuration.currentPlayer.score >= 4">
+    <div class="card">
+      <div class="imgBox">
+        <div class="bark"></div>
+        <img src="https://d13yacurqjgara.cloudfront.net/users/69311/screenshots/1226327/congrats-gif-edit.gif">
+      </div>
+      <div class="details">
+        <p>Congratulations!</p>
+        <p>You won</p>
+        <p>Here are your options :</p>
+      </div>
+    </div>
+  </div>
+  <div id="gameEnd" *ngIf="configuration.isTwoPlayerGame && configuration.currentPlayer.score + configuration.otherPlayer.score >= 4">
+    BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+  </div>
+
 </div>
