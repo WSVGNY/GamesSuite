@@ -9,7 +9,7 @@ import { Word } from "./word";
 import { Coordinate2D } from "./coordinate2D";
 import { Char } from "./char";
 
-const DEBUG: boolean = false;
+const DEBUG: boolean = true;
 @injectable()
 export class GridCreate {
 
@@ -61,6 +61,10 @@ export class GridCreate {
     // tslint:disable:max-func-body-length
     // tslint:disable:no-magic-numbers
     private createMockGrid(): void {
+        let i: number = 0;
+        while (i < 3999999999) {
+            i++;
+        }
         this._grid = new Grid();
         this._grid.difficulty = this._difficulty;
         this._grid.words = new Array<Word>();
