@@ -68,6 +68,12 @@ export class MultiplayerCommunicationService {
         }
     }
 
+    public restartGameWithSameConfig(): void {
+        if (this._socket !== undefined) {
+            this._socket.emit(SocketEvents.RestartGameWithSameConfig);
+        }
+    }
+
     public getMessagesConfigurationComponent = () => {
         if (this._socket === undefined) {
             return;
@@ -101,6 +107,16 @@ export class MultiplayerCommunicationService {
             this._socket.on(SocketEvents.PlayerUpdate, (player: Player) => {
                 this._playerHolder = player;
                 observer.next(SocketEvents.PlayerUpdate);
+            });
+
+            this._socket.on(SocketEvents.RestartGame, (message: MultiplayerCrosswordGame) => {
+                this._currentGame = MultiplayerCrosswordGame.create(JSON.stringify(message));
+                console.log("Restart Game Event");
+                observer.next(SocketEvents.RestartGame);
+            });
+
+            this._socket.on(SocketEvents.GameNotFound, () => {
+                console.log("Game Not Found Event");
             });
         });
     }

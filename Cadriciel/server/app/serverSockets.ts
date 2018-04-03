@@ -37,6 +37,7 @@ export class ServerSockets {
             this.onRoomsListQuery(socket);
             this.onRoomConnect(socket).then().catch((e: Error) => console.error(e.message));
             this.onPlayerUpdate(socket);
+            this.onRestartGameWithSameConfig(socket);
         });
     }
 
@@ -127,6 +128,23 @@ export class ServerSockets {
             socket.broadcast.to(this.findSocketRoomNameByID(socket.id)).emit(SocketEvents.PlayerUpdate, player);
         });
     }
+
+    private onRestartGameWithSameConfig(socket: SocketIO.Socket): void {
+        socket.on(SocketEvents.RestartGameWithSameConfig, () => {
+            console.log("restart game with same config event");
+            const index: number = this.findGameIndexWithRoom(this.findSocketRoomNameByID(socket.id));
+            if (index >= 0) {
+                const game: MultiplayerCrosswordGame = this._games[index];
+                this.gridCreateQuery(game).then(() => {
+                    this._io.to(game.roomName).emit(SocketEvents.RestartGame, game);
+                }).catch((e: Error) => {
+                    console.error(e);
+                });
+            } else {
+                this._io.to(this.findSocketRoomNameByID(socket.id)).emit(SocketEvents.GameNotFound);
+            }
+        });
+    }
     // tslint:enable:no-console
 
     private createRoom(difficulty: Difficulty): void {
@@ -152,4 +170,15 @@ export class ServerSockets {
             console.error(e);
         });
     }
+
+    private findGameIndexWithRoom(room: string): number {
+        for (let i: number = 0; i < this._games.length; ++i) {
+            if (this._games[i].roomName === room) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
 }
