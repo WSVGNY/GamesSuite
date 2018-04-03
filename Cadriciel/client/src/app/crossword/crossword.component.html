@@ -73,7 +73,7 @@
   </div>
 
 
-  <div *ngIf="!configuration.isTwoPlayerGame && configuration.currentPlayer.score >= this.configuration.grid.words.length">
+  <div *ngIf="!configuration.isTwoPlayerGame && this.configuration.grid !== undefined && configuration.currentPlayer.score >= this.configuration.grid.words.length">
     <div class="gameEnding">
       <div class="image">
         <div class="back"></div>
@@ -83,7 +83,7 @@
         <p>Congratulations!</p>
         <p>You won</p>
         <p>Here are your options :</p>
-        <button> Play again with same configuration</button>
+        <button (click)="restartGame()"> Play again with same configuration</button>
         <a href="/crossword">
           <button>Go back to configuation menu</button>
         </a>
@@ -101,7 +101,7 @@
           <p>Congratulations!</p>
           <p>You won</p>
           <p>Here are your options :</p>
-          <button (click)="restartGameWithSameConfig()"> Play again with same configuration</button>
+          <button (click)="restartGame()"> Play again with same configuration</button>
           <a href="/crossword">
             <button>Go back to configuation menu</button>
           </a>
@@ -118,7 +118,7 @@
           <p>Better luck next time ...</p>
           <p>You lost the game</p>
           <p>Here are your options :</p>
-          <button (click)="restartGameWithSameConfig()"> Play again with same configuration</button>
+          <button (click)="restartGame()"> Play again with same configuration</button>
           <a href="/crossword">
             <button>Go back to configuation menu</button>
           </a>
