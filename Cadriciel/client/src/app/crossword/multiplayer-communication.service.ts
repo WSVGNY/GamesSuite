@@ -7,6 +7,7 @@ import { Difficulty } from "../../../../common/crossword/difficulty";
 import { MultiplayerCrosswordGame } from "../../../../common/crossword/multiplayerCrosswordGame";
 import { CommonGrid } from "../../../../common/crossword/commonGrid";
 import { Player } from "../../../../common/crossword/player";
+import { InvalidArgumentError } from "../racing/invalidArgumentError";
 
 const SERVER_URL: string = "http://localhost:3000";
 
@@ -91,10 +92,6 @@ export class MultiplayerCommunicationService {
                 observer.next(SocketEvents.StartGame);
             });
 
-            this._socket.on(SocketEvents.DisconnectionAlert, () => {
-                // tslint:disable:no-console
-                console.log("Other player disconnected");
-            });
         });
     }
 
@@ -111,12 +108,15 @@ export class MultiplayerCommunicationService {
 
             this._socket.on(SocketEvents.RestartGame, (message: MultiplayerCrosswordGame) => {
                 this._currentGame = MultiplayerCrosswordGame.create(JSON.stringify(message));
-                console.log("Restart Game Event");
                 observer.next(SocketEvents.RestartGame);
             });
 
             this._socket.on(SocketEvents.GameNotFound, () => {
-                console.log("Game Not Found Event");
+                throw new InvalidArgumentError;
+            });
+            this._socket.on(SocketEvents.DisconnectionAlert, () => {
+                console.log("Other player disconnected");
+                observer.next(SocketEvents.DisconnectionAlert);
             });
         });
     }
