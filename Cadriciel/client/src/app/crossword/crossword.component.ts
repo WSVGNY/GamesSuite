@@ -56,6 +56,10 @@ export class CrosswordComponent {
                 console.log("DECONNECTION");
                 this.hasOtherPlayerDisconnected = true;
             }
+            if (message === SocketEvents.ReinitializeGame) {
+                console.log("YOYOYO");
+                this.resetGameStats();
+            }
         });
     }
 
