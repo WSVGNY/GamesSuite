@@ -32,11 +32,13 @@ export class CrosswordComponent {
     public inputGridBox: CommonGridBox;
     public isInCheatMode: boolean;
     private _hasSubscribed: boolean;
+    public hasOtherPlayerDisconnected: boolean;
 
     public constructor(
         public configuration: ConfigurationService, private multiplayerCommunicationService: MultiplayerCommunicationService) {
         this.isInCheatMode = false;
         this._hasSubscribed = false;
+        this.hasOtherPlayerDisconnected = false;
 
     }
 
@@ -49,6 +51,10 @@ export class CrosswordComponent {
                 this.configuration.handleGameStart(
                     this.multiplayerCommunicationService.grid,
                     this.multiplayerCommunicationService.currentGame.players);
+            }
+            if (message === SocketEvents.DisconnectionAlert) {
+                console.log("DECONNECTION");
+                this.hasOtherPlayerDisconnected = true;
             }
         });
     }
