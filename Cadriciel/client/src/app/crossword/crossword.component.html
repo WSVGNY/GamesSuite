@@ -88,8 +88,22 @@
       </div>
     </div>
   </div>
-  <div id="gameEnd" *ngIf="configuration.isTwoPlayerGame && configuration.currentPlayer.score + configuration.otherPlayer.score >= 2">
-    BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+  <div *ngIf="configuration.isTwoPlayerGame && configuration.currentPlayer.score + configuration.otherPlayer.score >= 2">
+    <div *ngIf="configuration.currentPlayer.score >= configuration.otherPlayer.score">
+      <div class="gameEnding">
+        <div class="image">
+          <div class="back"></div>
+          <img src="https://d13yacurqjgara.cloudfront.net/users/69311/screenshots/1226327/congrats-gif-edit.gif">
+        </div>
+        <div class="text">
+          <p>Congratulations!</p>
+          <p>You won</p>
+          <p>Here are your options :</p>
+          <button> Play again with same configuration</button>
+          <button> Go back to configuation menu</button>
+        </div>
+      </div>
+    </div>
   </div>
 
 </div>
