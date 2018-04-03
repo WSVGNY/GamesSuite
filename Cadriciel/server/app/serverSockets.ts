@@ -131,6 +131,7 @@ export class ServerSockets {
 
     private onRestartGameWithSameConfig(socket: SocketIO.Socket): void {
         socket.on(SocketEvents.RestartGameWithSameConfig, () => {
+            // TODO: Must create a mechanism so it restart only when two players chose to
             socket.broadcast.to(this.findSocketRoomNameByID(socket.id)).emit(SocketEvents.ReinitializeGame);
             console.log("restart game with same config event");
             const gameIndex: number = this.findGameIndexWithRoom(this.findSocketRoomNameByID(socket.id));
