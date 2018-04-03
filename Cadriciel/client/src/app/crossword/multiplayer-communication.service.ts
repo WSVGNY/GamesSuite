@@ -109,15 +109,15 @@ export class MultiplayerCommunicationService {
                 observer.next(SocketEvents.PlayerUpdate);
             });
 
-            this._socket.on(SocketEvents.RestartGame, () => {
+            this._socket.on(SocketEvents.RestartGame, (message: MultiplayerCrosswordGame) => {
+                this._currentGame = MultiplayerCrosswordGame.create(JSON.stringify(message));
                 console.log("Restart Game Event");
+                observer.next(SocketEvents.RestartGame);
             });
 
             this._socket.on(SocketEvents.GameNotFound, () => {
                 console.log("Game Not Found Event");
             });
         });
-
-
     }
 }

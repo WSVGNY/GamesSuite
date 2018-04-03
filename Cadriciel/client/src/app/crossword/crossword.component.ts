@@ -45,6 +45,9 @@ export class CrosswordComponent {
             if (message === SocketEvents.PlayerUpdate) {
                 this.handlePlayerUpdate();
             }
+            if (message === SocketEvents.RestartGame) {
+                console.log("ALLO");
+            }
         });
     }
 

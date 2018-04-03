@@ -135,7 +135,11 @@ export class ServerSockets {
             const index: number = this.findGameIndexWithRoom(this.findSocketRoomNameByID(socket.id));
             if (index >= 0) {
                 const game: MultiplayerCrosswordGame = this._games[index];
-                this._io.to(game.roomName).emit(SocketEvents.RestartGame);
+                this.gridCreateQuery(game).then(() => {
+                    this._io.to(game.roomName).emit(SocketEvents.RestartGame, game);
+                }).catch((e: Error) => {
+                    console.error(e);
+                });
             } else {
                 this._io.to(this.findSocketRoomNameByID(socket.id)).emit(SocketEvents.GameNotFound);
             }
@@ -176,4 +180,5 @@ export class ServerSockets {
 
         return -1;
     }
+
 }
