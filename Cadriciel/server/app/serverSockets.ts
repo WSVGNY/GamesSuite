@@ -132,6 +132,13 @@ export class ServerSockets {
     private onRestartGameWithSameConfig(socket: SocketIO.Socket): void {
         socket.on(SocketEvents.RestartGameWithSameConfig, () => {
             console.log("restart game with same config event");
+            const index: number = this.findGameIndexWithRoom(this.findSocketRoomNameByID(socket.id));
+            if (index >= 0) {
+                const game: MultiplayerCrosswordGame = this._games[index];
+                this._io.to(game.roomName).emit(SocketEvents.RestartGame);
+            } else {
+                this._io.to(this.findSocketRoomNameByID(socket.id)).emit(SocketEvents.GameNotFound);
+            }
         });
     }
     // tslint:enable:no-console
@@ -158,5 +165,15 @@ export class ServerSockets {
         ).catch((e: Error) => {
             console.error(e);
         });
+    }
+
+    private findGameIndexWithRoom(room: string): number {
+        for (let i: number = 0; i < this._games.length; ++i) {
+            if (this._games[i].roomName === room) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 }

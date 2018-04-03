@@ -108,6 +108,16 @@ export class MultiplayerCommunicationService {
                 this._playerHolder = player;
                 observer.next(SocketEvents.PlayerUpdate);
             });
+
+            this._socket.on(SocketEvents.RestartGame, () => {
+                console.log("Restart Game Event");
+            });
+
+            this._socket.on(SocketEvents.GameNotFound, () => {
+                console.log("Game Not Found Event");
+            });
         });
+
+
     }
 }
