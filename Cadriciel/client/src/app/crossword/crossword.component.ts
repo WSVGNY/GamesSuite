@@ -58,7 +58,7 @@ export class CrosswordComponent {
             }
             if (message === SocketEvents.ReinitializeGame) {
                 console.log("YOYOYO");
-                // this.resetGameStats();
+                this.resetGameStats();
             }
         });
     }
@@ -302,7 +302,7 @@ export class CrosswordComponent {
     }
 
     public restartGame(): void {
-        // this.resetGameStats();
+        this.resetGameStats();
         this.configuration.isTwoPlayerGame ?
             this.multiplayerCommunicationService.restartGameWithSameConfig() :
             this.restartGameWithSameConfig();
