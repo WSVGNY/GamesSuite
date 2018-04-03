@@ -6,7 +6,7 @@
     <div id="loader" *ngIf="isConfigurationDone() && configuration.grid===undefined"></div>
 
     <div id="definitions" (mousedown)="resetInputBox()">
-      <button id="CheatButton" (click)="changeMode()"> Cheat mode </button>
+      <a id="CheatButton" (click)="changeMode()"> Cheat mode </a>
       <h2 id="title">Definitions</h2>
       <div *ngIf="configuration.grid !== undefined">
         <h3> Horizontal : </h3>
@@ -40,11 +40,11 @@
   <div *ngIf="isConfigurationDone()">
     <div id="gameInformations" (mousedown)="resetInputBox()">
       <h2 [style.background]="this.configuration.currentPlayer.color"> {{configuration.currentPlayer.name}} :
-        <h5> {{configuration.currentPlayer.score}} words found</h5>
+        <h4> {{configuration.currentPlayer.score}} words found</h4>
       </h2>
       <h2 *ngIf="configuration.isTwoPlayerGame" [style.background]="this.configuration.otherPlayer.color">
         {{configuration.otherPlayer.name}} :
-        <h5> {{configuration.otherPlayer.score}} words found</h5>
+        <h4> {{configuration.otherPlayer.score}} words found</h4>
       </h2>
     </div>
   </div>
@@ -83,6 +83,8 @@
         <p>Congratulations!</p>
         <p>You won</p>
         <p>Here are your options :</p>
+        <button> Play again with same configuration</button>
+        <button> Go back to configuation menu</button>
       </div>
     </div>
   </div>

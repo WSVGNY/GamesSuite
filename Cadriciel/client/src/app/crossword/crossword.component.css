@@ -131,10 +131,39 @@ li {
     top:2%;
     cursor: pointer;
     border-radius: 4px;
-    background: rgb(141, 175, 165);
+    background: rgb(92, 150, 132);
     border: 1px solid rgba(25, 66, 59, 0.705);
-    color:rgb(20, 49, 42);
+    color:rgb(3, 17, 14);
     font-size:16px;
+    padding-left: 3px;
+    padding-right: 3px;
+    transition-duration: 0.7s;
+}
+
+#CheatButton:hover {
+    background: rgb(190, 228, 216);
+    color:rgb(12, 65, 52);
+}
+
+button {
+    padding: 5px 8px;
+    min-width: 100px;
+    background-color: rgb(156, 16, 16);
+    color:rgb(231, 200, 200);
+    border-radius: 4px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    transition-duration: 0.7s;
+    text-align: center;
+    font-size: 14px;
+    border:black;
+    cursor: pointer;
+}
+
+
+button:hover {
+    color: #420505;
+    background-color: rgb(150, 84, 84);
+    box-shadow: none;
 }
 
 #loader {
@@ -184,8 +213,9 @@ li {
     to {background-color:  rgb(255, 255, 255);}
 }
 
-h5{
+h4{
     display:inline-block;
+    min-width: 100px;
 }
 
 #grid {
@@ -198,73 +228,62 @@ h5{
     margin-bottom: 10px;
 }
 
-#gameEnd {
-    width: 830px;
-    height: 630px;
-    border: 2px solid rgba(44, 107, 97, 0.233);
+ .gameEnding {  /* source :  https://codepen.io/teacoin/pen/PEJBxX */
+    color: #d60000;
+	background: #dbd8c5;
     position: absolute;
-    left: 100px;
-    background: rgba(167, 223, 13, 0.918);
-    margin-top:200px;
-    z-index: 2;
-}
-
-.gameEnding {
-    color: #ff3300;
-    background:rgb(230, 224, 209);
-	position: absolute;
 	top: 400px;
     left: 700px;
 	transform-style: preserve-3d;
 	transform: translate(-50%,-50%) perspective(2000px);
-	box-shadow: inset 300px 0 50px rgba(0, 0, 0, 0.747), 20px 0 60px rgba(255, 15, 15, 0.74);
+	box-shadow: inset 300px 0 50px rgba(0, 0, 0, 0.712), 20px 0 60px rgba(0, 0, 0, 0.767);
     transition: 1s;
     z-index:2;
-    font-size: 30px;
-    font-family: "Book Antiqua";
-	font-style: italic;
 }
 
 .gameEnding:hover {
-	transform: translate(-50%,-50%) perspective(2000px) rotate(15deg) scale(1.2);
-	box-shadow: 20px 0 50px rgba(0, 0, 0, 0.75), 0 10px 100px rgba(0, 0, 0, 0.75);
+    transform: translate(-50%,-50%) perspective(2000px) rotate(15deg) scale(1.2);
+    box-shadow: inset 20px 0 50px rgba(0, 0, 0, 0.829), 0 10px 100px rgba(0, 0, 0, 0.849);
 }
 
 .gameEnding .image {
-	position: relative;
-	transform-origin: left;
-	transition: .7s;
+    position: relative;
+    transform-origin: left;
+    transition: .7s;
+}
+
+img {
+    height: 400px;
 }
 
 .gameEnding .back {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	transition: .7s;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: .7s;
 }
 
 .gameEnding:hover .image {
-	transform: rotateY(-135deg);
+    transform: rotateY(-135deg);
 }
 
 .gameEnding:hover .back {
-	opacity: 1;
-	transition: .6s;
-  box-shadow: 300px 200px 100px rgba(0, 0, 0, 0.4) inset;
+    opacity: 1;
+    transition: .6s;
+    box-shadow: 300px 200px 100px rgba(0, 0, 0, 0.719) inset;
 }
 
 .gameEnding .text {
-	position: absolute;
-	top: 0;
-	left: 100px;
-	box-sizing: border-box;
-	padding: 0 0 0 10px;
-	z-index: -1;
-	margin-top: 70px;
-}
-
-.gameEnding .text p {
-	line-height: 5px;
-    padding: 0 0 0 20px;
+    top:0;
+    position: absolute;
+    left:55px;
+    box-sizing: border-box;
+    z-index: -1;
+    margin-top: 70px;
+    font-size: 30px;
+    font-family: "Book Antiqua";
+    font-style: italic;
+    text-align: center;
 }
 
