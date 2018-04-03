@@ -104,6 +104,21 @@
         </div>
       </div>
     </div>
+    <div *ngIf="configuration.currentPlayer.score < configuration.otherPlayer.score">
+      <div class="gameEnding">
+        <div class="image">
+          <div class="back"></div>
+          <img src="http://jennamolby.com/wp-content/uploads/2016/08/sorry.png">
+        </div>
+        <div class="text">
+          <p>Better luck next time ...</p>
+          <p>You lost the game</p>
+          <p>Here are your options :</p>
+          <button> Play again with same configuration</button>
+          <button> Go back to configuation menu</button>
+        </div>
+      </div>
+    </div>
   </div>
 
 </div>
