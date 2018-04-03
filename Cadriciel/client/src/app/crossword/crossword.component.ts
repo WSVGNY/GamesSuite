@@ -47,6 +47,9 @@ export class CrosswordComponent {
             }
             if (message === SocketEvents.RestartGame) {
                 console.log("ALLO");
+                this.configuration.handleGameStart(
+                    this.multiplayerCommunicationService.grid,
+                    this.multiplayerCommunicationService.currentGame.players);
             }
         });
     }
