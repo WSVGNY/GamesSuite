@@ -127,4 +127,13 @@
     </div>
   </div>
 
+  <div id="disconnection" *ngIf="hasOtherPlayerDisconnected">
+    <h2>{{configuration.otherPlayer.name}} has disconnected</h2>
+    <a href="/crossword">
+      <button> Go back to menu</button>
+    </a>
+
+  </div>
+
+
 </div>
