@@ -10,8 +10,6 @@ import {
 } from "../constants";
 import { Car } from "../car/car";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
-import { Wall } from "../render-service/wall";
-import { TrackPointList } from "../render-service/trackPointList";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { Track } from "../../../../../common/racing/track";
 import { TrackMesh } from "../track-service/track";
@@ -43,7 +41,6 @@ export class GameScene extends AbstractScene {
         }
         this._isDay = track.type === TrackType.Default ? true : false;
         this._trackShape = new TrackMesh(track);
-        this._group.add(this.createWalls(this._trackShape.trackPoints));
         this._collisionManager.setWalls(this._trackShape);
         this._group.add(this._trackShape);
         this.addGround();
@@ -86,14 +83,6 @@ export class GameScene extends AbstractScene {
         this._lighting = new TrackLights(trackType);
         this._keyBoardHandler.bindFunctionToKeyDown(CHANGE_CAMERA_KEYCODE, () => this._lighting.changePerspective());
         this._group.add(this._lighting);
-    }
-
-    public createWalls(trackPoints: TrackPointList): Group {
-        const walls: Group = new Group();
-        walls.add(Wall.createInteriorWall(trackPoints));
-        walls.add(Wall.createExteriorWall(trackPoints));
-
-        return walls;
     }
 
     private findFirstTrackSegmentAngle(): number {

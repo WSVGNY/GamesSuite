@@ -3,6 +3,7 @@ import { Shape, Mesh, MeshPhongMaterial, Path, BackSide, Texture, TextureLoader,
 import { TrackType } from "../../../../../common/racing/trackType";
 import { TrackPointList } from "./../render-service/trackPointList";
 import { PI_OVER_2, ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR } from "./../constants";
+import { WallMesh } from "../render-service/wall";
 
 export class TrackMesh extends Mesh {
     private _trackPoints: TrackPointList;
@@ -11,6 +12,12 @@ export class TrackMesh extends Mesh {
         super();
         this._trackPoints = new TrackPointList(this._track.vertices);
         this.createTrackMesh();
+        this.createWalls();
+    }
+
+    private createWalls(): void {
+        this.add(WallMesh.createInteriorWall(this._trackPoints));
+        this.add(WallMesh.createExteriorWall(this._trackPoints));
     }
 
     public set timesPlayed(timesPlayed: number) {
