@@ -9,5 +9,6 @@ export enum SocketEvents {
     StartGame = "start-game",
     RoomsListsQueryResponse = "room-list-query-response",
     GridQuery = "grid-query",
-    PlayerUpdate = "player-update"
+    PlayerUpdate = "player-update",
+    RestartGameWithSameConfig = "restart-game-with-same-config"
 }

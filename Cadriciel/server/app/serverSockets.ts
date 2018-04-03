@@ -37,6 +37,7 @@ export class ServerSockets {
             this.onRoomsListQuery(socket);
             this.onRoomConnect(socket).then().catch((e: Error) => console.error(e.message));
             this.onPlayerUpdate(socket);
+            this.onRestartGameWithSameConfig(socket);
         });
     }
 
@@ -125,6 +126,12 @@ export class ServerSockets {
         socket.on(SocketEvents.PlayerUpdate, (player: Player) => {
             console.log("player update event");
             socket.broadcast.to(this.findSocketRoomNameByID(socket.id)).emit(SocketEvents.PlayerUpdate, player);
+        });
+    }
+
+    private onRestartGameWithSameConfig(socket: SocketIO.Socket): void {
+        socket.on(SocketEvents.RestartGameWithSameConfig, () => {
+            console.log("restart game with same config event");
         });
     }
     // tslint:enable:no-console

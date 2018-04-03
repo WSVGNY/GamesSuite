@@ -68,6 +68,12 @@ export class MultiplayerCommunicationService {
         }
     }
 
+    public restartGameWithSameConfig(): void {
+        if (this._socket !== undefined) {
+            this._socket.emit(SocketEvents.RestartGameWithSameConfig);
+        }
+    }
+
     public getMessagesConfigurationComponent = () => {
         if (this._socket === undefined) {
             return;

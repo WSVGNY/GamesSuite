@@ -286,4 +286,8 @@ export class CrosswordComponent {
         return ListChecker.playersSelectedBox(box, this.configuration);
     }
 
+    public restartGameWithSameConfig(): void {
+        this.multiplayerCommunicationService.restartGameWithSameConfig();
+    }
+
 }
