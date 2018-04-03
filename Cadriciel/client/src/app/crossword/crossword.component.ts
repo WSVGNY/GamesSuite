@@ -46,7 +46,6 @@ export class CrosswordComponent {
                 this.handlePlayerUpdate();
             }
             if (message === SocketEvents.RestartGame) {
-                console.log("ALLO");
                 this.configuration.handleGameStart(
                     this.multiplayerCommunicationService.grid,
                     this.multiplayerCommunicationService.currentGame.players);
@@ -292,8 +291,21 @@ export class CrosswordComponent {
         return ListChecker.playersSelectedBox(box, this.configuration);
     }
 
+    public restartGame(): void {
+        this.resetGameStats();
+        this.configuration.isTwoPlayerGame ?
+            this.multiplayerCommunicationService.restartGameWithSameConfig() :
+            this.restartGameWithSameConfig();
+    }
+
+    private resetGameStats(): void {
+        this.configuration.currentPlayer.score = 0;
+        this.configuration.grid = undefined;
+        this.initializePlayersArrays(this.configuration.currentPlayer);
+    }
+
     public restartGameWithSameConfig(): void {
-        this.multiplayerCommunicationService.restartGameWithSameConfig();
+        this.configuration.createGrid();
     }
 
 }
