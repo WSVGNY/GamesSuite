@@ -12,5 +12,6 @@ export enum SocketEvents {
     PlayerUpdate = "player-update",
     RestartGameWithSameConfig = "restart-game-with-same-config",
     GameNotFound = "game-not-found",
-    RestartGame = "restart-game"
+    RestartGame = "restart-game",
+    ReinitializeGame = "reinitializeGame"
 }

@@ -118,6 +118,10 @@ export class MultiplayerCommunicationService {
                 console.log("Other player disconnected");
                 observer.next(SocketEvents.DisconnectionAlert);
             });
+            this._socket.on(SocketEvents.ReinitializeGame, () => {
+                console.log("Reinitialize Game");
+                observer.next(SocketEvents.ReinitializeGame);
+            });
         });
     }
 }

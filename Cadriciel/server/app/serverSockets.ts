@@ -131,6 +131,7 @@ export class ServerSockets {
 
     private onRestartGameWithSameConfig(socket: SocketIO.Socket): void {
         socket.on(SocketEvents.RestartGameWithSameConfig, () => {
+            socket.broadcast.to(this.findSocketRoomNameByID(socket.id)).emit(SocketEvents.ReinitializeGame);
             console.log("restart game with same config event");
             const gameIndex: number = this.findGameIndexWithRoom(this.findSocketRoomNameByID(socket.id));
             if (gameIndex >= 0) {
