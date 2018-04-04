@@ -1,43 +1,46 @@
-import { Mesh, MeshBasicMaterial, Vector3, BoxGeometry } from "three";
+import { Vector3, Sphere, Matrix4 } from "three";
 
-const WIDTH: number = 1.5;
-const HEIGHT: number = 0.01;
-const DEPTH: number = 3.1;
+// const WIDTH: number = 1.5;
+// const HEIGHT: number = 0.01;
+// const DEPTH: number = 3.1;
 
-const TOP_LEFT_VERTEX_INDEX: number = 2;
-const TOP_RIGHT_VERTEX_INDEX: number = 3;
-const BOTTOM_LEFT_VERTEX_INDEX: number = 6;
-const BOTTOM_RIGHT_VERTEX_INDEX: number = 7;
+const FRONT_SPHERE_OFFSET: number = 0.75;
+const REAR_SPHERE_OFFSET: number = -0.75;
+const SPHERE_RADIUS: number = 0.75;
+const SPHERE_QUANTITY: number = 2;
 
-export class Hitbox extends Mesh {
+export class Hitbox {
 
-    private _bottomPlaneVertices: Vector3[];
+    private _boundingSpheres: Sphere[];
     public inCollision: boolean;
 
     public constructor() {
-        const geometry: BoxGeometry = new BoxGeometry(WIDTH, HEIGHT, DEPTH);
-        const material: MeshBasicMaterial = new MeshBasicMaterial({wireframe: true, color: 0x00FF00 });
-        material.opacity = 0;
-        material.transparent = true;
-        super(geometry, material);
-        this._bottomPlaneVertices = [];
-        this.generateSubPlanVertices();
+        this.initialize();
         this.inCollision = false;
     }
 
-    private generateSubPlanVertices(): void {
-        this._bottomPlaneVertices = [];
-        this._bottomPlaneVertices.push((this.geometry as BoxGeometry).vertices[TOP_LEFT_VERTEX_INDEX]);
-        this._bottomPlaneVertices.push((this.geometry as BoxGeometry).vertices[TOP_RIGHT_VERTEX_INDEX]);
-        this._bottomPlaneVertices.push((this.geometry as BoxGeometry).vertices[BOTTOM_LEFT_VERTEX_INDEX]);
-        this._bottomPlaneVertices.push((this.geometry as BoxGeometry).vertices[BOTTOM_RIGHT_VERTEX_INDEX]);
+    private initialize(): void {
+        this._boundingSpheres = [];
+        for (let i: number = 0; i < SPHERE_QUANTITY; ++i) {
+            this._boundingSpheres.push(new Sphere());
+        }
     }
 
-    public get bottomPlaneVertices(): Vector3[] {
-        return this._bottomPlaneVertices;
+    public updatePosition(carLocalPosition: Vector3, carMatrix: Matrix4): void {
+        for (let i: number = 0; i < SPHERE_QUANTITY; ++i) {
+            const localPosition: Vector3 = (i % 2 === 0) ?
+            new Vector3(0, 0, FRONT_SPHERE_OFFSET) :
+            new Vector3(0, 0, REAR_SPHERE_OFFSET);
+            const globalPosition: Vector3 = localPosition.applyMatrix4(carMatrix);
+            this._boundingSpheres[i].set(globalPosition, SPHERE_RADIUS);
+        }
     }
 
-    public get hitboxGeometry(): BoxGeometry {
-        return this.geometry as BoxGeometry;
+    public getPointOnPerimeter(index: number, collisionPoint: Vector3): Vector3 {
+        return this._boundingSpheres[index].clampPoint(collisionPoint);
+    }
+
+    public get boundingSpheres(): Sphere[] {
+        return this._boundingSpheres;
     }
 }

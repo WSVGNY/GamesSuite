@@ -1,7 +1,8 @@
 import { Injectable } from "@angular/core";
 import { Car } from "../car/car";
-import { Vector3, Raycaster, Intersection } from "three";
+import { Vector3, Scene } from "three";
 import { MINIMUM_CAR_DISTANCE } from "../constants";
+import { VectorHelper } from "../artificial-intelligence/vectorHelper";
 
 const EMITTER_SPEED_AFTER_COLLISION: number = 0;
 const RECEIVER_SPEED_AFTER_COLLISION: number = 1;
@@ -9,56 +10,72 @@ const RECEIVER_SPEED_AFTER_COLLISION: number = 1;
 @Injectable()
 export class CollisionManagerService {
 
+    private helper1: VectorHelper;
+    private helper2: VectorHelper;
+
     public shouldPlaySound: boolean;
 
-    private _collisionEmitter: Car;
-    private _collisionReceiver: Car;
+    private _collisionCarA: Car;
+    private _collisionCarB: Car;
+
+    private _closestVertexSphereA: Vector3;
+    private _closestVertexSphereB: Vector3;
     private _collisionPoint: Vector3;
 
     public constructor() {
         this.shouldPlaySound = false;
+        this.helper1 = new VectorHelper(0xFFFFFF);
+        this.helper2 = new VectorHelper(0x0000FF);
     }
 
-    public update(cars: Car[]): void {
+    public update(cars: Car[], scene: Scene): void {
         for (let firstCarIndex: number = 0; firstCarIndex < cars.length; ++firstCarIndex) {
             for (let secondCarIndex: number = firstCarIndex + 1; secondCarIndex < cars.length; ++secondCarIndex) {
+                scene.remove(this.helper1);
+                scene.remove(this.helper2);
+                this.helper1.update(cars[firstCarIndex].hitbox.boundingSpheres[0].center, cars[firstCarIndex].hitbox.boundingSpheres[0].center.clone().add(new Vector3(-1, 10, 0)));
+                this.helper2.update(cars[firstCarIndex].hitbox.boundingSpheres[1].center, cars[firstCarIndex].hitbox.boundingSpheres[1].center.clone().add(new Vector3(1, 10, 0)));
+                scene.add(this.helper1);
+                scene.add(this.helper2);
                 if (this.checkIfCarsAreClose(cars[firstCarIndex], cars[secondCarIndex])) {
-                    this.applyCollisionDetection(cars, firstCarIndex, secondCarIndex);
+                    this.applyCollisionDetection(cars[firstCarIndex], cars[secondCarIndex]);
                 }
             }
         }
     }
 
-    private applyCollisionDetection(cars: Car[], firstCarIndex: number, secondCarIndex: number): void {
-        this._collisionPoint = this.findCollisionPoint(cars[firstCarIndex], cars[secondCarIndex]);
-        if (this._collisionPoint !== undefined) {
-            this._collisionPoint.y = 0;
+    private applyCollisionDetection(firstCar: Car, secondCar: Car): void {
+        if (this.computeCollisionParameters(firstCar, secondCar)) {
             this.resolveHitboxOverlap();
-            if (!this._collisionEmitter.hitbox.inCollision && !this._collisionReceiver.hitbox.inCollision) {
-                this.applyCollisionPhysics();
+            if (!this.checkIfCarsInCollision()) {
+                // this.applyCollisionPhysics();
             }
         } else {
-            cars[firstCarIndex].hitbox.inCollision = false;
-            cars[secondCarIndex].hitbox.inCollision = false;
+            firstCar.hitbox.inCollision = false;
+            secondCar.hitbox.inCollision = false;
             this.shouldPlaySound = false;
         }
     }
 
     private applyCollisionPhysics(): void {
-        this._collisionEmitter.hitbox.inCollision = true;
-        this._collisionReceiver.hitbox.inCollision = true;
+        this._collisionCarA.hitbox.inCollision = true;
+        this._collisionCarB.hitbox.inCollision = true;
         this.shouldPlaySound = true;
         const forces1: Vector3[] = this.computeResultingForces(
-            this._collisionEmitter,
-            this._collisionReceiver,
+            this._collisionCarA,
+            this._collisionCarB,
             this._collisionPoint.clone()
         );
         const forces2: Vector3[] = this.computeResultingForces(
-            this._collisionReceiver,
-            this._collisionEmitter,
+            this._collisionCarB,
+            this._collisionCarA,
             this._collisionPoint.clone()
         );
         this.applyForces(forces1, forces2);
+    }
+
+    private checkIfCarsInCollision(): boolean {
+        return this._collisionCarA.hitbox.inCollision && !this._collisionCarB.hitbox.inCollision;
     }
 
     public get inCollision(): boolean {
@@ -66,90 +83,52 @@ export class CollisionManagerService {
     }
 
     private resolveHitboxOverlap(): void {
-        const displacement: Vector3 = this.findDisplacementVector();
-        displacement.y = 0;
-        this._collisionEmitter.setCurrentPosition(
-            this._collisionEmitter.currentPosition.clone()
-                .add(displacement.clone()
-                    .multiplyScalar(2)
-                ));
-    }
-
-    private findDisplacementVector(): Vector3 {
-        let smallestDistance: number = 2e19;
-        let displacement: Vector3;
-        for (let i: number = 0; i < this._collisionReceiver.hitbox.bottomPlaneVertices.length; ++i) {
-            const desiredGlobalVertices: Vector3[] = this.computeIntersectingHitboxSide(i);
-            const possibleDisplacement: Vector3 =
-                this.findDistanceToSegment(
-                    this._collisionPoint.clone(),
-                    desiredGlobalVertices[0],
-                    desiredGlobalVertices[1]
-                );
-            const distance: number = possibleDisplacement.lengthSq();
-            if (distance < smallestDistance) {
-                smallestDistance = distance;
-                displacement = possibleDisplacement.clone();
-            }
-        }
-
-        return displacement;
-    }
-
-    private computeIntersectingHitboxSide(index: number): Vector3[] {
-        const localVertexA: Vector3 = this._collisionReceiver.hitbox.bottomPlaneVertices[index].clone();
-        const localVertexB: Vector3 = ((index + 1) === this._collisionReceiver.hitbox.bottomPlaneVertices.length) ?
-            this._collisionReceiver.hitbox.bottomPlaneVertices[0].clone() :
-            this._collisionReceiver.hitbox.bottomPlaneVertices[index + 1].clone();
-        const globalVertices: Vector3[] = [];
-        globalVertices.push(localVertexA.applyMatrix4(this._collisionReceiver.meshMatrix));
-        globalVertices.push(localVertexB.applyMatrix4(this._collisionReceiver.meshMatrix));
-
-        return globalVertices;
-    }
-
-    private findDistanceToSegment(sourcePoint: Vector3, pointA: Vector3, pointB: Vector3): Vector3 {
-        const ap: Vector3 = sourcePoint.clone().sub(pointA);
-        const ab: Vector3 = pointB.clone().sub(pointA);
-        const destinationPoint: Vector3 = pointA.clone().add(ap.clone().projectOnVector(ab));
-
-        return destinationPoint.clone().sub(sourcePoint);
+        this._collisionCarA.setCurrentPosition(
+            this._collisionCarA.currentPosition.clone()
+            .add(this._closestVertexSphereB.clone().sub(this._closestVertexSphereA)/*.multiplyScalar(0.51)*/)
+        );
+        // this._collisionCarB.setCurrentPosition(
+        //     this._collisionCarB.currentPosition.clone()
+        //     .add(this._closestVertexSphereA.clone().sub(this._closestVertexSphereB).multiplyScalar(0.51))
+        // );
     }
 
     private checkIfCarsAreClose(firstCar: Car, secondCar: Car): boolean {
         return (firstCar.currentPosition.distanceTo(secondCar.currentPosition) < MINIMUM_CAR_DISTANCE) ? true : false;
     }
 
-    private findCollisionPoint(firstCar: Car, secondCar: Car): Vector3 {
-        let collisionPoint: Vector3 = this.checkIfColliding(firstCar, secondCar);
-        if (collisionPoint === undefined) {
-            collisionPoint = this.checkIfColliding(secondCar, firstCar);
-        }
+    private computeCollisionParameters(firstCar: Car, secondCar: Car): boolean {
+        for (const firstCarSphere of firstCar.hitbox.boundingSpheres) {
+            for (const secondCarSphere of secondCar.hitbox.boundingSpheres) {
+                if (firstCarSphere.intersectsSphere(secondCarSphere)) {
+                    const closestFirstSphereVertex: Vector3 = firstCarSphere.clampPoint(secondCarSphere.center);
+                    const closestSecondSphereVertex: Vector3 = secondCarSphere.clampPoint(firstCarSphere.center);
+                    const firstToSecondVertex: Vector3 = closestSecondSphereVertex.clone().sub(closestFirstSphereVertex);
+                    const collisionPoint: Vector3 = closestFirstSphereVertex.clone().add(firstToSecondVertex.clone().multiplyScalar(0.5));
 
-        return collisionPoint;
-    }
+                    this.setCollisionPoints(closestFirstSphereVertex, closestSecondSphereVertex, collisionPoint);
+                    this.setCollisionCars(firstCar, secondCar);
 
-    private checkIfColliding(collisionEmitter: Car, collisionReceiver: Car): Vector3 {
-        for (const vertex of collisionEmitter.hitbox.bottomPlaneVertices) {
-
-            const localVertex: Vector3 = vertex.clone();
-            const globalVertex: Vector3 = localVertex.applyMatrix4(collisionEmitter.meshMatrix);
-            const direction: Vector3 = globalVertex.sub(collisionEmitter.currentPosition);
-            const ray: Raycaster = new Raycaster(collisionEmitter.currentPosition.clone(), direction.clone().normalize());
-
-            if (this.areCarsColliding(ray.intersectObject(collisionReceiver.hitbox), direction)) {
-                this._collisionEmitter = collisionEmitter;
-                this._collisionReceiver = collisionReceiver;
-
-                return collisionEmitter.currentPosition.clone().add(direction);
+                    return true;
+                }
             }
         }
 
-        return undefined;
+        return false;
     }
 
-    private areCarsColliding(collisionResult: Intersection[], direction: Vector3): boolean {
-        return collisionResult.length > 0 && collisionResult[0].distance < direction.length();
+    private setCollisionPoints(firstSphereClosestVertex: Vector3, secondSphereClosestVertex: Vector3, collisionPoint: Vector3): void {
+        this._closestVertexSphereA = firstSphereClosestVertex;
+        this._closestVertexSphereB = secondSphereClosestVertex;
+        this._collisionPoint = collisionPoint;
+        this._closestVertexSphereA.y = 0;
+        this._closestVertexSphereB.y = 0;
+        this._collisionPoint.y = 0;
+    }
+
+    private setCollisionCars(firstCar: Car, secondCar: Car): void {
+        this._collisionCarA = firstCar;
+        this._collisionCarB = secondCar;
     }
 
     private computeCollisionAxis(firstCar: Car, secondCar: Car, collisionPoint: Vector3): Vector3 {
@@ -228,7 +207,7 @@ export class CollisionManagerService {
     }
 
     private applyForces(forces1: Vector3[], forces2: Vector3[]): void {
-        this._collisionEmitter.speed = forces1[EMITTER_SPEED_AFTER_COLLISION].clone().add(forces2[EMITTER_SPEED_AFTER_COLLISION]);
-        this._collisionReceiver.speed = forces1[RECEIVER_SPEED_AFTER_COLLISION].clone().add(forces2[RECEIVER_SPEED_AFTER_COLLISION]);
+        this._collisionCarA.speed = forces1[EMITTER_SPEED_AFTER_COLLISION].clone().add(forces2[EMITTER_SPEED_AFTER_COLLISION]);
+        this._collisionCarB.speed = forces1[RECEIVER_SPEED_AFTER_COLLISION].clone().add(forces2[RECEIVER_SPEED_AFTER_COLLISION]);
     }
 }

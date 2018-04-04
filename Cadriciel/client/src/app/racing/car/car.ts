@@ -96,7 +96,7 @@ export class Car extends Object3D {
 
     private initHitBox(): void {
         this._hitbox = new Hitbox();
-        this._mesh.add(this._hitbox);
+        // this._mesh.add(this._hitbox);
     }
 
     private initLights(): void {
@@ -228,6 +228,9 @@ export class Car extends Object3D {
         const R: number = CarConfig.DEFAULT_WHEELBASE / Math.sin(this._carControls.steeringWheelDirection * deltaTime);
         const omega: number = this._carControls.speed.length() / R;
         this._mesh.rotateY(omega);
+
+        // Hitbox global position
+        this._hitbox.updatePosition(this._mesh.position, this._mesh.matrix);
     }
 
     private physicsUpdate(deltaTime: number): void {
