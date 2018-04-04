@@ -17,10 +17,8 @@ export class CollisionManagerService {
 
     private _collisionCarA: Car;
     private _collisionCarB: Car;
-
-    private _closestVertexSphereA: Vector3;
-    private _closestVertexSphereB: Vector3;
     private _collisionPoint: Vector3;
+    private _overlapCorrection: Vector3;
 
     public constructor() {
         this.shouldPlaySound = false;
@@ -85,12 +83,12 @@ export class CollisionManagerService {
     private resolveHitboxOverlap(): void {
         this._collisionCarA.setCurrentPosition(
             this._collisionCarA.currentPosition.clone()
-            .add(this._closestVertexSphereB.clone().sub(this._closestVertexSphereA)/*.multiplyScalar(0.51)*/)
+            .add(this._overlapCorrection.clone().multiplyScalar(0.51))
         );
-        // this._collisionCarB.setCurrentPosition(
-        //     this._collisionCarB.currentPosition.clone()
-        //     .add(this._closestVertexSphereA.clone().sub(this._closestVertexSphereB).multiplyScalar(0.51))
-        // );
+        this._collisionCarB.setCurrentPosition(
+            this._collisionCarB.currentPosition.clone()
+            .add(this._overlapCorrection.clone().negate().multiplyScalar(0.51))
+        );
     }
 
     private checkIfCarsAreClose(firstCar: Car, secondCar: Car): boolean {
@@ -98,31 +96,29 @@ export class CollisionManagerService {
     }
 
     private computeCollisionParameters(firstCar: Car, secondCar: Car): boolean {
+        this._overlapCorrection = new Vector3();
+        let collisionDetected: boolean = false;
         for (const firstCarSphere of firstCar.hitbox.boundingSpheres) {
             for (const secondCarSphere of secondCar.hitbox.boundingSpheres) {
                 if (firstCarSphere.intersectsSphere(secondCarSphere)) {
                     const closestFirstSphereVertex: Vector3 = firstCarSphere.clampPoint(secondCarSphere.center);
                     const closestSecondSphereVertex: Vector3 = secondCarSphere.clampPoint(firstCarSphere.center);
                     const firstToSecondVertex: Vector3 = closestSecondSphereVertex.clone().sub(closestFirstSphereVertex);
-                    const collisionPoint: Vector3 = closestFirstSphereVertex.clone().add(firstToSecondVertex.clone().multiplyScalar(0.5));
-
-                    this.setCollisionPoints(closestFirstSphereVertex, closestSecondSphereVertex, collisionPoint);
-                    this.setCollisionCars(firstCar, secondCar);
-
-                    return true;
+                    if (!collisionDetected) {
+                        this.setCollisionPoint(closestFirstSphereVertex.clone().add(firstToSecondVertex.clone().multiplyScalar(0.5)));
+                        this.setCollisionCars(firstCar, secondCar);
+                    }
+                    this._overlapCorrection.add(closestSecondSphereVertex.clone().sub(closestFirstSphereVertex));
+                    collisionDetected = true;
                 }
             }
         }
 
-        return false;
+        return collisionDetected;
     }
 
-    private setCollisionPoints(firstSphereClosestVertex: Vector3, secondSphereClosestVertex: Vector3, collisionPoint: Vector3): void {
-        this._closestVertexSphereA = firstSphereClosestVertex;
-        this._closestVertexSphereB = secondSphereClosestVertex;
+    private setCollisionPoint(collisionPoint: Vector3): void {
         this._collisionPoint = collisionPoint;
-        this._closestVertexSphereA.y = 0;
-        this._closestVertexSphereB.y = 0;
         this._collisionPoint.y = 0;
     }
 
