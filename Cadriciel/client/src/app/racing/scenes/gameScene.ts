@@ -16,7 +16,7 @@ import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-ha
 import { Track } from "../../../../../common/racing/track";
 import { TrackMesh } from "../track-service/track";
 
-const START_POSITION_OFFSET: number = -15;
+const START_POSITION_OFFSET: number = -25;
 
 export class GameScene extends AbstractScene {
 
@@ -53,7 +53,7 @@ export class GameScene extends AbstractScene {
     public async loadCars(cars: Car[], carDebugs: AIDebug[], camera: Camera, trackType: TrackType): Promise<void> {
         for (let i: number = 0; i < cars.length; ++i) {
             const startPos: Vector3 = new Vector3(
-                this._trackShape.trackPoints.first.coordinate.x - i * START_POSITION_OFFSET,
+                this._trackShape.trackPoints.first.coordinate.x /*- i * START_POSITION_OFFSET*/,
                 this._trackShape.trackPoints.first.coordinate.y,
                 this._trackShape.trackPoints.first.coordinate.z - i * START_POSITION_OFFSET);
 

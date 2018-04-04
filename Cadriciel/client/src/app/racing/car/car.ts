@@ -231,6 +231,7 @@ export class Car extends Object3D {
 
         // Hitbox global position
         this._hitbox.updatePosition(this._mesh.position, this._mesh.matrix);
+
     }
 
     private physicsUpdate(deltaTime: number): void {

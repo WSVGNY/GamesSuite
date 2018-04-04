@@ -12,7 +12,9 @@ export class CollisionManagerService {
 
     private helper1: VectorHelper;
     private helper2: VectorHelper;
+    private pointHelper: VectorHelper;
 
+    private scene: Scene;
     public shouldPlaySound: boolean;
 
     private _collisionCarA: Car;
@@ -23,18 +25,16 @@ export class CollisionManagerService {
     public constructor() {
         this.shouldPlaySound = false;
         this.helper1 = new VectorHelper(0xFFFFFF);
-        this.helper2 = new VectorHelper(0x0000FF);
+        this.helper2 = new VectorHelper(0x00FF00);
+        this.pointHelper = new VectorHelper(0xFF0000);
     }
 
     public update(cars: Car[], scene: Scene): void {
+        this.scene = scene;
         for (let firstCarIndex: number = 0; firstCarIndex < cars.length; ++firstCarIndex) {
             for (let secondCarIndex: number = firstCarIndex + 1; secondCarIndex < cars.length; ++secondCarIndex) {
-                scene.remove(this.helper1);
-                scene.remove(this.helper2);
-                this.helper1.update(cars[firstCarIndex].hitbox.boundingSpheres[0].center, cars[firstCarIndex].hitbox.boundingSpheres[0].center.clone().add(new Vector3(-1, 10, 0)));
-                this.helper2.update(cars[firstCarIndex].hitbox.boundingSpheres[1].center, cars[firstCarIndex].hitbox.boundingSpheres[1].center.clone().add(new Vector3(1, 10, 0)));
-                scene.add(this.helper1);
-                scene.add(this.helper2);
+                // console.log(cars[firstCarIndex].currentPosition);
+
                 if (this.checkIfCarsAreClose(cars[firstCarIndex], cars[secondCarIndex])) {
                     this.applyCollisionDetection(cars[firstCarIndex], cars[secondCarIndex]);
                 }
@@ -44,9 +44,9 @@ export class CollisionManagerService {
 
     private applyCollisionDetection(firstCar: Car, secondCar: Car): void {
         if (this.computeCollisionParameters(firstCar, secondCar)) {
-            this.resolveHitboxOverlap();
-            if (!this.checkIfCarsInCollision()) {
-                // this.applyCollisionPhysics();
+            // this.resolveHitboxOverlap();
+            if (this.checkIfCarsInCollision()) {
+                this.applyCollisionPhysics();
             }
         } else {
             firstCar.hitbox.inCollision = false;
@@ -73,23 +73,23 @@ export class CollisionManagerService {
     }
 
     private checkIfCarsInCollision(): boolean {
-        return this._collisionCarA.hitbox.inCollision && !this._collisionCarB.hitbox.inCollision;
+        return (!this._collisionCarA.hitbox.inCollision) && (!this._collisionCarB.hitbox.inCollision);
     }
 
     public get inCollision(): boolean {
         return this.shouldPlaySound;
     }
 
-    private resolveHitboxOverlap(): void {
-        this._collisionCarA.setCurrentPosition(
-            this._collisionCarA.currentPosition.clone()
-            .add(this._overlapCorrection.clone().multiplyScalar(0.51))
-        );
-        this._collisionCarB.setCurrentPosition(
-            this._collisionCarB.currentPosition.clone()
-            .add(this._overlapCorrection.clone().negate().multiplyScalar(0.51))
-        );
-    }
+    // private resolveHitboxOverlap(): void {
+    //     this._collisionCarA.setCurrentPosition(
+    //         this._collisionCarA.currentPosition.clone()
+    //         .add(this._overlapCorrection.clone().multiplyScalar(0.51))
+    //     );
+    //     this._collisionCarB.setCurrentPosition(
+    //         this._collisionCarB.currentPosition.clone()
+    //         .add(this._overlapCorrection.clone().negate().multiplyScalar(0.51))
+    //     );
+    // }
 
     private checkIfCarsAreClose(firstCar: Car, secondCar: Car): boolean {
         return (firstCar.currentPosition.distanceTo(secondCar.currentPosition) < MINIMUM_CAR_DISTANCE) ? true : false;
@@ -154,6 +154,9 @@ export class CollisionManagerService {
     private computeResultingForces(movingCar: Car, motionlessCar: Car, collisionPoint: Vector3): Vector3[] {
         const movingCarSpeed: Vector3 = this.getCarSpeed(movingCar);
         const collisionAxis: Vector3 = this.computeCollisionAxis(movingCar, motionlessCar, collisionPoint);
+        this.scene.remove(this.helper2);
+        this.helper2.update(collisionPoint, collisionPoint.clone().add(collisionAxis.clone().multiplyScalar(5)));
+        this.scene.add(this.helper2);
         const radialForce: Vector3 = this.getRadialForce(movingCarSpeed, collisionAxis);
         const tangentialForce: Vector3 = this.getTangentialForce(movingCarSpeed, collisionAxis);
         const movingCarDirection: Vector3 = movingCar.direction.clone();
@@ -161,7 +164,10 @@ export class CollisionManagerService {
         const resultingForces: Vector3[] = [];
 
         resultingForces.push(this.findResultingSpeed(movingCarDirection, tangentialForce));
-        resultingForces.push(this.findResultingSpeed(motionlessCarDirection, radialForce));
+        if (radialForce.clone().dot(collisionPoint.clone().sub(motionlessCar.currentPosition)) < 0) {
+            resultingForces.push(this.findResultingSpeed(motionlessCarDirection, radialForce));
+
+        }
 
         return resultingForces;
     }
@@ -176,7 +182,7 @@ export class CollisionManagerService {
 
     private computeSpeedXComponent(force: Vector3, carDirection: Vector3): number {
         const sign: number = (force.clone().cross(carDirection).y < 0) ? -1 : 1;
-
+        console.log(sign);
         return force.clone().projectOnVector(this.orthogonalVector(carDirection)).length() * sign;
     }
 
@@ -187,7 +193,11 @@ export class CollisionManagerService {
     }
 
     private getCarSpeed(movingCar: Car): Vector3 {
-        return movingCar.direction.clone().multiplyScalar(-movingCar.speed.z);
+        const speed: Vector3 = new Vector3();
+        speed.add(movingCar.direction.clone().normalize().multiplyScalar(Math.abs(movingCar.speed.z)));
+        speed.add(this.orthogonalVector(movingCar.direction.clone().normalize()).multiplyScalar(Math.abs(movingCar.speed.x)));
+
+        return speed;
     }
 
     private getTangentialForce(movingCarSpeed: Vector3, collisionAxis: Vector3): Vector3 {

@@ -78,10 +78,10 @@ export class RacingComponent implements AfterViewInit, OnInit {
             for (let i: number = 0; i < AI_CARS_QUANTITY + 1; ++i) {
                 this._cars[i].update(timeSinceLastFrame);
                 if (this._cars[i].isAI) {
-                    this._aiCarService.update(this._cars[i], this._carDebugs[i]);
+                    // this._aiCarService.update(this._cars[i], this._carDebugs[i]);
                 }
             }
-            this._collisionManagerService.update(this._cars);
+            this._collisionManagerService.update(this._cars, this._gameScene);
             if (this._collisionManagerService.shouldPlaySound) {
                 this._soundService.play(this._soundService.collisionSound);
                 this._collisionManagerService.shouldPlaySound = false;
