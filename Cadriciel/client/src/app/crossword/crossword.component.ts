@@ -32,11 +32,13 @@ export class CrosswordComponent {
     public inputGridBox: CommonGridBox;
     public isInCheatMode: boolean;
     private _hasSubscribed: boolean;
+    public hasOtherPlayerDisconnected: boolean;
 
     public constructor(
         public configuration: ConfigurationService, private multiplayerCommunicationService: MultiplayerCommunicationService) {
         this.isInCheatMode = false;
         this._hasSubscribed = false;
+        this.hasOtherPlayerDisconnected = false;
 
     }
 
@@ -44,6 +46,19 @@ export class CrosswordComponent {
         this.multiplayerCommunicationService.getMessagesCrosswordComponent().subscribe((message: string) => {
             if (message === SocketEvents.PlayerUpdate) {
                 this.handlePlayerUpdate();
+            }
+            if (message === SocketEvents.RestartGame) {
+                this.configuration.handleGameStart(
+                    this.multiplayerCommunicationService.grid,
+                    this.multiplayerCommunicationService.currentGame.players);
+            }
+            if (message === SocketEvents.DisconnectionAlert) {
+                console.log("DECONNECTION");
+                this.hasOtherPlayerDisconnected = true;
+            }
+            if (message === SocketEvents.ReinitializeGame) {
+                console.log("YOYOYO");
+                this.resetGameStats();
             }
         });
     }
@@ -284,6 +299,23 @@ export class CrosswordComponent {
 
     public playersSelectedBox(box: CommonGridBox): boolean {
         return ListChecker.playersSelectedBox(box, this.configuration);
+    }
+
+    public restartGame(): void {
+        this.resetGameStats();
+        this.configuration.isTwoPlayerGame ?
+            this.multiplayerCommunicationService.restartGameWithSameConfig() :
+            this.restartGameWithSameConfig();
+    }
+
+    private resetGameStats(): void {
+        this.configuration.currentPlayer.score = 0;
+        this.configuration.grid = undefined;
+        this.initializePlayersArrays(this.configuration.currentPlayer);
+    }
+
+    public restartGameWithSameConfig(): void {
+        this.configuration.createGrid();
     }
 
 }

@@ -1,4 +1,8 @@
 
+
+
+@import url('https://fonts.googleapis.com/css?family=Indie+Flower');
+@import url('https://fonts.googleapis.com/css?family=Amatic+SC');
 #definitions {
     width: 630px;
     height: 412px;
@@ -127,10 +131,40 @@ li {
     top:2%;
     cursor: pointer;
     border-radius: 4px;
-    background: rgb(141, 175, 165);
+    background: rgb(92, 150, 132);
     border: 1px solid rgba(25, 66, 59, 0.705);
-    color:rgb(20, 49, 42);
+    color:rgb(3, 17, 14);
     font-size:16px;
+    padding-left: 3px;
+    padding-right: 3px;
+    transition-duration: 0.7s;
+}
+
+#CheatButton:hover {
+    background: rgb(190, 228, 216);
+    color:rgb(12, 65, 52);
+}
+
+button {
+    padding: 5px 8px;
+    min-width: 100px;
+    background-color: rgb(156, 16, 16);
+    color:rgb(231, 200, 200) !important;
+    text-decoration: none;
+    border-radius: 4px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    transition-duration: 0.7s;
+    text-align: center;
+    font-size: 14px;
+    border:black;
+    cursor: pointer;
+}
+
+
+button:hover {
+    color: #420505;
+    background-color: rgb(150, 84, 84);
+    box-shadow: none;
 }
 
 #loader {
@@ -182,6 +216,7 @@ li {
 
 h4{
     display:inline-block;
+    min-width: 100px;
 }
 
 #grid {
@@ -192,4 +227,75 @@ h4{
     position: absolute;
     margin-left: 750px;
     margin-bottom: 10px;
+}
+
+ .gameEnding {  /* source :  https://codepen.io/teacoin/pen/PEJBxX */
+    color: #d60000;
+	background: #dbd8c5;
+    position: absolute;
+	top: 400px;
+    left: 700px;
+	transform-style: preserve-3d;
+	transform: translate(-50%,-50%) perspective(2000px);
+	box-shadow: inset 300px 0 50px rgba(0, 0, 0, 0.712), 20px 0 60px rgba(0, 0, 0, 0.767);
+    transition: 1s;
+    z-index:2;
+}
+
+.gameEnding:hover {
+    transform: translate(-50%,-50%) perspective(2000px) rotate(15deg) scale(1.2);
+    box-shadow: inset 20px 0 50px rgba(0, 0, 0, 0.829), 0 10px 100px rgba(0, 0, 0, 0.849);
+}
+
+.gameEnding .image {
+    position: relative;
+    transform-origin: left;
+    transition: .7s;
+}
+
+img {
+    height: 400px;
+}
+
+.gameEnding .back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: .7s;
+}
+
+.gameEnding:hover .image {
+    transform: rotateY(-135deg);
+}
+
+.gameEnding:hover .back {
+    opacity: 1;
+    transition: .6s;
+    box-shadow: 300px 200px 100px rgba(0, 0, 0, 0.719) inset;
+}
+
+.gameEnding .text {
+    top:0;
+    position: absolute;
+    left:50px;
+    box-sizing: border-box;
+    z-index: -1;
+    margin-top: 70px;
+    font-size: 30px;
+    font-family: "Book Antiqua";
+    font-style: italic;
+    text-align: center;
+}
+
+#disconnection {
+    width: 400px;
+    height: 300px;
+    border: 4px solid orangered;
+    position: absolute;
+    left: 500px;
+    top:200px;
+    background: linear-gradient(rgb(52, 101, 141), rgb(136, 175, 207) );
+    text-align:center;
+    padding-top:90px;
 }

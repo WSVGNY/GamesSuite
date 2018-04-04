@@ -116,4 +116,8 @@ describe("Socket.IO tests", () => {
         });
     });
 
+    // it("should restart a game with a new grid", () => {
+
+    // });
+
 });
