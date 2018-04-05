@@ -1,16 +1,16 @@
 import { Track } from "../../../../../common/racing/track";
-import { Shape, Mesh, MeshPhongMaterial, Path, BackSide, Texture, TextureLoader, RepeatWrapping, ShapeGeometry } from "three";
+import { Shape, Mesh, MeshPhongMaterial, Path, BackSide, Texture, ShapeGeometry } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { TrackPointList } from "./../render-service/trackPointList";
-import { PI_OVER_2, ASPHALT_TEXTURE, ASPHALT_TEXTURE_FACTOR } from "./../constants";
+import { PI_OVER_2 } from "./../constants";
 
 export class TrackMesh extends Mesh {
     private _trackPoints: TrackPointList;
 
-    public constructor(private _track: Track) {
+    public constructor(private _track: Track, texture: Texture) {
         super();
         this._trackPoints = new TrackPointList(this._track.vertices);
-        this.createTrackMesh();
+        this.createTrackMesh(texture);
     }
 
     public set timesPlayed(timesPlayed: number) {
@@ -25,13 +25,13 @@ export class TrackMesh extends Mesh {
         return this._trackPoints;
     }
 
-    private createTrackMesh(): void {
+    private createTrackMesh(texture: Texture): void {
         const shape: Shape = new Shape();
         this.createTrackExterior(shape, this._trackPoints);
         this.drillHoleInTrackShape(shape, this._trackPoints);
 
         this.geometry = new ShapeGeometry(shape);
-        this.material = new MeshPhongMaterial({ side: BackSide, map: this.loadRepeatingTexture(ASPHALT_TEXTURE, ASPHALT_TEXTURE_FACTOR) });
+        this.material = new MeshPhongMaterial({ side: BackSide, map: texture });
         this.rotateX(PI_OVER_2);
         this.name = "track";
     }
@@ -52,14 +52,5 @@ export class TrackMesh extends Mesh {
         }
         holePath.lineTo(trackPoints.first.interior.x, trackPoints.first.interior.z);
         trackShape.holes.push(holePath);
-    }
-
-    private loadRepeatingTexture(pathToImage: string, imageRatio: number): Texture {
-        const texture: Texture = new TextureLoader().load(pathToImage);
-        texture.wrapS = RepeatWrapping;
-        texture.wrapT = RepeatWrapping;
-        texture.repeat.set(imageRatio, imageRatio);
-
-        return texture;
     }
 }

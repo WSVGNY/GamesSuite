@@ -9,6 +9,7 @@ import { SkyBox } from "../render-service/skybox";
 export abstract class AbstractScene extends Scene {
 
     protected _skyBoxTextures: Map<TrackType, CubeTexture>;
+    protected _roadTexture: Texture;
 
     protected addGround(): void {
         const groundGeometry: PlaneGeometry = new PlaneGeometry(GROUND_SIZE, GROUND_SIZE, 1, 1);

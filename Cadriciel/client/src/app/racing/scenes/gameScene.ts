@@ -6,7 +6,7 @@ import {
 import { TrackType } from "../../../../../common/racing/trackType";
 import { TrackLights } from "../render-service/light";
 import {
-    CHANGE_CAMERA_KEYCODE, YELLOW, DAY_KEYCODE, DEBUG_KEYCODE
+    CHANGE_CAMERA_KEYCODE, YELLOW, DAY_KEYCODE, DEBUG_KEYCODE, ASPHALT_TEXTURE, ASPHALT_TEXTURE_FACTOR
 } from "../constants";
 import { Car } from "../car/car";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
@@ -30,6 +30,7 @@ export class GameScene extends AbstractScene {
 
     public constructor(private _keyBoardHandler: KeyboardEventHandlerService) {
         super();
+        this._roadTexture = this.loadRepeatingTexture(ASPHALT_TEXTURE, ASPHALT_TEXTURE_FACTOR);
         this._skyBoxTextures = new Map();
         this._group = new Group();
         this._debugElements = new Group();
@@ -42,7 +43,7 @@ export class GameScene extends AbstractScene {
         }
         this._isDay = track.type === TrackType.Default ? true : false;
         this._group.add(this.createWalls(new TrackPointList(track.vertices)));
-        this._trackShape = new TrackMesh(track);
+        this._trackShape = new TrackMesh(track, this._roadTexture);
         this._group.add(this._trackShape);
         this.addGround();
         this.setSkyBox(track.type);
