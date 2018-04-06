@@ -8,6 +8,8 @@ import { Player } from "../../../../common/crossword/player";
 import { CommonWord } from "../../../../common/crossword/commonWord";
 import { CommonGridBox } from "../../../../common/crossword/commonGridBox";
 import { CommonCoordinate2D } from "../../../../common/crossword/commonCoordinate2D";
+import { GridService } from "./grid.service";
+import { HttpClient, HttpHandler } from "@angular/common/http";
 
 describe("CrosswordComponent", () => {
     let component: CrosswordComponent;
@@ -65,7 +67,10 @@ describe("CrosswordComponent", () => {
             declarations: [CrosswordComponent],
             providers: [
                 ConfigurationService,
-                MultiplayerCommunicationService
+                MultiplayerCommunicationService,
+                GridService,
+                HttpClient,
+                HttpHandler
             ]
         })
             .compileComponents()
