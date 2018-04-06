@@ -41,7 +41,7 @@ export class GameScene extends AbstractScene {
         if (this._trackShape !== undefined) {
             this._group.remove(this._trackShape);
         }
-        this._isDay = track.type === TrackType.Default ? true : false;
+        this._isDay = track.type === TrackType.Default;
         this._group.add(this.createWalls(new TrackPointList(track.vertices)));
         this._trackShape = new TrackMesh(track, this._roadTexture);
         this._group.add(this._trackShape);
