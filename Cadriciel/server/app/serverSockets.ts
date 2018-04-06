@@ -8,8 +8,6 @@ import { CommonGrid } from "../../common/crossword/commonGrid";
 import { Player } from "../../common/crossword/player";
 import { BASE_ROOM_NAME, GRID_GET_URL, FIRST_PLAYER_COLOR, SECOND_PLAYER_COLOR } from "./crossword/configuration";
 
-const INDEX_NOT_FOUND: number = -1;
-
 export class ServerSockets {
     private static _numberOfRoom: number = 0;
 
@@ -55,7 +53,7 @@ export class ServerSockets {
 
     private deleteGame(game: MultiplayerCrosswordGame): void {
         const index: number = this._games.indexOf(game, 0);
-        if (index > INDEX_NOT_FOUND) {
+        if (index > -1) {
             this._games.splice(index, 1);
             console.log("Deleted game of room name: " + game.roomName);
         }
@@ -131,17 +129,26 @@ export class ServerSockets {
 
     private onRestartGameWithSameConfig(socket: SocketIO.Socket): void {
         socket.on(SocketEvents.RestartGameWithSameConfig, () => {
-            // TODO: Must create a mechanism so it restart only when two players chose to
-            socket.broadcast.to(this.findSocketRoomNameByID(socket.id)).emit(SocketEvents.ReinitializeGame);
             console.log("restart game with same config event");
             const gameIndex: number = this.findGameIndexWithRoom(this.findSocketRoomNameByID(socket.id));
             if (gameIndex >= 0) {
-                const game: MultiplayerCrosswordGame = this._games[gameIndex];
-                this.restartGame(game, socket);
+                this.updateRestartCounter(gameIndex, socket);
             } else {
                 this._io.to(this.findSocketRoomNameByID(socket.id)).emit(SocketEvents.GameNotFound);
             }
         });
+    }
+
+    private updateRestartCounter(gameIndex: number, socket: SocketIO.Socket): void {
+        const game: MultiplayerCrosswordGame = this._games[gameIndex];
+        game.restartCounter++;
+        if (game.restartCounter < MultiplayerCrosswordGame.MAX_PLAYER_NUMBER) {
+            return;
+        } else {
+            game.restartCounter = 0;
+            socket.broadcast.to(this.findSocketRoomNameByID(socket.id)).emit(SocketEvents.ReinitializeGame);
+        }
+        this.restartGame(game, socket);
     }
 
     private restartGame(game: MultiplayerCrosswordGame, socket: SocketIO.Socket): void {
