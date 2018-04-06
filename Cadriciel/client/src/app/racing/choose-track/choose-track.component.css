@@ -58,9 +58,11 @@ div {
     border-style: solid;
     border-width: 2px;
     height: 400px;
-    width: 1000px;
-    left : 320px;
-    top : 200px;
+    width: 500px;
+    top: 200px;
+    left: 400px;
+    z-index: -1;
+    overflow: hidden;
 }
 
 h2{

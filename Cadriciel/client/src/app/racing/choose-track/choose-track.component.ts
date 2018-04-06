@@ -48,6 +48,7 @@ export class ChooseTrackComponent implements OnInit, AfterViewInit {
         requestAnimationFrame(() => {
             this._renderService.render(this._previewScene, this._previewCamera);
             this.update();
+            this._previewScene.update();
         });
     }
 
