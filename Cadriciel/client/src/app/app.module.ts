@@ -21,6 +21,7 @@ import { SoundManagerService } from "./racing/sound-service/sound-manager.servic
 import { MultiplayerCommunicationService } from "./crossword/multiplayer-communication.service";
 import { CollisionManagerService } from "./racing/collision-manager/collision-manager.service";
 import { CameraManagerService } from "./racing/cameras/camera-manager.service";
+import { BestTimesComponent } from './racing/best-times/best-times.component';
 
 @NgModule({
     declarations: [
@@ -30,7 +31,8 @@ import { CameraManagerService } from "./racing/cameras/camera-manager.service";
         CrosswordComponent,
         EditorComponent,
         ChooseTrackComponent,
-        ConfigurationComponent
+        ConfigurationComponent,
+        BestTimesComponent
     ],
     imports: [
         BrowserModule,
