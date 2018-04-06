@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { Car } from "../car/car";
 import { CarCollisionManager } from "./carCollision-manager";
 import { WallCollisionManager } from "./wallCollision-manager";
-import { TrackMesh } from "../track-service/track";
+import { TrackMesh } from "../track/track";
 
 @Injectable()
 export class CollisionManagerService {

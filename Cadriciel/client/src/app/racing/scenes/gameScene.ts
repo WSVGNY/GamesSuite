@@ -1,19 +1,15 @@
 import { AbstractScene } from "./abstractRacingScene";
-import { TrackPoint } from "./../render-service/trackPoint";
-import {
-    Group, Vector3, Geometry, Line, Camera, LineBasicMaterial
-} from "three";
+import { Group, Vector3, Geometry, Line, Camera, LineBasicMaterial } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { TrackLights } from "../render-service/light";
-import {
-    CHANGE_CAMERA_KEYCODE, YELLOW, DAY_KEYCODE, DEBUG_KEYCODE
-} from "../constants";
+import { CHANGE_CAMERA_KEYCODE, YELLOW, DAY_KEYCODE, DEBUG_KEYCODE } from "../constants";
 import { Car } from "../car/car";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { Track } from "../../../../../common/racing/track";
-import { TrackMesh } from "../track-service/track";
 import { CollisionManagerService } from "../collision-manager/collision-manager.service";
+import { TrackMesh } from "../track/track";
+import { TrackPoint } from "../track/trackPoint";
 
 const START_POSITION_OFFSET: number = -15;
 

@@ -1,9 +1,9 @@
 import { Track } from "../../../../../common/racing/track";
 import { Shape, Mesh, MeshPhongMaterial, Path, BackSide, Texture, TextureLoader, RepeatWrapping, ShapeGeometry } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
-import { TrackPointList } from "./../render-service/trackPointList";
 import { PI_OVER_2, ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR } from "./../constants";
-import { WallMesh } from "../render-service/wall";
+import { WallMesh } from "./wall";
+import { TrackPointList } from "./trackPointList";
 
 export class TrackMesh extends Mesh {
     private _trackPoints: TrackPointList;

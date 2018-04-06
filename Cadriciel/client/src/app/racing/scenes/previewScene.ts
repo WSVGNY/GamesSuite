@@ -3,7 +3,7 @@ import { Group, Mesh } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { TrackLights } from "../render-service/light";
 import { Track } from "../../../../../common/racing/track";
-import { TrackMesh } from "../track-service/track";
+import { TrackMesh } from "../track/track";
 
 export class PreviewScene extends AbstractScene {
 

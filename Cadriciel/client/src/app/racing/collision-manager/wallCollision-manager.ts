@@ -1,4 +1,4 @@
-import { TrackMesh } from "../track-service/track";
+import { TrackMesh } from "../track/track";
 
 export class WallCollisionManager {
     private static _track: TrackMesh;
