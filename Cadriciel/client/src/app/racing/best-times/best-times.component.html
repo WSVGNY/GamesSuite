@@ -5,34 +5,10 @@
     <th>Car</th>
     <th>Time</th>
   </tr>
-  <tr>
-    <td id="position">1</td>
+  <tr *ngFor="let number of [1,2,3,4,5]">
+    <td id="position">{{number}}</td>
     <td>Alfreds Futterkiste</td>
     <td>Alfa Romeo</td>
     <td>0:24:34</td>
-  </tr>
-  <tr>
-    <td id="position">2</td>
-    <td>Christina Berglund</td>
-    <td>Camaro SRT</td>
-    <td>0:25:76</td>
-  </tr>
-  <tr>
-    <td id="position">3</td>
-    <td>Francisco Chang</td>
-    <td>Ford GT</td>
-    <td>0:25:98</td>
-  </tr>
-  <tr>
-    <td id="position">4</td>
-    <td>Roland Mendel</td>
-    <td>Subaru BRZ</td>
-    <td>0:26:06</td>
-  </tr>
-  <tr>
-    <td id="position">5</td>
-    <td>Helen Bennett</td>
-    <td>Citroën Gran Turismo</td>
-    <td>0:26:67</td>
   </tr>
 </table>
