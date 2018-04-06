@@ -85,7 +85,7 @@ export class AICarService {
         const vectorFromProjectionToCar: Vector3 = car.currentPosition.clone().sub(projection).normalize();
         const vectorFromPointOnLineToCar: Vector3 = pointOnLine.clone().sub(projection).normalize();
 
-        return Math.abs(vectorFromProjectionToCar.angleTo(vectorFromPointOnLineToCar)) >= Math.PI - PI_OVER_4;
+        return Math.abs(vectorFromProjectionToCar.angleTo(vectorFromPointOnLineToCar)) >= Math.PI - PI_OVER_4 ? true : false;
     }
 
     private goForward(car: Car): void {

@@ -62,16 +62,16 @@ export class CollisionManagerService {
     private resolveHitboxOverlap(): void {
         this._collisionCarA.setCurrentPosition(
             this._collisionCarA.currentPosition.clone()
-                .add(this._overlapCorrection.clone().multiplyScalar(0.51))
+            .add(this._overlapCorrection.clone().multiplyScalar(0.51))
         );
         this._collisionCarB.setCurrentPosition(
             this._collisionCarB.currentPosition.clone()
-                .add(this._overlapCorrection.clone().negate().multiplyScalar(0.51))
+            .add(this._overlapCorrection.clone().negate().multiplyScalar(0.51))
         );
     }
 
     private checkIfCarsAreClose(firstCar: Car, secondCar: Car): boolean {
-        return (firstCar.currentPosition.distanceTo(secondCar.currentPosition) < MINIMUM_CAR_DISTANCE);
+        return (firstCar.currentPosition.distanceTo(secondCar.currentPosition) < MINIMUM_CAR_DISTANCE) ? true : false;
     }
 
     private computeCollisionParameters(firstCar: Car, secondCar: Car): boolean {
@@ -116,13 +116,13 @@ export class CollisionManagerService {
             (positionCarA.clone().sub(positionCarB)).multiplyScalar(
                 ((speedCarA.clone().sub(speedCarB)).dot(positionCarA.clone().sub(positionCarB))) /
                 ((positionCarA.clone().sub(positionCarB)).lengthSq()))
-        );
+            );
 
         const newSpeedCarB: Vector3 = speedCarB.clone().sub(
             (positionCarB.clone().sub(positionCarA)).multiplyScalar(
                 ((speedCarB.clone().sub(speedCarA)).dot(positionCarB.clone().sub(positionCarA))) /
                 ((positionCarB.clone().sub(positionCarA)).lengthSq()))
-        );
+            );
 
         this._collisionCarA.speed = this.findResultingSpeed(movingCar.direction.clone(), newSpeedCarA);
         this._collisionCarB.speed = this.findResultingSpeed(motionlessCar.direction.clone(), newSpeedCarB);
@@ -137,8 +137,7 @@ export class CollisionManagerService {
     }
 
     private computeSpeedXComponent(force: Vector3, carDirection: Vector3): number {
-        // TODO: REMOVE IF GOOD: const sign: number = (force.clone().cross(carDirection).y < 0) ? -1 : 1;
-        const sign: number = Math.sign((force.clone().cross(carDirection).y));
+        const sign: number = (force.clone().cross(carDirection).y < 0) ? -1 : 1;
 
         return force.clone().projectOnVector(this.orthogonalVector(carDirection)).length() * sign;
     }

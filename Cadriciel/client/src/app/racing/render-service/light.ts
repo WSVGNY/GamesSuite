@@ -7,7 +7,7 @@ import { DefaultConfig } from "./lighting-config/defaultConfig";
 
 export class TrackLights extends Group {
     private _lightingConfig: AbstractLightingConfig;
-    private _ambientLight: AmbientLight;
+    private _ambiantLight: AmbientLight;
     private _directionalLight: DirectionalLight;
     private _isPerspectiveView: boolean;
 
@@ -19,19 +19,19 @@ export class TrackLights extends Group {
 
     public updateLightsToTrackType(trackType: TrackType): void {
         this.chooseConfig(trackType);
-        this.setAmbientLight();
+        this.setAmbiantLight();
         this.setDirectionalLight();
     }
 
-    private setAmbientLight(): void {
-        if (this._ambientLight === undefined) {
-            this._ambientLight = new AmbientLight(WHITE, this._lightingConfig.AMBIENT_LIGHT_INTENSITY);
-            this.add(this._ambientLight);
+    private setAmbiantLight(): void {
+        if (this._ambiantLight === undefined) {
+            this._ambiantLight = new AmbientLight(WHITE, this._lightingConfig.AMBIENT_LIGHT_INTENSITY);
+            this.add(this._ambiantLight);
         }
 
         this._isPerspectiveView ?
-            this._ambientLight.intensity = this._lightingConfig.AMBIENT_LIGHT_INTENSITY :
-            this._ambientLight.intensity = this._lightingConfig.AMBIENT_LIGHT_INTENSITY_TOP_VIEW;
+            this._ambiantLight.intensity = this._lightingConfig.AMBIENT_LIGHT_INTENSITY :
+            this._ambiantLight.intensity = this._lightingConfig.AMBIENT_LIGHT_INTENSITY_TOP_VIEW;
     }
 
     private setDirectionalLight(): void {
@@ -60,8 +60,8 @@ export class TrackLights extends Group {
             this._directionalLight.intensity = this._lightingConfig.DIRECTIONAL_LIGHT_INTENSITY :
             this._directionalLight.intensity = this._lightingConfig.DIRECTIONAL_LIGHT_INTENSITY_TOP_VIEW;
         this._isPerspectiveView ?
-            this._ambientLight.intensity = this._lightingConfig.AMBIENT_LIGHT_INTENSITY :
-            this._ambientLight.intensity = this._lightingConfig.AMBIENT_LIGHT_INTENSITY_TOP_VIEW;
+            this._ambiantLight.intensity = this._lightingConfig.AMBIENT_LIGHT_INTENSITY :
+            this._ambiantLight.intensity = this._lightingConfig.AMBIENT_LIGHT_INTENSITY_TOP_VIEW;
     }
 
     private chooseConfig(trackType: TrackType): void {

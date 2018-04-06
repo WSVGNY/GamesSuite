@@ -55,9 +55,9 @@ export class Lexicon {
     private checkFrequency(word: string): boolean {
         const frequency: number = word[TAGS_INDEX][0].substring(UNWANTED_CHARACTERS_LENGTH);
         if (this._difficulty === Difficulty.Hard) {
-            return frequency < FREQUENCY_DELIMITER;
+            return frequency < FREQUENCY_DELIMITER ? true : false;
         } else {
-            return frequency >= FREQUENCY_DELIMITER;
+            return frequency >= FREQUENCY_DELIMITER ? true : false;
         }
     }
 

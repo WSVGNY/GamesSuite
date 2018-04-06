@@ -13,11 +13,9 @@ export class WordConstraint {
 
         for (let i: number = 0; i < word.length; ++i) {
             let charToAdd: string;
-
-            charToAdd = word.isHorizontal ?
-                grid[word.startPosition.y][word.startPosition.x + i].char.value :
-                grid[word.startPosition.y + i][word.startPosition.x].char.value;
-
+            word.isHorizontal ?
+                charToAdd = grid[word.startPosition.y][word.startPosition.x + i].char.value :
+                charToAdd = grid[word.startPosition.y + i][word.startPosition.x].char.value;
             this._originalValue += charToAdd;
             if (charToAdd === "?") {
                 charToAdd = HTML_QUESTION_MARK;
