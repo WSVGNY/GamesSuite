@@ -312,6 +312,7 @@ export class CrosswordComponent {
         this.configuration.currentPlayer.score = 0;
         this.configuration.grid = undefined;
         this.initializePlayersArrays(this.configuration.currentPlayer);
+        this.isGameFinished = false;
     }
 
     public restartGameWithSameConfig(): void {
