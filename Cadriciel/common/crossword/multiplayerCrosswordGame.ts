@@ -3,7 +3,8 @@ import { Difficulty } from "./difficulty";
 import { CommonGrid } from "./commonGrid";
 
 export class MultiplayerCrosswordGame {
-    public readonly MAX_PLAYER_NUMBER: number = 2;
+    public static readonly MAX_PLAYER_NUMBER: number = 2;
+    public restartCounter: number = 0;
 
     public static create(stringObject: string): MultiplayerCrosswordGame {
         const jsonObject: MultiplayerCrosswordGame = JSON.parse(stringObject) as MultiplayerCrosswordGame;
@@ -19,7 +20,7 @@ export class MultiplayerCrosswordGame {
     }
 
     public isFull(): boolean {
-        return this._players.length >= this.MAX_PLAYER_NUMBER;
+        return this._players.length >= MultiplayerCrosswordGame.MAX_PLAYER_NUMBER;
     }
 
     public addPlayer(player: Player): boolean {
