@@ -16,7 +16,8 @@ import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-ha
 import { Track } from "../../../../../common/racing/track";
 import { TrackMesh } from "../track-service/track";
 
-const START_POSITION_OFFSET: number = -25;
+const LATHERAL_OFFSET: number = 2;
+const VERTICAL_OFFSET: number = 5;
 
 export class GameScene extends AbstractScene {
 
@@ -52,19 +53,42 @@ export class GameScene extends AbstractScene {
     }
 
     public async loadCars(cars: Car[], carDebugs: AIDebug[], camera: Camera, trackType: TrackType): Promise<void> {
+        const shuffledCars: Car[] = cars;
+        this.shuffle(shuffledCars);
         for (let i: number = 0; i < cars.length; ++i) {
-            const startPos: Vector3 = new Vector3(
-                this._trackShape.trackPoints.first.coordinate.x /*- i * START_POSITION_OFFSET*/,
-                this._trackShape.trackPoints.first.coordinate.y,
-                this._trackShape.trackPoints.first.coordinate.z - i * START_POSITION_OFFSET);
-
-            await cars[i].init(startPos, this.findFirstTrackSegmentAngle());
+            await this.placeCarOnStartingGrid(cars[i], i);
             this._debugElements.add(carDebugs[i].debugGroup);
             if (!cars[i].isAI) {
                 cars[i].attachCamera(camera);
             }
             this._group.add(cars[i]);
         }
+        this.setTimeOfDay(cars, trackType);
+    }
+
+    private shuffle(array: Car[]): void {
+        for (let i: number = array.length - 1; i > 0; i--) {
+            const j: number = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    private async placeCarOnStartingGrid(car: Car, index: number): Promise<void> {
+        const startPos: Vector3 = new Vector3(
+            this._trackShape.trackPoints.first.coordinate.x,
+            this._trackShape.trackPoints.first.coordinate.y,
+            this._trackShape.trackPoints.first.coordinate.z
+        );
+        const offset: Vector3 = new Vector3(0, 0, 0);
+        offset.x = (index < 2) ? -LATHERAL_OFFSET : LATHERAL_OFFSET;
+        offset.z = (index % 2 === 0) ? -VERTICAL_OFFSET : VERTICAL_OFFSET;
+
+        offset.applyAxisAngle(new Vector3(0, 1, 0), this.findFirstTrackSegmentAngle());
+        startPos.add(offset);
+        await car.init(startPos, this.findFirstTrackSegmentAngle());
+    }
+
+    private setTimeOfDay(cars: Car[], trackType: TrackType): void {
         switch (trackType) {
             case TrackType.Night:
                 this.setNight(cars);
