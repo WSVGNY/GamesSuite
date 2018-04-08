@@ -16,7 +16,7 @@ export const WALL_WIDTH: number = 0.5;
 export const RPM_FACTOR: number = 1700;
 export const VOLUME: number = 0.2;
 export const TIRE_ASPHALT_COEFFICIENT: number = 0.72;
-export const MINIMUM_CAR_DISTANCE: number = 5;
+export const MINIMUM_CAR_DISTANCE: number = 3;
 
 export const LOWER_GROUND: number = 0.01;
 export const SKYBOX_SIZE: number = 700;
@@ -28,7 +28,7 @@ export const RED: number = 0xFF0000;
 export const GREEN: number = 0x00FF00;
 export const ORANGE: number = 0xFF6600;
 export const YELLOW: number = 0xFFFF00;
-export const AI_CARS_QUANTITY: number = 1;
+export const AI_CARS_QUANTITY: number = 3;
 
 // Texture Paths
 const BASE_URL: string = "http://localhost:4200/";
