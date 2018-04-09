@@ -23,6 +23,7 @@ import { CollisionManagerService } from "./racing/collision-manager/collision-ma
 import { CameraManagerService } from "./racing/cameras/camera-manager.service";
 import { BestTimesComponent } from "./racing/scoreboard/best-times/best-times.component";
 import { InputTimeComponent } from "./racing/scoreboard/input-time/input-time.component";
+import { HighscoreService } from "./racing/scoreboard/highscore.service";
 
 @NgModule({
     declarations: [
@@ -53,7 +54,8 @@ import { InputTimeComponent } from "./racing/scoreboard/input-time/input-time.co
         SoundManagerService,
         MultiplayerCommunicationService,
         CollisionManagerService,
-        CameraManagerService
+        CameraManagerService,
+        HighscoreService
     ],
     bootstrap: [AppComponent]
 })

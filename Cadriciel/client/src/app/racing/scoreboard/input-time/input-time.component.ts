@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { HighscoreService } from "../highscore.service";
 
 @Component({
     selector: "app-input-time",
@@ -7,7 +8,13 @@ import { Component } from "@angular/core";
 })
 export class InputTimeComponent {
 
-    public loadLeaderBoard(name: string): void {
+    public constructor(public highscoreService: HighscoreService) { }
 
+    public loadLeaderBoard(name: string): void {
+        this.highscoreService.addNewScore(name);
+    }
+
+    public isScoreAdded(): boolean {
+        return this.highscoreService.addedScore;
     }
 }
