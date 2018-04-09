@@ -37,19 +37,29 @@ export class ServerSockets {
                 this.onPlayerUpdate(socket);
                 this.onRestartGameWithSameConfig(socket);
             });
-        } catch (error) { console.error(error); }
+        } catch (error) {
+            console.error(error);
+        }
     }
 
     private onDisconnect(socket: SocketIO.Socket): void {
         socket.on(SocketEvents.Disconnection, () => {
             console.log("user disconnected");
-            for (const game of this._gameLogic.games) {
-                if (game.roomName === this.findSocketRoomNameByID(socket.id)) {
-                    socket.broadcast.to(game.roomName).emit(SocketEvents.DisconnectionAlert);
+            this.handleDisconnect(socket);
+        });
+    }
+
+    private handleDisconnect(socket: SocketIO.Socket): void {
+        for (const game of this._gameLogic.games) {
+            if (game.roomName === this.findSocketRoomNameByID(socket.id)) {
+                socket.broadcast.to(game.roomName).emit(SocketEvents.DisconnectionAlert);
+                try {
                     this._gameLogic.deleteGame(game);
+                } catch (error) {
+                    this.handleError(error, socket);
                 }
             }
-        });
+        }
     }
 
     private onRoomCreate(socket: SocketIO.Socket): void {
@@ -74,8 +84,8 @@ export class ServerSockets {
             try {
                 const game: MultiplayerCrosswordGame = this._gameLogic.handleRoomConnect(message["roomInfo"], message["playerName"]);
                 this.handleConnection(game, socket, message["playerName"]);
-            } catch (e) {
-                console.error(e);
+            } catch (error) {
+                this.handleError(error, socket);
             }
         });
     }
@@ -148,6 +158,14 @@ export class ServerSockets {
         ).catch((e: Error) => {
             console.error(e);
         });
+    }
+
+    private handleError(error: Error, socket: SocketIO.Socket): void {
+        if (error instanceof ReferenceError || error instanceof RangeError) {
+            this._io.to(this.findSocketRoomNameByID(socket.id)).emit(SocketEvents.GameNotFound);
+        } else {
+            throw error;
+        }
     }
 
 }
