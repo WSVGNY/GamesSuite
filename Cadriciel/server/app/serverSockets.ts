@@ -122,20 +122,24 @@ export class ServerSockets {
         socket.on(SocketEvents.RestartGameWithSameConfig, () => {
             console.log("restart game with same config event");
             const socketRoom: string = this.findSocketRoomNameByID(socket.id);
-            const event: SocketEvents = this._gameLogic.handleRestartGameWithSameConfig(socketRoom);
-
-            if (event === SocketEvents.GameNotFound) {
-                this._io.to(this.findSocketRoomNameByID(socket.id)).emit(event);
-            } else if (event === SocketEvents.ReinitializeGame) {
-                socket.broadcast.to(this.findSocketRoomNameByID(socket.id)).emit(event);
+            try {
+                const event: SocketEvents = this._gameLogic.handleRestartGameWithSameConfig(socketRoom);
+                if (event === SocketEvents.ReinitializeGame) {
+                    socket.broadcast.to(this.findSocketRoomNameByID(socket.id)).emit(event);
+                }
+            } catch (error) {
+                this.handleError(error, socket);
             }
-
-            const game: MultiplayerCrosswordGame = this._gameLogic.getCurrentGame(socketRoom);
-            if (this._gameLogic.shouldRestartGame(game)) {
-                this._gameLogic.restartGame(game);
-                this.startGame(game, SocketEvents.RestartGame);
-            }
+            this.tryRestartGame(socketRoom);
         });
+    }
+
+    private tryRestartGame(room: string): void {
+        const game: MultiplayerCrosswordGame = this._gameLogic.getCurrentGame(room);
+        if (this._gameLogic.shouldRestartGame(game)) {
+            this._gameLogic.restartGame(game);
+            this.startGame(game, SocketEvents.RestartGame);
+        }
     }
 
     // tslint:enable:no-console

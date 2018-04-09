@@ -78,7 +78,7 @@ export class MultiplayerGameLogic {
         if (gameIndex >= 0) {
             return this.updateRestartCounter(gameIndex);
         } else {
-            return SocketEvents.GameNotFound;
+            throw new ReferenceError("Game not found");
         }
     }
 
