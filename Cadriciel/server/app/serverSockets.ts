@@ -1,9 +1,9 @@
 import * as sio from "socket.io";
-import { SocketEvents } from "../../common/communication/socketEvents";
 import * as http from "http";
+import * as requestPromise from "request-promise-native";
+import { SocketEvents } from "../../common/communication/socketEvents";
 import { MultiplayerCrosswordGame } from "../../common/crossword/multiplayerCrosswordGame";
 import { Difficulty } from "../../common/crossword/difficulty";
-import * as requestPromise from "request-promise-native";
 import { CommonGrid } from "../../common/crossword/commonGrid";
 import { Player } from "../../common/crossword/player";
 import { GRID_GET_URL } from "./crossword/configuration";
@@ -27,15 +27,17 @@ export class ServerSockets {
     // tslint:disable:no-console
     public initSocket(): void {
         this._io = sio(this._httpServer);
-        this._io.on(SocketEvents.Connection, (socket: SocketIO.Socket) => {
-            console.log("user connected");
-            this.onDisconnect(socket);
-            this.onRoomCreate(socket);
-            this.onRoomsListQuery(socket);
-            this.onRoomConnect(socket);
-            this.onPlayerUpdate(socket);
-            this.onRestartGameWithSameConfig(socket);
-        });
+        try {
+            this._io.on(SocketEvents.Connection, (socket: SocketIO.Socket) => {
+                console.log("user connected");
+                this.onDisconnect(socket);
+                this.onRoomCreate(socket);
+                this.onRoomsListQuery(socket);
+                this.onRoomConnect(socket);
+                this.onPlayerUpdate(socket);
+                this.onRestartGameWithSameConfig(socket);
+            });
+        } catch (error) { console.error(error); }
     }
 
     private onDisconnect(socket: SocketIO.Socket): void {

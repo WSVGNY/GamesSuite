@@ -5,6 +5,7 @@ import { SocketEvents } from "../../../common/communication/socketEvents";
 
 export class MultiplayerGameLogic {
     private static _numberOfRoom: number = 0;
+
     private _games: MultiplayerCrosswordGame[];
 
     public constructor() {
@@ -25,6 +26,8 @@ export class MultiplayerGameLogic {
         if (index > -1) {
             this._games.splice(index, 1);
             console.log("Deleted game of room name: " + game.roomName);
+        } else {
+            throw ReferenceError("Unable to find room");
         }
     }
 
@@ -37,6 +40,8 @@ export class MultiplayerGameLogic {
         this._games.push(new MultiplayerCrosswordGame(BASE_ROOM_NAME + MultiplayerGameLogic._numberOfRoom++, difficulty));
         console.log("Room name: " + this._games[this.numberOfGames - 1].roomName + " of difficuly: " + difficulty);
     }
+
+    // tslint:enable:no-console
 
     public getListOfEmptyRooms(): MultiplayerCrosswordGame[] {
         const emptyRooms: MultiplayerCrosswordGame[] = [];
@@ -64,8 +69,41 @@ export class MultiplayerGameLogic {
         if (game.addPlayer({ name: playerName, color: SECOND_PLAYER_COLOR, score: 0 })) {
             return game;
         } else {
-            throw ReferenceError("Unable to connect to room: " + room.roomName + " by " + playerName);
+            throw RangeError("Unable to connect to room: " + room.roomName + " by " + playerName);
         }
+    }
+
+    public handleRestartGameWithSameConfig(roomName: string): SocketEvents {
+        const gameIndex: number = this.findGameIndexWithRoom(roomName);
+        if (gameIndex >= 0) {
+            return this.updateRestartCounter(gameIndex);
+        } else {
+            return SocketEvents.GameNotFound;
+        }
+    }
+
+    private updateRestartCounter(gameIndex: number): SocketEvents {
+        const game: MultiplayerCrosswordGame = this.games[gameIndex];
+        game.restartCounter++;
+        if (game.restartCounter < MultiplayerCrosswordGame.MAX_PLAYER_NUMBER) {
+            return undefined;
+        } else {
+            return SocketEvents.ReinitializeGame;
+        }
+    }
+
+    private findGameIndexWithRoom(room: string): number {
+        for (let i: number = 0; i < this.numberOfGames; ++i) {
+            if (this.games[i].roomName === room) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    public restartGame(game: MultiplayerCrosswordGame): void {
+        game.restartCounter = 0;
     }
 
     public shouldStartGame(game: MultiplayerCrosswordGame): boolean {
@@ -81,41 +119,4 @@ export class MultiplayerGameLogic {
 
         return index >= 0 ? this._games[index] : undefined;
     }
-
-    public handleRestartGameWithSameConfig(roomName: string): SocketEvents {
-        const gameIndex: number = this.findGameIndexWithRoom(roomName);
-        if (gameIndex >= 0) {
-            return this.updateRestartCounter(gameIndex);
-        } else {
-            return SocketEvents.GameNotFound;
-            //this._io.to(this.findSocketRoomNameByID(socket.id)).emit(SocketEvents.GameNotFound);
-        }
-    }
-
-    private updateRestartCounter(gameIndex: number): SocketEvents {
-        const game: MultiplayerCrosswordGame = this.games[gameIndex];
-        game.restartCounter++;
-        if (game.restartCounter < MultiplayerCrosswordGame.MAX_PLAYER_NUMBER) {
-            return undefined;
-        } else {
-            return SocketEvents.ReinitializeGame;
-            //socket.broadcast.to(this.findSocketRoomNameByID(socket.id)).emit(SocketEvents.ReinitializeGame);
-        }
-    }
-
-    public restartGame(game: MultiplayerCrosswordGame): void {
-        game.restartCounter = 0;
-    }
-
-    private findGameIndexWithRoom(room: string): number {
-        for (let i: number = 0; i < this.numberOfGames; ++i) {
-            if (this.games[i].roomName === room) {
-                return i;
-            }
-        }
-
-        return -1;
-    }
-
-    // tslint:enable:no-console
 }
