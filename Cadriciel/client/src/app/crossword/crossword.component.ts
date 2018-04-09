@@ -8,6 +8,7 @@ import { ListChecker } from "./listChecker";
 import { Comparator } from "./comparator";
 import { Updater } from "./updater";
 import { Player } from "../../../../common/crossword/player";
+import { CompletedWordControler } from "./completedWordControler";
 
 const BACKSPACE_KEYCODE: number = 8;
 const HORIZONTAL: number = 0;
@@ -33,32 +34,35 @@ export class CrosswordComponent {
     public isInCheatMode: boolean;
     private _hasSubscribed: boolean;
     public hasOtherPlayerDisconnected: boolean;
+    public isGameFinished: boolean;
 
     public constructor(
         public configuration: ConfigurationService, private multiplayerCommunicationService: MultiplayerCommunicationService) {
         this.isInCheatMode = false;
         this._hasSubscribed = false;
         this.hasOtherPlayerDisconnected = false;
+        this.isGameFinished = false;
 
     }
 
     public subscribeToMessages(): void {
         this.multiplayerCommunicationService.getMessagesCrosswordComponent().subscribe((message: string) => {
-            if (message === SocketEvents.PlayerUpdate) {
-                this.handlePlayerUpdate();
-            }
-            if (message === SocketEvents.RestartGame) {
-                this.configuration.handleGameStart(
-                    this.multiplayerCommunicationService.grid,
-                    this.multiplayerCommunicationService.currentGame.players);
-            }
-            if (message === SocketEvents.DisconnectionAlert) {
-                console.log("DECONNECTION");
-                this.hasOtherPlayerDisconnected = true;
-            }
-            if (message === SocketEvents.ReinitializeGame) {
-                console.log("YOYOYO");
-                this.resetGameStats();
+            switch (message) {
+                case SocketEvents.PlayerUpdate:
+                    this.handlePlayerUpdate();
+                    break;
+                case SocketEvents.RestartGame:
+                    this.configuration.handleGameStart(
+                        this.multiplayerCommunicationService.grid,
+                        this.multiplayerCommunicationService.currentGame.players);
+                    break;
+                case SocketEvents.DisconnectionAlert:
+                    this.hasOtherPlayerDisconnected = true;
+                    break;
+                case SocketEvents.ReinitializeGame:
+                    this.resetGameStats();
+                    break;
+                default:
             }
         });
     }
@@ -95,9 +99,7 @@ export class CrosswordComponent {
     }
 
     public changeMode(): void {
-        this.isInCheatMode ?
-            this.isInCheatMode = false :
-            this.isInCheatMode = true;
+        this.isInCheatMode ? this.isInCheatMode = false : this.isInCheatMode = true;
     }
 
     public getState(word: CommonWord): State {
@@ -126,14 +128,7 @@ export class CrosswordComponent {
     }
 
     public getWordValue(word: CommonWord): string {
-        let value: string = "";
-        for (let i: number = 0; i < word.length; i++) {
-            word.isHorizontal ?
-                value += this.configuration.grid.boxes[word.startPosition.y][word.startPosition.x + i].char.value :
-                value += this.configuration.grid.boxes[word.startPosition.y + i][word.startPosition.x].char.value;
-        }
-
-        return value;
+        return CompletedWordControler.getWordValue(word, this.configuration);
     }
 
     public getGridBoxID(gridBox: CommonGridBox): number {
@@ -162,8 +157,7 @@ export class CrosswordComponent {
     }
 
     private wordShouldBeColored(player: Player, word: CommonWord): boolean {
-        return Comparator.compareWords(player.selectedWord, word)
-            || ListChecker.listContainsWord(player.foundWords, word);
+        return Comparator.compareWords(player.selectedWord, word) || ListChecker.listContainsWord(player.foundWords, word);
     }
 
     public getPlayerColorForBox(box: CommonGridBox): string {
@@ -174,8 +168,7 @@ export class CrosswordComponent {
         }
 
         return (ListChecker.listContainsBox(this.configuration.currentPlayer.foundBoxes, box)) ?
-            this.configuration.currentPlayer.color :
-            WHITE;
+            this.configuration.currentPlayer.color : WHITE;
     }
 
     private mixedColor(box: CommonGridBox): string {
@@ -222,43 +215,6 @@ export class CrosswordComponent {
         this.multiplayerCommunicationService.playerUpdate(this.configuration.currentPlayer);
     }
 
-    private verifyCompletedWords(): void {
-        for (const word of this.configuration.grid.words) {
-            this.verifyCompletedWord(word);
-        }
-    }
-
-    private verifyCompletedWord(word: CommonWord): CommonWord {
-        const wordValue: string = this.fillWord(word);
-        if (wordValue === this.getWordValue(word) && !ListChecker.playersFoundWord(word, this.configuration)) {
-            this.configuration.currentPlayer.foundWords.push(word);
-            this.addToScore();
-            Updater.setFoundBoxes(this.configuration);
-            if (Comparator.compareWords(this.configuration.currentPlayer.selectedWord, word)) {
-                this.resetInputBox();
-            }
-        }
-
-        return word;
-    }
-
-    private fillWord(word: CommonWord): string {
-        let wordValue: string = "";
-        for (let i: number = 0; i < word.length; i++) {
-            if (word.isHorizontal) {
-                if (this.configuration.grid.boxes[word.startPosition.y][word.startPosition.x + i].inputChar.value !== undefined) {
-                    wordValue += this.configuration.grid.boxes[word.startPosition.y][word.startPosition.x + i].inputChar.value;
-                }
-            } else {
-                if (this.configuration.grid.boxes[word.startPosition.y + i][word.startPosition.x].inputChar.value !== undefined) {
-                    wordValue += this.configuration.grid.boxes[word.startPosition.y + i][word.startPosition.x].inputChar.value;
-                }
-            }
-        }
-
-        return wordValue;
-    }
-
     @HostListener("window:keydown", ["$event"])
     public inputChar(event: KeyboardEvent): void {
         if (this.configuration.configurationDone && this.configuration.grid !== undefined) {
@@ -273,18 +229,15 @@ export class CrosswordComponent {
                     this.inputGridBox = Updater.setInputBox(this.configuration, this.inputGridBox);
                 }
             }
-            this.verifyCompletedWords();
+            if (CompletedWordControler.verifyCompletedWords(this.configuration)) {
+                this.resetInputBox();
+            }
         }
     }
 
     private isStartingBox(gridBox: CommonGridBox, index: number): boolean {
         return gridBox.id.x === gridBox.constraints[index].startPosition.x
             && gridBox.id.y === gridBox.constraints[index].startPosition.y;
-    }
-
-    private addToScore(): void {
-        this.configuration.currentPlayer.score++;
-        this.updateGrid();
     }
 
     private enterNextCharacter(char: string): void {
@@ -318,4 +271,17 @@ export class CrosswordComponent {
         this.configuration.createGrid();
     }
 
+    public isEndGame(): boolean {
+        if (this.configuration.configurationDone && this.configuration.grid !== undefined) {
+            if (!this.configuration.isTwoPlayerGame && this.configuration.currentPlayer.score >= this.configuration.grid.words.length) {
+                return true;
+            }
+            if (this.configuration.isTwoPlayerGame &&
+                this.configuration.currentPlayer.score + this.configuration.otherPlayer.score >= this.configuration.grid.words.length) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

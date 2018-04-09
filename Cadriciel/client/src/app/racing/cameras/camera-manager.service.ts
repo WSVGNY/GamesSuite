@@ -15,9 +15,7 @@ export class CameraManagerService {
     private _useThirdPersonCamera: boolean;
     private _currentCamera: Camera;
 
-    public constructor(
-        private _keyBoardHandler: KeyboardEventHandlerService
-    ) {
+    public constructor(private _keyBoardHandler: KeyboardEventHandlerService) {
         this._useThirdPersonCamera = true;
     }
 
