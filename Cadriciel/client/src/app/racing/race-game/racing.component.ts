@@ -10,7 +10,7 @@ import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { RenderService } from "../render-service/render.service";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
 import { SoundManagerService } from "../sound-service/sound-manager.service";
-import { AI_CARS_QUANTITY } from "../constants";
+import { AI_CARS_QUANTITY, MINIMUM_CAR_DISTANCE } from "../constants";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { CollisionManagerService } from "../collision-manager/collision-manager.service";
 import { CameraManagerService } from "../cameras/camera-manager.service";
@@ -21,6 +21,11 @@ enum State {
     RACING,
     END,
 }
+
+const THREE_SECONDS: number = 3000;
+const TWO_SECONDS: number = 2000;
+const ONE_SECOND: number = 1000;
+
 
 @Component({
     moduleId: module.id,
@@ -89,7 +94,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
     private updateStartingAnimation(elapsedTime: number): void {
         this._cameraManager.updateCameraPositions(this._playerCar, elapsedTime);
-        if (this._cameraManager.currentCamera.position.clone().distanceTo(this._playerCar.currentPosition) < 3) {
+        if (this._cameraManager.currentCamera.position.clone().distanceTo(this._playerCar.currentPosition) < MINIMUM_CAR_DISTANCE) {
             this._startDate = Date.now();
             this._countDownOnScreenValue = "3";
             this._currentState = State.COUNTDOWN;
@@ -98,12 +103,12 @@ export class RacingComponent implements AfterViewInit, OnInit {
     }
 
     private updateCountdown(elapsedTime: number): void {
-        if (elapsedTime > 3000) {
+        if (elapsedTime > THREE_SECONDS) {
             this._countDownOnScreenValue = "START";
             this._isCountDownOver = true;
-        } else if (elapsedTime > 2000) {
+        } else if (elapsedTime > TWO_SECONDS) {
             this._countDownOnScreenValue = "1";
-        } else if (elapsedTime > 1000) {
+        } else if (elapsedTime > ONE_SECOND) {
             this._countDownOnScreenValue = "2";
         }
         if (this._isCountDownOver) {
