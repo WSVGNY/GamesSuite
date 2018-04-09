@@ -6,7 +6,7 @@ import { Difficulty } from "../../common/crossword/difficulty";
 import * as requestPromise from "request-promise-native";
 import { CommonGrid } from "../../common/crossword/commonGrid";
 import { Player } from "../../common/crossword/player";
-import { GRID_GET_URL, SECOND_PLAYER_COLOR } from "./crossword/configuration";
+import { GRID_GET_URL } from "./crossword/configuration";
 import { MultiplayerGameLogic } from "./crossword/multiplayerGameLogic";
 
 export class ServerSockets {
@@ -69,29 +69,22 @@ export class ServerSockets {
     private async onRoomConnect(socket: SocketIO.Socket): Promise<void> {
         socket.on(SocketEvents.RoomConnect, (message: { roomInfo: MultiplayerCrosswordGame, playerName: string }) => {
             console.log("room connect event");
-            for (const game of this._gameLogic.games) {
-                const room: MultiplayerCrosswordGame = MultiplayerCrosswordGame.create(JSON.stringify(message["roomInfo"]));
-                if (game.roomName === room.roomName) {
-                    this.tryAddPlayer(game, room, socket, message["playerName"]);
-                    break;
+            try {
+                const game: MultiplayerCrosswordGame = this._gameLogic.handleRoomConnect(message["roomInfo"], message["playerName"]);
+                if (game !== undefined) {
+                    socket.join(game.roomName);
+                    this._socketIdentifications.push({ id: socket.id, room: game.roomName });
+                    console.log("Connection to room: " + game.roomName + " by " + message["playerName"] + " successfull");
+                    if (this._gameLogic) {
+                        this.startGame(game);
+                    }
+                } else {
+                    throw ReferenceError("Unable to connect to room");
                 }
+            } catch (e) {
+                console.error(e);
             }
         });
-    }
-
-    private tryAddPlayer(
-        game: MultiplayerCrosswordGame, room: MultiplayerCrosswordGame,
-        socket: SocketIO.Socket, playerName: string): void {
-        if (game.addPlayer({ name: playerName, color: SECOND_PLAYER_COLOR, score: 0 })) {
-            socket.join(room.roomName);
-            this._socketIdentifications.push({ id: socket.id, room: room.roomName });
-            console.log("Connection to room: " + room.roomName + " by " + playerName + " successfull");
-            if (game.isFull()) {
-                this.startGame(game);
-            }
-        } else {
-            console.log("Unable to connect to room: " + room.roomName + " by " + playerName);
-        }
     }
 
     private startGame(game: MultiplayerCrosswordGame): void {
@@ -102,6 +95,7 @@ export class ServerSockets {
             console.error(e);
         });
     }
+
 
     private onPlayerUpdate(socket: SocketIO.Socket): void {
         socket.on(SocketEvents.PlayerUpdate, (player: Player) => {
