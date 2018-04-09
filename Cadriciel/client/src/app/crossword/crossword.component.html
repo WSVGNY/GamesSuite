@@ -6,7 +6,7 @@
     <div id="loader" *ngIf="isConfigurationDone() && configuration.grid===undefined"></div>
 
     <div id="definitions" (mousedown)="resetInputBox()">
-      <button id="CheatButton" (click)="changeMode()"> Cheat mode </button>
+      <a id="CheatButton" (click)="changeMode()"> Cheat mode </a>
       <h2 id="title">Definitions</h2>
       <div *ngIf="configuration.grid !== undefined">
         <h3> Horizontal : </h3>
@@ -42,7 +42,7 @@
       <h2 [style.background]="this.configuration.currentPlayer.color"> {{configuration.currentPlayer.name}} :
         <h4> {{configuration.currentPlayer.score}} words found</h4>
       </h2>
-      <h2 *ngIf="configuration.isTwoPlayerGame" id="secondPlayer" [style.background]="this.configuration.otherPlayer.color">
+      <h2 *ngIf="configuration.isTwoPlayerGame" [style.background]="this.configuration.otherPlayer.color">
         {{configuration.otherPlayer.name}} :
         <h4> {{configuration.otherPlayer.score}} words found</h4>
       </h2>
@@ -71,4 +71,69 @@
       </div>
     </div>
   </div>
+
+
+  <div *ngIf="!configuration.isTwoPlayerGame && this.isGameFinished">
+    <div class="gameEnding">
+      <div class="image">
+        <div class="back"></div>
+        <img src="https://d13yacurqjgara.cloudfront.net/users/69311/screenshots/1226327/congrats-gif-edit.gif">
+      </div>
+      <div class="text">
+        <p>Congratulations!</p>
+        <p>You won</p>
+        <p>Here are your options :</p>
+        <button (click)="restartGame()"> Play again with same configuration</button>
+        <a href="/crossword">
+          <button>Go back to configuation menu</button>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="configuration.isTwoPlayerGame && this.isGameFinished">
+    <div *ngIf="configuration.currentPlayer.score >= configuration.otherPlayer.score">
+      <div class="gameEnding">
+        <div class="image">
+          <div class="back"></div>
+          <img src="https://d13yacurqjgara.cloudfront.net/users/69311/screenshots/1226327/congrats-gif-edit.gif">
+        </div>
+        <div class="text">
+          <p>Congratulations!</p>
+          <p>You won</p>
+          <p>Here are your options :</p>
+          <button (click)="restartGame()"> Play again with same configuration</button>
+          <a href="/crossword">
+            <button>Go back to configuation menu</button>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="configuration.currentPlayer.score < configuration.otherPlayer.score">
+      <div class="gameEnding">
+        <div class="image">
+          <div class="back"></div>
+          <img src="http://jennamolby.com/wp-content/uploads/2016/08/sorry.png">
+        </div>
+        <div class="text">
+          <p>Better luck next time ...</p>
+          <p>You lost the game</p>
+          <p>Here are your options :</p>
+          <button (click)="restartGame()"> Play again with same configuration</button>
+          <a href="/crossword">
+            <button>Go back to configuation menu</button>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="disconnection" *ngIf="hasOtherPlayerDisconnected">
+    <h2>{{configuration.otherPlayer.name}} has disconnected</h2>
+    <a href="/crossword">
+      <button> Go back to menu</button>
+    </a>
+
+  </div>
+
+
 </div>

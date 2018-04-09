@@ -3,6 +3,7 @@ import { Group, Mesh } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { TrackLights } from "../render-service/light";
 import { Track } from "../../../../../common/racing/track";
+import { ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR } from "../constants";
 import { TrackMesh } from "../track/track";
 
 export class PreviewScene extends AbstractScene {
@@ -14,6 +15,7 @@ export class PreviewScene extends AbstractScene {
     public constructor() {
         super();
         this._group = new Group();
+        this._roadTexture = this.loadRepeatingTexture(ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR);
         this.addGround();
         this._group.add(new TrackLights(TrackType.Default));
         this.add(this._group);
@@ -31,7 +33,7 @@ export class PreviewScene extends AbstractScene {
     }
 
     public createTrackMesh(track: Track): Mesh {
-        return new TrackMesh(track);
+        return new TrackMesh(track, this._roadTexture);
     }
 
     public set isDay(isDay: boolean) {

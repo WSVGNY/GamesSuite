@@ -7,6 +7,7 @@ import { Difficulty } from "../../../../common/crossword/difficulty";
 import { MultiplayerCrosswordGame } from "../../../../common/crossword/multiplayerCrosswordGame";
 import { CommonGrid } from "../../../../common/crossword/commonGrid";
 import { Player } from "../../../../common/crossword/player";
+import { InvalidArgumentError } from "../racing/invalidArgumentError";
 
 const SERVER_URL: string = "http://localhost:3000";
 
@@ -68,6 +69,12 @@ export class MultiplayerCommunicationService {
         }
     }
 
+    public restartGameWithSameConfig(): void {
+        if (this._socket !== undefined) {
+            this._socket.emit(SocketEvents.RestartGameWithSameConfig);
+        }
+    }
+
     public getMessagesConfigurationComponent = () => {
         if (this._socket === undefined) {
             return;
@@ -85,10 +92,6 @@ export class MultiplayerCommunicationService {
                 observer.next(SocketEvents.StartGame);
             });
 
-            this._socket.on(SocketEvents.DisconnectionAlert, () => {
-                // tslint:disable:no-console
-                console.log("Other player disconnected");
-            });
         });
     }
 
@@ -101,6 +104,23 @@ export class MultiplayerCommunicationService {
             this._socket.on(SocketEvents.PlayerUpdate, (player: Player) => {
                 this._playerHolder = player;
                 observer.next(SocketEvents.PlayerUpdate);
+            });
+
+            this._socket.on(SocketEvents.RestartGame, (message: MultiplayerCrosswordGame) => {
+                this._currentGame = MultiplayerCrosswordGame.create(JSON.stringify(message));
+                observer.next(SocketEvents.RestartGame);
+            });
+
+            this._socket.on(SocketEvents.GameNotFound, () => {
+                throw new InvalidArgumentError;
+            });
+            this._socket.on(SocketEvents.DisconnectionAlert, () => {
+                console.log("Other player disconnected");
+                observer.next(SocketEvents.DisconnectionAlert);
+            });
+            this._socket.on(SocketEvents.ReinitializeGame, () => {
+                console.log("Reinitialize Game");
+                observer.next(SocketEvents.ReinitializeGame);
             });
         });
     }

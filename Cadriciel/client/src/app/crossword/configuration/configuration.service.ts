@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { CommonGrid } from "../../../../../common/crossword/commonGrid";
 import { Player } from "../../../../../common/crossword/player";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
+import { GridService } from "../grid.service";
 
 @Injectable()
 export class ConfigurationService {
@@ -14,6 +15,14 @@ export class ConfigurationService {
     public lookingForPlayer: boolean;
     public difficulty: Difficulty;
     private _currentPlayerName: string;
+
+    public constructor(private _gridService: GridService) { }
+
+    public createGrid(): void {
+        this._gridService.gridGet(this.difficulty).subscribe((grid: CommonGrid) => {
+            this.grid = grid;
+        });
+    }
 
     public get currentPlayer(): Player {
         return this.playerOne.name === this._currentPlayerName ?

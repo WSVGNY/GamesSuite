@@ -98,8 +98,7 @@ export class Physics {
         const kineticFriction: Vector3 = new Vector3();
         kineticFriction.x = this._car.direction.z;
         kineticFriction.z = -this._car.direction.x;
-
-        const force: Vector3 = this._car.speed.clone().projectOnVector(kineticFriction).normalize();
+        const force: Vector3 = this._car.speed.clone().projectOnVector(kineticFriction);
         force.multiplyScalar(TIRE_ASPHALT_COEFFICIENT * this._car.mass * GRAVITY);
 
         return force;

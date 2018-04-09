@@ -8,20 +8,18 @@ import { CommonGrid } from "../../common/crossword/commonGrid";
 import { Player } from "../../common/crossword/player";
 import { BASE_ROOM_NAME, GRID_GET_URL, FIRST_PLAYER_COLOR, SECOND_PLAYER_COLOR } from "./crossword/configuration";
 
-const INDEX_NOT_FOUND: number = -1;
-
 export class ServerSockets {
     private static _numberOfRoom: number = 0;
 
     private _io: SocketIO.Server;
     private _httpServer: http.Server;
     private _games: MultiplayerCrosswordGame[];
-    private _socketIdentification: { id: string, room: string }[];
+    private _socketIdentifications: { id: string, room: string }[];
 
     public constructor(server: http.Server, initialize: boolean = false) {
         this._httpServer = server;
         this._games = [];
-        this._socketIdentification = [];
+        this._socketIdentifications = [];
         if (initialize) {
             this.initSocket();
         }
@@ -37,6 +35,7 @@ export class ServerSockets {
             this.onRoomsListQuery(socket);
             this.onRoomConnect(socket).then().catch((e: Error) => console.error(e.message));
             this.onPlayerUpdate(socket);
+            this.onRestartGameWithSameConfig(socket);
         });
     }
 
@@ -54,7 +53,7 @@ export class ServerSockets {
 
     private deleteGame(game: MultiplayerCrosswordGame): void {
         const index: number = this._games.indexOf(game, 0);
-        if (index > INDEX_NOT_FOUND) {
+        if (index > -1) {
             this._games.splice(index, 1);
             console.log("Deleted game of room name: " + game.roomName);
         }
@@ -66,7 +65,7 @@ export class ServerSockets {
             this.createRoom(message["difficulty"]);
             console.log("Room name: " + this._games[this._games.length - 1].roomName + " of difficuly: " + message["difficulty"]);
             socket.join(this._games[this._games.length - 1].roomName);
-            this._socketIdentification.push({ id: socket.id, room: this._games[this._games.length - 1].roomName });
+            this._socketIdentifications.push({ id: socket.id, room: this._games[this._games.length - 1].roomName });
             this._games[this._games.length - 1].addPlayer({ name: message["creator"], color: FIRST_PLAYER_COLOR, score: 0 });
         });
     }
@@ -102,7 +101,7 @@ export class ServerSockets {
         socket: SocketIO.Socket, playerName: string): void {
         if (game.addPlayer({ name: playerName, color: SECOND_PLAYER_COLOR, score: 0 })) {
             socket.join(room.roomName);
-            this._socketIdentification.push({ id: socket.id, room: room.roomName });
+            this._socketIdentifications.push({ id: socket.id, room: room.roomName });
             console.log("Connection to room: " + room.roomName + " by " + playerName + " successfull");
             if (game.isFull()) {
                 this.startGame(game);
@@ -127,6 +126,38 @@ export class ServerSockets {
             socket.broadcast.to(this.findSocketRoomNameByID(socket.id)).emit(SocketEvents.PlayerUpdate, player);
         });
     }
+
+    private onRestartGameWithSameConfig(socket: SocketIO.Socket): void {
+        socket.on(SocketEvents.RestartGameWithSameConfig, () => {
+            console.log("restart game with same config event");
+            const gameIndex: number = this.findGameIndexWithRoom(this.findSocketRoomNameByID(socket.id));
+            if (gameIndex >= 0) {
+                this.updateRestartCounter(gameIndex, socket);
+            } else {
+                this._io.to(this.findSocketRoomNameByID(socket.id)).emit(SocketEvents.GameNotFound);
+            }
+        });
+    }
+
+    private updateRestartCounter(gameIndex: number, socket: SocketIO.Socket): void {
+        const game: MultiplayerCrosswordGame = this._games[gameIndex];
+        game.restartCounter++;
+        if (game.restartCounter < MultiplayerCrosswordGame.MAX_PLAYER_NUMBER) {
+            return;
+        } else {
+            game.restartCounter = 0;
+            socket.broadcast.to(this.findSocketRoomNameByID(socket.id)).emit(SocketEvents.ReinitializeGame);
+        }
+        this.restartGame(game, socket);
+    }
+
+    private restartGame(game: MultiplayerCrosswordGame, socket: SocketIO.Socket): void {
+        this.gridCreateQuery(game).then(() => {
+            this._io.to(game.roomName).emit(SocketEvents.RestartGame, game);
+        }).catch((e: Error) => {
+            console.error(e);
+        });
+    }
     // tslint:enable:no-console
 
     private createRoom(difficulty: Difficulty): void {
@@ -134,7 +165,7 @@ export class ServerSockets {
     }
 
     private findSocketRoomNameByID(id: string): string {
-        for (const socket of this._socketIdentification) {
+        for (const socket of this._socketIdentifications) {
             if (socket.id === id) {
                 return socket.room;
             }
@@ -152,4 +183,15 @@ export class ServerSockets {
             console.error(e);
         });
     }
+
+    private findGameIndexWithRoom(room: string): number {
+        for (let i: number = 0; i < this._games.length; ++i) {
+            if (this._games[i].roomName === room) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
 }

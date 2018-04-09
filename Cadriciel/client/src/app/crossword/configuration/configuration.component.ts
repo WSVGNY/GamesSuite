@@ -1,7 +1,5 @@
 import { Component } from "@angular/core";
-import { GridService } from "../grid.service";
 import { ConfigurationService } from "../configuration/configuration.service";
-import { CommonGrid } from "../../../../../common/crossword/commonGrid";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { MultiplayerCommunicationService } from "../multiplayer-communication.service";
 import { SocketEvents } from "../../../../../common/communication/socketEvents";
@@ -23,7 +21,6 @@ export class ConfigurationComponent {
     private _hasSubscribed: boolean;
 
     public constructor(
-        private _gridService: GridService,
         public configurationService: ConfigurationService,
         public multiplayerCommunicationService: MultiplayerCommunicationService) {
         this.choseGridDifficulty = false;
@@ -73,9 +70,7 @@ export class ConfigurationComponent {
 
     public createGrid(): void {
         if (!this.configurationService.isTwoPlayerGame) {
-            this._gridService.gridGet(this.configurationService.difficulty).subscribe((grid: CommonGrid) => {
-                this.configurationService.grid = grid;
-            });
+            this.configurationService.createGrid();
         }
     }
 

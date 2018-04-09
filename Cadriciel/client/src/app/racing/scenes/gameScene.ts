@@ -2,7 +2,9 @@ import { AbstractScene } from "./abstractRacingScene";
 import { Group, Vector3, Geometry, Line, Camera, LineBasicMaterial } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { TrackLights } from "../render-service/light";
-import { CHANGE_CAMERA_KEYCODE, YELLOW, DAY_KEYCODE, DEBUG_KEYCODE } from "../constants";
+import {
+    CHANGE_CAMERA_KEYCODE, YELLOW, DAY_KEYCODE, DEBUG_KEYCODE, ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR
+} from "../constants";
 import { Car } from "../car/car";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
@@ -11,7 +13,7 @@ import { CollisionManagerService } from "../collision-manager/collision-manager.
 import { TrackMesh } from "../track/track";
 import { TrackPoint } from "../track/trackPoint";
 
-const START_POSITION_OFFSET: number = -15;
+const START_POSITION_OFFSET: number = -25;
 
 export class GameScene extends AbstractScene {
 
@@ -23,8 +25,9 @@ export class GameScene extends AbstractScene {
     private _debugElements: Group;
     private _isDay: boolean;
 
-    public constructor(private _keyBoardHandler: KeyboardEventHandlerService, private _collisionManager: CollisionManagerService) {
+    public constructor(private _keyBoardHandler: KeyboardEventHandlerService/*, private _collisionManager: CollisionManagerService*/) {
         super();
+        this._roadTexture = this.loadRepeatingTexture(ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR);
         this._skyBoxTextures = new Map();
         this._group = new Group();
         this._debugElements = new Group();
@@ -36,8 +39,8 @@ export class GameScene extends AbstractScene {
             this._group.remove(this._trackShape);
         }
         this._isDay = track.type === TrackType.Default ? true : false;
-        this._trackShape = new TrackMesh(track);
-        this._collisionManager.setWalls(this._trackShape);
+        this._trackShape = new TrackMesh(track, this._roadTexture);
+        // this._collisionManager.setWalls(this._trackShape);
         this._group.add(this._trackShape);
         this.addGround();
         this.setSkyBox(track.type);
@@ -48,7 +51,7 @@ export class GameScene extends AbstractScene {
     public async loadCars(cars: Car[], carDebugs: AIDebug[], camera: Camera, trackType: TrackType): Promise<void> {
         for (let i: number = 0; i < cars.length; ++i) {
             const startPos: Vector3 = new Vector3(
-                this._trackShape.trackPoints.first.coordinate.x - i * START_POSITION_OFFSET,
+                this._trackShape.trackPoints.first.coordinate.x /*- i * START_POSITION_OFFSET*/,
                 this._trackShape.trackPoints.first.coordinate.y,
                 this._trackShape.trackPoints.first.coordinate.z - i * START_POSITION_OFFSET);
 

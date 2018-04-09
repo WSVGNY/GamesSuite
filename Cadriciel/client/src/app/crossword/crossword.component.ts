@@ -32,11 +32,15 @@ export class CrosswordComponent {
     public inputGridBox: CommonGridBox;
     public isInCheatMode: boolean;
     private _hasSubscribed: boolean;
+    public hasOtherPlayerDisconnected: boolean;
+    public isGameFinished: boolean;
 
     public constructor(
         public configuration: ConfigurationService, private multiplayerCommunicationService: MultiplayerCommunicationService) {
         this.isInCheatMode = false;
         this._hasSubscribed = false;
+        this.hasOtherPlayerDisconnected = false;
+        this.isGameFinished = false;
 
     }
 
@@ -45,6 +49,19 @@ export class CrosswordComponent {
             if (message === SocketEvents.PlayerUpdate) {
                 this.handlePlayerUpdate();
             }
+            if (message === SocketEvents.RestartGame) {
+                this.configuration.handleGameStart(
+                    this.multiplayerCommunicationService.grid,
+                    this.multiplayerCommunicationService.currentGame.players);
+            }
+            if (message === SocketEvents.DisconnectionAlert) {
+                console.log("DECONNECTION");
+                this.hasOtherPlayerDisconnected = true;
+            }
+            if (message === SocketEvents.ReinitializeGame) {
+                console.log("YOYOYO");
+                this.resetGameStats();
+            }
         });
     }
 
@@ -52,6 +69,7 @@ export class CrosswordComponent {
         this.configuration.updateOtherPlayer(this.multiplayerCommunicationService.updatedPlayer);
         Updater.updateInputCharInBoxes(this.configuration);
         this.inputGridBox = Updater.setInputBox(this.configuration, this.inputGridBox);
+        this.endGame();
     }
 
     public isConfigurationDone(): boolean {
@@ -80,9 +98,7 @@ export class CrosswordComponent {
     }
 
     public changeMode(): void {
-        this.isInCheatMode ?
-            this.isInCheatMode = false :
-            this.isInCheatMode = true;
+        this.isInCheatMode ? this.isInCheatMode = false : this.isInCheatMode = true;
     }
 
     public getState(word: CommonWord): State {
@@ -147,8 +163,7 @@ export class CrosswordComponent {
     }
 
     private wordShouldBeColored(player: Player, word: CommonWord): boolean {
-        return Comparator.compareWords(player.selectedWord, word)
-            || ListChecker.listContainsWord(player.foundWords, word);
+        return Comparator.compareWords(player.selectedWord, word) || ListChecker.listContainsWord(player.foundWords, word);
     }
 
     public getPlayerColorForBox(box: CommonGridBox): string {
@@ -159,8 +174,7 @@ export class CrosswordComponent {
         }
 
         return (ListChecker.listContainsBox(this.configuration.currentPlayer.foundBoxes, box)) ?
-            this.configuration.currentPlayer.color :
-            WHITE;
+            this.configuration.currentPlayer.color : WHITE;
     }
 
     private mixedColor(box: CommonGridBox): string {
@@ -223,6 +237,7 @@ export class CrosswordComponent {
                 this.resetInputBox();
             }
         }
+        this.endGame();
 
         return word;
     }
@@ -286,4 +301,31 @@ export class CrosswordComponent {
         return ListChecker.playersSelectedBox(box, this.configuration);
     }
 
+    public restartGame(): void {
+        this.resetGameStats();
+        this.configuration.isTwoPlayerGame ?
+            this.multiplayerCommunicationService.restartGameWithSameConfig() :
+            this.restartGameWithSameConfig();
+    }
+
+    private resetGameStats(): void {
+        this.configuration.currentPlayer.score = 0;
+        this.configuration.grid = undefined;
+        this.initializePlayersArrays(this.configuration.currentPlayer);
+        this.isGameFinished = false;
+    }
+
+    public restartGameWithSameConfig(): void {
+        this.configuration.createGrid();
+    }
+
+    public endGame(): void {
+        if (!this.configuration.isTwoPlayerGame && this.configuration.currentPlayer.score >= this.configuration.grid.words.length) {
+            this.isGameFinished = true;
+        }
+        if (this.configuration.isTwoPlayerGame &&
+            this.configuration.currentPlayer.score + this.configuration.otherPlayer.score >= this.configuration.grid.words.length) {
+            this.isGameFinished = true;
+        }
+    }
 }

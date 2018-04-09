@@ -8,6 +8,8 @@ import { Player } from "../../../../common/crossword/player";
 import { CommonWord } from "../../../../common/crossword/commonWord";
 import { CommonGridBox } from "../../../../common/crossword/commonGridBox";
 import { CommonCoordinate2D } from "../../../../common/crossword/commonCoordinate2D";
+import { GridService } from "./grid.service";
+import { HttpClient, HttpHandler } from "@angular/common/http";
 
 describe("CrosswordComponent", () => {
     let component: CrosswordComponent;
@@ -65,7 +67,10 @@ describe("CrosswordComponent", () => {
             declarations: [CrosswordComponent],
             providers: [
                 ConfigurationService,
-                MultiplayerCommunicationService
+                MultiplayerCommunicationService,
+                GridService,
+                HttpClient,
+                HttpHandler
             ]
         })
             .compileComponents()
@@ -228,5 +233,17 @@ describe("CrosswordComponent", () => {
         });
         component.inputChar(event);
         expect(component.getState(word)).toEqual(2);
+    });
+
+    it("When the game is over, the player has the option to either play again or go to menu ", () => {
+        component.configuration.grid = {
+            boxes: [[{ id: { x: 0, y: 0 }, isBlack: false }]],
+            words: createMockWord(2)
+        };
+        component.configuration.playerOne = createMockPlayer("steelblue", "name1", 1);
+        component.configuration.playerTwo = createMockPlayer("orangered", "name2", 0);
+        component.configuration.isTwoPlayerGame = true;
+        component.endGame();
+        expect(component.isGameFinished).toEqual(true);
     });
 });
