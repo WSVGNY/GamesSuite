@@ -41,7 +41,7 @@ export class CameraManagerService {
     }
 
     public changeToTopViewCamera(): void {
-        this._currentCamera = this._thirdPersonCamera;
+        this._currentCamera = this._topViewCamera;
     }
 
     public get currentCamera(): Camera {
