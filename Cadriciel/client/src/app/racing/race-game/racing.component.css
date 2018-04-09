@@ -11,6 +11,12 @@
     left:315px;
 }
 
+#input {
+    position: absolute;
+    top:500px;
+    left:600px;
+}
+
 ul, li {
     position: relative;
     margin: 0;
