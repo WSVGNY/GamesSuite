@@ -179,14 +179,14 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
     @HostListener("window:keydown", ["$event"])
     public onKeyDown(event: KeyboardEvent): void {
-        if (this._gameScene !== undefined) {
+        if (this._gameScene !== undefined && this._isCountDownOver) {
             this._keyBoardHandler.handleKeyDown(event.keyCode);
         }
     }
 
     @HostListener("window:keyup", ["$event"])
     public onKeyUp(event: KeyboardEvent): void {
-        if (this._gameScene !== undefined) {
+        if (this._gameScene !== undefined && this._isCountDownOver) {
             this._keyBoardHandler.handleKeyUp(event.keyCode);
         }
     }
