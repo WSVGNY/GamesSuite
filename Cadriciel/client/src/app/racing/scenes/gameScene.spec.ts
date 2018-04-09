@@ -1,5 +1,5 @@
 import { GameScene } from "./gameScene";
-import { Vector3, Geometry, Mesh, MeshPhongMaterial, Texture } from "three";
+import { Vector3, Geometry, Mesh, MeshPhongMaterial } from "three";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { TestBed } from "@angular/core/testing";
 import { TrackMesh } from "../track-service/track";
