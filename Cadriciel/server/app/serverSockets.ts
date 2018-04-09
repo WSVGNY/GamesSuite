@@ -32,7 +32,7 @@ export class ServerSockets {
             this.onDisconnect(socket);
             this.onRoomCreate(socket);
             this.onRoomsListQuery(socket);
-            this.onRoomConnect(socket).then().catch((e: Error) => console.error(e.message));
+            this.onRoomConnect(socket);
             this.onPlayerUpdate(socket);
             this.onRestartGameWithSameConfig(socket);
         });
@@ -66,25 +66,29 @@ export class ServerSockets {
         });
     }
 
-    private async onRoomConnect(socket: SocketIO.Socket): Promise<void> {
+    private onRoomConnect(socket: SocketIO.Socket): void {
         socket.on(SocketEvents.RoomConnect, (message: { roomInfo: MultiplayerCrosswordGame, playerName: string }) => {
             console.log("room connect event");
             try {
                 const game: MultiplayerCrosswordGame = this._gameLogic.handleRoomConnect(message["roomInfo"], message["playerName"]);
-                if (game !== undefined) {
-                    socket.join(game.roomName);
-                    this._socketIdentifications.push({ id: socket.id, room: game.roomName });
-                    console.log("Connection to room: " + game.roomName + " by " + message["playerName"] + " successfull");
-                    if (this._gameLogic) {
-                        this.startGame(game);
-                    }
-                } else {
-                    throw ReferenceError("Unable to connect to room");
-                }
+                this.handleConnection(game, socket, message["playerName"]);
             } catch (e) {
                 console.error(e);
             }
         });
+    }
+
+    private handleConnection(game: MultiplayerCrosswordGame, socket: SocketIO.Socket, playerName: string): void {
+        if (game === undefined) {
+            throw ReferenceError("Unable to connect to room");
+        }
+        socket.join(game.roomName);
+        this._socketIdentifications.push({ id: socket.id, room: game.roomName });
+        console.log("Connection to room: " + game.roomName + " by " + playerName + " successfull");
+        if (this._gameLogic.shouldStartGame(game)) {
+            this.startGame(game);
+        }
+
     }
 
     private startGame(game: MultiplayerCrosswordGame): void {
@@ -95,7 +99,6 @@ export class ServerSockets {
             console.error(e);
         });
     }
-
 
     private onPlayerUpdate(socket: SocketIO.Socket): void {
         socket.on(SocketEvents.PlayerUpdate, (player: Player) => {
