@@ -69,7 +69,6 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
     public async ngAfterViewInit(): Promise<void> {
         this._cameraManager.initializeCameras(this.computeAspectRatio());
-        // this._spectatingCamera = new SpectatingCamera(this.computeAspectRatio());
         this._renderService
             .initialize(this._containerRef.nativeElement, this._gameScene, this._cameraManager.currentCamera)
             .then(/* do nothing */)
@@ -83,22 +82,16 @@ export class RacingComponent implements AfterViewInit, OnInit {
     }
 
     public startGameLoop(): void {
-        this._lastDate = Date.now();
         this.createSounds();
-        this.beginStartingAnimation();
-    }
-
-    public beginStartingAnimation(): void {
+        this._lastDate = Date.now();
         this._startDate = Date.now();
         this._countDown = "";
         this._cameraManager.changeToSpectatingCamera();
-        this.updateGame();
+        this.update();
     }
 
-    private updateStartingAnimation(): void {
-        const elapsedTime: number = Date.now() - this._startDate;
-        this._cameraManager.updateCameraPositions(this._playerCar, elapsedTime / 100);
-        this._renderService.render(this._gameScene, this._cameraManager.currentCamera);
+    private updateStartingAnimation(elapsedTime: number): void {
+        this._cameraManager.updateCameraPositions(this._playerCar, elapsedTime);
         if (this._cameraManager.currentCamera.position.clone().distanceTo(this._playerCar.currentPosition) < 3) {
             this._startDate = Date.now();
             this._countDown = "3";
@@ -107,8 +100,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
         }
     }
 
-    private updateCountdown(): void {
-        const elapsedTime: number = Date.now() - this._startDate;
+    private updateCountdown(elapsedTime: number): void {
         if (elapsedTime > 3000) {
             this._countDown = "START";
             this._isCountDownOver = true;
@@ -117,48 +109,52 @@ export class RacingComponent implements AfterViewInit, OnInit {
         } else if (elapsedTime > 1000) {
             this._countDown = "2";
         }
-        this._renderService.render(this._gameScene, this._cameraManager.currentCamera);
-        this._cameraManager.updateCameraPositions(this._playerCar);
         if (this._isCountDownOver) {
             this._lastDate = Date.now();
             this._currentState = State.RACING;
         }
     }
 
-    private updateGame(): void {
-        requestAnimationFrame(() => {
-            
-            switch (this._currentState) {
-                case State.START_ANIMATION:
-                    this.updateStartingAnimation();
-                    break;
-                case State.COUNTDOWN:
-                    this.updateCountdown();
-                    break;
-                default:
+    private updateRacing(elapsedTime: number, timeSinceLastFrame: number): void {
+        this.updateCars(timeSinceLastFrame);
+        this._collisionManagerService.update(this._cars);
+        if (this._collisionManagerService.shouldPlaySound) {
+            this._soundService.play(this._soundService.collisionSound);
+            this._collisionManagerService.shouldPlaySound = false;
+        }
+        this._renderService.render(this._gameScene, this._cameraManager.currentCamera);
+        this._soundService.setAccelerationSound(this._playerCar);
+        this._cameraManager.updateCameraPositions(this._playerCar);
+
+    }
+
+    private updateCars(timeSinceLastFrame: number): void {
+        for (let i: number = 0; i < AI_CARS_QUANTITY + 1; ++i) {
+            this._cars[i].update(timeSinceLastFrame);
+            if (this._cars[i].isAI) {
+                this._aiCarService.update(this._cars[i], this._carDebugs[i]);
             }
-            this.updateGame();
-        });
+        }
     }
 
     private update(): void {
         requestAnimationFrame(() => {
             const timeSinceLastFrame: number = Date.now() - this._lastDate;
+            const elapsedTime: number = Date.now() - this._startDate;
             this._lastDate = Date.now();
-            for (let i: number = 0; i < AI_CARS_QUANTITY + 1; ++i) {
-                this._cars[i].update(timeSinceLastFrame);
-                if (this._cars[i].isAI) {
-                    this._aiCarService.update(this._cars[i], this._carDebugs[i]);
-                }
-            }
-            this._collisionManagerService.update(this._cars);
-            if (this._collisionManagerService.shouldPlaySound) {
-                this._soundService.play(this._soundService.collisionSound);
-                this._collisionManagerService.shouldPlaySound = false;
+            switch (this._currentState) {
+                case State.START_ANIMATION:
+                    this.updateStartingAnimation(elapsedTime / 100);
+                    break;
+                case State.COUNTDOWN:
+                    this.updateCountdown(elapsedTime);
+                    break;
+                case State.RACING:
+                    this.updateRacing(elapsedTime, timeSinceLastFrame);
+                    break;
+                default:
             }
             this._renderService.render(this._gameScene, this._cameraManager.currentCamera);
-            this._soundService.setAccelerationSound(this._playerCar);
-            this._cameraManager.updateCameraPositions(this._playerCar);
             this.update();
         });
     }
