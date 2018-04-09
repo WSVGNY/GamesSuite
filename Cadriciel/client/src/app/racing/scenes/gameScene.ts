@@ -53,15 +53,18 @@ export class GameScene extends AbstractScene {
     }
 
     public async loadCars(cars: Car[], carDebugs: AIDebug[], camera: Camera, trackType: TrackType): Promise<void> {
-        const shuffledCars: Car[] = cars;
+        const shuffledCars: Car[] = [];
+        for (const car of cars) {
+            shuffledCars.push(car);
+        }
         this.shuffle(shuffledCars);
         for (let i: number = 0; i < cars.length; ++i) {
-            await this.placeCarOnStartingGrid(cars[i], i);
+            await this.placeCarOnStartingGrid(shuffledCars[i], i);
             this._debugElements.add(carDebugs[i].debugGroup);
-            if (!cars[i].isAI) {
-                cars[i].attachCamera(camera);
+            if (!shuffledCars[i].isAI) {
+                shuffledCars[i].attachCamera(camera);
             }
-            this._group.add(cars[i]);
+            this._group.add(shuffledCars[i]);
         }
         this.setTimeOfDay(cars, trackType);
     }
