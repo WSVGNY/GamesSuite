@@ -41,9 +41,8 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private _playerCar: Car;
     private _lastDate: number;
     private _startDate: number;
-    protected _countDown: string;
+    protected _countDownOnScreenValue: string;
     protected _isCountDownOver: boolean;
-    // private _spectatingCamera: SpectatingCamera;
 
     private _currentState: State;
 
@@ -85,7 +84,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
         this.createSounds();
         this._lastDate = Date.now();
         this._startDate = Date.now();
-        this._countDown = "";
+        this._countDownOnScreenValue = "";
         this._cameraManager.changeToSpectatingCamera();
         this.update();
     }
@@ -94,7 +93,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
         this._cameraManager.updateCameraPositions(this._playerCar, elapsedTime);
         if (this._cameraManager.currentCamera.position.clone().distanceTo(this._playerCar.currentPosition) < 3) {
             this._startDate = Date.now();
-            this._countDown = "3";
+            this._countDownOnScreenValue = "3";
             this._currentState = State.COUNTDOWN;
             this._cameraManager.changeToThirdPersonCamera();
         }
@@ -102,12 +101,12 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
     private updateCountdown(elapsedTime: number): void {
         if (elapsedTime > 3000) {
-            this._countDown = "START";
+            this._countDownOnScreenValue = "START";
             this._isCountDownOver = true;
         } else if (elapsedTime > 2000) {
-            this._countDown = "1";
+            this._countDownOnScreenValue = "1";
         } else if (elapsedTime > 1000) {
-            this._countDown = "2";
+            this._countDownOnScreenValue = "2";
         }
         if (this._isCountDownOver) {
             this._lastDate = Date.now();
