@@ -14,6 +14,7 @@ import { AI_CARS_QUANTITY } from "../constants";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { CollisionManagerService } from "../collision-manager/collision-manager.service";
 import { CameraManagerService } from "../cameras/camera-manager.service";
+import { SpectatingCamera } from "../cameras/spectatingCamera";
 
 @Component({
     moduleId: module.id,
@@ -35,6 +36,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private _startDate: number;
     protected _countDown: string;
     protected _isCountDownOver: boolean;
+    private _spectatingCamera: SpectatingCamera;
 
     public constructor(
         private _renderService: RenderService,
@@ -57,6 +59,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
     public async ngAfterViewInit(): Promise<void> {
         this._cameraManager.initializeCameras(this.computeAspectRatio());
+        this._spectatingCamera = new SpectatingCamera(this.computeAspectRatio());
         this._renderService
             .initialize(this._containerRef.nativeElement, this._gameScene, this._cameraManager.getCurrentCamera())
             .then(/* do nothing */)
@@ -77,25 +80,40 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
     public beginRaceStartingSequence(): void {
         this._startDate = Date.now();
-        this._countDown = "3";
+        this._countDown = "";
         this.updateStartingSequence();
     }
 
     private updateStartingSequence(): void {
         requestAnimationFrame(() => {
             const elapsedTime: number = Date.now() - this._startDate;
-            if (elapsedTime > 5000) {
+            this._spectatingCamera.updatePosition(elapsedTime / 100);
+            this._renderService.render(this._gameScene, this._spectatingCamera);
+            if ( this._spectatingCamera.position.clone().distanceTo(this._playerCar.currentPosition) < 3) {
+                this._startDate = Date.now();
+                this._countDown = "3";
+                this.updateCountDown();
+            } else {
+                this.updateStartingSequence();
+            }
+        });
+    }
+
+    private updateCountDown(): void {
+        requestAnimationFrame(() => {
+            const elapsedTime: number = Date.now() - this._startDate;
+            if (elapsedTime > 3000) {
                 this._countDown = "START";
                 this._isCountDownOver = true;
-            } else if (elapsedTime > 4000) {
+            } else if (elapsedTime > 2000) {
                 this._countDown = "1";
-            } else if (elapsedTime > 3000) {
+            } else if (elapsedTime > 1000) {
                 this._countDown = "2";
             }
             this._renderService.render(this._gameScene, this._cameraManager.getCurrentCamera());
             this._cameraManager.updateCameraPositions(this._playerCar);
             if (!this._isCountDownOver) {
-                this.updateStartingSequence();
+                this.updateCountDown();
             } else {
                 this._lastDate = Date.now();
                 this.update();
@@ -145,6 +163,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
                     .then(/* do nothing */)
                     .catch((err) => console.error(err));
                 this.bindKeys();
+                this._spectatingCamera.setInitialPosition(this._playerCar.currentPosition, this._playerCar.direction);
                 this.startGameLoop();
             });
     }
