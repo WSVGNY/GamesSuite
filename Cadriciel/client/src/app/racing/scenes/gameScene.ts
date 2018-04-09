@@ -9,7 +9,7 @@ import { Car } from "../car/car";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { Track } from "../../../../../common/racing/track";
-import { CollisionManagerService } from "../collision-manager/collision-manager.service";
+// import { CollisionManagerService } from "../collision-manager/collision-manager.service";
 import { TrackMesh } from "../track/track";
 import { TrackPoint } from "../track/trackPoint";
 

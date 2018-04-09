@@ -48,7 +48,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
     }
 
     public ngOnInit(): void {
-        this._gameScene = new GameScene(this._keyBoardHandler, this._collisionManagerService);
+        this._gameScene = new GameScene(this._keyBoardHandler/*, this._collisionManagerService*/);
     }
 
     public async ngAfterViewInit(): Promise<void> {
