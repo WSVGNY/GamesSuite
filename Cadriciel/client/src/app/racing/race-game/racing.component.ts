@@ -14,7 +14,6 @@ import { AI_CARS_QUANTITY } from "../constants";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { CollisionManagerService } from "../collision-manager/collision-manager.service";
 import { CameraManagerService } from "../cameras/camera-manager.service";
-import { SpectatingCamera } from "../cameras/spectatingCamera";
 
 enum State {
     START_ANIMATION = 1,
@@ -36,14 +35,13 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private _containerRef: ElementRef;
     private _chosenTrack: Track;
     private _cars: Car[];
+    private _playerCar: Car;
     private _carDebugs: AIDebug[];
     private _gameScene: GameScene;
-    private _playerCar: Car;
     private _lastDate: number;
     private _startDate: number;
     protected _countDownOnScreenValue: string;
     protected _isCountDownOver: boolean;
-
     private _currentState: State;
 
     public constructor(
@@ -169,7 +167,6 @@ export class RacingComponent implements AfterViewInit, OnInit {
         this._trackService.getTrackFromId(this._route.snapshot.paramMap.get("id"))
             .subscribe(async (trackFromServer: Track) => {
                 this._chosenTrack = Track.createFromJSON(JSON.stringify(trackFromServer));
-
                 this.initializeCars(this._chosenTrack.type);
                 this._gameScene.loadTrack(this._chosenTrack);
                 await this._gameScene.loadCars(this._cars, this._carDebugs, this._cameraManager.currentCamera, this._chosenTrack.type);
@@ -191,7 +188,6 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
     private initializeCars(trackType: TrackType): void {
         for (let i: number = 0; i < AI_CARS_QUANTITY + 1; ++i) {
-
             if (i === 0) {
                 this._cars.push(new Car(this._keyBoardHandler, false));
                 this._playerCar = this._cars[0];
