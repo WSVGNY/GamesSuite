@@ -1,6 +1,7 @@
 import { MultiplayerCrosswordGame } from "../../../common/crossword/multiplayerCrosswordGame";
 import { Difficulty } from "../../../common/crossword/difficulty";
 import { BASE_ROOM_NAME, FIRST_PLAYER_COLOR, SECOND_PLAYER_COLOR } from "./configuration";
+import { SocketEvents } from "../../../common/communication/socketEvents";
 
 export class MultiplayerGameLogic {
     private static _numberOfRoom: number = 0;
@@ -69,6 +70,51 @@ export class MultiplayerGameLogic {
 
     public shouldStartGame(game: MultiplayerCrosswordGame): boolean {
         return game.isFull();
+    }
+
+    public shouldRestartGame(game: MultiplayerCrosswordGame): boolean {
+        return game.restartCounter >= MultiplayerCrosswordGame.MAX_PLAYER_NUMBER;
+    }
+
+    public getCurrentGame(room: string): MultiplayerCrosswordGame {
+        const index: number = this.findGameIndexWithRoom(room);
+
+        return index >= 0 ? this._games[index] : undefined;
+    }
+
+    public handleRestartGameWithSameConfig(roomName: string): SocketEvents {
+        const gameIndex: number = this.findGameIndexWithRoom(roomName);
+        if (gameIndex >= 0) {
+            return this.updateRestartCounter(gameIndex);
+        } else {
+            return SocketEvents.GameNotFound;
+            //this._io.to(this.findSocketRoomNameByID(socket.id)).emit(SocketEvents.GameNotFound);
+        }
+    }
+
+    private updateRestartCounter(gameIndex: number): SocketEvents {
+        const game: MultiplayerCrosswordGame = this.games[gameIndex];
+        game.restartCounter++;
+        if (game.restartCounter < MultiplayerCrosswordGame.MAX_PLAYER_NUMBER) {
+            return undefined;
+        } else {
+            return SocketEvents.ReinitializeGame;
+            //socket.broadcast.to(this.findSocketRoomNameByID(socket.id)).emit(SocketEvents.ReinitializeGame);
+        }
+    }
+
+    public restartGame(game: MultiplayerCrosswordGame): void {
+        game.restartCounter = 0;
+    }
+
+    private findGameIndexWithRoom(room: string): number {
+        for (let i: number = 0; i < this.numberOfGames; ++i) {
+            if (this.games[i].roomName === room) {
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     // tslint:enable:no-console
