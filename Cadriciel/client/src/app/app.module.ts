@@ -21,6 +21,7 @@ import { SoundManagerService } from "./racing/sound-service/sound-manager.servic
 import { MultiplayerCommunicationService } from "./crossword/multiplayer-communication.service";
 import { CollisionManagerService } from "./racing/collision-manager/collision-manager.service";
 import { CameraManagerService } from "./racing/cameras/camera-manager.service";
+import { CarTrackingManagerService } from "./racing/carTracking-manager/car-tracking-manager.service";
 
 @NgModule({
     declarations: [
@@ -49,7 +50,8 @@ import { CameraManagerService } from "./racing/cameras/camera-manager.service";
         SoundManagerService,
         MultiplayerCommunicationService,
         CollisionManagerService,
-        CameraManagerService
+        CameraManagerService,
+        CarTrackingManagerService
     ],
     bootstrap: [AppComponent]
 })

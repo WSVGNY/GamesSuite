@@ -14,6 +14,7 @@ import { AI_CARS_QUANTITY } from "../constants";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { CollisionManagerService } from "../collision-manager/collision-manager.service";
 import { CameraManagerService } from "../cameras/camera-manager.service";
+import { CarTrackingManagerService } from "../carTracking-manager/car-tracking-manager.service";
 
 @Component({
     moduleId: module.id,
@@ -41,7 +42,8 @@ export class RacingComponent implements AfterViewInit, OnInit {
         private _aiCarService: AICarService,
         private _collisionManagerService: CollisionManagerService,
         private _soundService: SoundManagerService,
-        private _cameraManager: CameraManagerService
+        private _cameraManager: CameraManagerService,
+        private _trackingManager: CarTrackingManagerService
     ) {
         this._cars = [];
         this._carDebugs = [];
@@ -66,11 +68,12 @@ export class RacingComponent implements AfterViewInit, OnInit {
     }
 
     public startGameLoop(): void {
+        this._trackingManager.init(this._chosenTrack.vertices, this._playerCar);
         this._lastDate = Date.now();
         this.createSounds();
         this.update();
     }
-
+    oldIndex: number = 0;
     private update(): void {
         requestAnimationFrame(() => {
             const timeSinceLastFrame: number = Date.now() - this._lastDate;
@@ -81,6 +84,11 @@ export class RacingComponent implements AfterViewInit, OnInit {
                     this._aiCarService.update(this._cars[i], this._carDebugs[i]);
                 }
             }
+            this._trackingManager.updateTrackPortionIndex(this._playerCar);
+            if (this.oldIndex !== this._playerCar.trackPortionIndex) {
+                console.log(this._playerCar.trackPortionIndex);
+            }
+            this.oldIndex = this._cars[0].trackPortionIndex;
             this._collisionManagerService.update(this._cars);
             if (this._collisionManagerService.shouldPlaySound) {
                 this._soundService.play(this._soundService.collisionSound);
