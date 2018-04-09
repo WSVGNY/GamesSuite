@@ -71,7 +71,6 @@ export class CrosswordComponent {
         this.configuration.updateOtherPlayer(this.multiplayerCommunicationService.updatedPlayer);
         Updater.updateInputCharInBoxes(this.configuration);
         this.inputGridBox = Updater.setInputBox(this.configuration, this.inputGridBox);
-        this.endGame();
     }
 
     public isConfigurationDone(): boolean {
@@ -266,20 +265,23 @@ export class CrosswordComponent {
         this.configuration.currentPlayer.score = 0;
         this.configuration.grid = undefined;
         this.initializePlayersArrays(this.configuration.currentPlayer);
-        this.isGameFinished = false;
     }
 
     public restartGameWithSameConfig(): void {
         this.configuration.createGrid();
     }
 
-    public endGame(): void {
-        if (!this.configuration.isTwoPlayerGame && this.configuration.currentPlayer.score >= this.configuration.grid.words.length) {
-            this.isGameFinished = true;
+    public isEndGame(): boolean {
+        if (this.configuration.configurationDone && this.configuration.grid !== undefined) {
+            if (!this.configuration.isTwoPlayerGame && this.configuration.currentPlayer.score >= this.configuration.grid.words.length) {
+                return true;
+            }
+            if (this.configuration.isTwoPlayerGame &&
+                this.configuration.currentPlayer.score + this.configuration.otherPlayer.score >= this.configuration.grid.words.length) {
+                return true;
+            }
         }
-        if (this.configuration.isTwoPlayerGame &&
-            this.configuration.currentPlayer.score + this.configuration.otherPlayer.score >= this.configuration.grid.words.length) {
-            this.isGameFinished = true;
-        }
+
+        return false;
     }
 }

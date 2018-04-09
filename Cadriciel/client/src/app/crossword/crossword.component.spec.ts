@@ -243,7 +243,7 @@ describe("CrosswordComponent", () => {
         component.configuration.playerOne = createMockPlayer("steelblue", "name1", 1);
         component.configuration.playerTwo = createMockPlayer("orangered", "name2", 0);
         component.configuration.isTwoPlayerGame = true;
-        component.endGame();
+        component.isEndGame();
         expect(component.isGameFinished).toEqual(true);
     });
 });

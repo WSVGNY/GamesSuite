@@ -115,11 +115,9 @@ export class MultiplayerCommunicationService {
                 throw new InvalidArgumentError;
             });
             this._socket.on(SocketEvents.DisconnectionAlert, () => {
-                console.log("Other player disconnected");
                 observer.next(SocketEvents.DisconnectionAlert);
             });
             this._socket.on(SocketEvents.ReinitializeGame, () => {
-                console.log("Reinitialize Game");
                 observer.next(SocketEvents.ReinitializeGame);
             });
         });

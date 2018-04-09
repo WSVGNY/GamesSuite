@@ -73,7 +73,7 @@
   </div>
 
 
-  <div *ngIf="!configuration.isTwoPlayerGame && this.isGameFinished">
+  <div *ngIf="!configuration.isTwoPlayerGame && isEndGame()">
     <div class="gameEnding">
       <div class="image">
         <div class="back"></div>
@@ -90,7 +90,7 @@
       </div>
     </div>
   </div>
-  <div *ngIf="configuration.isTwoPlayerGame && this.isGameFinished">
+  <div *ngIf="configuration.isTwoPlayerGame && isEndGame()">
     <div *ngIf="configuration.currentPlayer.score >= configuration.otherPlayer.score">
       <div class="gameEnding">
         <div class="image">
