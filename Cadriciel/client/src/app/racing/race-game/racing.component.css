@@ -12,9 +12,10 @@
 }
 
 #input {
+    z-index: 1;
     position: absolute;
-    top:500px;
-    left:600px;
+    top:370px;
+    left:480px;
 }
 
 ul, li {
