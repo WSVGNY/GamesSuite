@@ -48,11 +48,11 @@ export class RacingComponent implements AfterViewInit, OnInit {
     ) {
         this._cars = [];
         this._carDebugs = [];
+        this._isCountDownOver = false;
     }
 
     public ngOnInit(): void {
         this._gameScene = new GameScene(this._keyBoardHandler);
-        this._isCountDownOver = false;
     }
 
     public async ngAfterViewInit(): Promise<void> {
@@ -84,12 +84,12 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private updateStartingSequence(): void {
         requestAnimationFrame(() => {
             const elapsedTime: number = Date.now() - this._startDate;
-            if (elapsedTime > 3000) {
+            if (elapsedTime > 5000) {
                 this._countDown = "START";
                 this._isCountDownOver = true;
-            } else if (elapsedTime > 2000) {
+            } else if (elapsedTime > 4000) {
                 this._countDown = "1";
-            } else if (elapsedTime > 1000) {
+            } else if (elapsedTime > 3000) {
                 this._countDown = "2";
             }
             this._renderService.render(this._gameScene, this._cameraManager.getCurrentCamera());
@@ -97,6 +97,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
             if (!this._isCountDownOver) {
                 this.updateStartingSequence();
             } else {
+                this._lastDate = Date.now();
                 this.update();
             }
         });
@@ -109,7 +110,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
             for (let i: number = 0; i < AI_CARS_QUANTITY + 1; ++i) {
                 this._cars[i].update(timeSinceLastFrame);
                 if (this._cars[i].isAI) {
-                    // this._aiCarService.update(this._cars[i], this._carDebugs[i]);
+                    this._aiCarService.update(this._cars[i], this._carDebugs[i]);
                 }
             }
             this._collisionManagerService.update(this._cars);
@@ -121,7 +122,6 @@ export class RacingComponent implements AfterViewInit, OnInit {
             this._soundService.setAccelerationSound(this._playerCar);
             this._cameraManager.updateCameraPositions(this._playerCar);
             this.update();
-            // this.beginRaceStartingSequence();
         });
     }
 
