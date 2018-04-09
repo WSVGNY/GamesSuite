@@ -6,7 +6,7 @@ import { Difficulty } from "../../common/crossword/difficulty";
 import * as requestPromise from "request-promise-native";
 import { CommonGrid } from "../../common/crossword/commonGrid";
 import { Player } from "../../common/crossword/player";
-import { GRID_GET_URL, FIRST_PLAYER_COLOR, SECOND_PLAYER_COLOR } from "./crossword/configuration";
+import { GRID_GET_URL, SECOND_PLAYER_COLOR } from "./crossword/configuration";
 import { MultiplayerGameLogic } from "./crossword/multiplayerGameLogic";
 
 export class ServerSockets {
@@ -62,13 +62,7 @@ export class ServerSockets {
     private onRoomsListQuery(socket: SocketIO.Socket): void {
         socket.on(SocketEvents.RoomsListQuery, () => {
             console.log("Room list query");
-            const emptyRooms: MultiplayerCrosswordGame[] = [];
-            for (const rooms of this._gameLogic.games) {
-                if (!rooms.isFull()) {
-                    emptyRooms.push(rooms);
-                }
-            }
-            socket.emit(SocketEvents.RoomsListsQueryResponse, emptyRooms);
+            socket.emit(SocketEvents.RoomsListsQueryResponse, this._gameLogic.getListOfEmptyRooms());
         });
     }
 

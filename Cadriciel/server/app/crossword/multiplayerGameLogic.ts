@@ -32,11 +32,20 @@ export class MultiplayerGameLogic {
         this.games[this.numberOfGames - 1].addPlayer({ name: creator, color: FIRST_PLAYER_COLOR, score: 0 });
     }
 
+    public getListOfEmptyRooms(): MultiplayerCrosswordGame[] {
+        const emptyRooms: MultiplayerCrosswordGame[] = [];
+        for (const rooms of this.games) {
+            if (!rooms.isFull()) {
+                emptyRooms.push(rooms);
+            }
+        }
+
+        return emptyRooms;
+    }
+
     private createRoom(difficulty: Difficulty): void {
         this._games.push(new MultiplayerCrosswordGame(BASE_ROOM_NAME + MultiplayerGameLogic._numberOfRoom++, difficulty));
         console.log("Room name: " + this._games[this.numberOfGames - 1].roomName + " of difficuly: " + difficulty);
     }
     // tslint:enable:no-console
-
-
 }
