@@ -32,6 +32,8 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private _gameScene: GameScene;
     private _playerCar: Car;
     private _lastDate: number;
+    private _startDate: number;
+    protected _countDown: string;
 
     public constructor(
         private _renderService: RenderService,
@@ -68,7 +70,35 @@ export class RacingComponent implements AfterViewInit, OnInit {
     public startGameLoop(): void {
         this._lastDate = Date.now();
         this.createSounds();
-        this.update();
+        this.beginRaceStartingSequence();
+    }
+
+    public beginRaceStartingSequence(): void {
+        this._startDate = Date.now();
+        this._countDown = "3";
+        this.updateStartingSequence();
+    }
+
+    private updateStartingSequence(): void {
+        requestAnimationFrame(() => {
+            const elapsedTime: number = Date.now() - this._startDate;
+            let countDownOver: boolean = false;
+            if (elapsedTime > 3000) {
+                this._countDown = "START";
+                countDownOver = true;
+            } else if (elapsedTime > 2000) {
+                this._countDown = "1";
+            } else if (elapsedTime > 1000) {
+                this._countDown = "2";
+            }
+            this._renderService.render(this._gameScene, this._cameraManager.getCurrentCamera());
+            this._cameraManager.updateCameraPositions(this._playerCar);
+            if (!countDownOver) {
+                this.updateStartingSequence();
+            } else {
+                this.update();
+            }
+        });
     }
 
     private update(): void {
@@ -78,7 +108,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
             for (let i: number = 0; i < AI_CARS_QUANTITY + 1; ++i) {
                 this._cars[i].update(timeSinceLastFrame);
                 if (this._cars[i].isAI) {
-                    this._aiCarService.update(this._cars[i], this._carDebugs[i]);
+                    // this._aiCarService.update(this._cars[i], this._carDebugs[i]);
                 }
             }
             this._collisionManagerService.update(this._cars);
@@ -90,6 +120,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
             this._soundService.setAccelerationSound(this._playerCar);
             this._cameraManager.updateCameraPositions(this._playerCar);
             this.update();
+            // this.beginRaceStartingSequence();
         });
     }
 
