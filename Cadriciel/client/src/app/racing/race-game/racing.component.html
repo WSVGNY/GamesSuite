@@ -4,6 +4,9 @@
     <li>Gear: {{this.car.currentGear + 1}}</li>
     <li>RPM: {{this.car.rpm | number:'2.0-0'}}</li>
   </ul> -->
-  <h1 class = "stroke" *ngIf="this._gameScene !== undefined"> {{this._countDown}} </h1>
-  <h1 class = "no-stroke" *ngIf="this._gameScene !== undefined"> {{this._countDown}} </h1>
+  <!-- <h1 ng-class = "_isCountDownOver ? 'hidden' : 'visible'" class = "stroke" *ngIf="this._gameScene !== undefined"> {{this._countDown}} </h1>
+  <h1 ng-class = "_isCountDownOver ? 'hidden' : 'visible'" class = "no-stroke" *ngIf="this._gameScene !== undefined"> {{this._countDown}} </h1> -->
+
+  <h1 class = stroke [ngClass] = "{'hidden': this._isCountDownOver}" *ngIf="this._gameScene !== undefined"> {{this._countDown}} </h1>
+  <h1 class = no-stroke [ngClass] = "{'hidden': this._isCountDownOver}" *ngIf="this._gameScene !== undefined"> {{this._countDown}} </h1>
 </div>

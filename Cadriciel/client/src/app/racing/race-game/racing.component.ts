@@ -34,6 +34,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private _lastDate: number;
     private _startDate: number;
     protected _countDown: string;
+    protected _isCountDownOver: boolean;
 
     public constructor(
         private _renderService: RenderService,
@@ -51,6 +52,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
     public ngOnInit(): void {
         this._gameScene = new GameScene(this._keyBoardHandler);
+        this._isCountDownOver = false;
     }
 
     public async ngAfterViewInit(): Promise<void> {
@@ -82,10 +84,9 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private updateStartingSequence(): void {
         requestAnimationFrame(() => {
             const elapsedTime: number = Date.now() - this._startDate;
-            let countDownOver: boolean = false;
             if (elapsedTime > 3000) {
                 this._countDown = "START";
-                countDownOver = true;
+                this._isCountDownOver = true;
             } else if (elapsedTime > 2000) {
                 this._countDown = "1";
             } else if (elapsedTime > 1000) {
@@ -93,7 +94,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
             }
             this._renderService.render(this._gameScene, this._cameraManager.getCurrentCamera());
             this._cameraManager.updateCameraPositions(this._playerCar);
-            if (!countDownOver) {
+            if (!this._isCountDownOver) {
                 this.updateStartingSequence();
             } else {
                 this.update();
