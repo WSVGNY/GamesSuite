@@ -115,9 +115,4 @@ describe("Socket.IO tests", () => {
             done();
         });
     });
-
-    // it("should restart a game with a new grid", () => {
-
-    // });
-
 });

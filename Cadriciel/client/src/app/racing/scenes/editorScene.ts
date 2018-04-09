@@ -20,13 +20,14 @@ export class EditorScene extends Scene {
     private _firstVertex: Mesh;
     private _lastVertex: Mesh;
     private _selectedVertex: Mesh;
-    private _isComplete: boolean = false;
+    private _isComplete: boolean;
 
     public constructor() {
         super();
         this.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
         this._vertices = [];
         this._connections = [];
+        this._isComplete = false;
     }
 
     public importTrackVertices(trackVertices: CommonCoordinate3D[]): void {
