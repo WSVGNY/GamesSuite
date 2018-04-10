@@ -14,6 +14,7 @@ import { AI_CARS_QUANTITY, MINIMUM_CAR_DISTANCE } from "../constants";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { CollisionManagerService } from "../collision-manager/collision-manager.service";
 import { CameraManagerService } from "../cameras/camera-manager.service";
+import { Vector3 } from "three";
 
 enum State {
     START_ANIMATION = 1,
@@ -114,6 +115,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
         if (this._isCountDownOver) {
             this._lastDate = Date.now();
             this._currentState = State.RACING;
+            this._startDate = Date.now();
         }
     }
 
@@ -124,10 +126,26 @@ export class RacingComponent implements AfterViewInit, OnInit {
             this._soundService.play(this._soundService.collisionSound);
             this._collisionManagerService.shouldPlaySound = false;
         }
-        this._renderService.render(this._gameScene, this._cameraManager.currentCamera);
+        // this._renderService.render(this._gameScene, this._cameraManager.currentCamera);
         this._soundService.setAccelerationSound(this._playerCar);
         this._cameraManager.updateCameraPositions(this._playerCar);
+        if (elapsedTime > 5000) {
+            this._currentState = State.END;
+            alert(this.simulateRaceTime());
+        }
+    }
 
+    private simulateRaceTime(): number {
+        let simulatedTime: number = 0;
+        for (let i: number = 0; i < this._chosenTrack.vertices.length; ++i) {
+            if ((i + 1) !== this._chosenTrack.vertices.length) {
+                const currentVertice: Vector3 = new Vector3(this._chosenTrack.vertices[i].x, 0, this._chosenTrack.vertices[i].z);
+                const nextVertice: Vector3 = new Vector3(this._chosenTrack.vertices[i + 1].x, 0, this._chosenTrack.vertices[i + 1].z);
+                simulatedTime += (currentVertice.distanceTo(nextVertice) / 45);
+            }
+        }
+
+        return simulatedTime;
     }
 
     private updateCars(timeSinceLastFrame: number): void {
@@ -153,6 +171,9 @@ export class RacingComponent implements AfterViewInit, OnInit {
                     break;
                 case State.RACING:
                     this.updateRacing(elapsedTime, timeSinceLastFrame);
+                    break;
+                case State.END:
+                    alert(elapsedTime);
                     break;
                 default:
             }
