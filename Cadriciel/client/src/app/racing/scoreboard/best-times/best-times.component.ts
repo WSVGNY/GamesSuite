@@ -15,7 +15,7 @@ export class BestTimesComponent {
     public constructor(public highscoreService: HighscoreService) { }
 
     public readyToView(): boolean {
-        return this.highscoreService.addedScore;
+        return this.highscoreService.showTable;
     }
 
     public getTime(score: CommonHighscore): string {

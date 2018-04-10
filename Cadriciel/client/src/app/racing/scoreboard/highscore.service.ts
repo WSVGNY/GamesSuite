@@ -10,7 +10,7 @@ export class HighscoreService {
         { position: 2, name: "deux", car: "deux", time: 990 },
         { position: 3, name: "trois", car: "trois", time: 2000 },
         { position: 5, name: "trois", car: "trois", time: 33030 }];
-    private _addedScore: boolean = false;
+    public showTable: boolean = false;
 
     public addNewScore(playerName: string): void {
         if (this._highscores.length === TOPSCORES) {
@@ -26,14 +26,15 @@ export class HighscoreService {
         for (let i: number = 0; i < this._highscores.length; i++) {
             this._highscores[i].position = i + 1;
         }
-        this._addedScore = true;
+        this.showTable = true;
     }
 
     public get highscores(): CommonHighscore[] {
         return this._highscores;
     }
 
-    public get addedScore(): boolean {
-        return this._addedScore;
+    public isNewHighScore(): boolean {
+        return true;
     }
+
 }
