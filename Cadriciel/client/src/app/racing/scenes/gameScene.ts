@@ -1,9 +1,9 @@
 import { AbstractScene } from "./abstractRacingScene";
-import { Group, Vector3, Geometry, Line, Camera, LineBasicMaterial } from "three";
+import { Group, Vector3, Geometry, Line, Camera, LineBasicMaterial, PlaneGeometry, MeshBasicMaterial, DoubleSide, Mesh } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { TrackLights } from "../render-service/light";
-import {
-    CHANGE_CAMERA_KEYCODE, YELLOW, DAY_KEYCODE, DEBUG_KEYCODE, ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR
+import { CHANGE_CAMERA_KEYCODE, YELLOW, DAY_KEYCODE, DEBUG_KEYCODE,
+    ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR, PATH_TO_STATRINGLINE
 } from "../constants";
 import { Car } from "../car/car";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
@@ -64,6 +64,18 @@ export class GameScene extends AbstractScene {
             this._group.add(shuffledCars[i]);
         }
         this.setTimeOfDay(cars, trackType);
+    }
+
+    public createStartingLine(startingLinePosition: Vector3): void {
+        const geometry: PlaneGeometry = new PlaneGeometry(20, 5);
+        const texture: MeshBasicMaterial = new MeshBasicMaterial({ side: DoubleSide,
+                                                                   map: this.loadRepeatingTexture(PATH_TO_STATRINGLINE, 1) });
+        const startingLine: Mesh = new Mesh( geometry, texture );
+        startingLine.position.set(startingLinePosition.x + 8, 0.001, startingLinePosition.z);
+        startingLine.rotateZ(Math.PI / 2);
+        startingLine.rotateY(Math.PI / 2);
+        this.add(startingLine);
+        console.log(startingLine.position);
     }
 
     private shuffle(array: Car[]): void {

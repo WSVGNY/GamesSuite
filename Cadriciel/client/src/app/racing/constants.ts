@@ -49,6 +49,7 @@ export const GROUND_SIZE: number = 10000;
 export const ASPHALT_TEXTURE_PATH: string = BASE_TEXTURE_PATH + "asphalte.jpg";
 export const ASPHALT_TEXTURE_FACTOR: number = 0.03;
 export const GRASS_TEXTURE_PATH: string = BASE_TEXTURE_PATH + "grass.jpg";
+export const PATH_TO_STATRINGLINE: string = BASE_TEXTURE_PATH + "startingLineTexture.jpg";
 export const GROUND_TEXTURE_FACTOR: number = 800;
 export const WALL_TEXTURE_PATH: string = BASE_TEXTURE_PATH + "brick.jpg";
 
