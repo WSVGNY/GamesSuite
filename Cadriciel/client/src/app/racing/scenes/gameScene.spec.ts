@@ -33,7 +33,7 @@ describe("Game Scene", () => {
         ];
         const track: Track = new Track("");
         track.vertices = MOCK_TRACK;
-        const shape: TrackMesh = new TrackMesh(track);
+        const shape: TrackMesh = new TrackMesh(track, gameScene["_roadTexture"]);
         const EXPECTED_MOCK_TRACK: Vector3[] = [
             new Vector3(-10, -10, 0),
             new Vector3(-10, 110, 0),
@@ -56,7 +56,7 @@ describe("Game Scene", () => {
         ];
         const mockTrack: Track = new Track("");
         mockTrack.vertices = MOCK_TRACK;
-        gameScene["_trackShape"] = new TrackMesh(mockTrack);
+        gameScene["_trackShape"] = new TrackMesh(mockTrack, gameScene["_roadTexture"]);
         gameScene["_group"].add(gameScene["_trackShape"]);
         gameScene["addGround"]();
         const track: Mesh = gameScene.getObjectByName("track") as Mesh;

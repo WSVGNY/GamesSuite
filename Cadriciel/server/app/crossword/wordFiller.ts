@@ -25,13 +25,14 @@ export class WordFiller {
     private _filledWords: Word[];
     private _backTrackCounter: number;
     private _backTrackingWord: Word;
-    public isGenerated: boolean = false;
+    public isGenerated: boolean;
 
     public constructor(
         private _gridDifficulty: Difficulty,
         private _grid: GridBox[][],
         private _words: Word[]) {
         this._backTrackCounter = 0;
+        this.isGenerated = false;
     }
 
     public async wordFillControler(): Promise<boolean> {

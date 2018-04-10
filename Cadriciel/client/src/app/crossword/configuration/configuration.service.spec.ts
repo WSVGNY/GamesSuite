@@ -1,6 +1,8 @@
 import { TestBed, inject } from "@angular/core/testing";
 import { ConfigurationService } from "./configuration.service";
 import { Player } from "../../../../../common/crossword/player";
+import { GridService } from "./../grid.service";
+import { HttpClient, HttpHandler } from "@angular/common/http";
 
 const createMockPlayer: Function = (colorString: string, nameString: string, scoreNumber: number) => {
     return {
@@ -13,7 +15,11 @@ const createMockPlayer: Function = (colorString: string, nameString: string, sco
 describe("ConfigurationService", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [ConfigurationService]
+            providers: [
+                ConfigurationService,
+                GridService,
+                HttpClient,
+                HttpHandler]
         });
     });
 

@@ -91,6 +91,7 @@ export class Car extends Object3D {
         this._mesh = await this.load();
         this._mesh.position.add(startPoint);
         this._mesh.setRotationFromAxisAngle(new Vector3(0, 1, 0), rotationAngle);
+        this._mesh.updateMatrix();
         this.add(this._mesh);
     }
 
