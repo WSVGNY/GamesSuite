@@ -84,7 +84,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
                     this._aiCarService.update(this._cars[i], this._carDebugs[i]);
                 }
             }
-            this._trackingManager.updateTrackPortionIndex(this._playerCar);
+            this._trackingManager.updateTrackPortionIndex();
             if (this.oldIndex !== this._playerCar.trackPortionIndex) {
                 console.log(this._playerCar.trackPortionIndex);
             }
