@@ -3,8 +3,8 @@ import { Group, Mesh, Vector3 } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { TrackLights } from "../render-service/light";
 import { Track } from "../../../../../common/racing/track";
-import { TrackMesh } from "../track-service/track";
-import { ASPHALT_TEXTURE, ASPHALT_TEXTURE_FACTOR } from "../constants";
+import { ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR } from "../constants";
+import { TrackMesh } from "../track/track";
 
 const ROTATION_STEP: number = 0.01;
 const SCALE_FACTOR: number = 0.5;
@@ -20,7 +20,7 @@ export class PreviewScene extends AbstractScene {
     public constructor() {
         super();
         this._group = new Group();
-        this._roadTexture = this.loadRepeatingTexture(ASPHALT_TEXTURE, ASPHALT_TEXTURE_FACTOR);
+        this._roadTexture = this.loadRepeatingTexture(ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR);
         this.addGround();
         const lightinng: TrackLights = new TrackLights(TrackType.Default);
         lightinng.changePerspective();

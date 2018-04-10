@@ -11,7 +11,7 @@ export const SQUARED: number = 2;
 
 export const TRACK_WIDTH: number = 20;
 export const HALF_TRACK_WIDTH: number = TRACK_WIDTH * HALF;
-export const WALL_DISTANCE_TO_TRACK: number = 10;
+export const WALL_DISTANCE_TO_TRACK: number = 0;
 export const WALL_WIDTH: number = 0.5;
 export const RPM_FACTOR: number = 1700;
 export const VOLUME: number = 0.2;
@@ -46,11 +46,11 @@ export const ROME_SKYBOX: string = SKYBOX_PATH + "rome/";
 export const SPACE_SKYBOX: string = SKYBOX_PATH + "space/";
 export const ATMOSPHERE_SKYBOX: string = SKYBOX_PATH + "atmosphere/";
 export const GROUND_SIZE: number = 10000;
-export const GROUND_TEXTURE_FACTOR: number = 800;
-export const ASPHALT_TEXTURE: string = BASE_TEXTURE_PATH + "asphalte.jpg";
+export const ASPHALT_TEXTURE_PATH: string = BASE_TEXTURE_PATH + "asphalte.jpg";
 export const ASPHALT_TEXTURE_FACTOR: number = 0.03;
-export const GRASS_TEXTURE: string = BASE_TEXTURE_PATH + "grass.jpg";
-export const WALL_TEXTURE: string = BASE_TEXTURE_PATH + "brick.jpg";
+export const GRASS_TEXTURE_PATH: string = BASE_TEXTURE_PATH + "grass.jpg";
+export const GROUND_TEXTURE_FACTOR: number = 800;
+export const WALL_TEXTURE_PATH: string = BASE_TEXTURE_PATH + "brick.jpg";
 
 // Sound Paths
 const BASE_SOUND_PATH: string = BASE_ASSETS_PATH + "../../assets/sounds/";

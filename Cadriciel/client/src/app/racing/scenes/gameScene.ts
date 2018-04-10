@@ -1,27 +1,23 @@
 import { AbstractScene } from "./abstractRacingScene";
-import { TrackPoint } from "./../render-service/trackPoint";
-import {
-    Group, Vector3, Geometry, Line, Camera, LineBasicMaterial
-} from "three";
+import { Group, Vector3, Geometry, Line, Camera, LineBasicMaterial } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { TrackLights } from "../render-service/light";
 import {
-    CHANGE_CAMERA_KEYCODE, YELLOW, DAY_KEYCODE, DEBUG_KEYCODE, ASPHALT_TEXTURE, ASPHALT_TEXTURE_FACTOR
+    CHANGE_CAMERA_KEYCODE, YELLOW, DAY_KEYCODE, DEBUG_KEYCODE, ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR
 } from "../constants";
 import { Car } from "../car/car";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
-import { Wall } from "../render-service/wall";
-import { TrackPointList } from "../render-service/trackPointList";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { Track } from "../../../../../common/racing/track";
-import { TrackMesh } from "../track-service/track";
+import { TrackMesh } from "../track/track";
+import { TrackPoint } from "../track/trackPoint";
 
 const LATHERAL_OFFSET: number = 2;
 const VERTICAL_OFFSET: number = 5;
 
 export class GameScene extends AbstractScene {
 
-    private _trackShape: TrackMesh;
+    private _trackMesh: TrackMesh;
     private _group: Group;
     private _lighting: TrackLights;
     private _centerLine: Group;
@@ -31,25 +27,26 @@ export class GameScene extends AbstractScene {
 
     public constructor(private _keyBoardHandler: KeyboardEventHandlerService) {
         super();
-        this._roadTexture = this.loadRepeatingTexture(ASPHALT_TEXTURE, ASPHALT_TEXTURE_FACTOR);
+        this._roadTexture = this.loadRepeatingTexture(ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR);
         this._skyBoxTextures = new Map();
         this._group = new Group();
         this._debugElements = new Group();
         this.add(this._group);
     }
 
-    public loadTrack(track: Track): void {
-        if (this._trackShape !== undefined) {
-            this._group.remove(this._trackShape);
+    public loadTrack(track: Track): TrackMesh {
+        if (this._trackMesh !== undefined) {
+            this._group.remove(this._trackMesh);
         }
         this._isDay = track.type === TrackType.Default ? true : false;
-        this._group.add(this.createWalls(new TrackPointList(track.vertices)));
-        this._trackShape = new TrackMesh(track, this._roadTexture);
-        this._group.add(this._trackShape);
+        this._trackMesh = new TrackMesh(track, this._roadTexture);
+        this._group.add(this._trackMesh);
         this.addGround();
         this.setSkyBox(track.type);
         this.loadLights(track.type);
         this.setCenterLine();
+
+        return this._trackMesh;
     }
 
     public async loadCars(cars: Car[], carDebugs: AIDebug[], camera: Camera, trackType: TrackType): Promise<void> {
@@ -78,9 +75,9 @@ export class GameScene extends AbstractScene {
 
     private async placeCarOnStartingGrid(car: Car, index: number): Promise<void> {
         const startPos: Vector3 = new Vector3(
-            this._trackShape.trackPoints.first.coordinate.x,
-            this._trackShape.trackPoints.first.coordinate.y,
-            this._trackShape.trackPoints.first.coordinate.z
+            this._trackMesh.trackPoints.first.coordinate.x,
+            this._trackMesh.trackPoints.first.coordinate.y,
+            this._trackMesh.trackPoints.first.coordinate.z
         );
         const offset: Vector3 = new Vector3(0, 0, 0);
         offset.x = (index < 2) ? -LATHERAL_OFFSET : LATHERAL_OFFSET;
@@ -114,17 +111,9 @@ export class GameScene extends AbstractScene {
         this._group.add(this._lighting);
     }
 
-    public createWalls(trackPoints: TrackPointList): Group {
-        const walls: Group = new Group();
-        walls.add(Wall.createInteriorWall(trackPoints));
-        walls.add(Wall.createExteriorWall(trackPoints));
-
-        return walls;
-    }
-
     private findFirstTrackSegmentAngle(): number {
-        const carfinalFacingVector: Vector3 = this._trackShape.trackPoints.points[1].coordinate.clone()
-            .sub(this._trackShape.trackPoints.points[0].coordinate)
+        const carfinalFacingVector: Vector3 = this._trackMesh.trackPoints.points[1].coordinate.clone()
+            .sub(this._trackMesh.trackPoints.points[0].coordinate)
             .normalize();
 
         return new Vector3(0, 0, -1).cross(carfinalFacingVector).y > 0 ?
@@ -136,7 +125,7 @@ export class GameScene extends AbstractScene {
         const material: LineBasicMaterial = new LineBasicMaterial({ color: YELLOW, linewidth: 3 });
         this._centerLine = new Group();
 
-        this._trackShape.trackPoints.points.forEach((currentPoint: TrackPoint) => {
+        this._trackMesh.trackPoints.points.forEach((currentPoint: TrackPoint) => {
             this._centerLine.add(this.drawLine(material, currentPoint.coordinate, currentPoint.next.coordinate, 2));
         });
     }

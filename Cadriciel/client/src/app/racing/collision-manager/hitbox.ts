@@ -29,8 +29,8 @@ export class Hitbox {
     public updatePosition(carLocalPosition: Vector3, carMatrix: Matrix4): void {
         for (let i: number = 0; i < SPHERE_QUANTITY; ++i) {
             const localPosition: Vector3 = (i % 2 === 0) ?
-            new Vector3(0, 0, FRONT_SPHERE_OFFSET) :
-            new Vector3(0, 0, REAR_SPHERE_OFFSET);
+                new Vector3(0, 0, FRONT_SPHERE_OFFSET) :
+                new Vector3(0, 0, REAR_SPHERE_OFFSET);
             const globalPosition: Vector3 = localPosition.applyMatrix4(carMatrix);
             this._boundingSpheres[i].set(globalPosition, SPHERE_RADIUS);
         }

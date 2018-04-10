@@ -36,13 +36,13 @@ export class AIDebug {
         this._debugGroup.add(this._turningVectorHelper);
     }
 
-    public updateDebugMode(carPosition: Vector3, projection: Vector3, pointOnLine: Vector3, turningPoint: Vector3, vertice: Vector3): void {
+    public updateDebugMode(carPosition: Vector3, projection: Vector3, pointOnLine: Vector3, vertice: Vector3): void {
         this._axis[this.X_AXIS].update(carPosition, carPosition.clone().add(new Vector3(this.AXIS_LENGTH, 0, 0)));
         this._axis[this.Y_AXIS].update(carPosition, carPosition.clone().add(new Vector3(0, this.AXIS_LENGTH, 0)));
         this._axis[this.Z_AXIS].update(carPosition, carPosition.clone().add(new Vector3(0, 0, this.AXIS_LENGTH)));
         this._carVectorHelper.update(carPosition, projection);
         this._distanceVectorHelper.update(projection, pointOnLine);
-        this._turningVectorHelper.update(new Vector3(vertice.x, 0, vertice.z), turningPoint);
+        // this._turningVectorHelper.update(new Vector3(vertice.x, 0, vertice.z), turningPoint);
     }
 
     public get debugGroup(): Group {

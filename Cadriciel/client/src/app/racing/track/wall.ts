@@ -4,13 +4,13 @@ import {
 } from "three";
 import { TrackPointList } from "./trackPointList";
 import { TrackPoint } from "./trackPoint";
-import { HALF_TRACK_WIDTH, WALL_DISTANCE_TO_TRACK, PI_OVER_2, WALL_WIDTH, WALL_TEXTURE, WALL_TEXTURE_FACTOR } from "../constants";
+import { HALF_TRACK_WIDTH, WALL_DISTANCE_TO_TRACK, WALL_WIDTH, WALL_TEXTURE_PATH, WALL_TEXTURE_FACTOR } from "../constants";
 
-export class Wall extends Mesh {
-    private readonly HEIGHT: number = 2;
+export class WallMesh extends Mesh {
+    private readonly HEIGHT: number = 0.5;
     private readonly EXTRUDE_SETTINGS: Object = {
         steps: 1,
-        amount: this.HEIGHT,
+        amount: -this.HEIGHT,
         bevelEnabled: false
     };
 
@@ -18,15 +18,15 @@ export class Wall extends Mesh {
     private _holePoints: Vector3[];
     private _wallShape: Shape;
 
-    public static createInteriorWall(trackPoints: TrackPointList): Wall {
-        return new Wall(true, trackPoints)
+    public static createInteriorWall(trackPoints: TrackPointList): WallMesh {
+        return new WallMesh(true, trackPoints)
             .createWallShape()
             .extrudeShapeToGeometry()
             .loadMaterialWithTexture();
     }
 
-    public static createExteriorWall(trackPoints: TrackPointList): Wall {
-        return new Wall(false, trackPoints)
+    public static createExteriorWall(trackPoints: TrackPointList): WallMesh {
+        return new WallMesh(false, trackPoints)
             .createWallShape()
             .extrudeShapeToGeometry()
             .loadMaterialWithTexture();
@@ -40,7 +40,7 @@ export class Wall extends Mesh {
         isInterior ? this.findInteriorWallPoints(trackPoints) : this.findExteriorWallPoints(trackPoints);
     }
 
-    private createWallShape(): Wall {
+    private createWallShape(): WallMesh {
         this.drawExteriorShape();
         this.drillHoleInShape();
 
@@ -81,13 +81,13 @@ export class Wall extends Mesh {
     private findVectorToInteriorWall(trackPoint: TrackPoint): Vector3 {
         return trackPoint.vectorToInteriorPoint.normalize()
             .multiplyScalar(
-            (HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK) / Math.sin(Math.abs(trackPoint.halfOfSmallAngle)));
+                (HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK) / Math.sin(Math.abs(trackPoint.halfOfSmallAngle)));
     }
 
     private findVectorToInteriorWallWidth(trackPoint: TrackPoint): Vector3 {
         return trackPoint.vectorToInteriorPoint.normalize()
             .multiplyScalar(
-            (HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH) / Math.sin(Math.abs(trackPoint.halfOfSmallAngle)));
+                (HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH) / Math.sin(Math.abs(trackPoint.halfOfSmallAngle)));
     }
 
     private findExteriorWallPoints(trackPoints: TrackPointList): void {
@@ -106,25 +106,25 @@ export class Wall extends Mesh {
     private findVectorToExteriorWall(trackPoint: TrackPoint): Vector3 {
         return trackPoint.vectorToInteriorPoint.normalize()
             .multiplyScalar(
-            (HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK) / Math.sin(Math.abs(trackPoint.halfOfSmallAngle)))
+                (HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK) / Math.sin(Math.abs(trackPoint.halfOfSmallAngle)))
             .negate();
     }
 
     private findVectorToExteriorWallWidth(trackPoint: TrackPoint): Vector3 {
         return trackPoint.vectorToInteriorPoint.normalize()
             .multiplyScalar(
-            (HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH) / Math.sin(Math.abs(trackPoint.halfOfSmallAngle)))
+                (HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH) / Math.sin(Math.abs(trackPoint.halfOfSmallAngle)))
             .negate();
     }
 
-    private extrudeShapeToGeometry(): Wall {
-        this.geometry = new ExtrudeGeometry(this._wallShape, this.EXTRUDE_SETTINGS).rotateX(PI_OVER_2).translate(0, this.HEIGHT, 0);
+    private extrudeShapeToGeometry(): WallMesh {
+        this.geometry = new ExtrudeGeometry(this._wallShape, this.EXTRUDE_SETTINGS);
 
         return this;
     }
 
-    private loadMaterialWithTexture(): Wall {
-        const texture: Texture = new TextureLoader().load(WALL_TEXTURE);
+    private loadMaterialWithTexture(): WallMesh {
+        const texture: Texture = new TextureLoader().load(WALL_TEXTURE_PATH);
         texture.wrapS = RepeatWrapping;
         texture.wrapT = RepeatWrapping;
         texture.repeat.set(WALL_TEXTURE_FACTOR, WALL_TEXTURE_FACTOR);
