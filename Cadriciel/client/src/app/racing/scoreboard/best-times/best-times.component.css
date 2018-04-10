@@ -34,7 +34,7 @@
 }
 
 
-button {
+a {
     position: relative;
     left: 300px;
     top:10px;
@@ -52,7 +52,7 @@ button {
 }
 
 
-button:hover {
+a:hover {
     color: #172221;
     background-color: rgb(170, 170, 170);
     box-shadow: none;
