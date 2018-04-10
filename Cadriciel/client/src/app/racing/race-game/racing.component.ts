@@ -83,7 +83,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
                     this._aiCarService.update(this._cars[i], this._carDebugs[i]);
                 }
             }
-            this._trackingManager.updateTrackPortionIndex();
+            this._trackingManager.update();
             this._collisionManagerService.update(this._cars);
             if (this._collisionManagerService.shouldPlaySound) {
                 this._soundService.play(this._soundService.collisionSound);
