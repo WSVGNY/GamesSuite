@@ -55,6 +55,7 @@ export class ServerSockets {
                 socket.broadcast.to(game.roomName).emit(SocketEvents.DisconnectionAlert);
                 try {
                     this._gameLogic.deleteGame(game);
+                    this.removeSocketFromSocketIdentification(socket);
                 } catch (error) {
                     this.handleError(error, socket);
                 }
@@ -62,13 +63,40 @@ export class ServerSockets {
         }
     }
 
+    private removeSocketFromSocketIdentification(socket: SocketIO.Socket): void {
+        for (let i: number = 0; i < this._socketIdentifications.length; ++i) {
+            if (this._socketIdentifications[i].id === socket.id) {
+                this._socketIdentifications.splice(i, 1);
+
+                return;
+            }
+        }
+        throw ReferenceError("Unable to find room");
+    }
+
     private onRoomCreate(socket: SocketIO.Socket): void {
         socket.on(SocketEvents.RoomCreate, (message: { creator: string, difficulty: Difficulty }) => {
+            if (this.hasAlreadyCreatedARoom(socket)) {
+                return;
+            }
             console.log("Room creation by: " + message["creator"]);
             this._gameLogic.handleRoomCreate(message["difficulty"], message["creator"]);
             socket.join(this._gameLogic.games[this._gameLogic.numberOfGames - 1].roomName);
             this._socketIdentifications.push({ id: socket.id, room: this._gameLogic.games[this._gameLogic.numberOfGames - 1].roomName });
         });
+    }
+
+    private hasAlreadyCreatedARoom(socket: SocketIO.Socket): boolean {
+        if (socket === undefined || this._socketIdentifications.length === 0) {
+            return false;
+        }
+        for (const socketID of this._socketIdentifications) {
+            if (socketID.id === socket.id) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private onRoomsListQuery(socket: SocketIO.Socket): void {
@@ -171,5 +199,4 @@ export class ServerSockets {
             throw error;
         }
     }
-
 }
