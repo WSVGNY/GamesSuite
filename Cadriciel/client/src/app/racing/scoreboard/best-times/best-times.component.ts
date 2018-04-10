@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { HighscoreService } from "../highscore.service";
+import { HighscoreService } from "./highscore.service";
 import { CommonHighscore } from "../../../../../../common/racing/commonHighscore";
 
 const HUNDREDTH_TO_MINUTES: number = 6000;
@@ -15,7 +15,7 @@ export class BestTimesComponent {
     public constructor(public highscoreService: HighscoreService) { }
 
     public readyToView(): boolean {
-        return this.highscoreService.addedScore;
+        return this.highscoreService.showTable;
     }
 
     public getTime(score: CommonHighscore): string {

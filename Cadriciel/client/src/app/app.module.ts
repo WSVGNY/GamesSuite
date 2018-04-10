@@ -24,7 +24,10 @@ import { CameraManagerService } from "./racing/cameras/camera-manager.service";
 import { CarTrackingManagerService } from "./racing/carTracking-manager/car-tracking-manager.service";
 import { BestTimesComponent } from "./racing/scoreboard/best-times/best-times.component";
 import { InputTimeComponent } from "./racing/scoreboard/input-time/input-time.component";
-import { HighscoreService } from "./racing/scoreboard/highscore.service";
+import { HighscoreService } from "./racing/scoreboard/best-times/highscore.service";
+import { EndGameTableComponent } from "./racing/scoreboard/end-game-table/end-game-table.component";
+import { EndGameTableService } from "./racing/scoreboard/end-game-table/end-game-table.service";
+import { InputTimeService } from "./racing/scoreboard/input-time/input-time.service";
 
 @NgModule({
     declarations: [
@@ -36,7 +39,8 @@ import { HighscoreService } from "./racing/scoreboard/highscore.service";
         ChooseTrackComponent,
         ConfigurationComponent,
         BestTimesComponent,
-        InputTimeComponent
+        InputTimeComponent,
+        EndGameTableComponent
     ],
     imports: [
         BrowserModule,
@@ -57,7 +61,9 @@ import { HighscoreService } from "./racing/scoreboard/highscore.service";
         CollisionManagerService,
         CameraManagerService,
         CarTrackingManagerService,
-        HighscoreService
+        HighscoreService,
+        EndGameTableService,
+        InputTimeService
     ],
     bootstrap: [AppComponent]
 })
