@@ -28,7 +28,6 @@ const TWO_SECONDS: number = 2000;
 const ONE_SECOND: number = 1000;
 const MS_TO_SEC: number = 100;
 
-
 @Component({
     moduleId: module.id,
     selector: "app-racing-component",
