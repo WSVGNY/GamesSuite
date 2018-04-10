@@ -23,10 +23,10 @@ import { CollisionManagerService } from "./racing/collision-manager/collision-ma
 import { CameraManagerService } from "./racing/cameras/camera-manager.service";
 import { BestTimesComponent } from "./racing/scoreboard/best-times/best-times.component";
 import { InputTimeComponent } from "./racing/scoreboard/input-time/input-time.component";
-import { HighscoreService } from "./racing/scoreboard/highscore.service";
+import { HighscoreService } from "./racing/scoreboard/best-times/highscore.service";
 import { EndGameTableComponent } from "./racing/scoreboard/end-game-table/end-game-table.component";
-import { EndGameTableService } from "./racing/scoreboard/end-game-table.service";
-import { InputTimeService } from "./racing/scoreboard/input-time.service";
+import { EndGameTableService } from "./racing/scoreboard/end-game-table/end-game-table.service";
+import { InputTimeService } from "./racing/scoreboard/input-time/input-time.service";
 
 @NgModule({
     declarations: [

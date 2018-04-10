@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
-import { HighscoreService } from "../highscore.service";
-import { InputTimeService } from "../input-time.service";
+import { HighscoreService } from "../best-times/highscore.service";
+import { InputTimeService } from "./input-time.service";
 
 @Component({
     selector: "app-input-time",

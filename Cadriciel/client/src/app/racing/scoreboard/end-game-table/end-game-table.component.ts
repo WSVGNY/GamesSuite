@@ -1,8 +1,8 @@
 import { Component } from "@angular/core";
-import { CommonHighscore } from "../../../../../../common/racing/commonHighscore";
-import { EndGameTableService } from "../end-game-table.service";
-import { InputTimeService } from "../input-time.service";
-import { HighscoreService } from "../highscore.service";
+import { EndGameTableService } from "./end-game-table.service";
+import { InputTimeService } from "../input-time/input-time.service";
+import { HighscoreService } from "../best-times/highscore.service";
+import { CommonScore } from "../../../../../../common/racing/commonScore";
 
 const HUNDREDTH_TO_MINUTES: number = 6000;
 const SECONDS_TO_MINUTES: number = 100;
@@ -19,15 +19,15 @@ export class EndGameTableComponent {
         public inputTimeService: InputTimeService,
         public highscoreService: HighscoreService) { }
 
-    public getTime(score: CommonHighscore): string {
+    public getTime(score: CommonScore): string {
         let time: string = "";
-        const minutes: number = Math.floor(score.time / HUNDREDTH_TO_MINUTES);
-        const seconds: number = Math.floor(Math.floor(score.time - minutes * HUNDREDTH_TO_MINUTES) / SECONDS_TO_MINUTES);
+        const minutes: number = Math.floor(score.totalTime / HUNDREDTH_TO_MINUTES);
+        const seconds: number = Math.floor(Math.floor(score.totalTime - minutes * HUNDREDTH_TO_MINUTES) / SECONDS_TO_MINUTES);
         time += minutes;
         time += ":";
         time += seconds;
         time += ":";
-        time += score.time - minutes * HUNDREDTH_TO_MINUTES - seconds * SECONDS_TO_MINUTES;
+        time += score.totalTime - minutes * HUNDREDTH_TO_MINUTES - seconds * SECONDS_TO_MINUTES;
 
         return time;
     }
@@ -38,7 +38,7 @@ export class EndGameTableComponent {
 
     public goToNextView(): void {
         this.endGameTableService.showTable = false;
-        if (this.highscoreService.isNewHighScore()) {
+        if (this.highscoreService.isNewHighScore(this.endGameTableService.getPlayerScore())) {
             this.inputTimeService.showInput = true;
         } else {
             this.highscoreService.showTable = true;

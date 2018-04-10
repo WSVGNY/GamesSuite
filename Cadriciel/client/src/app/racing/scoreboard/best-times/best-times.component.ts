@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { HighscoreService } from "../highscore.service";
+import { HighscoreService } from "./highscore.service";
 import { CommonHighscore } from "../../../../../../common/racing/commonHighscore";
 
 const HUNDREDTH_TO_MINUTES: number = 6000;
