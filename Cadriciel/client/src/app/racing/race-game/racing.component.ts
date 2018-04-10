@@ -82,7 +82,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
                 }
             }
             this._collisionManagerService.update(this._cars);
-            if (this._collisionManagerService.shouldPlaySound) {
+            if (this._collisionManagerService.inCollision) {
                 this._soundService.play(this._soundService.collisionSound);
                 this._collisionManagerService.shouldPlaySound = false;
             }
@@ -110,7 +110,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
     private async initializeGameFromTrack(track: Track): Promise<void> {
         this.initializeCars(this._chosenTrack.type);
-        this._gameScene.loadTrack(this._chosenTrack);
+        this._collisionManagerService.track = this._gameScene.loadTrack(this._chosenTrack);
         await this._gameScene.loadCars(this._cars, this._carDebugs, this._cameraManager.getCurrentCamera(), this._chosenTrack.type);
         await this._aiCarService.initialize(this._chosenTrack.vertices, Difficulty.Medium).then().catch((err) => console.error(err));
         this.bindKeys();

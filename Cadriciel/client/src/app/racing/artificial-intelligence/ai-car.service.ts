@@ -6,7 +6,7 @@ import { TurnRight } from "../commands/carAICommands/turnRight";
 import { GoFoward } from "../commands/carAICommands/goFoward";
 import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";
 import { Vector3 } from "three";
-import { SQUARED, PI_OVER_4 } from "../constants";
+import { PI_OVER_4 } from "../constants";
 import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { AIConfig } from "./ai-config";
 import { AIDebug } from "./ai-debug";
@@ -41,16 +41,15 @@ export class AICarService {
         const projection: Vector3 = this.projectInFrontOfCar(car);
         const lineDistance: number = this.getPointDistanceFromTrack(car, projection);
         const pointOnLine: Vector3 = this.projectPointOnLine(car, projection);
-        const turningPoint: Vector3 = this.projectTurningPoint(car);
 
-        aiDebug.updateDebugMode(carPosition, projection, pointOnLine, turningPoint, this._trackVertices[car.trackPortionIndex]);
+        aiDebug.updateDebugMode(carPosition, projection, pointOnLine, this._trackVertices[car.trackPortionIndex]);
 
-        this.updateTrackPortionIndex(car, pointOnLine, turningPoint);
+        this.updateTrackPortionIndex(car, pointOnLine);
         this.updateCarDirection(lineDistance, car, this.isCarGoingStraightToLine(car, projection, pointOnLine));
     }
 
-    private updateTrackPortionIndex(car: Car, pointOnLine: Vector3, turningPoint: Vector3): void {
-        if (this.carPassedTrackPortionEnd(car, pointOnLine, turningPoint)) {
+    private updateTrackPortionIndex(car: Car, pointOnLine: Vector3): void {
+        if (this.carPassedTrackPortionEnd(car, pointOnLine)) {
             if (car.trackPortionIndex + 1 >= this._trackLineEquations.length) {
                 car.trackPortionIndex = 0;
             } else {
@@ -59,15 +58,21 @@ export class AICarService {
         }
     }
 
-    private carPassedTrackPortionEnd(car: Car, pointOnLine: Vector3, turningPoint: Vector3): boolean {
-        const pointOnLineToTurningPoint: Vector3 = pointOnLine.clone().sub(turningPoint);
-        const directorVector: Vector3 = car.trackPortionIndex + 1 === this._trackVertices.length ?
-            this._trackLineEquations[0].initialPoint.clone()
-                .sub(this._trackLineEquations[car.trackPortionIndex].initialPoint) :
-            this._trackLineEquations[car.trackPortionIndex + 1].initialPoint.clone()
-                .sub(this._trackLineEquations[car.trackPortionIndex].initialPoint);
+    private carPassedTrackPortionEnd(car: Car, pointOnLine: Vector3): boolean {
+        let pointOnLineToNextPoint: Vector3;
+        let directorVector: Vector3;
 
-        return pointOnLineToTurningPoint.dot(directorVector) > 0;
+        if (car.trackPortionIndex + 1 === this._trackVertices.length) {
+            pointOnLineToNextPoint = pointOnLine.clone().sub(this._trackLineEquations[0].initialPoint);
+            directorVector = this._trackLineEquations[0].initialPoint.clone()
+                .sub(this._trackLineEquations[car.trackPortionIndex].initialPoint);
+        } else {
+            pointOnLineToNextPoint = pointOnLine.clone().sub(this._trackLineEquations[car.trackPortionIndex + 1].initialPoint);
+            directorVector = this._trackLineEquations[car.trackPortionIndex + 1].initialPoint.clone()
+                .sub(this._trackLineEquations[car.trackPortionIndex].initialPoint);
+        }
+
+        return pointOnLineToNextPoint.dot(directorVector) > 0;
     }
 
     private updateCarDirection(lineDistance: number, car: Car, goingStraightToLine: boolean): void {
@@ -153,21 +158,5 @@ export class AICarService {
         pointOnLine.z = a !== 0 ? (-c - b * pointOnLine.x) / a : this._trackVertices[car.trackPortionIndex].z;
 
         return pointOnLine;
-    }
-
-    private projectTurningPoint(car: Car): Vector3 {
-        const nextPoint: Vector3 = car.trackPortionIndex === this._trackVertices.length - 1 ?
-            this._trackVertices[0] :
-            this._trackVertices[car.trackPortionIndex + 1];
-
-        const currentPoint: Vector3 = this._trackVertices[car.trackPortionIndex];
-        const denominatorX: number = Math.sqrt(Math.pow(nextPoint.x, SQUARED) + Math.pow(currentPoint.x, SQUARED));
-        const denominatorZ: number = Math.sqrt(Math.pow(nextPoint.z, SQUARED) + Math.pow(currentPoint.z, SQUARED));
-        const dx: number = (denominatorX !== 0) ? (nextPoint.x - currentPoint.x) / denominatorX : 0;
-        const dz: number = (denominatorZ !== 0) ? (nextPoint.z - currentPoint.z) / denominatorZ : 0;
-
-        return new Vector3(
-            (nextPoint.x + dx * AIConfig.TURNING_POINT_DISTANCE), 0,
-            (nextPoint.z + dz * AIConfig.TURNING_POINT_DISTANCE));
     }
 }

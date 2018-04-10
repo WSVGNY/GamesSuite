@@ -25,7 +25,7 @@ export class CarCollisionManager {
     private static applyCollisionDetection(firstCar: Car, secondCar: Car): boolean {
         if (this.computeCollisionParameters(firstCar, secondCar)) {
             this.resolveHitboxOverlap();
-            if (this.checkIfCarsInCollision()) {
+            if (!this.carsInCollision()) {
                 this.applyCollisionPhysics();
 
                 return true;
@@ -48,8 +48,8 @@ export class CarCollisionManager {
         );
     }
 
-    private static checkIfCarsInCollision(): boolean {
-        return (!this._collisionCarA.hitbox.inCollision) && (!this._collisionCarB.hitbox.inCollision);
+    private static carsInCollision(): boolean {
+        return this._collisionCarA.hitbox.inCollision || this._collisionCarB.hitbox.inCollision;
     }
 
     private static resolveHitboxOverlap(): void {
