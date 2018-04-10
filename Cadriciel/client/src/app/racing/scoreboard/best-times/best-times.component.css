@@ -32,3 +32,29 @@
     font-weight: bolder;
     font-style: normal;
 }
+
+
+button {
+    position: relative;
+    left: 300px;
+    top:10px;
+    padding: 5px 8px;
+    background-color: rgba(0, 0, 0, 0.863);
+    color:rgb(231, 200, 200) !important;
+    text-decoration: none;
+    border-radius: 4px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    transition-duration: 0.7s;
+    text-align: center;
+    font-size: 14px;
+    border:black;
+    cursor: pointer;
+}
+
+
+button:hover {
+    color: #172221;
+    background-color: rgb(170, 170, 170);
+    box-shadow: none;
+}
+
