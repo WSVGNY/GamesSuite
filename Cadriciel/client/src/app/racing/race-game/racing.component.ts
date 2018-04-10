@@ -25,6 +25,7 @@ enum State {
 const THREE_SECONDS: number = 3000;
 const TWO_SECONDS: number = 2000;
 const ONE_SECOND: number = 1000;
+const MS_TO_SEC: number = 100;
 
 
 @Component({
@@ -89,8 +90,6 @@ export class RacingComponent implements AfterViewInit, OnInit {
         this._startDate = Date.now();
         this._countDownOnScreenValue = "";
         this._cameraManager.changeToSpectatingCamera();
-        // this._cameraManager.changeToThirdPersonCamera();
-        // this._isCountDownOver = true;
         this.update();
     }
 
@@ -147,7 +146,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
             this._lastDate = Date.now();
             switch (this._currentState) {
                 case State.START_ANIMATION:
-                    this.updateStartingAnimation(elapsedTime / 100);
+                    this.updateStartingAnimation(elapsedTime / MS_TO_SEC);
                     break;
                 case State.COUNTDOWN:
                     this.updateCountdown(elapsedTime);
