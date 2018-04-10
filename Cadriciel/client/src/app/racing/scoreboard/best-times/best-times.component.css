@@ -33,28 +33,37 @@
     font-style: normal;
 }
 
-
-button {
-    position: relative;
-    left: 300px;
+#play{
+    left: 40px;
     top:10px;
-    padding: 5px 8px;
-    background-color: rgba(0, 0, 0, 0.863);
-    color:rgb(231, 200, 200) !important;
+}
+
+#back{
+    left: 160px;
+    top:10px;
+}
+
+a {
+    display: inline-block;
+    position: relative;
+    font-size: 150%;
+    width: 300px;
+    padding : 5px 10px 5px 10px;
+    background: linear-gradient(#202020,#000000);
+    color:rgb(255, 255, 255) !important;
     text-decoration: none;
     border-radius: 4px;
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
     transition-duration: 0.7s;
     text-align: center;
-    font-size: 14px;
     border:black;
     cursor: pointer;
 }
 
 
-button:hover {
+a:hover {
     color: #172221;
-    background-color: rgb(170, 170, 170);
+    background: linear-gradient(#000000,#202020);
     box-shadow: none;
 }
 

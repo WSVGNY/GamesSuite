@@ -26,13 +26,32 @@
     font-size: 150%;
 }
 
+#input:focus{
+    outline: none;
+}
+
 #save {
     position: relative;
-    top:90px;
-    left: -115px;
-    background : linear-gradient(#464646c5,#252525c5);
+    top:50px;
+    left: 100px;
+    background : linear-gradient(#575757,#303030);
     border-color: #444444c5;
     color: #ffffff;
     font-style: italic;
     font-size: 150%;
+    display: inline-block;
+    width: 300px;
+    padding : 5px 10px 5px 10px;
+    border-radius: 4px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    transition-duration: 0.7s;
+    text-align: center;
+    border:black;
+    cursor: pointer;
+}
+
+#save:hover {
+    color: #ffffff;
+    background: linear-gradient(#303030,#575757);
+    box-shadow: none;
 }

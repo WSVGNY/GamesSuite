@@ -1,6 +1,6 @@
 <div id="container" *ngIf="!isScoreAdded()">
     <p id="text">Congratulations! Your time is top 5 worthy!</p>
     <p id="text">Please enter your name below!</p>
-    <input id="input" #player value="NAME" />
+    <input id="input" #player value="NAME" maxlength="35" />
     <button id="save" (click)="loadLeaderBoard(player.value)">Show Leaderboard</button>
 </div>
