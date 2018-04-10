@@ -22,6 +22,9 @@ import { MultiplayerCommunicationService } from "./crossword/multiplayer-communi
 import { CollisionManagerService } from "./racing/collision-manager/collision-manager.service";
 import { CameraManagerService } from "./racing/cameras/camera-manager.service";
 import { CarTrackingManagerService } from "./racing/carTracking-manager/car-tracking-manager.service";
+import { BestTimesComponent } from "./racing/scoreboard/best-times/best-times.component";
+import { InputTimeComponent } from "./racing/scoreboard/input-time/input-time.component";
+import { HighscoreService } from "./racing/scoreboard/highscore.service";
 
 @NgModule({
     declarations: [
@@ -31,7 +34,9 @@ import { CarTrackingManagerService } from "./racing/carTracking-manager/car-trac
         CrosswordComponent,
         EditorComponent,
         ChooseTrackComponent,
-        ConfigurationComponent
+        ConfigurationComponent,
+        BestTimesComponent,
+        InputTimeComponent
     ],
     imports: [
         BrowserModule,
@@ -51,7 +56,8 @@ import { CarTrackingManagerService } from "./racing/carTracking-manager/car-trac
         MultiplayerCommunicationService,
         CollisionManagerService,
         CameraManagerService,
-        CarTrackingManagerService
+        CarTrackingManagerService,
+        HighscoreService
     ],
     bootstrap: [AppComponent]
 })

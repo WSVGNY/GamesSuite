@@ -240,10 +240,13 @@ describe("CrosswordComponent", () => {
             boxes: [[{ id: { x: 0, y: 0 }, isBlack: false }]],
             words: createMockWord(2)
         };
-        component.configuration.playerOne = createMockPlayer("steelblue", "name1", 1);
+        component.configuration.playerOne = createMockPlayer("steelblue", "name1", 2);
         component.configuration.playerTwo = createMockPlayer("orangered", "name2", 0);
         component.configuration.isTwoPlayerGame = true;
+        component.configuration.configurationDone = true;
         component.isEndGame();
-        expect(component.isGameFinished).toEqual(true);
+        console.log(component.configuration.currentPlayer.score + component.configuration.otherPlayer.score);
+        console.log(component.configuration.grid.words.length);
+        expect(component.isEndGame()).toEqual(true);
     });
 });

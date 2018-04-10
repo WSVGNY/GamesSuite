@@ -1,7 +1,6 @@
-<div #container>
-  <ul *ngIf="this._raceGame !== undefined">
-    <li>Speed: {{this.car.speed.length() * 3.6 | number :'2.2-2'}} km/h</li>
-    <li>Gear: {{this.car.currentGear + 1}}</li>
-    <li>RPM: {{this.car.rpm | number:'2.0-0'}}</li>
-  </ul>
+<div id="race" #container>
+  <h1 class=stroke [ngClass]="{'hidden': this._isCountDownOver}" *ngIf="this._gameScene !== undefined"> {{this._countDownOnScreenValue}} </h1>
+  <h1 class=no-stroke [ngClass]="{'hidden': this._isCountDownOver}" *ngIf="this._gameScene !== undefined"> {{this._countDownOnScreenValue}} </h1>
+  <app-best-times id="table"></app-best-times>
+  <app-input-time id="input"></app-input-time>
 </div>
