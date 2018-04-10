@@ -30,4 +30,16 @@ export class WallPlane extends Plane {
             point.z >= Math.min(this.wallLimits[0].z, this.wallLimits[1].z) &&
             point.z <= Math.max(this.wallLimits[0].z, this.wallLimits[1].z);
     }
+
+    public projectPoint(point: Vector3, optionalTarget?: Vector3): Vector3 {
+        const originToPoint: Vector3 = point.clone().sub(this.wallLimits[0]);
+        const dist: number = originToPoint.dot(this.normal);
+        const projectedPoint: Vector3 = point.clone().sub(this.normal.clone().multiplyScalar(dist));
+
+        if (optionalTarget !== undefined) {
+            optionalTarget = projectedPoint;
+        }
+
+        return projectedPoint;
+    }
 }
