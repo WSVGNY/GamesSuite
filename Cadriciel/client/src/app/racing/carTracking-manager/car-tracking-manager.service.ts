@@ -67,16 +67,10 @@ export class CarTrackingManagerService {
 
     public updateTrackPortionIndex(): void {
         if (this.isCarAtDesiredSphere(this._detectionSpheres[this._currentIndex])) {
-            console.log("ALLO");
-            console.log(this._currentIndex);
-            // console.log(this._car.trackPortionIndex);
             this.goToNextSphere();
-            console.log("ALLOALLO");
+            this._car.trackPortionIndex = this._currentIndex === 0 ? this._detectionSpheres.length - 1 : this._currentIndex - 1;
             console.log(this._currentIndex);
-            // console.log(this._car.trackPortionIndex);
-
-            this._car.trackPortionIndex = this._currentIndex === 0 ? this._detectionSpheres.length : this._currentIndex - 1;
-            this._car.trackPortionIndex %= this._detectionSpheres.length;
+            console.log(this._car.trackPortionIndex);
         }
         // if (this.carPassedDetectionSphere(car)) {
         //     if (car.trackPortionIndex + 1 >= this._trackVertices.length) {

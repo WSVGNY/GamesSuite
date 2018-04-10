@@ -73,7 +73,6 @@ export class RacingComponent implements AfterViewInit, OnInit {
         this.createSounds();
         this.update();
     }
-    oldIndex: number = 0;
     private update(): void {
         requestAnimationFrame(() => {
             const timeSinceLastFrame: number = Date.now() - this._lastDate;
@@ -85,10 +84,6 @@ export class RacingComponent implements AfterViewInit, OnInit {
                 }
             }
             this._trackingManager.updateTrackPortionIndex();
-            if (this.oldIndex !== this._playerCar.trackPortionIndex) {
-                console.log(this._playerCar.trackPortionIndex);
-            }
-            this.oldIndex = this._cars[0].trackPortionIndex;
             this._collisionManagerService.update(this._cars);
             if (this._collisionManagerService.shouldPlaySound) {
                 this._soundService.play(this._soundService.collisionSound);
