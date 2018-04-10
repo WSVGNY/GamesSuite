@@ -24,6 +24,7 @@ import { CameraManagerService } from "./racing/cameras/camera-manager.service";
 import { BestTimesComponent } from "./racing/scoreboard/best-times/best-times.component";
 import { InputTimeComponent } from "./racing/scoreboard/input-time/input-time.component";
 import { HighscoreService } from "./racing/scoreboard/highscore.service";
+import { EndGameTableComponent } from './racing/scoreboard/end-game-table/end-game-table.component';
 
 @NgModule({
     declarations: [
@@ -35,7 +36,8 @@ import { HighscoreService } from "./racing/scoreboard/highscore.service";
         ChooseTrackComponent,
         ConfigurationComponent,
         BestTimesComponent,
-        InputTimeComponent
+        InputTimeComponent,
+        EndGameTableComponent
     ],
     imports: [
         BrowserModule,
