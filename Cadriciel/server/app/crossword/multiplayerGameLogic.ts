@@ -1,7 +1,6 @@
 import { MultiplayerCrosswordGame } from "../../../common/crossword/multiplayerCrosswordGame";
 import { Difficulty } from "../../../common/crossword/difficulty";
 import { BASE_ROOM_NAME, FIRST_PLAYER_COLOR, SECOND_PLAYER_COLOR } from "./configuration";
-import { SocketEvents } from "../../../common/communication/socketEvents";
 
 export class MultiplayerGameLogic {
     private static _numberOfRoom: number = 0;
@@ -73,7 +72,7 @@ export class MultiplayerGameLogic {
         }
     }
 
-    public handleRestartGameWithSameConfig(roomName: string): SocketEvents {
+    public handleRestartGameWithSameConfig(roomName: string): boolean {
         const gameIndex: number = this.findGameIndexWithRoom(roomName);
         if (gameIndex >= 0) {
             return this.updateRestartCounter(gameIndex);
@@ -82,13 +81,13 @@ export class MultiplayerGameLogic {
         }
     }
 
-    private updateRestartCounter(gameIndex: number): SocketEvents {
+    private updateRestartCounter(gameIndex: number): boolean {
         const game: MultiplayerCrosswordGame = this.games[gameIndex];
         game.restartCounter++;
         if (game.restartCounter < MultiplayerCrosswordGame.MAX_PLAYER_NUMBER) {
-            return undefined;
+            return false;
         } else {
-            return SocketEvents.ReinitializeGame;
+            return true;
         }
     }
 
@@ -102,15 +101,21 @@ export class MultiplayerGameLogic {
         return -1;
     }
 
-    public restartGame(game: MultiplayerCrosswordGame): void {
-        game.restartCounter = 0;
+    public tryRestartGame(game: MultiplayerCrosswordGame): boolean {
+        if (this.shouldRestartGame(game)) {
+            game.restartCounter = 0;
+
+            return true;
+        }
+
+        return false;
     }
 
     public shouldStartGame(game: MultiplayerCrosswordGame): boolean {
         return game.isFull();
     }
 
-    public shouldRestartGame(game: MultiplayerCrosswordGame): boolean {
+    private shouldRestartGame(game: MultiplayerCrosswordGame): boolean {
         return game.restartCounter >= MultiplayerCrosswordGame.MAX_PLAYER_NUMBER;
     }
 

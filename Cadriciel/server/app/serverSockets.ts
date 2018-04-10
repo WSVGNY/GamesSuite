@@ -151,9 +151,8 @@ export class ServerSockets {
             console.log("restart game with same config event");
             const socketRoom: string = this.findSocketRoomNameByID(socket.id);
             try {
-                const event: SocketEvents = this._gameLogic.handleRestartGameWithSameConfig(socketRoom);
-                if (event === SocketEvents.ReinitializeGame) {
-                    socket.broadcast.to(this.findSocketRoomNameByID(socket.id)).emit(event);
+                if (this._gameLogic.handleRestartGameWithSameConfig(socketRoom)) {
+                    socket.broadcast.to(this.findSocketRoomNameByID(socket.id)).emit(SocketEvents.ReinitializeGame);
                 }
             } catch (error) {
                 this.handleError(error, socket);
@@ -164,8 +163,7 @@ export class ServerSockets {
 
     private tryRestartGame(room: string): void {
         const game: MultiplayerCrosswordGame = this._gameLogic.getCurrentGame(room);
-        if (this._gameLogic.shouldRestartGame(game)) {
-            this._gameLogic.restartGame(game);
+        if (this._gameLogic.tryRestartGame(game)) {
             this.startGame(game, SocketEvents.RestartGame);
         }
     }
