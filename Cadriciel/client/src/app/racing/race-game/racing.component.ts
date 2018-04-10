@@ -14,6 +14,8 @@ import { AI_CARS_QUANTITY, MINIMUM_CAR_DISTANCE } from "../constants";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { CollisionManagerService } from "../collision-manager/collision-manager.service";
 import { CameraManagerService } from "../cameras/camera-manager.service";
+import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
+import { Vector3 } from "three";
 
 enum State {
     START_ANIMATION = 1,
@@ -119,7 +121,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
     private updateRacing(elapsedTime: number, timeSinceLastFrame: number): void {
         this.updateCars(timeSinceLastFrame);
-        this._collisionManagerService.update(this._cars);
+        // this._collisionManagerService.update(this._cars);
         if (this._collisionManagerService.shouldPlaySound) {
             this._soundService.play(this._soundService.collisionSound);
             this._collisionManagerService.shouldPlaySound = false;
@@ -134,7 +136,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
         for (let i: number = 0; i < AI_CARS_QUANTITY + 1; ++i) {
             this._cars[i].update(timeSinceLastFrame);
             if (this._cars[i].isAI) {
-                this._aiCarService.update(this._cars[i], this._carDebugs[i]);
+                // this._aiCarService.update(this._cars[i], this._carDebugs[i]);
             }
         }
     }
@@ -168,10 +170,17 @@ export class RacingComponent implements AfterViewInit, OnInit {
         this._soundService.createCollisionSound(this._playerCar);
     }
 
-    public getTrack(): void {
-        this._trackService.getTrackFromId(this._route.snapshot.paramMap.get("id"))
-            .subscribe(async (trackFromServer: Track) => {
-                this._chosenTrack = Track.createFromJSON(JSON.stringify(trackFromServer));
+    public async getTrack(): Promise<void> {
+        // this._trackService.getTrackFromId(this._route.snapshot.paramMap.get("id"))
+        //     .subscribe(async (trackFromServer: Track) => {
+                // this._chosenTrack = Track.createFromJSON(JSON.stringify(trackFromServer));
+                const vertices: CommonCoordinate3D[] = [];
+                vertices.push(new Vector3(0, 0, 0));
+                vertices.push(new Vector3(100, 0, 0));
+                vertices.push(new Vector3(100, 0, 100));
+                vertices.push(new Vector3(0, 0, 100));
+
+                this._chosenTrack = new Track("mock", false, "", "", 0, [], TrackType.Default, vertices);
                 this.initializeCars(this._chosenTrack.type);
                 this._gameScene.loadTrack(this._chosenTrack);
                 await this._gameScene.loadCars(this._cars, this._carDebugs, this._cameraManager.currentCamera, this._chosenTrack.type);
@@ -182,7 +191,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
                 this.bindKeys();
                 this._cameraManager.initializeSpectatingCameraPosition(this._playerCar.currentPosition, this._playerCar.direction);
                 this.startGameLoop();
-            });
+            // });
     }
 
     private bindKeys(): void {
