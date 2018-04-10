@@ -31,7 +31,7 @@ export class CarTrackingManagerService {
     }
 
     private carPassedDetectionSphere (car: Car ): boolean {
-        for (let i: number = 1; i < this._detectionSpheres.length; i++) {
+        for (let i: number = 0; i < this._detectionSpheres.length; i++) {
             if (this._detectionSpheres[i].containsPoint(car.currentPosition)) {
                 if (this._detectionSpheres[i].isDetected === false) {
                         this._detectionSpheres[i].isDetected = true;
@@ -58,10 +58,9 @@ export class CarTrackingManagerService {
     public updateTrackPortionIndex(car: Car): void {
         if (this.carPassedDetectionSphere(car) === true) {
             if (car.trackPortionIndex + 1 >= this._trackVertices.length) {
-                if (this.carPassedFirstDetectionSphere(car)) {
-                    this.resetDetectionSpheres();
-                    car.trackPortionIndex = 0;
-                }
+                console.log("HELLO");
+                car.trackPortionIndex = 1;
+                this.resetDetectionSpheres();
             } else {
                 car.trackPortionIndex++;
             }
