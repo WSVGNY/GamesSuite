@@ -1,0 +1,18 @@
+<div id="view" *ngIf="readyToView()">
+  <table id="times">
+    <tr>
+      <th>Position</th>
+      <th>Driver</th>
+      <th>Car</th>
+      <th>Time</th>
+    </tr>
+    <tr *ngFor="let score of highscoreService.highscores">
+      <td id="position">{{score.position}}</td>
+      <td>{{score.name}}</td>
+      <td>{{score.car}}</td>
+      <td>{{getTime(score)}}</td>
+    </tr>
+  </table>
+  <a id="play" onClick="window.location.reload()">Play again</a>
+  <a id="back" href="/">Go back to menu</a>
+</div>
