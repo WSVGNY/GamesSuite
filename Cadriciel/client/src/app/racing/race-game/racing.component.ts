@@ -183,7 +183,6 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private async initializeGameFromTrack(track: Track): Promise<void> {
         this.initializeCars(this._chosenTrack.type);
         this._collisionManagerService.track = this._gameScene.loadTrack(this._chosenTrack);
-        this._gameScene.loadTrack(this._chosenTrack);
         await this._gameScene.loadCars(this._cars, this._carDebugs, this._cameraManager.currentCamera, this._chosenTrack.type);
         await this._aiCarService.initialize(this._chosenTrack.vertices, Difficulty.Medium).then().catch((err) => console.error(err));
         this.bindKeys();
