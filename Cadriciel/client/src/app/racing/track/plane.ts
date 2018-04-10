@@ -42,4 +42,8 @@ export class WallPlane extends Plane {
 
         return projectedPoint;
     }
+
+    public get directorVector(): Vector3 {
+        return this.wallLimits[1].clone().sub(this.wallLimits[0]);
+    }
 }

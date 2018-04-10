@@ -7,7 +7,7 @@ import { TrackPoint } from "./trackPoint";
 import { HALF_TRACK_WIDTH, WALL_DISTANCE_TO_TRACK, WALL_WIDTH, WALL_TEXTURE_PATH, WALL_TEXTURE_FACTOR } from "../constants";
 
 export class WallMesh extends Mesh {
-    private readonly HEIGHT: number = 2;
+    private readonly HEIGHT: number = 0.5;
     private readonly EXTRUDE_SETTINGS: Object = {
         steps: 1,
         amount: -this.HEIGHT,
