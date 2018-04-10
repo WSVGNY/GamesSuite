@@ -1,16 +1,16 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { EndGameTableComponent } from './end-game-table.component';
+import { EndGameTableComponent } from "./end-game-table.component";
 
-describe('EndGameTableComponent', () => {
+describe("EndGameTableComponent", () => {
   let component: EndGameTableComponent;
   let fixture: ComponentFixture<EndGameTableComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EndGameTableComponent ]
+      declarations: [EndGameTableComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
@@ -19,7 +19,7 @@ describe('EndGameTableComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });
