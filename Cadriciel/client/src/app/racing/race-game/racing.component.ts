@@ -15,6 +15,7 @@ import { TrackType } from "../../../../../common/racing/trackType";
 import { CollisionManagerService } from "../collision-manager/collision-manager.service";
 import { CameraManagerService } from "../cameras/camera-manager.service";
 import { Vector3 } from "three";
+import { CarTrackingManagerService } from "../carTracking-manager/car-tracking-manager.service";
 
 enum State {
     START_ANIMATION = 1,
@@ -26,6 +27,7 @@ enum State {
 const THREE_SECONDS: number = 3000;
 const TWO_SECONDS: number = 2000;
 const ONE_SECOND: number = 1000;
+const MS_TO_SEC: number = 100;
 
 
 @Component({
@@ -58,7 +60,8 @@ export class RacingComponent implements AfterViewInit, OnInit {
         private _aiCarService: AICarService,
         private _collisionManagerService: CollisionManagerService,
         private _soundService: SoundManagerService,
-        private _cameraManager: CameraManagerService
+        private _cameraManager: CameraManagerService,
+        private _trackingManager: CarTrackingManagerService
     ) {
         this._cars = [];
         this._carDebugs = [];
@@ -85,6 +88,8 @@ export class RacingComponent implements AfterViewInit, OnInit {
     }
 
     public startGameLoop(): void {
+        this._trackingManager.init(this._chosenTrack.vertices, this._playerCar);
+        this._lastDate = Date.now();
         this.createSounds();
         this._lastDate = Date.now();
         this._startDate = Date.now();
@@ -122,11 +127,11 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private updateRacing(elapsedTime: number, timeSinceLastFrame: number): void {
         this.updateCars(timeSinceLastFrame);
         this._collisionManagerService.update(this._cars);
+        this._trackingManager.update();
         if (this._collisionManagerService.shouldPlaySound) {
             this._soundService.play(this._soundService.collisionSound);
             this._collisionManagerService.shouldPlaySound = false;
         }
-        // this._renderService.render(this._gameScene, this._cameraManager.currentCamera);
         this._soundService.setAccelerationSound(this._playerCar);
         this._cameraManager.updateCameraPositions(this._playerCar);
         if (elapsedTime > 5000) {
@@ -164,7 +169,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
             this._lastDate = Date.now();
             switch (this._currentState) {
                 case State.START_ANIMATION:
-                    this.updateStartingAnimation(elapsedTime / 100);
+                    this.updateStartingAnimation(elapsedTime / MS_TO_SEC);
                     break;
                 case State.COUNTDOWN:
                     this.updateCountdown(elapsedTime);
