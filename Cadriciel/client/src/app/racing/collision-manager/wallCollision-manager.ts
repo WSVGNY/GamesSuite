@@ -23,8 +23,7 @@ export class WallCollisionManager {
             car.hitbox.boundingSpheres.forEach((sphere: Sphere) => {
                 if (this.isSphereIntersectingWallPlane(sphere, plane)) {
                     this.moveCarAwayFromWall(car, sphere, plane, true);
-                    // car.steerLeft();
-                    car.speed = car.speed.multiplyScalar(0.99);
+                    car.speed = car.speed.multiplyScalar(0.985);
                 }
             });
         });
@@ -35,9 +34,7 @@ export class WallCollisionManager {
             car.hitbox.boundingSpheres.forEach((sphere: Sphere) => {
                 if (this.isSphereIntersectingWallPlane(sphere, plane)) {
                     this.moveCarAwayFromWall(car, sphere, plane, false);
-                    // car.steerRight();
-                    car.speed = car.speed.multiplyScalar(0.99);
-                    // this.applyResultingForceOnCar(car, plane);
+                    car.speed = car.speed.multiplyScalar(0.985);
                 }
             });
         });
@@ -65,41 +62,6 @@ export class WallCollisionManager {
             return vectorFromCenterToWall.clone().cross(plane.directorVector).y > 0;
         }
     }
-
-    // private static applyResultingForceOnCar(car: Car, plane: WallPlane): void {
-    //     const resultingForce: Vector3 = this.calculateResultingForce(car, plane);
-    //     car.speed = this.findResultingSpeed(car.direction.clone(), resultingForce);
-    // }
-
-    // private static findResultingSpeed(carDirection: Vector3, force: Vector3): Vector3 {
-    //     const resultingSpeed: Vector3 = new Vector3(0, 0, 0);
-    //     resultingSpeed.x += this.computeSpeedXComponent(force, carDirection);
-    //     resultingSpeed.z += this.computeSpeedZComponent(force, carDirection);
-
-    //     return resultingSpeed;
-    // }
-
-    // private static computeSpeedXComponent(force: Vector3, carDirection: Vector3): number {
-    //     const sign: number = (force.clone().cross(carDirection).y < 0) ? -1 : 1;
-
-    //     return force.clone().projectOnVector(this.findOrthogonalVector(carDirection)).length() * sign;
-    // }
-
-    // private static computeSpeedZComponent(force: Vector3, carDirection: Vector3): number {
-    //     const sign: number = (force.clone().dot(carDirection) > 0) ? -1 : 1;
-
-    //     return force.clone().projectOnVector(carDirection).length() * sign;
-    // }
-
-    // private static calculateResultingForce(car: Car, plane: WallPlane): Vector3 {
-    //     const vectorFromCarToWall: Vector3 = plane.projectPoint(car.currentPosition).sub(car.currentPosition);
-
-    //     return car.speed.clone().projectOnVector(this.findOrthogonalVector(vectorFromCarToWall));
-    // }
-
-    // private static findOrthogonalVector(vector: Vector3): Vector3 {
-    //     return new Vector3(vector.z, 0, - vector.x);
-    // }
 
     private static isSphereIntersectingWallPlane(sphere: Sphere, plane: WallPlane): boolean {
         if (!sphere.intersectsPlane(plane)) {
