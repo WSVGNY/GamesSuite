@@ -66,14 +66,17 @@ export class GameScene extends AbstractScene {
         this.setTimeOfDay(cars, trackType);
     }
 
-    public createStartingLine(startingLinePosition: Vector3, secondStartingLinePoint: Vector3): void {
+    public createStartingLine(): void {
         const geometry: PlaneGeometry = new PlaneGeometry(START_LINE_WEIGHT, START_LINE_WIDTH);
         const texture: MeshBasicMaterial = new MeshBasicMaterial({ side: DoubleSide,
                                                                    map: this.loadRepeatingTexture(PATH_TO_STATRINGLINE, 1) });
         const startingLine: Mesh = new Mesh( geometry, texture );
-        const startingLineVector: Vector3 = secondStartingLinePoint.clone().sub(startingLinePosition).normalize();
-        const startingLenght: number = secondStartingLinePoint.clone().sub(startingLinePosition).length() / 2;
-        const position: Vector3 = startingLinePosition.clone().add(startingLineVector.clone().multiplyScalar(startingLenght));
+        const startingLineVector: Vector3 = this._trackMesh.trackPoints.points[1].coordinate.clone().
+                                                sub(this._trackMesh.trackPoints.points[0].coordinate).normalize();
+        const startingLenght: number = this._trackMesh.trackPoints.points[1].coordinate.clone().
+                                            sub(this._trackMesh.trackPoints.points[0].coordinate).length() / 2;
+        const position: Vector3 = this._trackMesh.trackPoints.points[0].coordinate.clone().
+                                        add(startingLineVector.clone().multiplyScalar(startingLenght));
         startingLine.position.set(position.x, START_LINE_HEIGHT, position.z);
         startingLine.rotateZ(Math.PI / 2);
         startingLine.setRotationFromAxisAngle(new Vector3(0, 1, 0), this.findFirstTrackSegmentAngle());
@@ -88,7 +91,7 @@ export class GameScene extends AbstractScene {
         }
     }
 
-    private async placeCarOnStartingGrid(car: Car, index: number): Promise<void> {;
+    private async placeCarOnStartingGrid(car: Car, index: number): Promise<void> {
         const offset: Vector3 = new Vector3(0, 0, 0);
         offset.x = (index < 2) ? -LATHERAL_OFFSET : LATHERAL_OFFSET;
         offset.z = (index % 2 === 0) ? -VERTICAL_OFFSET : VERTICAL_OFFSET;
