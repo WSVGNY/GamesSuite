@@ -14,7 +14,7 @@ export class PreviewScene extends AbstractScene {
     private _currentTrack: Track;
     private _trackType: TrackType;
     private _track: Mesh;
-    private _rotatingPreview: Mesh;
+    private _rotatingPreview: TrackMesh;
     private _group: Group;
 
     public constructor() {
@@ -38,7 +38,7 @@ export class PreviewScene extends AbstractScene {
         if (this._track === undefined || this._currentTrack !== track) {
             this._currentTrack = track;
             this._trackType = track.type;
-            this._track = this.createTrackMesh(track);
+            this._track = new TrackMesh(track, this._roadTexture);
             this._group.remove(this._track);
             this._group.remove(this._rotatingPreview);
             this.loadRotatingPreview(track);
@@ -47,15 +47,12 @@ export class PreviewScene extends AbstractScene {
 
     public loadRotatingPreview(track: Track): void {
         this._group.remove(this._rotatingPreview);
-        this._rotatingPreview = this.createTrackMesh(track);
+        this._rotatingPreview = new TrackMesh(track, this._roadTexture);
         this._rotatingPreview.scale.set(SCALE_FACTOR, SCALE_FACTOR, SCALE_FACTOR);
         this._rotatingPreview.position.y = 1;
         this._rotatingPreview.geometry.center().copy(new Vector3(0, 0, 0));
+        this._rotatingPreview.removeWalls();
         this._group.add(this._rotatingPreview);
-    }
-
-    public createTrackMesh(track: Track): Mesh {
-        return new TrackMesh(track, this._roadTexture);
     }
 
     public set isDay(isDay: boolean) {
