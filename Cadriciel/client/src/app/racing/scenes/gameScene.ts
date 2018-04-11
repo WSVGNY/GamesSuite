@@ -66,12 +66,14 @@ export class GameScene extends AbstractScene {
         this.setTimeOfDay(cars, trackType);
     }
 
-    public createStartingLine(startingLinePosition: Vector3): void {
+    public createStartingLine(startingLinePosition: Vector3, secondStartingLinePoint: Vector3): void {
         const geometry: PlaneGeometry = new PlaneGeometry(20, 3);
         const texture: MeshBasicMaterial = new MeshBasicMaterial({ side: DoubleSide,
                                                                    map: this.loadRepeatingTexture(PATH_TO_STATRINGLINE, 1) });
         const startingLine: Mesh = new Mesh( geometry, texture );
-        startingLine.position.set(startingLinePosition.x, 0.001, startingLinePosition.z);
+        const startingLineVector: Vector3 = secondStartingLinePoint.clone().sub(startingLinePosition).normalize();
+        const position: Vector3 = startingLinePosition.clone().add(startingLineVector.clone().multiplyScalar(20));
+        startingLine.position.set(position.x, 0.001, position.z);
         startingLine.rotateZ(Math.PI / 2);
         startingLine.setRotationFromAxisAngle(new Vector3(0, 1, 0), this.findFirstTrackSegmentAngle());
         startingLine.rotateX(Math.PI / 2);

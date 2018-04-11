@@ -94,7 +94,8 @@ export class RacingComponent implements AfterViewInit, OnInit {
         this._startDate = Date.now();
         this._countDownOnScreenValue = "";
         this._cameraManager.changeToSpectatingCamera();
-        this._gameScene.createStartingLine(new Vector3(this._chosenTrack.vertices[0].x, 0, this._chosenTrack.vertices[0].z));
+        this._gameScene.createStartingLine(new Vector3(this._chosenTrack.vertices[0].x, 0, this._chosenTrack.vertices[0].z),
+                                           new Vector3(this._chosenTrack.vertices[1].x, 0, this._chosenTrack.vertices[1].z));
         this.update();
     }
 
