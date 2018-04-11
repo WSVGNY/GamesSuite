@@ -2,7 +2,6 @@ import { AfterViewInit, Component, ElementRef, ViewChild, HostListener, OnInit }
 import { Car } from "../car/car";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { Track } from "../../../../../common/racing/track";
-import { TrackService } from "../track-service/track.service";
 import { ActivatedRoute } from "@angular/router";
 import { GameScene } from "../scenes/gameScene";
 import { AICarService } from "../artificial-intelligence/ai-car.service";
@@ -15,6 +14,7 @@ import { TrackType } from "../../../../../common/racing/trackType";
 import { CollisionManagerService } from "../collision-manager/collision-manager.service";
 import { CameraManagerService } from "../cameras/camera-manager.service";
 import { CarTrackingManagerService } from "../carTracking-manager/car-tracking-manager.service";
+import { TrackService } from "../track/track-service/track.service";
 
 enum State {
     START_ANIMATION = 1,
