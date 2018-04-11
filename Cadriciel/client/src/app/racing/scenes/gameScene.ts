@@ -88,12 +88,7 @@ export class GameScene extends AbstractScene {
         }
     }
 
-    private async placeCarOnStartingGrid(car: Car, index: number): Promise<void> {
-        let startPos: Vector3 = new Vector3(
-            this._trackMesh.trackPoints.first.coordinate.x,
-            this._trackMesh.trackPoints.first.coordinate.y,
-            this._trackMesh.trackPoints.first.coordinate.z
-        );
+    private async placeCarOnStartingGrid(car: Car, index: number): Promise<void> {;
         const offset: Vector3 = new Vector3(0, 0, 0);
         offset.x = (index < 2) ? -LATHERAL_OFFSET : LATHERAL_OFFSET;
         offset.z = (index % 2 === 0) ? -VERTICAL_OFFSET : VERTICAL_OFFSET;
@@ -105,9 +100,8 @@ export class GameScene extends AbstractScene {
         startingVector.normalize();
         const position: Vector3 = this._trackMesh.trackPoints.points[0].coordinate.clone().
                                     add(startingVector.clone().multiplyScalar(startingLenght));
-        startPos = position;
-        startPos.add(offset);
-        await car.init(startPos, this.findFirstTrackSegmentAngle());
+        position.add(offset);
+        await car.init(position, this.findFirstTrackSegmentAngle());
     }
 
     private setTimeOfDay(cars: Car[], trackType: TrackType): void {
