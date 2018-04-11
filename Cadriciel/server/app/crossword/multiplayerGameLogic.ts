@@ -21,12 +21,10 @@ export class MultiplayerGameLogic {
         return this._games.length;
     }
 
-    // tslint:disable:no-console
     public deleteGame(game: MultiplayerCrosswordGame): void {
         const index: number = this._games.indexOf(game, 0);
         if (index > -1) {
             this._games.splice(index, 1);
-            console.log("Deleted game of room name: " + game.roomName);
         } else {
             throw ReferenceError("Unable to find room");
         }
@@ -39,17 +37,13 @@ export class MultiplayerGameLogic {
 
     private createRoom(difficulty: Difficulty): void {
         this._games.push(new MultiplayerCrosswordGame(BASE_ROOM_NAME + MultiplayerGameLogic._numberOfRoom++, difficulty));
-        console.log("Room name: " + this._games[this.numberOfGames - 1].roomName + " of difficuly: " + difficulty);
     }
 
     public async startGame(game: MultiplayerCrosswordGame): Promise<MultiplayerCrosswordGame> {
-        console.log("Game is starting from server");
         await this.gridCreateQuery(game);
 
         return game;
     }
-
-    // tslint:enable:no-console
 
     public getListOfEmptyRooms(): MultiplayerCrosswordGame[] {
         const emptyRooms: MultiplayerCrosswordGame[] = [];
@@ -93,11 +87,8 @@ export class MultiplayerGameLogic {
     private updateRestartCounter(gameIndex: number): boolean {
         const game: MultiplayerCrosswordGame = this.games[gameIndex];
         game.restartCounter++;
-        if (game.restartCounter < MultiplayerCrosswordGame.MAX_PLAYER_NUMBER) {
-            return false;
-        } else {
-            return true;
-        }
+
+        return game.restartCounter >= MultiplayerCrosswordGame.MAX_PLAYER_NUMBER;
     }
 
     private findGameIndexWithRoom(room: string): number {

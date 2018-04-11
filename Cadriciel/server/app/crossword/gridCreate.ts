@@ -9,7 +9,7 @@ import { Word } from "./word";
 import { Coordinate2D } from "./coordinate2D";
 import { Char } from "./char";
 
-const DEBUG: boolean = false;
+const DEBUG: boolean = true;
 @injectable()
 export class GridCreate {
 
