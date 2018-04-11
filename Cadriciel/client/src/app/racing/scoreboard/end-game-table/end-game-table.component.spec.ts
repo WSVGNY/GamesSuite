@@ -10,7 +10,9 @@ describe("EndGameTableComponent", () => {
     TestBed.configureTestingModule({
       declarations: [EndGameTableComponent]
     })
-      .compileComponents();
+      .compileComponents()
+      .then()
+      .catch((e: Error) => console.error(e.message));
   }));
 
   beforeEach(() => {

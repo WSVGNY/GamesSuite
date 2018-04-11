@@ -10,7 +10,9 @@ describe("InputTimeComponent", () => {
     TestBed.configureTestingModule({
       declarations: [InputTimeComponent]
     })
-      .compileComponents();
+      .compileComponents()
+      .then()
+      .catch((e: Error) => console.error(e.message));
   }));
 
   beforeEach(() => {
