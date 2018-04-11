@@ -1,15 +1,17 @@
 #times {
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
     font-size: 150%;
-    border-collapse: collapse;
     width:800px;
     height: 500px;
     text-align: center;
-    border: 1px solid rgb(17, 17, 17);
 }
 
-#times td, #customers th {
-    border: 1px solid rgb(17, 17, 17);
+#times td {
+    border: 1px solid rgb(0, 0, 0);
+}
+
+th {
+    border: 1px solid rgb(61, 61, 61);
 }
 
 #times tr:nth-child(even){background: linear-gradient(#9c9c9cc5,#3d3d3dc5);}
