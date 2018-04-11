@@ -27,8 +27,8 @@ enum State {
 const THREE_SECONDS: number = 3000;
 const TWO_SECONDS: number = 2000;
 const ONE_SECOND: number = 1000;
-const MS_TO_SEC: number = 100;
-
+const MS_TO_SEC: number = 0.001;
+const AVERAGE_CAR_SPEED: number = 45;
 
 @Component({
     moduleId: module.id,
@@ -143,12 +143,12 @@ export class RacingComponent implements AfterViewInit, OnInit {
             if (this._cars[i].isAI) {
                 this._aiCarService.update(this._cars[i], this._carDebugs[i]);
                 if (this._trackingManager.update(this._cars[i].currentPosition, this._cars[i].raceProgressTracker)) {
-                    this._raceTimes.push((Date.now() - this._startDate) / 1000);
+                    this._raceTimes.push((Date.now() - this._startDate)  * MS_TO_SEC);
                     this._cars[i].raceProgressTracker.isTimeLogged = true;
                 }
             } else {
                 if (this._trackingManager.update(this._cars[i].currentPosition, this._cars[i].raceProgressTracker)) {
-                    this._raceTimes.push((Date.now() - this._startDate) / 1000);
+                    this._raceTimes.push((Date.now() - this._startDate) * MS_TO_SEC);
                     this._cars[i].raceProgressTracker.isTimeLogged = true;
                     this._currentState = State.END;
                 }
@@ -158,7 +158,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
     private endGame(elapsedTime: number): void {
         for (const car of this._cars) {
-            if (!car.raceProgressTracker.isRaceCompleted) {
+            if (!car.raceProgressTracker.isRaceCompleted && !car.raceProgressTracker.isTimeLogged) {
                 this._raceTimes.push(
                     this.simulateRaceTime(
                         car.raceProgressTracker.currentSegmentIndex,
@@ -189,7 +189,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
             if ((i + 1) !== this._chosenTrack.vertices.length) {
                 const currentVertice: Vector3 = new Vector3(this._chosenTrack.vertices[i].x, 0, this._chosenTrack.vertices[i].z);
                 const nextVertice: Vector3 = new Vector3(this._chosenTrack.vertices[i + 1].x, 0, this._chosenTrack.vertices[i + 1].z);
-                simulatedTime += (currentVertice.distanceTo(nextVertice) / 45);
+                simulatedTime += (currentVertice.distanceTo(nextVertice) / AVERAGE_CAR_SPEED);
             }
         }
 
@@ -203,7 +203,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
                 if ((i + 1) !== this._chosenTrack.vertices.length) {
                     const currentVertice: Vector3 = new Vector3(this._chosenTrack.vertices[i].x, 0, this._chosenTrack.vertices[i].z);
                     const nextVertice: Vector3 = new Vector3(this._chosenTrack.vertices[i + 1].x, 0, this._chosenTrack.vertices[i + 1].z);
-                    simulatedTime += (currentVertice.distanceTo(nextVertice) / 45);
+                    simulatedTime += (currentVertice.distanceTo(nextVertice) / AVERAGE_CAR_SPEED);
                 }
             }
         }
@@ -218,7 +218,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
                     this._chosenTrack.vertices[currentSegmentIndex].z
         );
 
-        return (position.distanceTo(nextTrackVertex) / 45);
+        return (position.distanceTo(nextTrackVertex) / AVERAGE_CAR_SPEED);
     }
 
     private update(): void {
@@ -228,7 +228,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
             this._lastDate = Date.now();
             switch (this._currentState) {
                 case State.START_ANIMATION:
-                    this.updateStartingAnimation(elapsedTime / MS_TO_SEC);
+                    this.updateStartingAnimation(elapsedTime);
                     break;
                 case State.COUNTDOWN:
                     this.updateCountdown(elapsedTime);
@@ -237,9 +237,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
                     this.updateRacing(elapsedTime, timeSinceLastFrame);
                     break;
                 case State.END:
-                    this.endGame(elapsedTime / 1000);
-                    console.log(this._raceTimes);
-                    alert("OVER!");
+                    this.endGame(elapsedTime);
                     break;
                 default:
             }
