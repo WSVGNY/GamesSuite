@@ -3,8 +3,7 @@ import { Group, Vector3, Geometry, Line, Camera, LineBasicMaterial, PlaneGeometr
 import { TrackType } from "../../../../../common/racing/trackType";
 import { TrackLights } from "../render-service/light";
 import { CHANGE_CAMERA_KEYCODE, YELLOW, DAY_KEYCODE, DEBUG_KEYCODE,
-    ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR, PATH_TO_STATRINGLINE
-} from "../constants";
+    ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR, PATH_TO_STATRINGLINE, START_LINE_WEIGHT, START_LINE_HEIGHT } from "../constants";
 import { Car } from "../car/car";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
@@ -67,12 +66,13 @@ export class GameScene extends AbstractScene {
     }
 
     public createStartingLine(startingLinePosition: Vector3, secondStartingLinePoint: Vector3): void {
-        const geometry: PlaneGeometry = new PlaneGeometry(20, 3);
+        const geometry: PlaneGeometry = new PlaneGeometry(START_LINE_WEIGHT, START_LINE_HEIGHT);
         const texture: MeshBasicMaterial = new MeshBasicMaterial({ side: DoubleSide,
                                                                    map: this.loadRepeatingTexture(PATH_TO_STATRINGLINE, 1) });
         const startingLine: Mesh = new Mesh( geometry, texture );
         const startingLineVector: Vector3 = secondStartingLinePoint.clone().sub(startingLinePosition).normalize();
-        const position: Vector3 = startingLinePosition.clone().add(startingLineVector.clone().multiplyScalar(20));
+        const startingLenght: number = secondStartingLinePoint.clone().sub(startingLinePosition).length() / 2;
+        const position: Vector3 = startingLinePosition.clone().add(startingLineVector.clone().multiplyScalar(startingLenght));
         startingLine.position.set(position.x, 0.001, position.z);
         startingLine.rotateZ(Math.PI / 2);
         startingLine.setRotationFromAxisAngle(new Vector3(0, 1, 0), this.findFirstTrackSegmentAngle());
