@@ -51,6 +51,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
     protected _countDownOnScreenValue: string;
     protected _isCountDownOver: boolean;
     private _currentState: State;
+    private _raceTimes: number[];
 
     public constructor(
         private _renderService: RenderService,
@@ -65,6 +66,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
     ) {
         this._cars = [];
         this._carDebugs = [];
+        this._raceTimes = [];
         this._isCountDownOver = false;
         this._currentState = State.START_ANIMATION;
     }
@@ -133,13 +135,55 @@ export class RacingComponent implements AfterViewInit, OnInit {
         }
         this._soundService.setAccelerationSound(this._playerCar);
         this._cameraManager.updateCameraPositions(this._playerCar);
-        // if (elapsedTime > 5000) {
-        //     this._currentState = State.END;
-        //     alert(this.simulateRaceTime());
-        // }
     }
 
-    private simulateRaceTime(): number {
+    private updateCars(timeSinceLastFrame: number): void {
+        for (let i: number = 0; i < AI_CARS_QUANTITY + 1; ++i) {
+            this._cars[i].update(timeSinceLastFrame);
+            if (this._cars[i].isAI) {
+                this._aiCarService.update(this._cars[i], this._carDebugs[i]);
+                if (this._trackingManager.update(this._cars[i].currentPosition, this._cars[i].raceProgressTracker)) {
+                    this._raceTimes.push((Date.now() - this._startDate) / 1000);
+                    this._cars[i].raceProgressTracker.isTimeLogged = true;
+                }
+            } else {
+                if (this._trackingManager.update(this._cars[i].currentPosition, this._cars[i].raceProgressTracker)) {
+                    this._raceTimes.push((Date.now() - this._startDate) / 1000);
+                    this._cars[i].raceProgressTracker.isTimeLogged = true;
+                    this._currentState = State.END;
+                }
+            }
+        }
+    }
+
+    private endGame(elapsedTime: number): void {
+        for (const car of this._cars) {
+            if (!car.raceProgressTracker.isRaceCompleted) {
+                this._raceTimes.push(
+                    this.simulateRaceTime(
+                        car.raceProgressTracker.currentSegmentIndex,
+                        car.raceProgressTracker.segmentCounted,
+                        car.currentPosition
+                    ) + elapsedTime
+                );
+                car.raceProgressTracker.isTimeLogged = true;
+            }
+        }
+    }
+
+    private simulateRaceTime(currentSegmentIndex: number, segmentCounted: number, position: Vector3): number {
+        const lapSegmentAmount: number = this._chosenTrack.vertices.length;
+        const totalSegmentAmount: number = lapSegmentAmount * 3;
+        const segmentsToGo: number = totalSegmentAmount - segmentCounted;
+        const completeLapsToGo: number = Math.floor(segmentsToGo / lapSegmentAmount);
+
+        return this.simulateCompleteLapTime(completeLapsToGo) +
+               this.simulatePartialLapTime(currentSegmentIndex) +
+               this.simulatePartialSegmentTime(currentSegmentIndex, position);
+
+    }
+
+    private simulateCompleteLapTime(lapAmount: number): number {
         let simulatedTime: number = 0;
         for (let i: number = 0; i < this._chosenTrack.vertices.length; ++i) {
             if ((i + 1) !== this._chosenTrack.vertices.length) {
@@ -149,18 +193,32 @@ export class RacingComponent implements AfterViewInit, OnInit {
             }
         }
 
+        return simulatedTime * lapAmount;
+    }
+
+    private simulatePartialLapTime(currentSegmentIndex: number): number {
+        let simulatedTime: number = 0;
+        if (currentSegmentIndex !== 0) {
+            for (let i: number = currentSegmentIndex; i < this._chosenTrack.vertices.length; ++i) {
+                if ((i + 1) !== this._chosenTrack.vertices.length) {
+                    const currentVertice: Vector3 = new Vector3(this._chosenTrack.vertices[i].x, 0, this._chosenTrack.vertices[i].z);
+                    const nextVertice: Vector3 = new Vector3(this._chosenTrack.vertices[i + 1].x, 0, this._chosenTrack.vertices[i + 1].z);
+                    simulatedTime += (currentVertice.distanceTo(nextVertice) / 45);
+                }
+            }
+        }
+
         return simulatedTime;
     }
 
-    private 
+    private simulatePartialSegmentTime(currentSegmentIndex: number, position: Vector3): number {
+        const nextTrackVertex: Vector3 = new Vector3(
+                    this._chosenTrack.vertices[currentSegmentIndex].x,
+                    0,
+                    this._chosenTrack.vertices[currentSegmentIndex].z
+        );
 
-    private updateCars(timeSinceLastFrame: number): void {
-        for (let i: number = 0; i < AI_CARS_QUANTITY + 1; ++i) {
-            this._cars[i].update(timeSinceLastFrame);
-            if (this._cars[i].isAI) {
-                this._aiCarService.update(this._cars[i], this._carDebugs[i]);
-            }
-        }
+        return (position.distanceTo(nextTrackVertex) / 45);
     }
 
     private update(): void {
@@ -179,7 +237,9 @@ export class RacingComponent implements AfterViewInit, OnInit {
                     this.updateRacing(elapsedTime, timeSinceLastFrame);
                     break;
                 case State.END:
-                    alert(elapsedTime);
+                    this.endGame(elapsedTime / 1000);
+                    console.log(this._raceTimes);
+                    alert("OVER!");
                     break;
                 default:
             }
