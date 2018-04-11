@@ -88,7 +88,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
     }
 
     public startGameLoop(): void {
-        this._trackingManager.init(this._chosenTrack.vertices, this._playerCar);
+        this._trackingManager.init(this._chosenTrack.vertices);
         this._lastDate = Date.now();
         this.createSounds();
         this._lastDate = Date.now();
@@ -127,17 +127,16 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private updateRacing(elapsedTime: number, timeSinceLastFrame: number): void {
         this.updateCars(timeSinceLastFrame);
         this._collisionManagerService.update(this._cars);
-        this._trackingManager.update();
         if (this._collisionManagerService.shouldPlaySound) {
             this._soundService.play(this._soundService.collisionSound);
             this._collisionManagerService.shouldPlaySound = false;
         }
         this._soundService.setAccelerationSound(this._playerCar);
         this._cameraManager.updateCameraPositions(this._playerCar);
-        if (elapsedTime > 5000) {
-            this._currentState = State.END;
-            alert(this.simulateRaceTime());
-        }
+        // if (elapsedTime > 5000) {
+        //     this._currentState = State.END;
+        //     alert(this.simulateRaceTime());
+        // }
     }
 
     private simulateRaceTime(): number {
@@ -152,6 +151,8 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
         return simulatedTime;
     }
+
+    private 
 
     private updateCars(timeSinceLastFrame: number): void {
         for (let i: number = 0; i < AI_CARS_QUANTITY + 1; ++i) {
