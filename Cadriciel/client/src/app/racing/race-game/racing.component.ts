@@ -100,7 +100,6 @@ export class RacingComponent implements AfterViewInit, OnInit {
         this._cameraManager.updateCameraPositions(this._playerCar, elapsedTime);
         if (this._cameraManager.currentCamera.position.clone().distanceTo(this._playerCar.currentPosition) < MINIMUM_CAR_DISTANCE) {
             this._startDate = Date.now();
-            this._countDownOnScreenValue = "3";
             this._currentState = State.COUNTDOWN;
             this._cameraManager.changeToThirdPersonCamera();
         }
@@ -114,6 +113,8 @@ export class RacingComponent implements AfterViewInit, OnInit {
             this._countDownOnScreenValue = "1";
         } else if (elapsedTime > ONE_SECOND) {
             this._countDownOnScreenValue = "2";
+        } else if (elapsedTime <= ONE_SECOND) {
+            this._countDownOnScreenValue = "3";
         }
         if (this._isCountDownOver) {
             this._lastDate = Date.now();
