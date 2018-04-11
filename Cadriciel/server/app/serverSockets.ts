@@ -128,7 +128,7 @@ export class ServerSockets {
             console.log("Game is starting from server");
             this._gameLogic.startGame(game).then(() => {
                 this._io.to(game.roomName).emit(SocketEvents.StartGame, game);
-            });
+            }).catch((e: Error) => console.error(e.message));
         }
     }
 
@@ -160,7 +160,7 @@ export class ServerSockets {
             console.log("Game is restarting from server");
             this._gameLogic.startGame(game).then(() => {
                 this._io.to(game.roomName).emit(SocketEvents.RestartGame, game);
-            });
+            }).catch((e: Error) => console.error(e.message));
         }
     }
 
