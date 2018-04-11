@@ -2,13 +2,13 @@ import { Component, AfterViewInit, HostListener, ElementRef, ViewChild, Input, O
 import { ActivatedRoute } from "@angular/router";
 import { Location } from "@angular/common";
 import { Track } from "../../../../../common/racing/track";
-import { TrackService } from "../track-service/track.service";
 import { EditorCamera } from "../cameras/editorCamera";
 import { EditorScene } from "../scenes/editorScene";
 import { MouseEventHandlerService } from "../event-handlers/mouse-event-handler.service";
 import { Vector3 } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { RenderService } from "../render-service/render.service";
+import { TrackService } from "../track/track-service/track.service";
 
 const CAMERA_Z_POSITION: number = 480;
 const CAMERA_POSITION: Vector3 = new Vector3(0, 0, CAMERA_Z_POSITION);

@@ -245,8 +245,6 @@ describe("CrosswordComponent", () => {
         component.configuration.isTwoPlayerGame = true;
         component.configuration.configurationDone = true;
         component.isEndGame();
-        console.log(component.configuration.currentPlayer.score + component.configuration.otherPlayer.score);
-        console.log(component.configuration.grid.words.length);
         expect(component.isEndGame()).toEqual(true);
     });
 });

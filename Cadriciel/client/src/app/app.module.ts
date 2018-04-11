@@ -8,7 +8,6 @@ import { CrosswordComponent } from "./crossword/crossword.component";
 import { GridService } from "./crossword/grid.service";
 import { AdminComponent } from "./racing/admin/admin.component";
 import { RacingComponent } from "./racing/race-game/racing.component";
-import { TrackService } from "./racing/track-service/track.service";
 import { EditorComponent } from "./racing/editor/editor.component";
 import { MouseEventHandlerService } from "./racing/event-handlers/mouse-event-handler.service";
 import { ConfigurationComponent } from "./crossword/configuration/configuration.component";
@@ -28,6 +27,7 @@ import { HighscoreService } from "./racing/scoreboard/best-times/highscore.servi
 import { EndGameTableComponent } from "./racing/scoreboard/end-game-table/end-game-table.component";
 import { EndGameTableService } from "./racing/scoreboard/end-game-table/end-game-table.service";
 import { InputTimeService } from "./racing/scoreboard/input-time/input-time.service";
+import { TrackService } from "./racing/track/track-service/track.service";
 
 @NgModule({
     declarations: [

@@ -116,7 +116,7 @@ describe("Constraints Validator", () => {
         lineGeomerty5.vertices.push(new Vector3(100, 110, 0));
         const line5: Line = new Line(lineGeomerty5, SIMPLE_LINE_MATERIAL);
         const lines: Line[] = [line1, line2, line3, line4, line5];
-        const intersectionOK: boolean = ConstraintValidator.checkIntersection(lines, true);
+        const intersectionOK: boolean = ConstraintValidator.checkIntersection(lines, false);
         expect(intersectionOK).toEqual(false);
     });
 
@@ -139,7 +139,7 @@ describe("Constraints Validator", () => {
         lineGeomerty5.vertices.push(new Vector3(90, 90, 0));
         const line5: Line = new Line(lineGeomerty5, SIMPLE_LINE_MATERIAL);
         const lines: Line[] = [line1, line2, line3, line4, line5];
-        const intersectionOK: boolean = ConstraintValidator.checkIntersection(lines, true);
+        const intersectionOK: boolean = ConstraintValidator.checkIntersection(lines, false);
         expect(intersectionOK).toEqual(false);
     });
 

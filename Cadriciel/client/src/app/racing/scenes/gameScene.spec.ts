@@ -2,9 +2,9 @@ import { GameScene } from "./gameScene";
 import { Vector3, Geometry, Mesh, MeshPhongMaterial } from "three";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { TestBed } from "@angular/core/testing";
-import { TrackMesh } from "../track-service/track";
 import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
 import { Track } from "../../../../../common/racing/track";
+import { TrackMesh } from "../track/track";
 
 // tslint:disable:no-magic-numbers
 describe("Game Scene", () => {
@@ -56,8 +56,8 @@ describe("Game Scene", () => {
         ];
         const mockTrack: Track = new Track("");
         mockTrack.vertices = MOCK_TRACK;
-        gameScene["_trackShape"] = new TrackMesh(mockTrack, gameScene["_roadTexture"]);
-        gameScene["_group"].add(gameScene["_trackShape"]);
+        gameScene["_trackMesh"] = new TrackMesh(mockTrack, gameScene["_roadTexture"]);
+        gameScene["_group"].add(gameScene["_trackMesh"]);
         gameScene["addGround"]();
         const track: Mesh = gameScene.getObjectByName("track") as Mesh;
         const ground: Mesh = gameScene.getObjectByName("ground") as Mesh;

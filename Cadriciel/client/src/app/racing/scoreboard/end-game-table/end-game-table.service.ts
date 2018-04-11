@@ -8,7 +8,7 @@ export class EndGameTableService {
 
     public constructor() {
         this.scores = [];
-        this.showTable = true;
+        this.showTable = false;
     }
 
     public getPlayerScore(): CommonScore {

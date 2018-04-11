@@ -1,5 +1,5 @@
 import { Track } from "../../../../../common/racing/track";
-import { Shape, Mesh, MeshPhongMaterial, Path, BackSide, Texture, ShapeGeometry, Vector3 } from "three";
+import { Shape, Mesh, MeshPhongMaterial, Path, BackSide, Texture, ShapeGeometry, Vector3, Group } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { PI_OVER_2 } from "./../constants";
 import { WallMesh } from "./wall";
@@ -9,6 +9,7 @@ import { TrackPoint } from "./trackPoint";
 
 export class TrackMesh extends Mesh {
     private _trackPoints: TrackPointList;
+    private _walls: Group;
     private _interiorPlanes: WallPlane[];
     private _exteriorPlanes: WallPlane[];
 
@@ -17,14 +18,27 @@ export class TrackMesh extends Mesh {
         this._trackPoints = new TrackPointList(this._track.vertices);
         this._interiorPlanes = [];
         this._exteriorPlanes = [];
+        this._walls = new Group();
         this.createTrackMesh(texture);
         this.createWalls();
         this.createPlanes();
     }
 
     private createWalls(): void {
-        this.add(WallMesh.createInteriorWall(this._trackPoints));
-        this.add(WallMesh.createExteriorWall(this._trackPoints));
+        this._walls.add(WallMesh.createInteriorWall(this._trackPoints));
+        this._walls.add(WallMesh.createExteriorWall(this._trackPoints));
+        this.add(this._walls);
+    }
+
+    public removeWalls(): void {
+        this.remove(this._walls);
+    }
+
+    public centerGeometries(center: Vector3): void {
+        this.geometry.center().copy(center);
+        this._walls.children.forEach((child: WallMesh) => {
+            child.geometry.center().copy(center);
+        });
     }
 
     public set timesPlayed(timesPlayed: number) {
