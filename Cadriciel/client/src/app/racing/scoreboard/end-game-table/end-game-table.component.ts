@@ -3,7 +3,6 @@ import { EndGameTableService } from "./end-game-table.service";
 import { InputTimeService } from "../input-time/input-time.service";
 import { HighscoreService } from "../best-times/highscore.service";
 import { CommonScore } from "../../../../../../common/racing/commonScore";
-import { CarTrackingManagerService } from "../../carTracking-manager/car-tracking-manager.service";
 
 const HUNDREDTH_TO_MINUTES: number = 6000;
 const SECONDS_TO_MINUTES: number = 100;
@@ -20,8 +19,7 @@ export class EndGameTableComponent {
     public constructor(
         public endGameTableService: EndGameTableService,
         public inputTimeService: InputTimeService,
-        public highscoreService: HighscoreService,
-        public carTrackingManagerService: CarTrackingManagerService) {
+        public highscoreService: HighscoreService) {
         this.changeState = true;
     }
 
@@ -39,9 +37,9 @@ export class EndGameTableComponent {
     }
 
     public readyToView(): boolean {
-        if (this.carTrackingManagerService.isCompleted && this.changeState) {
-            this.endGameTableService.showTable = true;
-        }
+        // if (this.carTrackingManagerService.isCompleted && this.changeState) {
+        //     this.endGameTableService.showTable = true;
+        // }
 
         return this.endGameTableService.showTable;
     }

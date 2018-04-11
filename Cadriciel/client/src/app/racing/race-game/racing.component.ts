@@ -13,8 +13,10 @@ import { AI_CARS_QUANTITY, MINIMUM_CAR_DISTANCE } from "../constants";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { CollisionManagerService } from "../collision-manager/collision-manager.service";
 import { CameraManagerService } from "../cameras/camera-manager.service";
+import { Vector3 } from "three";
 import { CarTrackingManagerService } from "../carTracking-manager/car-tracking-manager.service";
 import { TrackService } from "../track/track-service/track.service";
+import { EndGameTableService } from "../scoreboard/end-game-table/end-game-table.service";
 
 enum State {
     START_ANIMATION = 1,
@@ -26,7 +28,8 @@ enum State {
 const THREE_SECONDS: number = 3000;
 const TWO_SECONDS: number = 2000;
 const ONE_SECOND: number = 1000;
-const MS_TO_SEC: number = 100;
+const MS_TO_SEC: number = 0.001;
+const AVERAGE_CAR_SPEED: number = 45;
 
 @Component({
     moduleId: module.id,
@@ -49,6 +52,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
     protected _countDownOnScreenValue: string;
     protected _isCountDownOver: boolean;
     private _currentState: State;
+    private _raceTimes: number[];
 
     public constructor(
         private _renderService: RenderService,
@@ -59,10 +63,12 @@ export class RacingComponent implements AfterViewInit, OnInit {
         private _collisionManagerService: CollisionManagerService,
         private _soundService: SoundManagerService,
         private _cameraManager: CameraManagerService,
-        private _trackingManager: CarTrackingManagerService
+        private _trackingManager: CarTrackingManagerService,
+        private _endGameTableService: EndGameTableService
     ) {
         this._cars = [];
         this._carDebugs = [];
+        this._raceTimes = [];
         this._isCountDownOver = false;
         this._currentState = State.START_ANIMATION;
     }
@@ -86,7 +92,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
     }
 
     public startGameLoop(): void {
-        this._trackingManager.init(this._chosenTrack.vertices, this._playerCar);
+        this._trackingManager.init(this._chosenTrack.vertices);
         this._lastDate = Date.now();
         this.createSounds();
         this._lastDate = Date.now();
@@ -120,20 +126,19 @@ export class RacingComponent implements AfterViewInit, OnInit {
         if (this._isCountDownOver) {
             this._lastDate = Date.now();
             this._currentState = State.RACING;
+            this._startDate = Date.now();
         }
     }
 
     private updateRacing(elapsedTime: number, timeSinceLastFrame: number): void {
         this.updateCars(timeSinceLastFrame);
         this._collisionManagerService.update(this._cars);
-        this._trackingManager.update();
         if (this._collisionManagerService.shouldPlaySound) {
             this._soundService.play(this._soundService.collisionSound);
             this._collisionManagerService.shouldPlaySound = false;
         }
         this._soundService.setAccelerationSound(this._playerCar);
         this._cameraManager.updateCameraPositions(this._playerCar);
-
     }
 
     private updateCars(timeSinceLastFrame: number): void {
@@ -141,8 +146,84 @@ export class RacingComponent implements AfterViewInit, OnInit {
             this._cars[i].update(timeSinceLastFrame);
             if (this._cars[i].isAI) {
                 this._aiCarService.update(this._cars[i], this._carDebugs[i]);
+                if (this._trackingManager.update(this._cars[i].currentPosition, this._cars[i].raceProgressTracker)) {
+                    this._raceTimes.push((Date.now() - this._startDate)  * MS_TO_SEC);
+                    this._cars[i].raceProgressTracker.isTimeLogged = true;
+                }
+            } else {
+                if (this._trackingManager.update(this._cars[i].currentPosition, this._cars[i].raceProgressTracker)) {
+                    this._raceTimes.push((Date.now() - this._startDate) * MS_TO_SEC);
+                    this._cars[i].raceProgressTracker.isTimeLogged = true;
+                    this._currentState = State.END;
+                }
             }
         }
+    }
+
+    private endGame(elapsedTime: number): void {
+        for (const car of this._cars) {
+            if (!car.raceProgressTracker.isRaceCompleted && !car.raceProgressTracker.isTimeLogged) {
+                this._raceTimes.push(
+                    this.simulateRaceTime(
+                        car.raceProgressTracker.currentSegmentIndex,
+                        car.raceProgressTracker.segmentCounted,
+                        car.currentPosition
+                    ) + elapsedTime
+                );
+                car.raceProgressTracker.isTimeLogged = true;
+            }
+        }
+        this._endGameTableService.showTable = true;
+    }
+
+    private simulateRaceTime(currentSegmentIndex: number, segmentCounted: number, position: Vector3): number {
+        const lapSegmentAmount: number = this._chosenTrack.vertices.length;
+        const totalSegmentAmount: number = lapSegmentAmount * 3;
+        const segmentsToGo: number = totalSegmentAmount - segmentCounted;
+        const completeLapsToGo: number = Math.floor(segmentsToGo / lapSegmentAmount);
+
+        return this.simulateCompleteLapTime(completeLapsToGo) +
+               this.simulatePartialLapTime(currentSegmentIndex) +
+               this.simulatePartialSegmentTime(currentSegmentIndex, position);
+
+    }
+
+    private simulateCompleteLapTime(lapAmount: number): number {
+        let simulatedTime: number = 0;
+        for (let i: number = 0; i < this._chosenTrack.vertices.length; ++i) {
+            if ((i + 1) !== this._chosenTrack.vertices.length) {
+                const currentVertice: Vector3 = new Vector3(this._chosenTrack.vertices[i].x, 0, this._chosenTrack.vertices[i].z);
+                const nextVertice: Vector3 = new Vector3(this._chosenTrack.vertices[i + 1].x, 0, this._chosenTrack.vertices[i + 1].z);
+                simulatedTime += (currentVertice.distanceTo(nextVertice) / AVERAGE_CAR_SPEED);
+            }
+        }
+
+        return simulatedTime * lapAmount;
+    }
+
+    private simulatePartialLapTime(currentSegmentIndex: number): number {
+        let simulatedTime: number = 0;
+        if (currentSegmentIndex !== 0) {
+            for (let i: number = currentSegmentIndex; i < this._chosenTrack.vertices.length; ++i) {
+                if ((i + 1) !== this._chosenTrack.vertices.length) {
+                    const currentVertice: Vector3 = new Vector3(this._chosenTrack.vertices[i].x, 0, this._chosenTrack.vertices[i].z);
+                    const nextVertice: Vector3 = new Vector3(this._chosenTrack.vertices[i + 1].x, 0, this._chosenTrack.vertices[i + 1].z);
+                    simulatedTime += (currentVertice.distanceTo(nextVertice) / AVERAGE_CAR_SPEED);
+                }
+            }
+        }
+
+        return simulatedTime;
+    }
+
+    private simulatePartialSegmentTime(currentSegmentIndex: number, position: Vector3): number {
+        const nextTrackVertex: Vector3 = new Vector3(
+                    this._chosenTrack.vertices[currentSegmentIndex].x,
+                    0,
+                    this._chosenTrack.vertices[currentSegmentIndex].z
+        );
+
+        return (position.distanceTo(nextTrackVertex) / AVERAGE_CAR_SPEED);
     }
 
     private update(): void {
@@ -152,13 +233,16 @@ export class RacingComponent implements AfterViewInit, OnInit {
             this._lastDate = Date.now();
             switch (this._currentState) {
                 case State.START_ANIMATION:
-                    this.updateStartingAnimation(elapsedTime / MS_TO_SEC);
+                    this.updateStartingAnimation(elapsedTime);
                     break;
                 case State.COUNTDOWN:
                     this.updateCountdown(elapsedTime);
                     break;
                 case State.RACING:
                     this.updateRacing(elapsedTime, timeSinceLastFrame);
+                    break;
+                case State.END:
+                    this.endGame(elapsedTime);
                     break;
                 default:
             }

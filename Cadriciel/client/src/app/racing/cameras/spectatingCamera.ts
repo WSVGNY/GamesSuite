@@ -3,6 +3,7 @@ import { PerspectiveCamera, Vector3 } from "three";
 const NEAR_CLIPPING_PLANE: number = 1;
 const FAR_CLIPPING_PLANE: number = 1000;
 const FIELD_OF_VIEW: number = 70;
+const TIMESTEP_ADJUSTMENT: number = 0.01;
 
 export class SpectatingCamera extends PerspectiveCamera {
 
@@ -31,8 +32,8 @@ export class SpectatingCamera extends PerspectiveCamera {
 
     public updatePosition(timeStep: number): void {
         const displacement: Vector3 = new Vector3();
-        displacement.add(this._xAxis.clone().multiplyScalar(timeStep));
-        displacement.add(this._yAxis.clone().multiplyScalar(Math.pow(1.07, -(timeStep - 50))));
+        displacement.add(this._xAxis.clone().multiplyScalar(timeStep * TIMESTEP_ADJUSTMENT));
+        displacement.add(this._yAxis.clone().multiplyScalar(Math.pow(1.07, -((timeStep * TIMESTEP_ADJUSTMENT) - 50))));
         const newPosition: Vector3 = this._initialPosition.clone().add(displacement);
         this.position.copy(newPosition);
     }
