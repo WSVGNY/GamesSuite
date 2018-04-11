@@ -1,7 +1,7 @@
 import { TestBed, inject } from "@angular/core/testing";
 import { TrackService } from "./track.service";
-import { AppModule } from "../../app.module";
 import { APP_BASE_HREF } from "@angular/common";
+import { AppModule } from "../../../app.module";
 
 describe("TrackService", () => {
     let originalTimeout: number;
