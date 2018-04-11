@@ -14,12 +14,12 @@ import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-ha
 import { Physics } from "./physics";
 import { CarControls } from "./carControls";
 import { CarStructure } from "./carStructure";
-import { RaceProgressCounter } from "../carTracking-manager/raceProgressCounter";
+import { RaceProgressTracker } from "../carTracking-manager/raceProgressTracker";
 
 export class Car extends Object3D {
     private _mesh: Object3D;
     private _hitbox: Hitbox;
-    private _raceProgressCounter: RaceProgressCounter;
+    private _raceProgressTracker: RaceProgressTracker;
     // public trackPortionIndex: number;
 
     public constructor(
@@ -88,7 +88,7 @@ export class Car extends Object3D {
     public async init(startPoint: Vector3, rotationAngle: number): Promise<void> {
         await this.initMesh(startPoint, rotationAngle);
         this.initHitBox();
-        this.initRaceProgressCounter();
+        this.initRaceProgressTracker();
         this.initLights();
     }
 
@@ -104,8 +104,8 @@ export class Car extends Object3D {
         this._hitbox = new Hitbox();
     }
 
-    private initRaceProgressCounter(): void {
-        this._raceProgressCounter = new RaceProgressCounter();
+    private initRaceProgressTracker(): void {
+        this._raceProgressTracker = new RaceProgressTracker();
     }
 
     private initLights(): void {
@@ -154,8 +154,8 @@ export class Car extends Object3D {
         return this._hitbox;
     }
 
-    public get raceProgressCounter(): RaceProgressCounter {
-        return this._raceProgressCounter;
+    public get raceProgressTracker(): RaceProgressTracker {
+        return this._raceProgressTracker;
     }
 
     public getChild(childName: string): Object3D {

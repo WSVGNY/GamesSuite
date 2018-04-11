@@ -1,5 +1,5 @@
 
-export class RaceProgressCounter {
+export class RaceProgressTracker {
 
     private _currentSegmentIndex: number;
     private _segmentCounted: number;
@@ -25,6 +25,7 @@ export class RaceProgressCounter {
     }
 
     public incrementCurrentIndex(indexQuantity: number): void {
+        // console.log("increment");
         this._currentSegmentIndex++;
         this._currentSegmentIndex %= indexQuantity;
     }
