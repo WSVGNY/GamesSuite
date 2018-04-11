@@ -37,8 +37,7 @@ export class MouseEventHandlerService {
         if (containerEditor) {
             this._containerEditor = containerEditor;
         }
-        await
-            this.initialiseValues();
+        await this.initialiseValues();
         this._viewSize = viewSize;
     }
 
@@ -88,7 +87,7 @@ export class MouseEventHandlerService {
         this.computeDivOffset();
         this.computeCenterOffset();
 
-        return (position.x > this._divOffset.x && position.y > this._divOffset.y) ? true : false;
+        return (position.x > this._divOffset.x && position.y > this._divOffset.y);
     }
 
     private setRaycaster(camera: OrthographicCamera): void {
@@ -97,11 +96,11 @@ export class MouseEventHandlerService {
     }
 
     private clickOnVertex(editorScene: EditorScene): boolean {
-        return (this._raycaster.intersectObjects(editorScene.vertices, true).length) ? true : false;
+        return this._raycaster.intersectObjects(editorScene.vertices, true).length !== 0;
     }
 
     private clickOnFirstVertex(editorScene: EditorScene): boolean {
-        return (this._raycaster.intersectObject(editorScene.firstVertex, true).length) ? true : false;
+        return this._raycaster.intersectObject(editorScene.firstVertex, true).length !== 0;
     }
 
     private clickedVertexName(editorScene: EditorScene): string {
