@@ -33,7 +33,7 @@ export class CarTrackingManagerService {
             }
         }
 
-        return raceProgressTracker.isRaceCompleted;
+        return raceProgressTracker.isRaceCompleted && !raceProgressTracker.isTimeLogged;
     }
 
     private isRightSequence(position: Vector3, raceProgressTracker: RaceProgressTracker): boolean {
