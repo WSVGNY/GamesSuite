@@ -24,8 +24,9 @@ export const LOWER_GROUND: number = 0.01;
 export const SKYBOX_SIZE: number = 700;
 
 export const START_LINE_WEIGHT: number = 20;
-export const START_LINE_WIDTH: number = 3;
+export const START_LINE_WIDTH: number = 6;
 export const START_LINE_HEIGHT: number = 0.001;
+export const START_CAR_DISTANCE: number = 12;
 
 export const WHITE: number = 0xFFFFFF;
 export const PINK: number = 0xFF00BF;

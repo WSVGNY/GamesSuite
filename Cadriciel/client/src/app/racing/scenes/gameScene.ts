@@ -4,7 +4,7 @@ import { TrackType } from "../../../../../common/racing/trackType";
 import { TrackLights } from "../render-service/light";
 import { CHANGE_CAMERA_KEYCODE, YELLOW, DAY_KEYCODE, DEBUG_KEYCODE,
     ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR, PATH_TO_STATRINGLINE,
-    START_LINE_WEIGHT, START_LINE_HEIGHT, START_LINE_WIDTH } from "../constants";
+    START_LINE_WEIGHT, START_LINE_HEIGHT, START_LINE_WIDTH, START_CAR_DISTANCE } from "../constants";
 import { Car } from "../car/car";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
@@ -101,7 +101,7 @@ export class GameScene extends AbstractScene {
         offset.applyAxisAngle(new Vector3(0, 1, 0), this.findFirstTrackSegmentAngle());
         const startingVector: Vector3 = this._trackMesh.trackPoints.points[1].coordinate.clone().
                                                 sub(this._trackMesh.trackPoints.points[0].coordinate.clone());
-        const startingLenght: number = startingVector.length() / 2;
+        const startingLenght: number = startingVector.length() / 2 - START_CAR_DISTANCE;
         startingVector.normalize();
         const position: Vector3 = this._trackMesh.trackPoints.points[0].coordinate.clone().
                                     add(startingVector.clone().multiplyScalar(startingLenght));
