@@ -62,7 +62,7 @@ export class CarTrackingManagerService {
         return sphere.containsPoint(this._car.currentPosition);
     }
 
-    public update(): void {
+    public update(): boolean {
         if (this.isRightSequence()) {
             this._lapCounter++;
             this.goToNextSphere();
@@ -71,6 +71,8 @@ export class CarTrackingManagerService {
                 this._isCompleted = true;
             }
         }
+
+        return this._isCompleted;
     }
 
     private updateTrackPortionIndex(): void {

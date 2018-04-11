@@ -1,5 +1,6 @@
 import { CommonCoordinate3D } from "./commonCoordinate3D";
 import { TrackType } from "./trackType";
+import { CommonHighscore } from "./commonHighscore";
 
 export class Track {
     // tslint:disable:no-string-literal
@@ -24,9 +25,9 @@ export class Track {
         public name: string = "New Track",
         public description: string = "",
         public timesPlayed: number = 0,
-        public bestTimes: number[] = [],
+        public bestTimes: CommonHighscore[] = [{ car: "YELLOW", name: "Bertrand", position: 1, time: 3000 }],
         public type: TrackType = TrackType.Default,
-        public vertices: CommonCoordinate3D[] = []) {
+        public vertices: CommonCoordinate3D[] = [new CommonCoordinate3D(0, 0, 0), new CommonCoordinate3D(100, 0, 0), new CommonCoordinate3D(100, 0, 100), new CommonCoordinate3D(0, 0, 100)]) {
     }
 
     public get isTestTrack(): boolean {

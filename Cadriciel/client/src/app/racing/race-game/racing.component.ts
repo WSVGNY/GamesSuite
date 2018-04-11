@@ -15,6 +15,7 @@ import { CollisionManagerService } from "../collision-manager/collision-manager.
 import { CameraManagerService } from "../cameras/camera-manager.service";
 import { CarTrackingManagerService } from "../carTracking-manager/car-tracking-manager.service";
 import { TrackService } from "../track/track-service/track.service";
+import { HighscoreService } from "../scoreboard/best-times/highscore.service";
 
 enum State {
     START_ANIMATION = 1,
@@ -59,7 +60,8 @@ export class RacingComponent implements AfterViewInit, OnInit {
         private _collisionManagerService: CollisionManagerService,
         private _soundService: SoundManagerService,
         private _cameraManager: CameraManagerService,
-        private _trackingManager: CarTrackingManagerService
+        private _trackingManager: CarTrackingManagerService,
+        private _highscoreService: HighscoreService
     ) {
         this._cars = [];
         this._carDebugs = [];
@@ -124,7 +126,9 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private updateRacing(elapsedTime: number, timeSinceLastFrame: number): void {
         this.updateCars(timeSinceLastFrame);
         this._collisionManagerService.update(this._cars);
-        this._trackingManager.update();
+        if (this._trackingManager.update()) {
+            this._currentState = State.END;
+        }
         if (this._collisionManagerService.shouldPlaySound) {
             this._soundService.play(this._soundService.collisionSound);
             this._collisionManagerService.shouldPlaySound = false;
@@ -143,6 +147,16 @@ export class RacingComponent implements AfterViewInit, OnInit {
         }
     }
 
+    private updateEnd(): void {
+        if (this._highscoreService.highscores.length === 0) {
+            this._highscoreService.highscores = this._chosenTrack.bestTimes;
+        }
+        if (this._highscoreService.showTable) {
+            this._chosenTrack.bestTimes = this._highscoreService.highscores;
+            this._trackService.putTrack(this._chosenTrack.id, this._chosenTrack).subscribe();
+        }
+    }
+
     private update(): void {
         requestAnimationFrame(() => {
             const timeSinceLastFrame: number = Date.now() - this._lastDate;
@@ -157,6 +171,9 @@ export class RacingComponent implements AfterViewInit, OnInit {
                     break;
                 case State.RACING:
                     this.updateRacing(elapsedTime, timeSinceLastFrame);
+                    break;
+                case State.END:
+                    this.updateEnd();
                     break;
                 default:
             }
