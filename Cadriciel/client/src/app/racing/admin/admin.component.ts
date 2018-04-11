@@ -22,36 +22,36 @@ export class AdminComponent implements OnInit {
     private getTracksFromServer(): void {
         this._trackService.getTrackList()
             .subscribe(
-            (tracksFromServer: Track[]) => {
-                this.tracks = [];
-                tracksFromServer.forEach((document: Track) => {
-                    this.tracks.push(Track.createFromJSON(JSON.stringify(document)));
-                });
-            },
-            (error: Error) => console.error(error)
+                (tracksFromServer: Track[]) => {
+                    this.tracks = [];
+                    tracksFromServer.forEach((document: Track) => {
+                        this.tracks.push(Track.createFromJSON(JSON.stringify(document)));
+                    });
+                },
+                (error: Error) => console.error(error)
             );
     }
 
     public newTrack(trackName: string): void {
         this._trackService.newTrack(trackName)
             .subscribe(
-            (trackFromServer: Track) => {
-                this.tracks.push(Track.createFromJSON(JSON.stringify(trackFromServer)));
-            },
-            (error: Error) => console.error(error)
+                (trackFromServer: Track) => {
+                    this.tracks.push(Track.createFromJSON(JSON.stringify(trackFromServer)));
+                },
+                (error: Error) => console.error(error)
             );
     }
 
     public deleteTrack(id: string): void {
         this._trackService.deleteTrack(id)
             .subscribe(
-            (tracksFromServer: Track[]) => {
-                this.tracks = [];
-                tracksFromServer.forEach((document: Track) => {
-                    this.tracks.push(Track.createFromJSON(JSON.stringify(document)));
-                });
-            },
-            (error: Error) => console.error(error)
+                (tracksFromServer: Track[]) => {
+                    this.tracks = [];
+                    tracksFromServer.forEach((document: Track) => {
+                        this.tracks.push(Track.createFromJSON(JSON.stringify(document)));
+                    });
+                },
+                (error: Error) => console.error(error)
             );
     }
 }

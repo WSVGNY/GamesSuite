@@ -114,9 +114,11 @@ export class MultiplayerCommunicationService {
             this._socket.on(SocketEvents.GameNotFound, () => {
                 throw new InvalidArgumentError;
             });
+
             this._socket.on(SocketEvents.DisconnectionAlert, () => {
                 observer.next(SocketEvents.DisconnectionAlert);
             });
+
             this._socket.on(SocketEvents.ReinitializeGame, () => {
                 observer.next(SocketEvents.ReinitializeGame);
             });

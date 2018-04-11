@@ -14,6 +14,7 @@ import { AI_CARS_QUANTITY, MINIMUM_CAR_DISTANCE } from "../constants";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { CollisionManagerService } from "../collision-manager/collision-manager.service";
 import { CameraManagerService } from "../cameras/camera-manager.service";
+import { CarTrackingManagerService } from "../carTracking-manager/car-tracking-manager.service";
 
 enum State {
     START_ANIMATION = 1,
@@ -57,7 +58,8 @@ export class RacingComponent implements AfterViewInit, OnInit {
         private _aiCarService: AICarService,
         private _collisionManagerService: CollisionManagerService,
         private _soundService: SoundManagerService,
-        private _cameraManager: CameraManagerService
+        private _cameraManager: CameraManagerService,
+        private _trackingManager: CarTrackingManagerService
     ) {
         this._cars = [];
         this._carDebugs = [];
@@ -66,7 +68,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
     }
 
     public ngOnInit(): void {
-        this._gameScene = new GameScene(this._keyBoardHandler);
+        this._gameScene = new GameScene(this._keyBoardHandler/*, this._collisionManagerService*/);
     }
 
     public async ngAfterViewInit(): Promise<void> {
@@ -84,6 +86,8 @@ export class RacingComponent implements AfterViewInit, OnInit {
     }
 
     public startGameLoop(): void {
+        this._trackingManager.init(this._chosenTrack.vertices, this._playerCar);
+        this._lastDate = Date.now();
         this.createSounds();
         this._lastDate = Date.now();
         this._startDate = Date.now();
@@ -120,6 +124,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private updateRacing(elapsedTime: number, timeSinceLastFrame: number): void {
         this.updateCars(timeSinceLastFrame);
         this._collisionManagerService.update(this._cars);
+        this._trackingManager.update();
         if (this._collisionManagerService.shouldPlaySound) {
             this._soundService.play(this._soundService.collisionSound);
             this._collisionManagerService.shouldPlaySound = false;
@@ -169,19 +174,20 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
     public getTrack(): void {
         this._trackService.getTrackFromId(this._route.snapshot.paramMap.get("id"))
-            .subscribe(async (trackFromServer: Track) => {
+            .subscribe((trackFromServer: Track) => {
                 this._chosenTrack = Track.createFromJSON(JSON.stringify(trackFromServer));
-                this.initializeCars(this._chosenTrack.type);
-                this._gameScene.loadTrack(this._chosenTrack);
-                await this._gameScene.loadCars(this._cars, this._carDebugs, this._cameraManager.currentCamera, this._chosenTrack.type);
-                await this._aiCarService
-                    .initialize(this._chosenTrack.vertices, Difficulty.Medium)
-                    .then(/* do nothing */)
-                    .catch((err) => console.error(err));
-                this.bindKeys();
-                this._cameraManager.initializeSpectatingCameraPosition(this._playerCar.currentPosition, this._playerCar.direction);
-                this.startGameLoop();
+                this.initializeGameFromTrack(this._chosenTrack);
             });
+    }
+
+    private async initializeGameFromTrack(track: Track): Promise<void> {
+        this.initializeCars(this._chosenTrack.type);
+        this._collisionManagerService.track = this._gameScene.loadTrack(this._chosenTrack);
+        await this._gameScene.loadCars(this._cars, this._carDebugs, this._cameraManager.currentCamera, this._chosenTrack.type);
+        await this._aiCarService.initialize(this._chosenTrack.vertices, Difficulty.Medium).then().catch((err) => console.error(err));
+        this.bindKeys();
+        this._cameraManager.initializeSpectatingCameraPosition(this._playerCar.currentPosition, this._playerCar.direction);
+        this.startGameLoop();
     }
 
     private bindKeys(): void {

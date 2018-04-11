@@ -21,6 +21,7 @@ import { SoundManagerService } from "./racing/sound-service/sound-manager.servic
 import { MultiplayerCommunicationService } from "./crossword/multiplayer-communication.service";
 import { CollisionManagerService } from "./racing/collision-manager/collision-manager.service";
 import { CameraManagerService } from "./racing/cameras/camera-manager.service";
+import { CarTrackingManagerService } from "./racing/carTracking-manager/car-tracking-manager.service";
 import { BestTimesComponent } from "./racing/scoreboard/best-times/best-times.component";
 import { InputTimeComponent } from "./racing/scoreboard/input-time/input-time.component";
 import { HighscoreService } from "./racing/scoreboard/best-times/highscore.service";
@@ -59,6 +60,7 @@ import { InputTimeService } from "./racing/scoreboard/input-time/input-time.serv
         MultiplayerCommunicationService,
         CollisionManagerService,
         CameraManagerService,
+        CarTrackingManagerService,
         HighscoreService,
         EndGameTableService,
         InputTimeService

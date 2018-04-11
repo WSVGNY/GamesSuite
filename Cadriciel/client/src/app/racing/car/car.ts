@@ -17,8 +17,8 @@ import { CarStructure } from "./carStructure";
 
 export class Car extends Object3D {
     private _mesh: Object3D;
-    public trackPortionIndex: number;
     private _hitbox: Hitbox;
+    public trackPortionIndex: number;
 
     public constructor(
         private keyBoardService: KeyboardEventHandlerService,

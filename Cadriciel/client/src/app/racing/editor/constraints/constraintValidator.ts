@@ -1,8 +1,8 @@
 import { Line, Geometry, Vector3, LineBasicMaterial } from "three";
 import { RED, PI_OVER_4, PI_OVER_2, HALF_TRACK_WIDTH, WALL_DISTANCE_TO_TRACK, WALL_WIDTH } from "../../constants";
 import { CommonCoordinate3D } from "../../../../../../common/racing/commonCoordinate3D";
-import { TrackPointList } from "../../render-service/trackPointList";
-import { Wall } from "../../render-service/wall";
+import { TrackPointList } from "../../track/trackPointList";
+import { WallMesh } from "../../track/wall";
 
 const UNAUTHORIZED_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: RED });
 const OFFSET: number = HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH;
@@ -69,7 +69,6 @@ export class ConstraintValidator {
     }
 
     private static checkIntersectionIncomplete(connections: Line[]): boolean {
-        let intersectionOK: boolean = true;
         const limit: number = connections.length;
 
         for (let i: number = 0; i < connections.length; i++) {
@@ -80,13 +79,14 @@ export class ConstraintValidator {
                     if (this.checkIntersectionWithOffset(vectors1, vectors2)) {
                         connections[i].material = UNAUTHORIZED_LINE_MATERIAL;
                         connections[j].material = UNAUTHORIZED_LINE_MATERIAL;
-                        intersectionOK = false;
+
+                        return false;
                     }
                 }
             }
         }
 
-        return intersectionOK;
+        return true;
     }
 
     private static generateTrackWidth(line: Line): Vector3[][] {
@@ -103,10 +103,9 @@ export class ConstraintValidator {
     }
 
     private static checkIntersectionComplete(connections: Line[]): boolean {
-        let intersectionOK: boolean = true;
         const trackPoints: TrackPointList = new TrackPointList(this.convertLinesToCommonCoordinates3D(connections));
-        const interiorWallPoints: Vector3[] = this.convertZXCoordsToXY(new Wall(true, trackPoints).holePoints);
-        const exteriorWallPoints: Vector3[] = this.convertZXCoordsToXY(new Wall(false, trackPoints).shapePoints);
+        const interiorWallPoints: Vector3[] = this.convertZXCoordsToXY(new WallMesh(true, trackPoints).holePoints);
+        const exteriorWallPoints: Vector3[] = this.convertZXCoordsToXY(new WallMesh(false, trackPoints).shapePoints);
 
         for (let i: number = 0; i < connections.length; i++) {
             const limit: number = i === 0 ? connections.length - 1 : connections.length;
@@ -119,13 +118,14 @@ export class ConstraintValidator {
                     if (this.checkIntersectionWithOffset(vectors1, vectors2)) {
                         connections[i].material = UNAUTHORIZED_LINE_MATERIAL;
                         connections[j].material = UNAUTHORIZED_LINE_MATERIAL;
-                        intersectionOK = false;
+
+                        return false;
                     }
                 }
             }
         }
 
-        return intersectionOK;
+        return true;
     }
 
     private static generateTrackWallWidth(interiorWallPoints: Vector3[], exteriorWallPoints: Vector3[], index: number): Vector3[][] {
