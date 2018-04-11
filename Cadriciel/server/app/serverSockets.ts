@@ -52,6 +52,7 @@ export class ServerSockets {
                 socket.broadcast.to(game.roomName).emit(SocketEvents.DisconnectionAlert);
                 try {
                     this._gameLogic.deleteGame(game);
+                    console.log("Deleted game of room name: " + game.roomName);
                     this.removeSocketFromSocketIdentification(socket);
                 } catch (error) {
                     this.handleError(error, socket);
@@ -79,6 +80,7 @@ export class ServerSockets {
             console.log("Room creation by: " + message["creator"]);
             this._gameLogic.handleRoomCreate(message["difficulty"], message["creator"]);
             socket.join(this._gameLogic.games[this._gameLogic.numberOfGames - 1].roomName);
+            console.log("Room name: " + this._gameLogic.games[this._gameLogic.numberOfGames - 1].roomName);
             this._socketIdentifications.push({ id: socket.id, room: this._gameLogic.games[this._gameLogic.numberOfGames - 1].roomName });
         });
     }
@@ -123,6 +125,7 @@ export class ServerSockets {
         this._socketIdentifications.push({ id: socket.id, room: game.roomName });
         console.log("Connection to room: " + game.roomName + " by " + playerName + " successfull");
         if (this._gameLogic.shouldStartGame(game)) {
+            console.log("Game is starting from server");
             this._gameLogic.startGame(game).then(() => {
                 this._io.to(game.roomName).emit(SocketEvents.StartGame, game);
             }).catch((e: Error) => console.error(e.message));
@@ -154,6 +157,7 @@ export class ServerSockets {
     private tryRestartGame(room: string): void {
         const game: MultiplayerCrosswordGame = this._gameLogic.getCurrentGame(room);
         if (this._gameLogic.tryRestartGame(game)) {
+            console.log("Game is restarting from server");
             this._gameLogic.startGame(game).then(() => {
                 this._io.to(game.roomName).emit(SocketEvents.RestartGame, game);
             }).catch((e: Error) => console.error(e.message));
