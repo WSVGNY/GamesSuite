@@ -67,15 +67,15 @@ export class GameScene extends AbstractScene {
     }
 
     public createStartingLine(startingLinePosition: Vector3): void {
-        const geometry: PlaneGeometry = new PlaneGeometry(20, 5);
+        const geometry: PlaneGeometry = new PlaneGeometry(20, 3);
         const texture: MeshBasicMaterial = new MeshBasicMaterial({ side: DoubleSide,
                                                                    map: this.loadRepeatingTexture(PATH_TO_STATRINGLINE, 1) });
         const startingLine: Mesh = new Mesh( geometry, texture );
-        startingLine.position.set(startingLinePosition.x + 8, 0.001, startingLinePosition.z);
+        startingLine.position.set(startingLinePosition.x, 0.001, startingLinePosition.z);
         startingLine.rotateZ(Math.PI / 2);
-        startingLine.rotateY(Math.PI / 2);
+        startingLine.setRotationFromAxisAngle(new Vector3(0, 1, 0), this.findFirstTrackSegmentAngle());
+        startingLine.rotateX(Math.PI / 2);
         this.add(startingLine);
-        console.log(startingLine.position);
     }
 
     private shuffle(array: Car[]): void {
