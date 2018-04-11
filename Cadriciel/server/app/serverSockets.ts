@@ -1,12 +1,9 @@
 import * as sio from "socket.io";
 import * as http from "http";
-import * as requestPromise from "request-promise-native";
 import { SocketEvents } from "../../common/communication/socketEvents";
 import { MultiplayerCrosswordGame } from "../../common/crossword/multiplayerCrosswordGame";
 import { Difficulty } from "../../common/crossword/difficulty";
-import { CommonGrid } from "../../common/crossword/commonGrid";
 import { Player } from "../../common/crossword/player";
-import { GRID_GET_URL } from "./crossword/configuration";
 import { MultiplayerGameLogic } from "./crossword/multiplayerGameLogic";
 
 export class ServerSockets {
@@ -126,17 +123,10 @@ export class ServerSockets {
         this._socketIdentifications.push({ id: socket.id, room: game.roomName });
         console.log("Connection to room: " + game.roomName + " by " + playerName + " successfull");
         if (this._gameLogic.shouldStartGame(game)) {
-            this.startGame(game, SocketEvents.StartGame);
+            this._gameLogic.startGame(game).then(() => {
+                this._io.to(game.roomName).emit(SocketEvents.StartGame, game);
+            });
         }
-    }
-
-    private startGame(game: MultiplayerCrosswordGame, socketEvent: SocketEvents): void {
-        console.log("Game is starting from server");
-        this.gridCreateQuery(game).then(() => {
-            this._io.to(game.roomName).emit(socketEvent, game);
-        }).catch((e: Error) => {
-            console.error(e);
-        });
     }
 
     private onPlayerUpdate(socket: SocketIO.Socket): void {
@@ -164,7 +154,9 @@ export class ServerSockets {
     private tryRestartGame(room: string): void {
         const game: MultiplayerCrosswordGame = this._gameLogic.getCurrentGame(room);
         if (this._gameLogic.tryRestartGame(game)) {
-            this.startGame(game, SocketEvents.RestartGame);
+            this._gameLogic.startGame(game).then(() => {
+                this._io.to(game.roomName).emit(SocketEvents.RestartGame, game);
+            });
         }
     }
 
@@ -178,16 +170,6 @@ export class ServerSockets {
         }
 
         return undefined;
-    }
-
-    private async gridCreateQuery(game: MultiplayerCrosswordGame): Promise<void> {
-        await requestPromise(GRID_GET_URL + game.difficulty).then(
-            (result: CommonGrid) => {
-                game.grid = JSON.parse(result.toString());
-            }
-        ).catch((e: Error) => {
-            console.error(e);
-        });
     }
 
     private handleError(error: Error, socket: SocketIO.Socket): void {

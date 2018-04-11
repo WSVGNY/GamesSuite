@@ -4,13 +4,24 @@
       <th>Position</th>
       <th>Driver</th>
       <th>Car</th>
-      <th>Time</th>
+      <th>Lap one</th>
+      <th>Lap two</th>
+      <th>Lap three</th>
+      <th>Total time</th>
     </tr>
-    <tr *ngFor="let score of endGameTableService.scores">
+    <!-- <tr *ngFor="let score of endGameTableService.scores">
       <td id="position">{{score.position}}</td>
       <td>{{score.name}}</td>
-      <td>{{score.car}}</td>
-      <!-- <td>{{getTime(score)}}</td> -->
+      <td>{{score.car}}</td> 
+      <td>{{getTime(score)}}</td> -->
+    <tr *ngFor="let number of [1,2,3,4]">
+      <td id="position">{{number}}</td>
+      <td>joe</td>
+      <td>camero</td>
+      <td>allo</td>
+      <td>salut</td>
+      <td>bonjour</td>
+      <td>bye</td>
     </tr>
   </table>
   <a id="next" (click)="goToNextView()">Next</a>

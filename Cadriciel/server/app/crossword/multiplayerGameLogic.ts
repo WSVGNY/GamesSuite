@@ -1,6 +1,8 @@
+import * as requestPromise from "request-promise-native";
 import { MultiplayerCrosswordGame } from "../../../common/crossword/multiplayerCrosswordGame";
 import { Difficulty } from "../../../common/crossword/difficulty";
-import { BASE_ROOM_NAME, FIRST_PLAYER_COLOR, SECOND_PLAYER_COLOR } from "./configuration";
+import { BASE_ROOM_NAME, FIRST_PLAYER_COLOR, SECOND_PLAYER_COLOR, GRID_GET_URL } from "./configuration";
+import { CommonGrid } from "../../../common/crossword/commonGrid";
 
 export class MultiplayerGameLogic {
     private static _numberOfRoom: number = 0;
@@ -38,6 +40,13 @@ export class MultiplayerGameLogic {
     private createRoom(difficulty: Difficulty): void {
         this._games.push(new MultiplayerCrosswordGame(BASE_ROOM_NAME + MultiplayerGameLogic._numberOfRoom++, difficulty));
         console.log("Room name: " + this._games[this.numberOfGames - 1].roomName + " of difficuly: " + difficulty);
+    }
+
+    public async startGame(game: MultiplayerCrosswordGame): Promise<MultiplayerCrosswordGame> {
+        console.log("Game is starting from server");
+        await this.gridCreateQuery(game);
+
+        return game;
     }
 
     // tslint:enable:no-console
@@ -123,5 +132,15 @@ export class MultiplayerGameLogic {
         const index: number = this.findGameIndexWithRoom(room);
 
         return index >= 0 ? this._games[index] : undefined;
+    }
+
+    private async gridCreateQuery(game: MultiplayerCrosswordGame): Promise<void> {
+        await requestPromise(GRID_GET_URL + game.difficulty).then(
+            (result: CommonGrid) => {
+                game.grid = JSON.parse(result.toString());
+            }
+        ).catch((e: Error) => {
+            console.error(e);
+        });
     }
 }
