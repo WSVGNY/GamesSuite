@@ -55,7 +55,6 @@ describe("Third Person Camera Test", () => {
     it("camera should be in the right angle", () => {
         car.setCurrentPosition(new Vector3(2, 0, 1));
         const angleCarToCamera: number = camera.position.clone().normalize().angleTo(car.direction.clone().negate());
-        console.log(angleCarToCamera);
         expect(Math.abs(angleCarToCamera - EXPECTED_ANGLE)).toBeLessThan(0.01);
     });
 });
