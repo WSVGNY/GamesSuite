@@ -24,10 +24,10 @@ describe("CameraManagerService", () => {
             cameraManager.initializeCameras(1);
             keyboardManager.initialize();
             cameraManager.bindCameraKey();
-            const oldCamera: Camera = cameraManager.getCurrentCamera();
+            const oldCamera: Camera = cameraManager.currentCamera;
             keyboardManager.handleKeyDown(CHANGE_CAMERA_KEYCODE);
 
-            expect(oldCamera).not.toEqual(cameraManager.getCurrentCamera());
+            expect(oldCamera).not.toEqual(cameraManager.currentCamera);
         }
     ));
 });

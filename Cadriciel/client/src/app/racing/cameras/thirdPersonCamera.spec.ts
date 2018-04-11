@@ -9,9 +9,9 @@ import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-ha
 describe("Third Person Camera Test", () => {
 
     const ASPECTRATIO: number = 1;
-    const INITIAL_CAMERA_POSITION_Z: number = 10;
-    const INITIAL_CAMERA_POSITION_Y: number = 5;
-    const EXPECTED_ANGLE: number = 1.3789287653092055;
+    const INITIAL_CAMERA_POSITION_Z: number = 5;
+    const INITIAL_CAMERA_POSITION_Y: number = 2.5;
+    const EXPECTED_ANGLE: number = Math.tanh(INITIAL_CAMERA_POSITION_Y / INITIAL_CAMERA_POSITION_Z);
 
     let camera: ThirdPersonCamera;
     let car: Car;
@@ -54,9 +54,8 @@ describe("Third Person Camera Test", () => {
 
     it("camera should be in the right angle", () => {
         car.setCurrentPosition(new Vector3(2, 0, 1));
-        const cameraToCar: Vector3 = camera.position.clone().sub(car.currentPosition);
-        const negXaxis: Vector3 = new Vector3(-1, 0, 0);
-        const angleCarToCamera: number = cameraToCar.normalize().angleTo(negXaxis);
-        expect(angleCarToCamera).toEqual(EXPECTED_ANGLE);
+        const angleCarToCamera: number = camera.position.clone().normalize().angleTo(car.direction.clone().negate());
+        console.log(angleCarToCamera);
+        expect(Math.abs(angleCarToCamera - EXPECTED_ANGLE)).toBeLessThan(0.01);
     });
 });
