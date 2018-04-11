@@ -30,8 +30,16 @@ export class CarTrackingManagerService {
     }
 
     private createDetectionSpheres(trackVertices: CommonCoordinate3D[]): void {
-        trackVertices.forEach((coordinate: CommonCoordinate3D) => {
-            this._detectionSpheres.push(new Sphere(new Vector3(coordinate.x, coordinate.y, coordinate.z), TRACKING_SPHERE_RADIUS));
+        trackVertices.forEach((coordinate: CommonCoordinate3D, index: number) => {
+            if (index === 0) {
+                const position: Vector3 = new Vector3(
+                    (trackVertices[1].x - trackVertices[0].x) / 2,
+                    (trackVertices[1].y - trackVertices[0].y) / 2,
+                    (trackVertices[1].z - trackVertices[0].z) / 2);
+                this._detectionSpheres.push(new Sphere(position, TRACKING_SPHERE_RADIUS / 2));
+            } else {
+                this._detectionSpheres.push(new Sphere(new Vector3(coordinate.x, coordinate.y, coordinate.z), TRACKING_SPHERE_RADIUS));
+            }
         });
     }
 
@@ -63,6 +71,9 @@ export class CarTrackingManagerService {
     }
 
     public update(): void {
+        if (this.sphereContainsCar(this._detectionSpheres[0])) {
+            console.log("ALLLOOOOO");
+        }
         if (this.isRightSequence()) {
             this._lapCounter++;
             this.goToNextSphere();
