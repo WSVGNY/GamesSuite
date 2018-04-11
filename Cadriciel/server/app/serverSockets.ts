@@ -125,7 +125,7 @@ export class ServerSockets {
         if (this._gameLogic.shouldStartGame(game)) {
             this._gameLogic.startGame(game).then(() => {
                 this._io.to(game.roomName).emit(SocketEvents.StartGame, game);
-            });
+            }).catch((e: Error) => console.error(e.message));
         }
     }
 
@@ -156,7 +156,7 @@ export class ServerSockets {
         if (this._gameLogic.tryRestartGame(game)) {
             this._gameLogic.startGame(game).then(() => {
                 this._io.to(game.roomName).emit(SocketEvents.RestartGame, game);
-            });
+            }).catch((e: Error) => console.error(e.message));
         }
     }
 

@@ -176,7 +176,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
         this._trackService.getTrackFromId(this._route.snapshot.paramMap.get("id"))
             .subscribe((trackFromServer: Track) => {
                 this._chosenTrack = Track.createFromJSON(JSON.stringify(trackFromServer));
-                this.initializeGameFromTrack(this._chosenTrack);
+                this.initializeGameFromTrack(this._chosenTrack).catch((err) => console.error(err));
             });
     }
 
