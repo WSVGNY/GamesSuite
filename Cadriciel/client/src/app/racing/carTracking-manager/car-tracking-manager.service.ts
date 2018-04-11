@@ -1,32 +1,20 @@
 import { Injectable } from "@angular/core";
 import { Vector3, Sphere } from "three";
 import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
-import { Car } from "../car/car";
 import { TRACKING_SPHERE_RADIUS, NUMBER_OF_LAPS } from "../constants";
+import { RaceProgressTracker } from "./raceProgressTracker";
 
 @Injectable()
 export class CarTrackingManagerService {
 
     private _detectionSpheres: Sphere[];
-    private _car: Car;
-    private _currentIndex: number;
-    private _lapCounter: number;
-    private _isCompleted: boolean;
 
     public constructor() {
         this._detectionSpheres = [];
-        this._currentIndex = 0;
-        this._lapCounter = 0;
     }
 
-    public init(trackVertices: CommonCoordinate3D[], car: Car): void {
-        this._car = car;
+    public init(trackVertices: CommonCoordinate3D[]): void {
         this.createDetectionSpheres(trackVertices);
-        car.trackPortionIndex = 0;
-    }
-
-    public get isCompleted(): boolean {
-        return this._isCompleted;
     }
 
     private createDetectionSpheres(trackVertices: CommonCoordinate3D[]): void {
@@ -35,51 +23,52 @@ export class CarTrackingManagerService {
         });
     }
 
-    private isRightSequence(): boolean {
-        if (this.isCarAtStartingSphere() && !this.isCarAtDesiredSphere()) {
-            this._currentIndex = 1;
+    public update(position: Vector3, raceProgressTracker: RaceProgressTracker): boolean {
+        if (this.isRightSequence(position, raceProgressTracker)) {
+            raceProgressTracker.incrementIndexCount();
+            this.goToNextSphere(raceProgressTracker);
+            // this.updateTrackPortionIndex();
+            if (this.isRaceCompleted(raceProgressTracker)) {
+                raceProgressTracker.isRaceCompleted = true;
+            }
+        }
+
+        return raceProgressTracker.isRaceCompleted;
+    }
+
+    private isRightSequence(position: Vector3, raceProgressTracker: RaceProgressTracker): boolean {
+        if (this.isCarAtStartingSphere(position) && !this.isCarAtDesiredSphere(position, raceProgressTracker)) {
+            raceProgressTracker.resetCurrentSegmentIndex();
 
             return false;
         }
 
-        return this.isCarAtDesiredSphere();
+        return this.isCarAtDesiredSphere(position, raceProgressTracker);
     }
 
-    private isCarAtDesiredSphere(): boolean {
-        return this.sphereContainsCar(this._detectionSpheres[this._currentIndex]);
+    private isCarAtStartingSphere(position: Vector3): boolean {
+        return this.sphereContainsCar(this._detectionSpheres[0], position);
     }
 
-    private isCarAtStartingSphere(): boolean {
-        return this.sphereContainsCar(this._detectionSpheres[0]);
+    private sphereContainsCar(sphere: Sphere, position: Vector3): boolean {
+        return sphere.containsPoint(position);
     }
 
-    private goToNextSphere(): void {
-        this._currentIndex++;
-        this._currentIndex %= this._detectionSpheres.length;
+    private isCarAtDesiredSphere(position: Vector3, raceProgressTracker: RaceProgressTracker): boolean {
+        return this.sphereContainsCar(this._detectionSpheres[raceProgressTracker.currentSegmentIndex], position);
     }
 
-    private sphereContainsCar(sphere: Sphere): boolean {
-        return sphere.containsPoint(this._car.currentPosition);
+    private goToNextSphere(raceProgressTracker: RaceProgressTracker): void {
+        raceProgressTracker.incrementCurrentIndex(this._detectionSpheres.length);
     }
 
-    public update(): void {
-        if (this.isRightSequence()) {
-            this._lapCounter++;
-            this.goToNextSphere();
-            this.updateTrackPortionIndex();
-            if (this.isRaceCompleted()) {
-                this._isCompleted = true;
-            }
-        }
-    }
+    // private updateTrackPortionIndex(): void {
+    //     this._car.trackPortionIndex = this._currentIndex === 0 ?
+    //         this._detectionSpheres.length - 1 :
+    //         this._currentIndex - 1;
+    // }
 
-    private updateTrackPortionIndex(): void {
-        this._car.trackPortionIndex = this._currentIndex === 0 ?
-            this._detectionSpheres.length - 1 :
-            this._currentIndex - 1;
-    }
-
-    private isRaceCompleted(): boolean {
-        return this._lapCounter > this._detectionSpheres.length * NUMBER_OF_LAPS;
+    private isRaceCompleted(raceProgressTracker: RaceProgressTracker): boolean {
+        return raceProgressTracker.segmentCounted > this._detectionSpheres.length * NUMBER_OF_LAPS;
     }
 }
