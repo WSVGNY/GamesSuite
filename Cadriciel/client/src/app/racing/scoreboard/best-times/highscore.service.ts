@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { CommonHighscore } from "../../../../../../common/racing/commonHighscore";
-import { Score } from "../score";
+import { Player } from "../../race-game/player";
 
 const TOPSCORES: number = 5;
 
@@ -33,11 +33,11 @@ export class HighscoreService {
         this.showTable = true;
     }
 
-    public isNewHighScore(score: Score): boolean {
-        this.newTime = score.totalTime;
+    public isNewHighScore(player: Player): boolean {
+        this.newTime = player.score.totalTime;
 
-        return (this.highscores.length < TOPSCORES && score.position === 1) ||
-            score.totalTime < this.highscores[this.highscores.length - 1].time;
+        return (this.highscores.length < TOPSCORES && player.position === 1) ||
+            this.newTime < this.highscores[this.highscores.length - 1].time;
     }
 
 }

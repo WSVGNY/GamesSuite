@@ -3,6 +3,7 @@ import { Score } from "../scoreboard/score";
 export class Player {
 
     private _score: Score;
+    public position: number;
 
     public constructor(private _id: number, private _name: string) {
         this._score = new Score();

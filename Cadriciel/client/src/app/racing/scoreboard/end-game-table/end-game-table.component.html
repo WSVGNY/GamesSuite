@@ -10,13 +10,13 @@
       <th>Total time</th>
     </tr>
     <tr *ngFor="let player of endGameTableService.players">
-      <td id="position">{{player.score.position}}</td>
+      <td id="position">{{player.position}}</td>
       <td>{{player.name}}</td>
       <!-- <td>{{player.car}}</td> -->
       <td>{{player.score.firstLap}}</td>
       <td>{{player.score.secondLap}}</td>
       <td>{{player.score.thirdLap}}</td>
-      <td>{{getTime(player.score)}}</td>
+      <td>{{player.score.getFormatedTime(player.score.totalTime)}}</td>
     </tr>
   </table>
   <a id="next" (click)="goToNextView()">Next</a>

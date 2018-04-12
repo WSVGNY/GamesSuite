@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { Score } from "../score";
 import { CURRENT_PLAYER } from "../../constants";
 import { Player } from "../../race-game/player";
 
@@ -13,10 +12,10 @@ export class EndGameTableService {
         this.showTable = false;
     }
 
-    public getPlayerScore(): Score {
+    public getHumanPlayer(): Player {
         for (const player of this.players) {
             if (player.name === CURRENT_PLAYER) {
-                return player.score;
+                return player;
             }
         }
 

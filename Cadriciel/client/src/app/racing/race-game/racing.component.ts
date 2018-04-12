@@ -55,7 +55,6 @@ export class RacingComponent implements AfterViewInit, OnInit {
     protected _countDownOnScreenValue: string;
     protected _isCountDownOver: boolean;
     private _currentState: State;
-    private _raceTimes: number[];
 
     public constructor(
         private _renderService: RenderService,
@@ -73,7 +72,6 @@ export class RacingComponent implements AfterViewInit, OnInit {
         this._cars = [];
         this._players = [];
         this._carDebugs = [];
-        this._raceTimes = [];
         this._isCountDownOver = false;
         this._currentState = State.START_ANIMATION;
     }
@@ -149,18 +147,18 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private updateCars(timeSinceLastFrame: number): void {
         for (let i: number = 0; i < AI_CARS_QUANTITY + 1; ++i) {
             this._cars[i].update(timeSinceLastFrame);
+            const donePlayer: Player = this._players.find((player: Player) => player.id === this._cars[i].uniqueid);
             if (this._cars[i].isAI) {
                 this._aiCarService.update(this._cars[i], this._carDebugs[i]);
                 if (this._trackingManager.update(this._cars[i].currentPosition, this._cars[i].raceProgressTracker)) {
-                    this._players.find((player: Player) => player.id === this._cars[i].uniqueid)
-                        .setTotalTime((Date.now() - this._startDate) * MS_TO_SEC);
-                    this._raceTimes.push((Date.now() - this._startDate) * MS_TO_SEC);
+                    donePlayer.position = this.findPosition(donePlayer);
+                    donePlayer.setTotalTime((Date.now() - this._startDate) * MS_TO_SEC);
                     this._cars[i].raceProgressTracker.isTimeLogged = true;
                 }
             } else {
                 if (this._trackingManager.update(this._cars[i].currentPosition, this._cars[i].raceProgressTracker)) {
-                    this._players.find((player: Player) => player.id === 0).setTotalTime((Date.now() - this._startDate) * MS_TO_SEC);
-                    this._raceTimes.push((Date.now() - this._startDate) * MS_TO_SEC);
+                    donePlayer.position = this.findPosition(donePlayer);
+                    donePlayer.setTotalTime((Date.now() - this._startDate) * MS_TO_SEC);
                     this._cars[i].raceProgressTracker.isTimeLogged = true;
                     this._currentState = State.END;
                 }
@@ -168,17 +166,21 @@ export class RacingComponent implements AfterViewInit, OnInit {
         }
     }
 
+    private findPosition(donePlayer: Player): number {
+        let position: number = 1;
+        for (const player of this._players) {
+            if (player.position !== undefined) {
+                position++;
+            }
+        }
+
+        return position;
+    }
+
     private endGame(elapsedTime: number): void {
         for (const car of this._cars) {
             if (!car.raceProgressTracker.isRaceCompleted && !car.raceProgressTracker.isTimeLogged) {
                 this._players.find((player: Player) => player.id === car.uniqueid).setTotalTime(
-                    this.simulateRaceTime(
-                        car.raceProgressTracker.currentSegmentIndex,
-                        car.raceProgressTracker.segmentCounted,
-                        car.currentPosition
-                    ) + elapsedTime
-                );
-                this._raceTimes.push(
                     this.simulateRaceTime(
                         car.raceProgressTracker.currentSegmentIndex,
                         car.raceProgressTracker.segmentCounted,
