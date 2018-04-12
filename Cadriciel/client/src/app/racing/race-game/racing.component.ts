@@ -9,7 +9,7 @@ import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { RenderService } from "../render-service/render.service";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
 import { SoundManagerService } from "../sound-service/sound-manager.service";
-import { AI_CARS_QUANTITY, MINIMUM_CAR_DISTANCE, NUMBER_OF_LAPS } from "../constants";
+import { AI_CARS_QUANTITY, MINIMUM_CAR_DISTANCE, NUMBER_OF_LAPS, CURRENT_PLAYER } from "../constants";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { CollisionManagerService } from "../collision-manager/collision-manager.service";
 import { CameraManagerService } from "../cameras/camera-manager.service";
@@ -18,6 +18,7 @@ import { CarTrackingManagerService } from "../carTracking-manager/car-tracking-m
 import { TrackService } from "../track/track-service/track.service";
 import { EndGameTableService } from "../scoreboard/end-game-table/end-game-table.service";
 import { HighscoreService } from "../scoreboard/best-times/highscore.service";
+import { Player } from "./player";
 
 enum State {
     START_ANIMATION = 1,
@@ -45,6 +46,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private _containerRef: ElementRef;
     private _chosenTrack: Track;
     private _cars: Car[];
+    private _players: Player[];
     private _playerCar: Car;
     private _carDebugs: AIDebug[];
     private _gameScene: GameScene;
@@ -69,6 +71,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
         private _highscoreService: HighscoreService
     ) {
         this._cars = [];
+        this._players = [];
         this._carDebugs = [];
         this._raceTimes = [];
         this._isCountDownOver = false;
@@ -149,11 +152,14 @@ export class RacingComponent implements AfterViewInit, OnInit {
             if (this._cars[i].isAI) {
                 this._aiCarService.update(this._cars[i], this._carDebugs[i]);
                 if (this._trackingManager.update(this._cars[i].currentPosition, this._cars[i].raceProgressTracker)) {
+                    this._players.find((player: Player) => player.id === this._cars[i].uniqueid)
+                        .setTotalTime((Date.now() - this._startDate) * MS_TO_SEC);
                     this._raceTimes.push((Date.now() - this._startDate) * MS_TO_SEC);
                     this._cars[i].raceProgressTracker.isTimeLogged = true;
                 }
             } else {
                 if (this._trackingManager.update(this._cars[i].currentPosition, this._cars[i].raceProgressTracker)) {
+                    this._players.find((player: Player) => player.id === 0).setTotalTime((Date.now() - this._startDate) * MS_TO_SEC);
                     this._raceTimes.push((Date.now() - this._startDate) * MS_TO_SEC);
                     this._cars[i].raceProgressTracker.isTimeLogged = true;
                     this._currentState = State.END;
@@ -165,6 +171,13 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private endGame(elapsedTime: number): void {
         for (const car of this._cars) {
             if (!car.raceProgressTracker.isRaceCompleted && !car.raceProgressTracker.isTimeLogged) {
+                this._players.find((player: Player) => player.id === car.uniqueid).setTotalTime(
+                    this.simulateRaceTime(
+                        car.raceProgressTracker.currentSegmentIndex,
+                        car.raceProgressTracker.segmentCounted,
+                        car.currentPosition
+                    ) + elapsedTime
+                );
                 this._raceTimes.push(
                     this.simulateRaceTime(
                         car.raceProgressTracker.currentSegmentIndex,
@@ -173,7 +186,6 @@ export class RacingComponent implements AfterViewInit, OnInit {
                     ) + elapsedTime
                 );
                 car.raceProgressTracker.isTimeLogged = true;
-                this._endGameTableService.showTable = true;
             }
         }
     }
@@ -229,6 +241,10 @@ export class RacingComponent implements AfterViewInit, OnInit {
     }
 
     private updateEnd(): void {
+        if (this._endGameTableService.players.length === 0) {
+            this._endGameTableService.showTable = true;
+            this._endGameTableService.players = this._players;
+        }
         if (this._highscoreService.highscores.length === 0) {
             this._highscoreService.highscores = this._chosenTrack.bestTimes;
         }
@@ -254,7 +270,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
                     this.updateRacing(elapsedTime, timeSinceLastFrame);
                     break;
                 case State.END:
-                    this.endGame(elapsedTime);
+                    this.endGame(elapsedTime * MS_TO_SEC);
                     this.updateEnd();
                     break;
                 default:
@@ -300,8 +316,10 @@ export class RacingComponent implements AfterViewInit, OnInit {
             if (i === 0) {
                 this._cars.push(new Car(i, this._keyBoardHandler, false));
                 this._playerCar = this._cars[0];
+                this._players.push(new Player(i, CURRENT_PLAYER));
             } else {
                 this._cars.push(new Car(i, this._keyBoardHandler));
+                this._players.push(new Player(i, "Computer_" + (i + 1)));
             }
             this._carDebugs.push(new AIDebug());
         }

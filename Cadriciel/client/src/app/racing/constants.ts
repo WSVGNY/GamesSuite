@@ -18,8 +18,8 @@ export const VOLUME: number = 0.2;
 export const TIRE_ASPHALT_COEFFICIENT: number = 0.72;
 export const MINIMUM_CAR_DISTANCE: number = 3;
 export const TRACKING_SPHERE_RADIUS: number = 20;
-export const NUMBER_OF_LAPS: number = 3;
-export const CURRENT_PLAYER: string = "Player 1";
+export const NUMBER_OF_LAPS: number = 1;
+export const CURRENT_PLAYER: string = "Player_1";
 
 export const LOWER_GROUND: number = 0.01;
 export const SKYBOX_SIZE: number = 700;

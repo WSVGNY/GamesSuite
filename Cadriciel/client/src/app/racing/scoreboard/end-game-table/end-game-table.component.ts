@@ -4,8 +4,8 @@ import { InputTimeService } from "../input-time/input-time.service";
 import { HighscoreService } from "../best-times/highscore.service";
 import { Score } from "../score";
 
-const HUNDREDTH_TO_MINUTES: number = 6000;
-const SECONDS_TO_MINUTES: number = 100;
+const SECONDS_TO_HUNDREDTH: number = 100;
+const SECONDS_TO_MINUTES: number = 60;
 
 @Component({
     selector: "app-end-game-table",
@@ -25,13 +25,14 @@ export class EndGameTableComponent {
 
     public getTime(score: Score): string {
         let time: string = "";
-        const minutes: number = Math.floor(score.totalTime / HUNDREDTH_TO_MINUTES);
-        const seconds: number = Math.floor(Math.floor(score.totalTime - minutes * HUNDREDTH_TO_MINUTES) / SECONDS_TO_MINUTES);
+        const minutes: number = Math.floor(score.totalTime / SECONDS_TO_MINUTES);
+        const seconds: number = Math.floor(score.totalTime - minutes * SECONDS_TO_MINUTES);
+        const hundredth: number = Math.round((score.totalTime - minutes * SECONDS_TO_MINUTES - seconds) * SECONDS_TO_HUNDREDTH);
         time += minutes;
         time += ":";
         time += seconds;
         time += ":";
-        time += score.totalTime - minutes * HUNDREDTH_TO_MINUTES - seconds * SECONDS_TO_MINUTES;
+        time += hundredth;
 
         return time;
     }

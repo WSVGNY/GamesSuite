@@ -71,7 +71,7 @@ export class Car extends Object3D {
     private initAttributes(): void {
         this._carControls.isBraking = false;
         this._carControls.steeringWheelDirection = 0;
-        this._carStructure.weightRear = CarConfig.AL_WEIGHT_DISTRIBUTION;
+        this._carStructure.weightRear = CarConfig.INITIAL_WEIGHT_DISTRIBUTION;
         this._carControls.speed = new Vector3(0, 0, 0);
         this.position.add(new Vector3(0, 0, 0));
         this._carStructure.lights = new CarLights();
@@ -115,7 +115,7 @@ export class Car extends Object3D {
         this._carStructure.lights.turnBackLightsOff();
     }
 
-    public get id(): number {
+    public get uniqueid(): number {
         return this._id;
     }
 
@@ -220,7 +220,7 @@ export class Car extends Object3D {
 
     public get direction(): Vector3 {
         const rotationMatrix: Matrix4 = new Matrix4();
-        const carDirection: Vector3 = this._carControls.alDirection.clone();
+        const carDirection: Vector3 = this._carControls.initialDirection.clone();
 
         rotationMatrix.extractRotation(this._mesh.matrix);
         carDirection.applyMatrix4(rotationMatrix);
