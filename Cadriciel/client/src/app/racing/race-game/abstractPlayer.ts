@@ -1,13 +1,13 @@
 import { Car } from "../car/car";
-import { CommonScore } from "../../../../../common/racing/commonScore";
+import { Score } from "../scoreboard/score";
 import { RaceProgressTracker } from "../carTracking-manager/raceProgressTracker";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 
 export abstract class AbstractPlayer {
 
     private _id: number;
+    private _score: Score;
     private _raceProgressTracker: RaceProgressTracker;
-    private _score: CommonScore;
 
     protected _car: Car;
 
@@ -24,7 +24,7 @@ export abstract class AbstractPlayer {
     }
 
     public update(): void {
-        
+
     }
 
 }

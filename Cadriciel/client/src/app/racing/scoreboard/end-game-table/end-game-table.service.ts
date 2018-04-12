@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
-import { CommonScore } from "../../../../../../common/racing/commonScore";
+import { Score } from "../score";
 import { CURRENT_PLAYER } from "../../constants";
 
 @Injectable()
 export class EndGameTableService {
-    public scores: CommonScore[];
+    public scores: Score[];
     public showTable: boolean;
 
     public constructor() {
@@ -12,7 +12,7 @@ export class EndGameTableService {
         this.showTable = false;
     }
 
-    public getPlayerScore(): CommonScore {
+    public getPlayerScore(): Score {
         for (const score of this.scores) {
             if (score.name === CURRENT_PLAYER) {
                 return score;

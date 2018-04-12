@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { EndGameTableService } from "./end-game-table.service";
 import { InputTimeService } from "../input-time/input-time.service";
 import { HighscoreService } from "../best-times/highscore.service";
-import { CommonScore } from "../../../../../../common/racing/commonScore";
+import { Score } from "../score";
 
 const HUNDREDTH_TO_MINUTES: number = 6000;
 const SECONDS_TO_MINUTES: number = 100;
@@ -23,7 +23,7 @@ export class EndGameTableComponent {
         this.changeState = true;
     }
 
-    public getTime(score: CommonScore): string {
+    public getTime(score: Score): string {
         let time: string = "";
         const minutes: number = Math.floor(score.totalTime / HUNDREDTH_TO_MINUTES);
         const seconds: number = Math.floor(Math.floor(score.totalTime - minutes * HUNDREDTH_TO_MINUTES) / SECONDS_TO_MINUTES);

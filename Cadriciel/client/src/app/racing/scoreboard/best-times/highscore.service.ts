@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { CommonHighscore } from "../../../../../../common/racing/commonHighscore";
-import { CommonScore } from "../../../../../../common/racing/commonScore";
+import { Score } from "../score";
 
 const TOPSCORES: number = 5;
 
@@ -33,7 +33,7 @@ export class HighscoreService {
         this.showTable = true;
     }
 
-    public isNewHighScore(score: CommonScore): boolean {
+    public isNewHighScore(score: Score): boolean {
         this.newTime = score.totalTime;
 
         return (this.highscores.length < TOPSCORES && score.position === 1) ||
