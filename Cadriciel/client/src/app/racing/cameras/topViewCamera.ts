@@ -1,9 +1,8 @@
 import { OrthographicCamera } from "three";
-import { HALF, PI_OVER_2 } from "../constants";
 import { Car } from "../car/car";
+import { NEAR_CLIPPING_PLANE, FAR_CLIPPING_PLANE } from "../constants/camera.constants";
+import { PI_OVER_2 } from "../constants/math.constants";
 
-const NEAR_CLIPPING_PLANE: number = 1;
-const FAR_CLIPPING_PLANE: number = 1000;
 const INITIAL_CAMERA_POSITION_Y: number = 10;
 const VIEW_SIZE: number = 150;
 
@@ -11,10 +10,10 @@ export class TopViewCamera extends OrthographicCamera {
 
     public constructor(aspectRatio: number) {
         super(
-            -aspectRatio * VIEW_SIZE * HALF,
-            aspectRatio * VIEW_SIZE * HALF,
-            VIEW_SIZE * HALF,
-            -VIEW_SIZE * HALF,
+            -aspectRatio * VIEW_SIZE / 2,
+            aspectRatio * VIEW_SIZE / 2,
+            VIEW_SIZE / 2,
+            -VIEW_SIZE / 2,
             NEAR_CLIPPING_PLANE,
             FAR_CLIPPING_PLANE
         );

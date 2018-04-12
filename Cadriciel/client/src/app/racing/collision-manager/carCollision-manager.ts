@@ -1,7 +1,7 @@
 import { Car } from "../car/car";
 import { Vector3 } from "three";
-import { MINIMUM_CAR_DISTANCE } from "../constants";
 import { SoundManagerService } from "../sound-service/sound-manager.service";
+import { MINIMUM_CAR_DISTANCE } from "../constants/car.constants";
 
 export class CarCollisionManager {
 

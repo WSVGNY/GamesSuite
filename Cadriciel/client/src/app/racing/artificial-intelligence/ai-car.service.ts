@@ -6,10 +6,10 @@ import { TurnRight } from "../commands/carAICommands/turnRight";
 import { GoFoward } from "../commands/carAICommands/goFoward";
 import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";
 import { Vector3 } from "three";
-import { PI_OVER_4 } from "../constants";
 import { AIConfig } from "./ai-config";
 import { AIDebug } from "./ai-debug";
 import { LineEquation } from "./lineEquation";
+import { PI_OVER_4 } from "../constants/math.constants";
 
 @Injectable()
 export class AICarService {

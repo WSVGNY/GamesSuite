@@ -2,9 +2,9 @@
 import { TopViewCamera } from "./topViewCamera";
 import { OrthographicCamera, Vector3, Euler } from "three";
 import { Car } from "../car/car";
+import { PI_OVER_2 } from "../constants/math.constants";
 
 const INITIAL_CAMERA_POSITION_Y: number = 10;
-const PI_OVER_2: number = 1.5707963267948963;
 
 describe("Top View Camera Test", () => {
 

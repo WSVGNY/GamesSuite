@@ -1,11 +1,13 @@
 import { Injectable } from "@angular/core";
 import { AudioListener, AudioLoader, AudioBuffer, Audio } from "three";
 import { Car } from "../car/car";
-import {
-    MUSIC_PATH, ACCELERATION_PATH, CAR_COLLISION_PATH, VOLUME, RPM_FACTOR, MUSIC_KEYCODE,
-    WALL_COLLISION_PATH, START_SOUND_3_PATH, START_SOUND_2_PATH, START_SOUND_1_PATH, START_SOUND_GO_PATH
-} from "../constants";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
+import { MUSIC_KEYCODE } from "../constants/keycode.constants";
+import {
+    MUSIC_PATH, VOLUME, ACCELERATION_PATH, CAR_COLLISION_PATH, WALL_COLLISION_PATH, START_SOUND_3_PATH, START_SOUND_2_PATH,
+    START_SOUND_1_PATH, START_SOUND_GO_PATH
+} from "../constants/sound.constants";
+import { RPM_FACTOR } from "../constants/car.constants";
 
 const START_SEQUENCE_LENGTH: number = 4;
 

@@ -8,7 +8,6 @@ import { AICarService } from "../artificial-intelligence/ai-car.service";
 import { RenderService } from "../render-service/render.service";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
 import { SoundManagerService } from "../sound-service/sound-manager.service";
-import { AI_CARS_QUANTITY, MINIMUM_CAR_DISTANCE, NUMBER_OF_LAPS, AI_PERSONALITY_QUANTITY, CURRENT_PLAYER } from "../constants";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { CollisionManagerService } from "../collision-manager/collision-manager.service";
 import { CameraManagerService } from "../cameras/camera-manager.service";
@@ -19,6 +18,9 @@ import { EndGameTableService } from "../scoreboard/end-game-table/end-game-table
 import { HighscoreService } from "../scoreboard/best-times/highscore.service";
 import { Personality } from "../artificial-intelligence/ai-config";
 import { Player } from "./player";
+import { MINIMUM_CAR_DISTANCE, NUMBER_OF_LAPS } from "../constants/car.constants";
+import { AI_CARS_QUANTITY, AI_PERSONALITY_QUANTITY } from "../constants/ai.constants";
+import { CURRENT_PLAYER, COMPUTER_PLAYER } from "../constants/global.constants";
 
 enum State {
     START_ANIMATION = 1,
@@ -323,13 +325,13 @@ export class RacingComponent implements AfterViewInit, OnInit {
                 this._players.push(new Player(i, CURRENT_PLAYER));
             } else if (i - 1 % AI_PERSONALITY_QUANTITY === 0) {
                 this._cars.push(new Car(i, this._keyBoardHandler, true, Personality.Larry));
-                this._players.push(new Player(i, "Computer_" + (i + 1)));
+                this._players.push(new Player(i, COMPUTER_PLAYER + (i + 1)));
             } else if (i - 1 % AI_PERSONALITY_QUANTITY === 1) {
                 this._cars.push(new Car(i, this._keyBoardHandler, true, Personality.Curly));
-                this._players.push(new Player(i, "Computer_" + (i + 1)));
+                this._players.push(new Player(i, COMPUTER_PLAYER + (i + 1)));
             } else if (i - 1 % AI_PERSONALITY_QUANTITY === 2) {
                 this._cars.push(new Car(i, this._keyBoardHandler, true, Personality.Moe));
-                this._players.push(new Player(i, "Computer_" + (i + 1)));
+                this._players.push(new Player(i, COMPUTER_PLAYER + (i + 1)));
             }
             this._carDebugs.push(new AIDebug());
         }

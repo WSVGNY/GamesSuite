@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { CURRENT_PLAYER } from "../../constants";
 import { Player } from "../../race-game/player";
+import { CURRENT_PLAYER } from "../../constants/global.constants";
 
 @Injectable()
 export class EndGameTableService {

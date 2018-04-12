@@ -1,5 +1,5 @@
-import { DEFAULT_SKYBOX, NIGHT_SKYBOX } from "../constants";
 import { TrackType } from "../../../../../common/racing/trackType";
+import { NIGHT_SKYBOX, DEFAULT_SKYBOX } from "../constants/texture.constants";
 
 export class SkyBox {
     public static getPath(trackType: TrackType): string {
