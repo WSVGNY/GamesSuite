@@ -105,20 +105,20 @@ export class CarCollisionManager {
         const positionCarA: Vector3 = movingCar.currentPosition.clone();
         const positionCarB: Vector3 = motionlessCar.currentPosition.clone();
 
-        const newSpeedCarA: Vector3 = speedCarA.clone().sub(
-            (positionCarA.clone().sub(positionCarB)).multiplyScalar(
-                ((speedCarA.clone().sub(speedCarB)).dot(positionCarA.clone().sub(positionCarB))) /
-                ((positionCarA.clone().sub(positionCarB)).lengthSq()))
-        );
+        const newSpeedCarA: Vector3 = this.createNewSpeedCar(speedCarA, speedCarB, positionCarA, positionCarB);
 
-        const newSpeedCarB: Vector3 = speedCarB.clone().sub(
-            (positionCarB.clone().sub(positionCarA)).multiplyScalar(
-                ((speedCarB.clone().sub(speedCarA)).dot(positionCarB.clone().sub(positionCarA))) /
-                ((positionCarB.clone().sub(positionCarA)).lengthSq()))
-        );
+        const newSpeedCarB: Vector3 = this.createNewSpeedCar(speedCarB, speedCarA, positionCarB, positionCarA);
 
         this._collisionCarA.speed = this.findResultingSpeed(movingCar.direction.clone(), newSpeedCarA);
         this._collisionCarB.speed = this.findResultingSpeed(motionlessCar.direction.clone(), newSpeedCarB);
+    }
+
+    private static createNewSpeedCar(speedCar1: Vector3, speedCar2: Vector3, positionCar1: Vector3, positionCar2: Vector3): Vector3 {
+        return speedCar1.clone().sub(
+            (positionCar1.clone().sub(positionCar2)).multiplyScalar(
+                ((speedCar1.clone().sub(speedCar2)).dot(positionCar1.clone().sub(positionCar2))) /
+                ((positionCar1.clone().sub(positionCar2)).lengthSq()))
+        );
     }
 
     private static findResultingSpeed(carDirection: Vector3, force: Vector3): Vector3 {
