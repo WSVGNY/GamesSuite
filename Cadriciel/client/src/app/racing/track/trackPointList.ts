@@ -63,11 +63,11 @@ export class TrackPointList {
         return this._trackPoints.length;
     }
 
-    public get points(): TrackPoint[] {
+    public get toTrackPoints(): TrackPoint[] {
         return this._trackPoints;
     }
 
-    public get pointVectors(): Vector3[] {
+    public get toVectors3(): Vector3[] {
         const points: Vector3[] = [];
         this._trackPoints.forEach((currentPoint: TrackPoint, i: number) => {
             points[i] = currentPoint.coordinate.clone();

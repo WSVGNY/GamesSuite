@@ -15,16 +15,17 @@ import { Physics } from "./physics";
 import { CarControls } from "./carControls";
 import { CarStructure } from "./carStructure";
 import { RaceProgressTracker } from "../carTracking-manager/raceProgressTracker";
+import { Personality } from "../artificial-intelligence/ai-config";
 
 export class Car extends Object3D {
     private _mesh: Object3D;
     private _hitbox: Hitbox;
     private _raceProgressTracker: RaceProgressTracker;
-    // public trackPortionIndex: number;
 
     public constructor(
         private keyBoardService: KeyboardEventHandlerService,
         private _isAI: boolean = true,
+        private _aiPersonality: Personality = Personality.Player,
         private _carStructure: CarStructure = new CarStructure(),
         private _carControls: CarControls = new CarControls(),
         public trackPortionIndex: number = 0,
@@ -295,4 +296,7 @@ export class Car extends Object3D {
         return this._carStructure.weightRear;
     }
 
+    public get aiPersonality(): Personality {
+        return this._aiPersonality;
+    }
 }

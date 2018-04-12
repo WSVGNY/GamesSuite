@@ -1,6 +1,7 @@
 import { Car } from "../car/car";
 import { Vector3 } from "three";
 import { MINIMUM_CAR_DISTANCE } from "../constants";
+import { SoundManagerService } from "../sound-service/sound-manager.service";
 
 export class CarCollisionManager {
 
@@ -9,33 +10,29 @@ export class CarCollisionManager {
     private static _collisionPoint: Vector3;
     private static _overlapCorrection: Vector3;
 
-    public static update(cars: Car[]): boolean {
-        let shouldPlaySound: boolean;
+    public static update(cars: Car[], soundManager: SoundManagerService): void {
         for (let firstCarIndex: number = 0; firstCarIndex < cars.length; ++firstCarIndex) {
             for (let secondCarIndex: number = firstCarIndex + 1; secondCarIndex < cars.length; ++secondCarIndex) {
                 if (this.checkIfCarsAreClose(cars[firstCarIndex], cars[secondCarIndex])) {
-                    shouldPlaySound = this.applyCollisionDetection(cars[firstCarIndex], cars[secondCarIndex]);
+                    this.applyCollisionDetection(cars[firstCarIndex], cars[secondCarIndex], soundManager);
                 }
             }
         }
-
-        return shouldPlaySound;
     }
 
-    private static applyCollisionDetection(firstCar: Car, secondCar: Car): boolean {
+    private static applyCollisionDetection(firstCar: Car, secondCar: Car, soundManager: SoundManagerService): void {
         if (this.computeCollisionParameters(firstCar, secondCar)) {
             this.resolveHitboxOverlap();
             if (!this.carsInCollision()) {
                 this.applyCollisionPhysics();
-
-                return true;
+                if (!firstCar.isAI || !secondCar.isAI) {
+                    soundManager.playCarCollision();
+                }
             }
         } else {
             firstCar.hitbox.inCollision = false;
             secondCar.hitbox.inCollision = false;
         }
-
-        return false;
     }
 
     private static applyCollisionPhysics(): void {
@@ -105,20 +102,20 @@ export class CarCollisionManager {
         const positionCarA: Vector3 = movingCar.currentPosition.clone();
         const positionCarB: Vector3 = motionlessCar.currentPosition.clone();
 
-        const newSpeedCarA: Vector3 = speedCarA.clone().sub(
-            (positionCarA.clone().sub(positionCarB)).multiplyScalar(
-                ((speedCarA.clone().sub(speedCarB)).dot(positionCarA.clone().sub(positionCarB))) /
-                ((positionCarA.clone().sub(positionCarB)).lengthSq()))
-        );
+        const newSpeedCarA: Vector3 = this.createNewSpeedCar(speedCarA, speedCarB, positionCarA, positionCarB);
 
-        const newSpeedCarB: Vector3 = speedCarB.clone().sub(
-            (positionCarB.clone().sub(positionCarA)).multiplyScalar(
-                ((speedCarB.clone().sub(speedCarA)).dot(positionCarB.clone().sub(positionCarA))) /
-                ((positionCarB.clone().sub(positionCarA)).lengthSq()))
-        );
+        const newSpeedCarB: Vector3 = this.createNewSpeedCar(speedCarB, speedCarA, positionCarB, positionCarA);
 
         this._collisionCarA.speed = this.findResultingSpeed(movingCar.direction.clone(), newSpeedCarA);
         this._collisionCarB.speed = this.findResultingSpeed(motionlessCar.direction.clone(), newSpeedCarB);
+    }
+
+    private static createNewSpeedCar(speedCar1: Vector3, speedCar2: Vector3, positionCar1: Vector3, positionCar2: Vector3): Vector3 {
+        return speedCar1.clone().sub(
+            (positionCar1.clone().sub(positionCar2)).multiplyScalar(
+                ((speedCar1.clone().sub(speedCar2)).dot(positionCar1.clone().sub(positionCar2))) /
+                ((positionCar1.clone().sub(positionCar2)).lengthSq()))
+        );
     }
 
     private static findResultingSpeed(carDirection: Vector3, force: Vector3): Vector3 {
