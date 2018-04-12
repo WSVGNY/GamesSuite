@@ -23,6 +23,7 @@ export class Car extends Object3D {
     // public trackPortionIndex: number;
 
     public constructor(
+        private _id: number,
         private keyBoardService: KeyboardEventHandlerService,
         private _isAI: boolean = true,
         private _carStructure: CarStructure = new CarStructure(),
@@ -70,7 +71,7 @@ export class Car extends Object3D {
     private initAttributes(): void {
         this._carControls.isBraking = false;
         this._carControls.steeringWheelDirection = 0;
-        this._carStructure.weightRear = CarConfig.INITIAL_WEIGHT_DISTRIBUTION;
+        this._carStructure.weightRear = CarConfig.AL_WEIGHT_DISTRIBUTION;
         this._carControls.speed = new Vector3(0, 0, 0);
         this.position.add(new Vector3(0, 0, 0));
         this._carStructure.lights = new CarLights();
@@ -112,6 +113,10 @@ export class Car extends Object3D {
         this._mesh.add(this._carStructure.lights);
         this.turnLightsOff();
         this._carStructure.lights.turnBackLightsOff();
+    }
+
+    public get id(): number {
+        return this._id;
     }
 
     public get isAI(): boolean {
@@ -215,7 +220,7 @@ export class Car extends Object3D {
 
     public get direction(): Vector3 {
         const rotationMatrix: Matrix4 = new Matrix4();
-        const carDirection: Vector3 = this._carControls.initialDirection.clone();
+        const carDirection: Vector3 = this._carControls.alDirection.clone();
 
         rotationMatrix.extractRotation(this._mesh.matrix);
         carDirection.applyMatrix4(rotationMatrix);
