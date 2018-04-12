@@ -16,6 +16,7 @@ export class RaceProgressTracker {
 
     public incrementIndexCount(): void {
         this._segmentCounted++;
+        // console.log(this._segmentCounted);
     }
 
     public resetCurrentSegmentIndex(): void {

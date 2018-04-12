@@ -23,6 +23,7 @@ export class Car extends Object3D {
     private _raceProgressTracker: RaceProgressTracker;
 
     public constructor(
+        private _id: number,
         private keyBoardService: KeyboardEventHandlerService,
         private _isAI: boolean = true,
         private _aiPersonality: Personality = Personality.Player,
@@ -113,6 +114,10 @@ export class Car extends Object3D {
         this._mesh.add(this._carStructure.lights);
         this.turnLightsOff();
         this._carStructure.lights.turnBackLightsOff();
+    }
+
+    public get uniqueid(): number {
+        return this._id;
     }
 
     public get isAI(): boolean {
