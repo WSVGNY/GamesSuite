@@ -48,6 +48,14 @@ export class ConstraintValidator {
     public static checkLength(connections: Line[]): boolean {
         let lengthOK: boolean = true;
 
+        if (connections.length > 0) {
+            const geometry: Geometry = (connections[0].geometry) as Geometry;
+            if (this.calculateLength(geometry.vertices) < 50) {
+                connections[0].material = UNAUTHORIZED_LINE_MATERIAL;
+                lengthOK = false;
+            }
+        }
+
         for (const connection of connections) {
             const geometry: Geometry = (connection.geometry) as Geometry;
             if (this.calculateLength(geometry.vertices) < OFFSET) {

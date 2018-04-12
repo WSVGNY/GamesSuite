@@ -9,7 +9,7 @@ import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { RenderService } from "../render-service/render.service";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
 import { SoundManagerService } from "../sound-service/sound-manager.service";
-import { AI_CARS_QUANTITY, MINIMUM_CAR_DISTANCE } from "../constants";
+import { AI_CARS_QUANTITY, MINIMUM_CAR_DISTANCE, NUMBER_OF_LAPS } from "../constants";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { CollisionManagerService } from "../collision-manager/collision-manager.service";
 import { CameraManagerService } from "../cameras/camera-manager.service";
@@ -17,6 +17,7 @@ import { Vector3 } from "three";
 import { CarTrackingManagerService } from "../carTracking-manager/car-tracking-manager.service";
 import { TrackService } from "../track/track-service/track.service";
 import { EndGameTableService } from "../scoreboard/end-game-table/end-game-table.service";
+import { HighscoreService } from "../scoreboard/best-times/highscore.service";
 
 enum State {
     START_ANIMATION = 1,
@@ -64,7 +65,8 @@ export class RacingComponent implements AfterViewInit, OnInit {
         private _soundService: SoundManagerService,
         private _cameraManager: CameraManagerService,
         private _trackingManager: CarTrackingManagerService,
-        private _endGameTableService: EndGameTableService
+        private _endGameTableService: EndGameTableService,
+        private _highscoreService: HighscoreService
     ) {
         this._cars = [];
         this._carDebugs = [];
@@ -147,7 +149,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
             if (this._cars[i].isAI) {
                 this._aiCarService.update(this._cars[i], this._carDebugs[i]);
                 if (this._trackingManager.update(this._cars[i].currentPosition, this._cars[i].raceProgressTracker)) {
-                    this._raceTimes.push((Date.now() - this._startDate)  * MS_TO_SEC);
+                    this._raceTimes.push((Date.now() - this._startDate) * MS_TO_SEC);
                     this._cars[i].raceProgressTracker.isTimeLogged = true;
                 }
             } else {
@@ -171,20 +173,20 @@ export class RacingComponent implements AfterViewInit, OnInit {
                     ) + elapsedTime
                 );
                 car.raceProgressTracker.isTimeLogged = true;
+                this._endGameTableService.showTable = true;
             }
         }
-        this._endGameTableService.showTable = true;
     }
 
     private simulateRaceTime(currentSegmentIndex: number, segmentCounted: number, position: Vector3): number {
         const lapSegmentAmount: number = this._chosenTrack.vertices.length;
-        const totalSegmentAmount: number = lapSegmentAmount * 3;
+        const totalSegmentAmount: number = lapSegmentAmount * NUMBER_OF_LAPS;
         const segmentsToGo: number = totalSegmentAmount - segmentCounted;
         const completeLapsToGo: number = Math.floor(segmentsToGo / lapSegmentAmount);
 
         return this.simulateCompleteLapTime(completeLapsToGo) +
-               this.simulatePartialLapTime(currentSegmentIndex) +
-               this.simulatePartialSegmentTime(currentSegmentIndex, position);
+            this.simulatePartialLapTime(currentSegmentIndex) +
+            this.simulatePartialSegmentTime(currentSegmentIndex, position);
 
     }
 
@@ -218,12 +220,22 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
     private simulatePartialSegmentTime(currentSegmentIndex: number, position: Vector3): number {
         const nextTrackVertex: Vector3 = new Vector3(
-                    this._chosenTrack.vertices[currentSegmentIndex].x,
-                    0,
-                    this._chosenTrack.vertices[currentSegmentIndex].z
+            this._chosenTrack.vertices[currentSegmentIndex].x,
+            0,
+            this._chosenTrack.vertices[currentSegmentIndex].z
         );
 
         return (position.distanceTo(nextTrackVertex) / AVERAGE_CAR_SPEED);
+    }
+
+    private updateEnd(): void {
+        if (this._highscoreService.highscores.length === 0) {
+            this._highscoreService.highscores = this._chosenTrack.bestTimes;
+        }
+        if (this._highscoreService.showTable) {
+            this._chosenTrack.bestTimes = this._highscoreService.highscores;
+            this._trackService.putTrack(this._chosenTrack.id, this._chosenTrack).subscribe();
+        }
     }
 
     private update(): void {
@@ -243,6 +255,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
                     break;
                 case State.END:
                     this.endGame(elapsedTime);
+                    this.updateEnd();
                     break;
                 default:
             }
