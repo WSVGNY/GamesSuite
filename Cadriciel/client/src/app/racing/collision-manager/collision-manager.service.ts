@@ -3,14 +3,12 @@ import { Car } from "../car/car";
 import { CarCollisionManager } from "./carCollision-manager";
 import { TrackMesh } from "../track/track";
 import { WallCollisionManager } from "./wallCollision-manager";
+import { SoundManagerService } from "../sound-service/sound-manager.service";
 
 @Injectable()
 export class CollisionManagerService {
 
-    public shouldPlaySound: boolean;
-
-    public constructor() {
-        this.shouldPlaySound = false;
+    public constructor(private soundManager: SoundManagerService) {
     }
 
     public set track(track: TrackMesh) {
@@ -18,11 +16,7 @@ export class CollisionManagerService {
     }
 
     public update(cars: Car[]): void {
-        this.shouldPlaySound = CarCollisionManager.update(cars);
-        WallCollisionManager.update(cars);
-    }
-
-    public get inCollision(): boolean {
-        return this.shouldPlaySound;
+        CarCollisionManager.update(cars, this.soundManager);
+        WallCollisionManager.update(cars, this.soundManager);
     }
 }
