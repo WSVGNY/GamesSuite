@@ -6,6 +6,7 @@ import { TestBed, inject } from "@angular/core/testing";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { Physics } from "./physics";
 import { CarStructure } from "./carStructure";
+import { Personality } from "../artificial-intelligence/ai-config";
 
 const MS_BETWEEN_FRAMES: number = 16.6667;
 
@@ -37,7 +38,7 @@ describe("Car", () => {
 
     it("should be instantiable using default constructor", inject(
         [KeyboardEventHandlerService], (keyBoardHandler: KeyboardEventHandlerService) => {
-            car = new Car(keyBoardHandler, true, new CarStructure(new MockEngine));
+            car = new Car(keyBoardHandler, true, Personality.Curly, new CarStructure(new MockEngine));
             expect(car).toBeDefined();
             expect(car.speed.length()).toBe(0);
         }
@@ -119,28 +120,28 @@ describe("Car", () => {
 
     it("should use default Wheel parameter when none is provided", inject(
         [KeyboardEventHandlerService], (keyBoardHandler: KeyboardEventHandlerService) => {
-            car = new Car(keyBoardHandler, true, new CarStructure(new MockEngine), undefined);
+            car = new Car(keyBoardHandler, true, Personality.Curly, new CarStructure(new MockEngine), undefined);
             expect(car["_carStructure"].rearWheel).toBeDefined();
         }
     ));
 
     it("should check validity of wheelbase parameter", inject(
         [KeyboardEventHandlerService], (keyBoardHandler: KeyboardEventHandlerService) => {
-            car = new Car(keyBoardHandler, true, new CarStructure(new MockEngine));
+            car = new Car(keyBoardHandler, true, Personality.Curly, new CarStructure(new MockEngine));
             expect(car["_carStructure"].wheelbase).toBe(CarConfig.DEFAULT_WHEELBASE);
         }
     ));
 
     it("should check validity of mass parameter", inject(
         [KeyboardEventHandlerService], (keyBoardHandler: KeyboardEventHandlerService) => {
-            car = new Car(keyBoardHandler, true, new CarStructure(new MockEngine));
+            car = new Car(keyBoardHandler, true, Personality.Curly, new CarStructure(new MockEngine));
             expect(car["_carStructure"].mass).toBe(CarConfig.DEFAULT_MASS);
         }
     ));
 
     it("should check validity of dragCoefficient parameter", inject(
         [KeyboardEventHandlerService], (keyBoardHandler: KeyboardEventHandlerService) => {
-            car = new Car(keyBoardHandler, true, new CarStructure(new MockEngine));
+            car = new Car(keyBoardHandler, true, Personality.Curly, new CarStructure(new MockEngine));
             expect(car["_carStructure"].dragCoefficient).toBe(CarConfig.DEFAULT_DRAG_COEFFICIENT);
         }
     ));

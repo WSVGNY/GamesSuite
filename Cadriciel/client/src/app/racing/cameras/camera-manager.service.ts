@@ -3,9 +3,9 @@ import { ThirdPersonCamera } from "./thirdPersonCamera";
 import { TopViewCamera } from "./topViewCamera";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { Car } from "../car/car";
-import { CHANGE_CAMERA_KEYCODE } from "../constants";
 import { Camera, Vector3 } from "three";
 import { SpectatingCamera } from "./spectatingCamera";
+import { CHANGE_CAMERA_KEYCODE } from "../constants/keycode.constants";
 
 @Injectable()
 export class CameraManagerService {

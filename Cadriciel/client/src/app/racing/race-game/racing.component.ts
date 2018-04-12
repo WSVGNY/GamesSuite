@@ -8,7 +8,6 @@ import { AICarService } from "../artificial-intelligence/ai-car.service";
 import { RenderService } from "../render-service/render.service";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
 import { SoundManagerService } from "../sound-service/sound-manager.service";
-import { AI_CARS_QUANTITY, MINIMUM_CAR_DISTANCE, NUMBER_OF_LAPS, AI_PERSONALITY_QUANTITY } from "../constants";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { CollisionManagerService } from "../collision-manager/collision-manager.service";
 import { CameraManagerService } from "../cameras/camera-manager.service";
@@ -18,6 +17,8 @@ import { TrackService } from "../track/track-service/track.service";
 import { EndGameTableService } from "../scoreboard/end-game-table/end-game-table.service";
 import { HighscoreService } from "../scoreboard/best-times/highscore.service";
 import { Personality } from "../artificial-intelligence/ai-config";
+import { MINIMUM_CAR_DISTANCE, NUMBER_OF_LAPS } from "../constants/car.constants";
+import { AI_CARS_QUANTITY, AI_PERSONALITY_QUANTITY } from "../constants/ai.constants";
 
 enum State {
     START_ANIMATION = 1,

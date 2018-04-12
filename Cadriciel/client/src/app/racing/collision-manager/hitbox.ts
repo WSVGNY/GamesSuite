@@ -1,9 +1,5 @@
 import { Vector3, Sphere, Matrix4 } from "three";
 
-// const WIDTH: number = 1.5;
-// const HEIGHT: number = 0.01;
-// const DEPTH: number = 3.1;
-
 const FRONT_SPHERE_OFFSET: number = 0.75;
 const REAR_SPHERE_OFFSET: number = -0.75;
 const SPHERE_RADIUS: number = 0.75;

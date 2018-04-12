@@ -1,11 +1,11 @@
 import { Track } from "../../../../../common/racing/track";
 import { Shape, Mesh, MeshPhongMaterial, Path, BackSide, Texture, ShapeGeometry, Vector3, Group } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
-import { PI_OVER_2 } from "./../constants";
 import { WallMesh } from "./wall";
 import { TrackPointList } from "./trackPointList";
 import { WallPlane } from "./plane";
 import { TrackPoint } from "./trackPoint";
+import { PI_OVER_2 } from "../constants/math.constants";
 
 export class TrackMesh extends Mesh {
     private _trackPoints: TrackPointList;

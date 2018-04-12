@@ -2,11 +2,11 @@ import {
     Scene, PlaneGeometry, MeshPhongMaterial, BackSide, Mesh, Texture, TextureLoader,
     RepeatWrapping, CubeTexture, CubeTextureLoader
 } from "three";
-import {
-    PI_OVER_2, LOWER_GROUND, GROUND_SIZE, GROUND_TEXTURE_FACTOR, GRASS_TEXTURE_PATH
-} from "../constants";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { SkyBox } from "../render-service/skybox";
+import { GROUND_SIZE, GRASS_TEXTURE_PATH, GROUND_TEXTURE_FACTOR } from "../constants/texture.constants";
+import { PI_OVER_2 } from "../constants/math.constants";
+import { LOWER_GROUND } from "../constants/scene.constants";
 
 export abstract class AbstractScene extends Scene {
 
@@ -16,7 +16,10 @@ export abstract class AbstractScene extends Scene {
     protected addGround(): void {
         const groundGeometry: PlaneGeometry = new PlaneGeometry(GROUND_SIZE, GROUND_SIZE, 1, 1);
         const groundMaterial: MeshPhongMaterial =
-            new MeshPhongMaterial({ side: BackSide, map: this.loadRepeatingTexture(GRASS_TEXTURE_PATH, GROUND_TEXTURE_FACTOR) });
+            new MeshPhongMaterial({
+                side: BackSide,
+                map: this.loadRepeatingTexture(GRASS_TEXTURE_PATH, GROUND_TEXTURE_FACTOR, GROUND_TEXTURE_FACTOR)
+            });
 
         const ground: Mesh = new Mesh(groundGeometry, groundMaterial);
         ground.rotateX(PI_OVER_2);
@@ -25,11 +28,11 @@ export abstract class AbstractScene extends Scene {
         this.add(ground);
     }
 
-    protected loadRepeatingTexture(pathToImage: string, imageRatio: number): Texture {
+    protected loadRepeatingTexture(pathToImage: string, imageRatioX: number, imageRatioY: number): Texture {
         const texture: Texture = new TextureLoader().load(pathToImage);
         texture.wrapS = RepeatWrapping;
         texture.wrapT = RepeatWrapping;
-        texture.repeat.set(imageRatio, imageRatio);
+        texture.repeat.set(imageRatioX, imageRatioY);
 
         return texture;
     }

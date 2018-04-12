@@ -1,18 +1,16 @@
 import { OrthographicCamera, Vector3 } from "three";
-
-const HALF: number = 0.5;
-const FAR_CLIPPING_PLANE: number = 1000;
-const NEAR_CLIPPING_PLANE: number = 1;
+import { NEAR_CLIPPING_PLANE, FAR_CLIPPING_PLANE } from "../constants/camera.constants";
 
 export class EditorCamera extends OrthographicCamera {
 
     public constructor(aspectRatio: number, viewSize: number) {
-        super( -aspectRatio * viewSize * HALF,
-               aspectRatio * viewSize * HALF,
-               viewSize * HALF,
-               -viewSize * HALF,
-               NEAR_CLIPPING_PLANE,
-               FAR_CLIPPING_PLANE);
+        super(
+            -aspectRatio * viewSize / 2,
+            aspectRatio * viewSize / 2,
+            viewSize / 2,
+            -viewSize / 2,
+            NEAR_CLIPPING_PLANE,
+            FAR_CLIPPING_PLANE);
     }
 
     public setPosition(position: Vector3): void {

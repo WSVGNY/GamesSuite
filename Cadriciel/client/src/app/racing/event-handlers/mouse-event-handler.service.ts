@@ -7,7 +7,6 @@ import { PlaceVertex } from "../commands/editorCommands/placeVertex";
 import { RemoveVertex } from "../commands/editorCommands/removeVertex";
 import { MoveVertex } from "../commands/editorCommands/moveVertex";
 import { DeselectVertex } from "../commands/editorCommands/deselectVertex";
-import { HALF } from "../constants";
 import { EditorScene } from "../scenes/editorScene";
 
 const LEFT_CLICK_KEYCODE: number = 1;
@@ -78,8 +77,8 @@ export class MouseEventHandlerService {
     }
 
     private computeCenterOffset(): void {
-        this._centerOffset.x = this._containerEditor.clientWidth * HALF;
-        this._centerOffset.y = this._containerEditor.clientHeight * HALF;
+        this._centerOffset.x = this._containerEditor.clientWidth / 2;
+        this._centerOffset.y = this._containerEditor.clientHeight / 2;
         this._centerOffset.z = 0;
     }
 

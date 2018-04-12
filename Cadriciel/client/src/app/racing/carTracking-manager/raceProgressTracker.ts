@@ -1,4 +1,3 @@
-
 export class RaceProgressTracker {
 
     private _currentSegmentIndex: number;

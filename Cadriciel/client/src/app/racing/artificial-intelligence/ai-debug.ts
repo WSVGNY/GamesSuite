@@ -1,6 +1,6 @@
 import { VectorHelper } from "./vectorHelper";
-import { PINK, WHITE, RED, GREEN, BLUE } from "../constants";
 import { Vector3, Group } from "three";
+import { RED, GREEN, BLUE, PINK, WHITE } from "../constants/color.constants";
 
 export class AIDebug {
     private readonly AXIS_LENGTH: number = 5;
@@ -12,7 +12,6 @@ export class AIDebug {
     private _axis: VectorHelper[];
     private _carVectorHelper: VectorHelper;
     private _distanceVectorHelper: VectorHelper;
-    private _turningVectorHelper: VectorHelper;
 
     public constructor() {
         this._axis = [];
@@ -26,14 +25,12 @@ export class AIDebug {
 
         this._carVectorHelper = new VectorHelper(PINK);
         this._distanceVectorHelper = new VectorHelper(WHITE);
-        this._turningVectorHelper = new VectorHelper(PINK);
 
         for (const axis of this._axis) {
             this._debugGroup.add(axis);
         }
         this._debugGroup.add(this._carVectorHelper);
         this._debugGroup.add(this._distanceVectorHelper);
-        this._debugGroup.add(this._turningVectorHelper);
     }
 
     public updateDebugMode(carPosition: Vector3, projection: Vector3, pointOnLine: Vector3, vertice: Vector3): void {
@@ -42,7 +39,6 @@ export class AIDebug {
         this._axis[this.Z_AXIS].update(carPosition, carPosition.clone().add(new Vector3(0, 0, this.AXIS_LENGTH)));
         this._carVectorHelper.update(carPosition, projection);
         this._distanceVectorHelper.update(projection, pointOnLine);
-        // this._turningVectorHelper.update(new Vector3(vertice.x, 0, vertice.z), turningPoint);
     }
 
     public get debugGroup(): Group {

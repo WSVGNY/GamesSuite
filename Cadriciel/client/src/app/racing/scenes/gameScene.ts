@@ -2,17 +2,18 @@ import { AbstractScene } from "./abstractRacingScene";
 import { Group, Vector3, Geometry, Line, Camera, LineBasicMaterial, PlaneGeometry, MeshBasicMaterial, DoubleSide, Mesh } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { TrackLights } from "../render-service/light";
-import {
-    CHANGE_CAMERA_KEYCODE, YELLOW, DAY_KEYCODE, DEBUG_KEYCODE,
-    ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR, PATH_TO_STATRINGLINE,
-    START_LINE_WEIGHT, START_LINE_HEIGHT, START_LINE_WIDTH, START_CAR_DISTANCE
-} from "../constants";
 import { Car } from "../car/car";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { Track } from "../../../../../common/racing/track";
 import { TrackMesh } from "../track/track";
 import { TrackPoint } from "../track/trackPoint";
+import {
+    ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR, STARTING_LINE_PATH, STARTING_LINE_X_FACTOR, STARTING_LINE_Y_FACTOR
+} from "../constants/texture.constants";
+import { START_LINE_WEIGHT, START_LINE_WIDTH, START_LINE_HEIGHT, START_CAR_DISTANCE } from "../constants/scene.constants";
+import { DAY_KEYCODE, DEBUG_KEYCODE, CHANGE_CAMERA_KEYCODE } from "../constants/keycode.constants";
+import { YELLOW } from "../constants/color.constants";
 
 const LATHERAL_OFFSET: number = 2;
 const VERTICAL_OFFSET: number = 5;
@@ -29,7 +30,7 @@ export class GameScene extends AbstractScene {
 
     public constructor(private _keyBoardHandler: KeyboardEventHandlerService) {
         super();
-        this._roadTexture = this.loadRepeatingTexture(ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR);
+        this._roadTexture = this.loadRepeatingTexture(ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR, ASPHALT_TEXTURE_FACTOR);
         this._skyBoxTextures = new Map();
         this._group = new Group();
         this._debugElements = new Group();
@@ -70,7 +71,7 @@ export class GameScene extends AbstractScene {
         const geometry: PlaneGeometry = new PlaneGeometry(START_LINE_WEIGHT, START_LINE_WIDTH);
         const texture: MeshBasicMaterial = new MeshBasicMaterial({
             side: DoubleSide,
-            map: this.loadRepeatingTexture(PATH_TO_STATRINGLINE, 1)
+            map: this.loadRepeatingTexture(STARTING_LINE_PATH, STARTING_LINE_X_FACTOR, STARTING_LINE_Y_FACTOR)
         });
         const startingLine: Mesh = new Mesh(geometry, texture);
         const startingLineVector: Vector3 = this._trackMesh.trackPoints.toTrackPoints[1].coordinate.clone().

@@ -2,9 +2,9 @@ import {
     Vector3, AmbientLight, Mesh, Line, SphereGeometry,
     MeshBasicMaterial, LineBasicMaterial, Geometry, BackSide, Scene
 } from "three";
-import { WHITE, PINK, BLUE } from "../constants";
 import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
 import { ConstraintValidator } from "../editor/constraints/constraintValidator";
+import { WHITE, PINK, BLUE } from "../constants/color.constants";
 
 const RADIUS: number = 2.5;
 const OUTLINE_TO_VERTEX_RATIO: number = 1.25;

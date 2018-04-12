@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
 import { Vector3, Sphere } from "three";
 import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
-import { TRACKING_SPHERE_RADIUS, NUMBER_OF_LAPS } from "../constants";
 import { RaceProgressTracker } from "./raceProgressTracker";
+import { TRACKING_SPHERE_RADIUS, NUMBER_OF_LAPS } from "../constants/car.constants";
 
 @Injectable()
 export class CarTrackingManagerService {

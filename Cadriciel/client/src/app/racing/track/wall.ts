@@ -4,7 +4,8 @@ import {
 } from "three";
 import { TrackPointList } from "./trackPointList";
 import { TrackPoint } from "./trackPoint";
-import { HALF_TRACK_WIDTH, WALL_DISTANCE_TO_TRACK, WALL_WIDTH, WALL_TEXTURE_PATH, WALL_TEXTURE_FACTOR } from "../constants";
+import { HALF_TRACK_WIDTH, WALL_DISTANCE_TO_TRACK, WALL_WIDTH } from "../constants/scene.constants";
+import { WALL_TEXTURE_PATH, WALL_TEXTURE_FACTOR } from "../constants/texture.constants";
 
 export class WallMesh extends Mesh {
     private readonly HEIGHT: number = 0.5;
