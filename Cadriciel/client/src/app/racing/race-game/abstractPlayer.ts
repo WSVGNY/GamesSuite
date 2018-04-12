@@ -1,12 +1,12 @@
 import { Car } from "../car/car";
-import { CommonScore } from "../../../../../common/racing/commonScore";
+import { Score } from "../scoreboard/score";
 import { RaceProgressTracker } from "../carTracking-manager/raceProgressTracker";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 
 export abstract class AbstractPlayer {
     private _id: number;
     protected _car: Car;
-    private _score: CommonScore;
+    private _score: Score;
     private _raceProgressTracker: RaceProgressTracker;
 
     public constructor(id: number, keyboardHandler: KeyboardEventHandlerService) {
