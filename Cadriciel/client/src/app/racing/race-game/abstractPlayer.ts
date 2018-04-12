@@ -4,10 +4,12 @@ import { RaceProgressTracker } from "../carTracking-manager/raceProgressTracker"
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 
 export abstract class AbstractPlayer {
+
     private _id: number;
-    protected _car: Car;
-    private _score: CommonScore;
     private _raceProgressTracker: RaceProgressTracker;
+    private _score: CommonScore;
+
+    protected _car: Car;
 
     public constructor(id: number, keyboardHandler: KeyboardEventHandlerService) {
         this._id = id;
@@ -22,7 +24,7 @@ export abstract class AbstractPlayer {
     }
 
     public update(): void {
-
+        
     }
 
 }

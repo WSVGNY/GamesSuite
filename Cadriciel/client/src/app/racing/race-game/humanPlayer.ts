@@ -8,10 +8,6 @@ export class HumanPlayer extends AbstractPlayer {
         super(id, keyboardHandler);
     }
 
-    public get car(): Car {
-        return this._car;
-    }
-
     protected initializeCar(keyboardHandler: KeyboardEventHandlerService): void {
         this._car = new Car(keyboardHandler, false);
     }
