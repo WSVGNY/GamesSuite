@@ -275,11 +275,13 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
     private async initializeGameFromTrack(track: Track): Promise<void> {
         this.initializeCars(this._chosenTrack.type);
-        this._collisionManagerService.track = this._gameScene.loadTrack(this._chosenTrack);
+        this._gameScene.loadTrack(this._chosenTrack);
+        this._collisionManagerService.track = this._gameScene.trackMesh;
         await this.createSounds();
         await this._gameScene.loadCars(this._cars, this._carDebugs, this._cameraManager.currentCamera, this._chosenTrack.type);
         this._soundManager.accelerationSoundEffect.play();
-        await this._aiCarService.initialize(this._chosenTrack.vertices, Difficulty.Medium).then().catch((err) => console.error(err));
+        await this._aiCarService.initialize(this._gameScene.trackMesh.trackPoints.toVectors3, Difficulty.Medium)
+            .then().catch((err) => console.error(err));
         this._cameraManager.initializeSpectatingCameraPosition(this._playerCar.currentPosition, this._playerCar.direction);
         this._trackingManager.init(this._chosenTrack.vertices);
         this.bindKeys();

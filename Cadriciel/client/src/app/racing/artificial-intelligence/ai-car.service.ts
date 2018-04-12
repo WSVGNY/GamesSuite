@@ -11,7 +11,6 @@ import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { AIConfig } from "./ai-config";
 import { AIDebug } from "./ai-debug";
 import { LineEquation } from "./lineEquation";
-import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
 
 @Injectable()
 export class AICarService {
@@ -23,12 +22,13 @@ export class AICarService {
 
     public constructor() { }
 
-    public async initialize(trackVertices: CommonCoordinate3D[], difficulty: Difficulty): Promise<void> {
+    public async initialize(trackVertices: Vector3[], difficulty: Difficulty): Promise<void> {
         this._aiControl = new CommandController();
         this._trackVertices = [];
-        trackVertices.forEach((coordinate: CommonCoordinate3D) => {
-            this._trackVertices.push(new Vector3(coordinate.x, coordinate.y, coordinate.z));
-        });
+        this._trackVertices = trackVertices;
+        // trackVertices.forEach((vertex: Vector3) => {
+        //     this._trackVertices.push(new Vector3(coordinate.x, coordinate.y, coordinate.z));
+        // });
         this.createVectorTrackFromPoints(this._trackVertices);
         this._aiConfig = new AIConfig(difficulty);
     }

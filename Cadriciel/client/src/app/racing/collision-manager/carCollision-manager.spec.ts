@@ -1,5 +1,5 @@
 import { Car } from "../car/car";
-import { Vector3, Raycaster, Intersection } from "three";
+import { Vector3 } from "three";
 import { CarCollisionManager } from "./carCollision-manager";
 
 // tslint:disable:no-magic-numbers

@@ -66,14 +66,14 @@ export class WallMesh extends Mesh {
     }
 
     private findInteriorWallPoints(trackPoints: TrackPointList): void {
-        trackPoints.points.forEach((point: TrackPoint) => {
+        trackPoints.toTrackPoints.forEach((point: TrackPoint) => {
             this._shapePoints.push(point.coordinate.add(this.findVectorToInteriorWall(point)));
         });
         this.findInteriorWallWidthPoint(trackPoints);
     }
 
     private findInteriorWallWidthPoint(trackPoints: TrackPointList): void {
-        trackPoints.points.forEach((point: TrackPoint) => {
+        trackPoints.toTrackPoints.forEach((point: TrackPoint) => {
             this._holePoints.push(point.coordinate.add(this.findVectorToInteriorWallWidth(point)));
         });
     }
@@ -91,14 +91,14 @@ export class WallMesh extends Mesh {
     }
 
     private findExteriorWallPoints(trackPoints: TrackPointList): void {
-        trackPoints.points.forEach((point: TrackPoint) => {
+        trackPoints.toTrackPoints.forEach((point: TrackPoint) => {
             this._holePoints.push(point.coordinate.add(this.findVectorToExteriorWall(point)));
         });
         this.findExteriorWallWidthPoint(trackPoints);
     }
 
     private findExteriorWallWidthPoint(trackPoints: TrackPointList): void {
-        trackPoints.points.forEach((point: TrackPoint) => {
+        trackPoints.toTrackPoints.forEach((point: TrackPoint) => {
             this._shapePoints.push(point.coordinate.add(this.findVectorToExteriorWallWidth(point)));
         });
     }

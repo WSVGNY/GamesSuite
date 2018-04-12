@@ -61,7 +61,7 @@ describe("TrackPoint", () => {
         points.push(trackPoint2);
         points.push(trackPoint3);
         const newList: TrackPointList = new TrackPointList(points);
-        expect(newList.points).toBeTruthy();
+        expect(newList.toTrackPoints).toBeTruthy();
     });
 
     it("a track list of points should be created in the invert clock direction", () => {
@@ -73,6 +73,6 @@ describe("TrackPoint", () => {
         points.push(trackPoint2);
         points.push(trackPoint1);
         const newList: TrackPointList = new TrackPointList(points);
-        expect(newList.points).toBeTruthy();
+        expect(newList.toTrackPoints).toBeTruthy();
     });
 });
