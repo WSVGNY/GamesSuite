@@ -8,7 +8,8 @@ import { RaceProgressTracker } from "./raceProgressTracker";
 export class CarTrackingManagerService {
 
     private _detectionSpheres: Sphere[];
-    private _endLinePosition: Vector3;
+    private _finishLinePosition: Vector3;
+    private _finishLineSegment: Vector3;
 
     public constructor() {
         this._detectionSpheres = [];
@@ -16,7 +17,7 @@ export class CarTrackingManagerService {
 
     public init(trackVertices: CommonCoordinate3D[]): void {
         this.createDetectionSpheres(trackVertices);
-        this.computeEndLinePosition(trackVertices);
+        this.computeFinishLine(trackVertices);
     }
 
     private createDetectionSpheres(trackVertices: CommonCoordinate3D[]): void {
@@ -27,7 +28,7 @@ export class CarTrackingManagerService {
 
     public update(position: Vector3, raceProgressTracker: RaceProgressTracker): boolean {
         if (this.isLastStretch(raceProgressTracker)) {
-            if (this.isAtFinishLine(position)) {
+            if (this.isAtFinishLine(position, raceProgressTracker)) {
                 raceProgressTracker.isRaceCompleted = true;
             }
         } else if (this.isRightSequence(position, raceProgressTracker)) {
@@ -70,31 +71,33 @@ export class CarTrackingManagerService {
     //         this._currentIndex - 1;
     // }
 
-    private isRaceCompleted(raceProgressTracker: RaceProgressTracker): boolean {
-        return raceProgressTracker.segmentCounted > this._detectionSpheres.length * NUMBER_OF_LAPS;
-    }
+    // private isRaceCompleted(raceProgressTracker: RaceProgressTracker): boolean {
+    //     return raceProgressTracker.segmentCounted > this._detectionSpheres.length * NUMBER_OF_LAPS;
+    // }
 
-    private computeEndLinePosition(trackVertices: CommonCoordinate3D[]): void {
-        this._endLinePosition = new Vector3(
-            (trackVertices[1].x - trackVertices[0].x) / 2,
-            (trackVertices[1].y - trackVertices[0].y) / 2,
-            (trackVertices[1].z - trackVertices[0].z) / 2
-        );
+    private computeFinishLine(trackVertices: CommonCoordinate3D[]): void {
+        const firstVertex: Vector3 = new Vector3(trackVertices[0].x, trackVertices[0].y, trackVertices[0].z);
+        const secondVertex: Vector3 = new Vector3(trackVertices[1].x, trackVertices[1].y, trackVertices[1].z);
+        const firstToSecondVertex: Vector3 = secondVertex.clone().sub(firstVertex);
+        const direction: Vector3 = firstToSecondVertex.clone().normalize();
+
+        this._finishLinePosition = firstVertex.clone().add(direction.clone().multiplyScalar(firstToSecondVertex.length() / 2));
+        this._finishLineSegment = direction.clone();
     }
 
     private isLastStretch(raceProgressTracker: RaceProgressTracker): boolean {
         return raceProgressTracker.segmentCounted === this._detectionSpheres.length * NUMBER_OF_LAPS;
     }
 
-    private isAtFinishLine(position: Vector3): boolean {
-        if (
-            (Math.abs(this._car.currentPosition.x - this._endPoint.x) < 1) &&
-            ((Math.abs(this._car.currentPosition.z - this._endPoint.z) < HALF_TRACK_WIDTH))) {
-            // console.log(this._endPoint);
-            // console.log(this._car.currentPosition);
-            this._lapCounter++;
+    private isAtFinishLine(position: Vector3, raceProgressTracker: RaceProgressTracker): boolean {
+        const carToFinishLine: Vector3 = this._finishLinePosition.clone().sub(position);
+        const parallelDistance: number = (carToFinishLine.clone().projectOnVector(this._finishLineSegment)).length();
+        if (parallelDistance < 2) {
+            raceProgressTracker.incrementIndexCount();
+
+            return true;
         }
 
-        return true;
+        return false;
     }
 }

@@ -92,7 +92,6 @@ export class RacingComponent implements AfterViewInit, OnInit {
     }
 
     public startGameLoop(): void {
-        this._trackingManager.init(this._chosenTrack.vertices);
         this._lastDate = Date.now();
         this._lastDate = Date.now();
         this._startDate = Date.now();

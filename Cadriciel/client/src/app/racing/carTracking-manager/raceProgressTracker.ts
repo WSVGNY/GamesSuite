@@ -8,7 +8,7 @@ export class RaceProgressTracker {
     public isRaceCompleted: boolean;
 
     public constructor() {
-        this._currentSegmentIndex = 0;
+        this._currentSegmentIndex = 1;
         this._segmentCounted = 0;
         this.isRaceCompleted = false;
         this.isTimeLogged = false;
