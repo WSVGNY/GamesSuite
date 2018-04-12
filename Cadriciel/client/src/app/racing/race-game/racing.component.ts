@@ -5,11 +5,10 @@ import { Track } from "../../../../../common/racing/track";
 import { ActivatedRoute } from "@angular/router";
 import { GameScene } from "../scenes/gameScene";
 import { AICarService } from "../artificial-intelligence/ai-car.service";
-import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { RenderService } from "../render-service/render.service";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
 import { SoundManagerService } from "../sound-service/sound-manager.service";
-import { AI_CARS_QUANTITY, MINIMUM_CAR_DISTANCE, NUMBER_OF_LAPS } from "../constants";
+import { AI_CARS_QUANTITY, MINIMUM_CAR_DISTANCE, NUMBER_OF_LAPS, AI_PERSONALITY_QUANTITY } from "../constants";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { CollisionManagerService } from "../collision-manager/collision-manager.service";
 import { CameraManagerService } from "../cameras/camera-manager.service";
@@ -18,6 +17,7 @@ import { CarTrackingManagerService } from "../carTracking-manager/car-tracking-m
 import { TrackService } from "../track/track-service/track.service";
 import { EndGameTableService } from "../scoreboard/end-game-table/end-game-table.service";
 import { HighscoreService } from "../scoreboard/best-times/highscore.service";
+import { Personality } from "../artificial-intelligence/ai-config";
 
 enum State {
     START_ANIMATION = 1,
@@ -280,7 +280,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
         await this.createSounds();
         await this._gameScene.loadCars(this._cars, this._carDebugs, this._cameraManager.currentCamera, this._chosenTrack.type);
         this._soundManager.accelerationSoundEffect.play();
-        await this._aiCarService.initialize(this._gameScene.trackMesh.trackPoints.toVectors3, Difficulty.Medium)
+        await this._aiCarService.initialize(this._gameScene.trackMesh.trackPoints.toVectors3, )
             .then().catch((err) => console.error(err));
         this._cameraManager.initializeSpectatingCameraPosition(this._playerCar.currentPosition, this._playerCar.direction);
         this._trackingManager.init(this._chosenTrack.vertices);
@@ -299,8 +299,12 @@ export class RacingComponent implements AfterViewInit, OnInit {
             if (i === 0) {
                 this._cars.push(new Car(this._keyBoardHandler, false));
                 this._playerCar = this._cars[0];
-            } else {
-                this._cars.push(new Car(this._keyBoardHandler));
+            } else if (i - 1 % AI_PERSONALITY_QUANTITY === 0) {
+                this._cars.push(new Car(this._keyBoardHandler, true, Personality.Larry));
+            } else if (i - 1 % AI_PERSONALITY_QUANTITY === 1) {
+                this._cars.push(new Car(this._keyBoardHandler, true, Personality.Curly));
+            } else if (i - 1 % AI_PERSONALITY_QUANTITY === 2) {
+                this._cars.push(new Car(this._keyBoardHandler, true, Personality.Moe));
             }
             this._carDebugs.push(new AIDebug());
         }
