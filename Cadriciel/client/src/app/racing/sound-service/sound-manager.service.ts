@@ -1,8 +1,9 @@
 import { Injectable } from "@angular/core";
-import { AudioListener, AudioLoader, AudioBuffer, Audio, PerspectiveCamera } from "three";
+import { AudioListener, AudioLoader, AudioBuffer, Audio } from "three";
 import { Car } from "../car/car";
 import {
-    MUSIC_PATH, ACCELERATION_PATH, CAR_COLLISION_PATH, STARTING_PATH, VOLUME, RPM_FACTOR, MUSIC_KEYCODE, WALL_COLLISION_PATH
+    MUSIC_PATH, ACCELERATION_PATH, CAR_COLLISION_PATH, VOLUME, RPM_FACTOR, MUSIC_KEYCODE,
+    WALL_COLLISION_PATH, START_SOUND_3_PATH, START_SOUND_2_PATH, START_SOUND_1_PATH, START_SOUND_GO_PATH
 } from "../constants";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 
@@ -13,7 +14,8 @@ export class SoundManagerService {
     private _accelerationSound: Audio;
     private _carCollisionSound: Audio;
     private _wallCollisionSound: Audio;
-    private _startingSound: Audio;
+    private _startingSound: Audio[];
+    private _startSequenceIndex: number;
     private _isPlayingMusic: boolean;
     private _isPlayingCarCollision: boolean;
     private _isPlayingWallCollision: boolean;
@@ -22,49 +24,51 @@ export class SoundManagerService {
         this._isPlayingMusic = false;
         this._isPlayingCarCollision = false;
         this._isPlayingWallCollision = false;
+        this._startSequenceIndex = 0;
+        this._startingSound = [];
     }
 
     public bindSoundKeys(): void {
         this._keyBoardHandler.bindFunctionToKeyDown(MUSIC_KEYCODE, () => {
             this._isPlayingMusic ?
-                this.stop(this.music) :
-                this.play(this.music);
+                this._music.stop() :
+                this._music.play();
             this._isPlayingMusic = !this._isPlayingMusic;
         });
     }
 
-    private createSound(soundPath: string): Audio {
+    private async createSound(soundPath: string): Promise<Audio> {
         const listener: AudioListener = new AudioListener();
         const sound: Audio = new Audio(listener);
         const loader: AudioLoader = new AudioLoader();
-        loader.load(
+
+        return new Promise<Audio>((resolve, reject) => loader.load(
             soundPath,
             (audioBuffer: AudioBuffer) => {
                 sound.setBuffer(audioBuffer);
+                resolve(sound);
             },
             (xhr: XMLHttpRequest) => { },
-            (err: Event) => { }
-        );
-
-        return sound;
+            (err: Event) => reject()
+        ));
     }
 
-    public createMusic(car: Car): void {
-        this._music = this.createSound(MUSIC_PATH);
+    public async createMusic(car: Car): Promise<void> {
+        await this.createSound(MUSIC_PATH).then((sound: Audio) => this._music = sound);
         this._music.setVolume(VOLUME);
         this._music.setLoop(true);
         car.add(this._music);
         this._isPlayingMusic = false;
     }
 
-    public createAccelerationSound(car: Car): void {
-        this._accelerationSound = this.createSound(ACCELERATION_PATH);
+    public async createAccelerationSound(car: Car): Promise<void> {
+        await this.createSound(ACCELERATION_PATH).then((sound: Audio) => this._accelerationSound = sound);
         this._accelerationSound.setLoop(true);
         car.add(this._accelerationSound);
     }
 
-    public createCarCollisionSound(car: Car): void {
-        this._carCollisionSound = this.createSound(CAR_COLLISION_PATH);
+    public async createCarCollisionSound(car: Car): Promise<void> {
+        await this.createSound(CAR_COLLISION_PATH).then((sound: Audio) => this._carCollisionSound = sound);
         this._carCollisionSound.onEnded = () => {
             this._carCollisionSound.stop();
             this._isPlayingCarCollision = false;
@@ -72,8 +76,8 @@ export class SoundManagerService {
         car.add(this._carCollisionSound);
     }
 
-    public createWallCollisionSound(car: Car): void {
-        this._wallCollisionSound = this.createSound(WALL_COLLISION_PATH);
+    public async createWallCollisionSound(car: Car): Promise<void> {
+        await this.createSound(WALL_COLLISION_PATH).then((sound: Audio) => this._wallCollisionSound = sound);
         this._wallCollisionSound.onEnded = () => {
             this._wallCollisionSound.stop();
             this._isPlayingWallCollision = false;
@@ -81,30 +85,24 @@ export class SoundManagerService {
         car.add(this._wallCollisionSound);
     }
 
-    public createStartingSound(camera: PerspectiveCamera): void {
-        this._startingSound = this.createSound(STARTING_PATH);
-        this._startingSound.setVolume(VOLUME);
-        camera.add(this._startingSound);
-    }
-
-    public play(sound: Audio): void {
-        sound.play();
-    }
-
-    public stop(sound: Audio): void {
-        sound.stop();
-    }
-
-    public get music(): Audio {
-        return this._music;
+    public async createStartingSound(car: Car): Promise<void> {
+        await this.createSound(START_SOUND_3_PATH).then((sound: Audio) => this._startingSound.push(sound));
+        await this.createSound(START_SOUND_2_PATH).then((sound: Audio) => this._startingSound.push(sound));
+        await this.createSound(START_SOUND_1_PATH).then((sound: Audio) => this._startingSound.push(sound));
+        await this.createSound(START_SOUND_GO_PATH).then((sound: Audio) => this._startingSound.push(sound));
+        for (let i: number = 0; i < 4; i++) {
+            car.add(this._startingSound[i]);
+        }
+        // this._startingSound.forEach((sound: Audio) => car.add(sound));
     }
 
     public get accelerationSoundEffect(): Audio {
         return this._accelerationSound;
     }
 
-    public get startingSound(): Audio {
-        return this._startingSound;
+    public playCurrentStartSequenceSound(): void {
+        console.log(this._startSequenceIndex);
+        this._startingSound[this._startSequenceIndex++].play();
     }
 
     public get collisionSound(): Audio {

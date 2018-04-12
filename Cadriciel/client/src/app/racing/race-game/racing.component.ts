@@ -23,8 +23,6 @@ enum State {
     END,
 }
 
-const THREE_SECONDS: number = 3000;
-const TWO_SECONDS: number = 2000;
 const ONE_SECOND: number = 1000;
 const MS_TO_SEC: number = 100;
 
@@ -101,21 +99,22 @@ export class RacingComponent implements AfterViewInit, OnInit {
             this._countDownOnScreenValue = "3";
             this._currentState = State.COUNTDOWN;
             this._cameraManager.changeToThirdPersonCamera();
+            this._soundManager.playCurrentStartSequenceSound();
         }
     }
 
-    private updateCountdown(elapsedTime: number): void {
-        if (elapsedTime > THREE_SECONDS) {
+    private updateCountdown(): void {
+        let i: number = +this._countDownOnScreenValue;
+        this._countDownOnScreenValue = (--i).toString();
+        if (i === 0) {
             this._countDownOnScreenValue = "START";
             this._isCountDownOver = true;
-        } else if (elapsedTime > TWO_SECONDS) {
-            this._countDownOnScreenValue = "1";
-        } else if (elapsedTime > ONE_SECOND) {
-            this._countDownOnScreenValue = "2";
-        }
-        if (this._isCountDownOver) {
             this._lastDate = Date.now();
             this._currentState = State.RACING;
+        } else if (i === 1) {
+            this._countDownOnScreenValue = "1";
+        } else if (i === 2) {
+            this._countDownOnScreenValue = "2";
         }
     }
 
@@ -145,7 +144,11 @@ export class RacingComponent implements AfterViewInit, OnInit {
                     this.updateStartingAnimation(elapsedTime / MS_TO_SEC);
                     break;
                 case State.COUNTDOWN:
-                    this.updateCountdown(elapsedTime);
+                    if (elapsedTime > ONE_SECOND) {
+                        this._startDate += ONE_SECOND;
+                        this.updateCountdown();
+                        this._soundManager.playCurrentStartSequenceSound();
+                    }
                     break;
                 case State.RACING:
                     this.updateRacing(timeSinceLastFrame);
@@ -158,11 +161,12 @@ export class RacingComponent implements AfterViewInit, OnInit {
         });
     }
 
-    private createSounds(): void {
-        this._soundManager.createMusic(this._playerCar);
-        this._soundManager.createCarCollisionSound(this._playerCar);
-        this._soundManager.createAccelerationSound(this._playerCar);
-        this._soundManager.createWallCollisionSound(this._playerCar);
+    private async createSounds(): Promise<void> {
+        await this._soundManager.createStartingSound(this._playerCar);
+        await this._soundManager.createMusic(this._playerCar);
+        await this._soundManager.createCarCollisionSound(this._playerCar);
+        await this._soundManager.createAccelerationSound(this._playerCar);
+        await this._soundManager.createWallCollisionSound(this._playerCar);
     }
 
     public getTrack(): void {
@@ -176,7 +180,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private async initializeGameFromTrack(track: Track): Promise<void> {
         this.initializeCars(this._chosenTrack.type);
         this._collisionManagerService.track = this._gameScene.loadTrack(this._chosenTrack);
-        this.createSounds();
+        await this.createSounds();
         await this._gameScene.loadCars(this._cars, this._carDebugs, this._cameraManager.currentCamera, this._chosenTrack.type);
         this._soundManager.accelerationSoundEffect.play();
         await this._aiCarService.initialize(this._chosenTrack.vertices, Difficulty.Medium).then().catch((err) => console.error(err));
