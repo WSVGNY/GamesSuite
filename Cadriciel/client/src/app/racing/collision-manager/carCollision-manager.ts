@@ -1,6 +1,7 @@
 import { Car } from "../car/car";
 import { Vector3 } from "three";
 import { MINIMUM_CAR_DISTANCE } from "../constants";
+import { SoundManagerService } from "../sound-service/sound-manager.service";
 
 export class CarCollisionManager {
 
@@ -9,33 +10,29 @@ export class CarCollisionManager {
     private static _collisionPoint: Vector3;
     private static _overlapCorrection: Vector3;
 
-    public static update(cars: Car[]): boolean {
-        let shouldPlaySound: boolean;
+    public static update(cars: Car[], soundManager: SoundManagerService): void {
         for (let firstCarIndex: number = 0; firstCarIndex < cars.length; ++firstCarIndex) {
             for (let secondCarIndex: number = firstCarIndex + 1; secondCarIndex < cars.length; ++secondCarIndex) {
                 if (this.checkIfCarsAreClose(cars[firstCarIndex], cars[secondCarIndex])) {
-                    shouldPlaySound = this.applyCollisionDetection(cars[firstCarIndex], cars[secondCarIndex]);
+                    this.applyCollisionDetection(cars[firstCarIndex], cars[secondCarIndex], soundManager);
                 }
             }
         }
-
-        return shouldPlaySound;
     }
 
-    private static applyCollisionDetection(firstCar: Car, secondCar: Car): boolean {
+    private static applyCollisionDetection(firstCar: Car, secondCar: Car, soundManager: SoundManagerService): void {
         if (this.computeCollisionParameters(firstCar, secondCar)) {
             this.resolveHitboxOverlap();
             if (!this.carsInCollision()) {
                 this.applyCollisionPhysics();
-
-                return true;
+                if (!firstCar.isAI || !secondCar.isAI) {
+                    soundManager.playCarCollision();
+                }
             }
         } else {
             firstCar.hitbox.inCollision = false;
             secondCar.hitbox.inCollision = false;
         }
-
-        return false;
     }
 
     private static applyCollisionPhysics(): void {

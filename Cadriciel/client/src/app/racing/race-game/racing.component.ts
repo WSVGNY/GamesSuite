@@ -26,8 +26,6 @@ enum State {
     END,
 }
 
-const THREE_SECONDS: number = 3000;
-const TWO_SECONDS: number = 2000;
 const ONE_SECOND: number = 1000;
 const MS_TO_SEC: number = 0.001;
 const AVERAGE_CAR_SPEED: number = 45;
@@ -62,7 +60,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
         private _trackService: TrackService,
         private _aiCarService: AICarService,
         private _collisionManagerService: CollisionManagerService,
-        private _soundService: SoundManagerService,
+        private _soundManager: SoundManagerService,
         private _cameraManager: CameraManagerService,
         private _trackingManager: CarTrackingManagerService,
         private _endGameTableService: EndGameTableService,
@@ -96,7 +94,6 @@ export class RacingComponent implements AfterViewInit, OnInit {
     public startGameLoop(): void {
         this._trackingManager.init(this._chosenTrack.vertices);
         this._lastDate = Date.now();
-        this.createSounds();
         this._lastDate = Date.now();
         this._startDate = Date.now();
         this._countDownOnScreenValue = "";
@@ -109,37 +106,28 @@ export class RacingComponent implements AfterViewInit, OnInit {
         this._cameraManager.updateCameraPositions(this._playerCar, elapsedTime);
         if (this._cameraManager.currentCamera.position.clone().distanceTo(this._playerCar.currentPosition) < MINIMUM_CAR_DISTANCE) {
             this._startDate = Date.now();
+            this._countDownOnScreenValue = "3";
             this._currentState = State.COUNTDOWN;
             this._cameraManager.changeToThirdPersonCamera();
+            this._soundManager.playCurrentStartSequenceSound();
         }
     }
 
-    private updateCountdown(elapsedTime: number): void {
-        if (elapsedTime > THREE_SECONDS) {
+    private updateCountdown(): void {
+        let i: number = +this._countDownOnScreenValue;
+        this._countDownOnScreenValue = (--i).toString();
+        if (i === 0) {
             this._countDownOnScreenValue = "START";
             this._isCountDownOver = true;
-        } else if (elapsedTime > TWO_SECONDS) {
-            this._countDownOnScreenValue = "1";
-        } else if (elapsedTime > ONE_SECOND) {
-            this._countDownOnScreenValue = "2";
-        } else if (elapsedTime <= ONE_SECOND) {
-            this._countDownOnScreenValue = "3";
-        }
-        if (this._isCountDownOver) {
+            this._startDate = Date.now();
             this._lastDate = Date.now();
             this._currentState = State.RACING;
-            this._startDate = Date.now();
         }
     }
 
-    private updateRacing(elapsedTime: number, timeSinceLastFrame: number): void {
+    private updateRacing(timeSinceLastFrame: number): void {
         this.updateCars(timeSinceLastFrame);
         this._collisionManagerService.update(this._cars);
-        if (this._collisionManagerService.shouldPlaySound) {
-            this._soundService.play(this._soundService.collisionSound);
-            this._collisionManagerService.shouldPlaySound = false;
-        }
-        this._soundService.setAccelerationSound(this._playerCar);
         this._cameraManager.updateCameraPositions(this._playerCar);
     }
 
@@ -248,10 +236,14 @@ export class RacingComponent implements AfterViewInit, OnInit {
                     this.updateStartingAnimation(elapsedTime);
                     break;
                 case State.COUNTDOWN:
-                    this.updateCountdown(elapsedTime);
+                    if (elapsedTime > ONE_SECOND) {
+                        this._startDate += ONE_SECOND;
+                        this.updateCountdown();
+                        this._soundManager.playCurrentStartSequenceSound();
+                    }
                     break;
                 case State.RACING:
-                    this.updateRacing(elapsedTime, timeSinceLastFrame);
+                    this.updateRacing(timeSinceLastFrame);
                     break;
                 case State.END:
                     this.endGame(elapsedTime);
@@ -259,16 +251,18 @@ export class RacingComponent implements AfterViewInit, OnInit {
                     break;
                 default:
             }
+            this._soundManager.setAccelerationSound(this._playerCar);
             this._renderService.render(this._gameScene, this._cameraManager.currentCamera);
             this.update();
         });
     }
 
-    private createSounds(): void {
-        // this._soundService.createStartingSound(this._thirdPersonCamera);
-        this._soundService.createMusic(this._playerCar);
-        this._soundService.createAccelerationEffect(this._playerCar);
-        this._soundService.createCollisionSound(this._playerCar);
+    private async createSounds(): Promise<void> {
+        await this._soundManager.createStartingSound(this._playerCar);
+        await this._soundManager.createMusic(this._playerCar);
+        await this._soundManager.createCarCollisionSound(this._playerCar);
+        await this._soundManager.createAccelerationSound(this._playerCar);
+        await this._soundManager.createWallCollisionSound(this._playerCar);
     }
 
     public getTrack(): void {
@@ -282,16 +276,19 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private async initializeGameFromTrack(track: Track): Promise<void> {
         this.initializeCars(this._chosenTrack.type);
         this._collisionManagerService.track = this._gameScene.loadTrack(this._chosenTrack);
+        await this.createSounds();
         await this._gameScene.loadCars(this._cars, this._carDebugs, this._cameraManager.currentCamera, this._chosenTrack.type);
+        this._soundManager.accelerationSoundEffect.play();
         await this._aiCarService.initialize(this._chosenTrack.vertices, Difficulty.Medium).then().catch((err) => console.error(err));
-        this.bindKeys();
         this._cameraManager.initializeSpectatingCameraPosition(this._playerCar.currentPosition, this._playerCar.direction);
+        this._trackingManager.init(this._chosenTrack.vertices);
+        this.bindKeys();
         this.startGameLoop();
     }
 
     private bindKeys(): void {
         this._cameraManager.bindCameraKey();
-        this._soundService.bindSoundKeys();
+        this._soundManager.bindSoundKeys();
         this._gameScene.bindGameSceneKeys(this._cars);
     }
 
@@ -329,5 +326,4 @@ export class RacingComponent implements AfterViewInit, OnInit {
             this._keyBoardHandler.handleKeyUp(event.keyCode);
         }
     }
-
 }
