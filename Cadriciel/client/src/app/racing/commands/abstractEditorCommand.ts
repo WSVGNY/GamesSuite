@@ -1,12 +1,11 @@
 import { EditorScene } from "../scenes/editorScene";
 import { AbstractCommand } from "./abstractCommand";
+import { Vector3 } from "three";
 
 export abstract class AbstractEditorCommand extends AbstractCommand {
-    protected _editorScene: EditorScene;
 
-    public constructor(editorScene: EditorScene) {
+    public constructor(protected _editorScene: EditorScene, protected _vertexName?: string, protected _position?: Vector3) {
         super();
-        this._editorScene = editorScene;
     }
 
     public abstract execute(): void;

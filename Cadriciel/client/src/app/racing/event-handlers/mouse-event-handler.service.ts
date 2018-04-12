@@ -108,7 +108,7 @@ export class MouseEventHandlerService {
 
     private handleLeftClick(editorScene: EditorScene): void {
         if (editorScene.isEmpty) {
-            this._editorControl.command = new PlaceVertex(editorScene, this._mouseWorldCoordinates);
+            this._editorControl.command = new PlaceVertex(editorScene, undefined, this._mouseWorldCoordinates);
             this._editorControl.execute();
         } else if (this.clickOnVertex(editorScene)) {
             if (this.clickOnFirstVertex(editorScene) && editorScene.vertices.length >= REQUIRED_VERTEX_COUNT) {
@@ -120,7 +120,7 @@ export class MouseEventHandlerService {
             }
             this._editorControl.execute();
         } else if (!editorScene.isComplete) {
-            this._editorControl.command = new PlaceVertex(editorScene, this._mouseWorldCoordinates);
+            this._editorControl.command = new PlaceVertex(editorScene, undefined, this._mouseWorldCoordinates);
             this._editorControl.execute();
         }
     }
@@ -151,7 +151,7 @@ export class MouseEventHandlerService {
         if (this.isMouseOnScene(mouseScreenCoordinates)) {
             this.convertToWorldCoordinates(mouseScreenCoordinates);
             if (this._isMouseDown && editorScene.selectedVertex !== undefined) {
-                this._editorControl.command = new MoveVertex(editorScene, this._mouseWorldCoordinates);
+                this._editorControl.command = new MoveVertex(editorScene, undefined, this._mouseWorldCoordinates);
                 this._editorControl.execute();
             }
         }
