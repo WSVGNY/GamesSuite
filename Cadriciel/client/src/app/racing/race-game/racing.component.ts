@@ -55,6 +55,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
     protected _countDownOnScreenValue: string;
     protected _isCountDownOver: boolean;
     private _currentState: State;
+    private _uploadTrack: boolean = true;
 
     public constructor(
         private _renderService: RenderService,
@@ -180,7 +181,9 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private endGame(elapsedTime: number): void {
         for (const car of this._cars) {
             if (!car.raceProgressTracker.isRaceCompleted && !car.raceProgressTracker.isTimeLogged) {
-                this._players.find((player: Player) => player.id === car.uniqueid).setTotalTime(
+                const donePlayer: Player = this._players.find((player: Player) => player.id === car.uniqueid);
+                donePlayer.position = this.findPosition(donePlayer);
+                donePlayer.setTotalTime(
                     this.simulateRaceTime(
                         car.raceProgressTracker.currentSegmentIndex,
                         car.raceProgressTracker.segmentCounted,
@@ -250,7 +253,8 @@ export class RacingComponent implements AfterViewInit, OnInit {
         if (this._highscoreService.highscores.length === 0) {
             this._highscoreService.highscores = this._chosenTrack.bestTimes;
         }
-        if (this._highscoreService.showTable) {
+        if (this._highscoreService.showTable && this._uploadTrack) {
+            this._uploadTrack = false;
             this._chosenTrack.bestTimes = this._highscoreService.highscores;
             this._trackService.putTrack(this._chosenTrack.id, this._chosenTrack).subscribe();
         }
