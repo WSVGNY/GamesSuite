@@ -6,3 +6,5 @@ export const GRAVITY: number = -9.81;
 export const RAD_TO_DEG: number = STRAIGHT_ANGLE_DEG / Math.PI;
 export const PI_OVER_2: number = Math.PI / 2;
 export const PI_OVER_4: number = Math.PI / 2 / 2;
+export const OVERLAP_CORRECTION_SCALAR: number = 0.51;
+export const HALF: number = 0.5;
