@@ -1,24 +1,24 @@
 import { PerspectiveCamera, Vector3 } from "three";
-
-const NEAR_CLIPPING_PLANE: number = 1;
-const FAR_CLIPPING_PLANE: number = 1000;
-const FIELD_OF_VIEW: number = 70;
-const TIMESTEP_ADJUSTMENT: number = 0.01;
+import { GAME_FIELD_OF_VIEW, NEAR_CLIPPING_PLANE, FAR_CLIPPING_PLANE } from "../constants/camera.constants";
 
 export class SpectatingCamera extends PerspectiveCamera {
+
+    private readonly TIMESTEP_ADJUSTMENT: number = 0.01;
+    private readonly START_DISTANCE: number = 50;
+    private readonly START_POSITION_Y: number = 20;
 
     private _initialPosition: Vector3;
     private _xAxis: Vector3;
     private _yAxis: Vector3;
 
     public constructor(aspectRatio: number) {
-        super(FIELD_OF_VIEW, aspectRatio, NEAR_CLIPPING_PLANE, FAR_CLIPPING_PLANE);
+        super(GAME_FIELD_OF_VIEW, aspectRatio, NEAR_CLIPPING_PLANE, FAR_CLIPPING_PLANE);
         this.name = "SPECTATING_CAMERA";
     }
 
     public setInitialPosition(target: Vector3, direction: Vector3): void {
-        const position: Vector3 = target.clone().add(direction.clone().multiplyScalar(50));
-        position.y = 20;
+        const position: Vector3 = target.clone().add(direction.clone().multiplyScalar(this.START_DISTANCE));
+        position.y = this.START_POSITION_Y;
         const groundPosition: Vector3 = position.clone();
         groundPosition.y = 0;
         const groundTarget: Vector3 = target.clone();
@@ -32,8 +32,8 @@ export class SpectatingCamera extends PerspectiveCamera {
 
     public updatePosition(timeStep: number): void {
         const displacement: Vector3 = new Vector3();
-        displacement.add(this._xAxis.clone().multiplyScalar(timeStep * TIMESTEP_ADJUSTMENT));
-        displacement.add(this._yAxis.clone().multiplyScalar(Math.pow(1.07, -((timeStep * TIMESTEP_ADJUSTMENT) - 50))));
+        displacement.add(this._xAxis.clone().multiplyScalar(timeStep * this.TIMESTEP_ADJUSTMENT));
+        displacement.add(this._yAxis.clone().multiplyScalar(Math.pow(1.07, -((timeStep * this.TIMESTEP_ADJUSTMENT) - 50))));
         const newPosition: Vector3 = this._initialPosition.clone().add(displacement);
         this.position.copy(newPosition);
     }

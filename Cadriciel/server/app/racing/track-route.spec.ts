@@ -26,9 +26,9 @@ describe("TRACK SERVICE TESTS", () => {
     });
 
     it("should get a single track", (done: MochaDone) => {
-        requestPromise(SERVICE_BASE_URL + "5ab4aa0753bced3d5c56761e").then((response: string) => {
+        requestPromise(SERVICE_BASE_URL + "5acfea9d5b42c43abc60ecf0").then((response: string) => {
             const track: Track = Track.createFromJSON(response);
-            assert(track.id === "5ab4aa0753bced3d5c56761e");
+            assert(track.id === "5acfea9d5b42c43abc60ecf0");
             assert(track.isTestTrack);
             done();
         }).catch((e: Error) => {
@@ -40,17 +40,17 @@ describe("TRACK SERVICE TESTS", () => {
 
     it("should edit a track", (done: MochaDone) => {
         const randomNumber: number = Math.random();
-        const trackToEdit: Track = new Track("5ab4aa0753bced3d5c56761e", true);
+        const trackToEdit: Track = new Track("5acfea9d5b42c43abc60ecf0", true);
         trackToEdit.name = randomNumber.toString();
         const options: requestPromise.OptionsWithUrl = {
             method: "PUT",
-            url: SERVICE_BASE_URL + "put/5ab4aa0753bced3d5c56761e",
+            url: SERVICE_BASE_URL + "put/5acfea9d5b42c43abc60ecf0",
             body: trackToEdit,
             json: true
         };
         requestPromise(options).then((response: Track) => {
             const iTrack: Track = Track.createFromJSON(JSON.stringify(response));
-            assert(iTrack.id === "5ab4aa0753bced3d5c56761e");
+            assert(iTrack.id === "5acfea9d5b42c43abc60ecf0");
             assert(iTrack.name === randomNumber.toString());
             done();
         }).catch((e: Error) => {

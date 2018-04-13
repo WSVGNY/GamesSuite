@@ -1,5 +1,4 @@
 // tslint:disable:no-magic-numbers
-
 import { ThirdPersonCamera } from "./thirdPersonCamera";
 import { PerspectiveCamera, Vector3 } from "three";
 import { Car } from "../car/car";

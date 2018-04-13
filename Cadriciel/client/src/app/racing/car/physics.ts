@@ -1,7 +1,7 @@
 import { Vector3 } from "three";
-import { GRAVITY, TIRE_ASPHALT_COEFFICIENT } from "../constants";
-import { CarConfig } from "./carConfig";
 import { Car } from "./car";
+import { NUMBER_REAR_WHEELS, MINIMUM_SPEED, TIRE_ASPHALT_COEFFICIENT, NUMBER_WHEELS } from "../constants/car.constants";
+import { GRAVITY } from "../constants/math.constants";
 
 export class Physics {
 
@@ -12,7 +12,7 @@ export class Physics {
     }
 
     public static getAngularAcceleration(): number {
-        return this.getTotalTorque() / (this._car.rearWheel.inertia * CarConfig.NUMBER_REAR_WHEELS);
+        return this.getTotalTorque() / (this._car.rearWheel.inertia * NUMBER_REAR_WHEELS);
     }
 
     public static getDeltaSpeed(deltaTime: number): Vector3 {
@@ -46,7 +46,7 @@ export class Physics {
     }
 
     private static getTotalTorque(): number {
-        return this.getTractionTorque() * CarConfig.NUMBER_REAR_WHEELS + this.getBrakeTorque();
+        return this.getTractionTorque() * NUMBER_REAR_WHEELS + this.getBrakeTorque();
     }
 
     private static getEngineForce(): number {
@@ -60,7 +60,7 @@ export class Physics {
     private static getLongitudinalForce(): Vector3 {
         const resultingForce: Vector3 = new Vector3();
 
-        if (this._car.speed.length() >= CarConfig.MINIMUM_SPEED) {
+        if (this._car.speed.length() >= MINIMUM_SPEED) {
             const dragForce: Vector3 = this.getDragForce();
             const friction: Vector3 = this.getFrictionForce();
             const rollingResistance: Vector3 = this.getRollingResistance();
@@ -123,7 +123,7 @@ export class Physics {
         const force: number = this.getEngineForce();
         const maxForce: number =
             this._car.rearWheel.frictionCoefficient * this._car.mass *
-            GRAVITY * this._car.weightRear * CarConfig.NUMBER_REAR_WHEELS / CarConfig.NUMBER_WHEELS;
+            GRAVITY * this._car.weightRear * NUMBER_REAR_WHEELS / NUMBER_WHEELS;
 
         return -Math.min(force, maxForce);
     }

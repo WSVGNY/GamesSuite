@@ -1,7 +1,9 @@
 // tslint:disable:no-magic-numbers
 import { Line, Geometry, Vector3, LineBasicMaterial } from "three";
-import { WHITE, PI_OVER_2, HALF_TRACK_WIDTH, WALL_DISTANCE_TO_TRACK, WALL_WIDTH } from "../../constants";
 import { ConstraintValidator } from "./constraintValidator";
+import { WHITE } from "../../constants/color.constants";
+import { PI_OVER_2 } from "../../constants/math.constants";
+import { HALF_TRACK_WIDTH, WALL_DISTANCE_TO_TRACK, WALL_WIDTH } from "../../constants/scene.constants";
 
 const LINE_GEOMETRY1: Geometry = new Geometry();
 LINE_GEOMETRY1.vertices.push(new Vector3(0, 0, 0));

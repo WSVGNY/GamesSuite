@@ -1,5 +1,5 @@
 import { Vector3 } from "three";
-import { HALF, HALF_TRACK_WIDTH } from "../constants";
+import { HALF_TRACK_WIDTH } from "../constants/scene.constants";
 
 export class TrackPoint {
     public next: TrackPoint;
@@ -34,7 +34,7 @@ export class TrackPoint {
                 -this.vectorToNextCenterPoint.angleTo(this.vectorToPreviousCenterPoint);
         }
 
-        return this._smallAngle * HALF;
+        return this._smallAngle / 2;
     }
 
     public get vectorToPreviousCenterPoint(): Vector3 {

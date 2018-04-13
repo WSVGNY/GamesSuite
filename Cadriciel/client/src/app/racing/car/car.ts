@@ -1,13 +1,6 @@
-import {
-    Vector3, Matrix4, Object3D, ObjectLoader, Quaternion, Camera,
-} from "three";
+import { Vector3, Matrix4, Object3D, ObjectLoader, Quaternion, Camera } from "three";
 import { Engine } from "./engine";
-import {
-    MS_TO_SECONDS, RAD_TO_DEG, CAR_TEXTURE, ACCELERATE_KEYCODE, LEFT_KEYCODE, BRAKE_KEYCODE,
-    RIGHT_KEYCODE
-} from "../constants";
 import { Wheel } from "./wheel";
-import { CarConfig } from "./carConfig";
 import { CarLights } from "./carLights";
 import { Hitbox } from "../collision-manager/hitbox";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
@@ -15,16 +8,25 @@ import { Physics } from "./physics";
 import { CarControls } from "./carControls";
 import { CarStructure } from "./carStructure";
 import { RaceProgressTracker } from "../carTracking-manager/raceProgressTracker";
+import { Personality } from "../artificial-intelligence/ai-config";
+import { ACCELERATE_KEYCODE, LEFT_KEYCODE, BRAKE_KEYCODE, RIGHT_KEYCODE } from "../constants/keycode.constants";
+import { CAR_TEXTURE } from "../constants/texture.constants";
+import { RAD_TO_DEG, MS_TO_SECONDS } from "../constants/math.constants";
+import {
+    DEFAULT_WHEELBASE, DEFAULT_MASS, DEFAULT_DRAG_COEFFICIENT, INITIAL_WEIGHT_DISTRIBUTION,
+    MAXIMUM_STEERING_ANGLE, MINIMUM_SPEED
+} from "../constants/car.constants";
 
 export class Car extends Object3D {
     private _mesh: Object3D;
     private _hitbox: Hitbox;
     private _raceProgressTracker: RaceProgressTracker;
-    // public trackPortionIndex: number;
 
     public constructor(
+        private _id: number,
         private keyBoardService: KeyboardEventHandlerService,
         private _isAI: boolean = true,
+        private _aiPersonality: Personality = Personality.Player,
         private _carStructure: CarStructure = new CarStructure(),
         private _carControls: CarControls = new CarControls(),
         public trackPortionIndex: number = 0,
@@ -34,17 +36,17 @@ export class Car extends Object3D {
 
         if (_carStructure.wheelbase <= 0) {
             console.error("Wheelbase should be greater than 0.");
-            _carStructure.wheelbase = CarConfig.DEFAULT_WHEELBASE;
+            _carStructure.wheelbase = DEFAULT_WHEELBASE;
         }
 
         if (_carStructure.mass <= 0) {
             console.error("Mass should be greater than 0.");
-            _carStructure.mass = CarConfig.DEFAULT_MASS;
+            _carStructure.mass = DEFAULT_MASS;
         }
 
         if (_carStructure.dragCoefficient <= 0) {
             console.error("Drag coefficient should be greater than 0.");
-            _carStructure.dragCoefficient = CarConfig.DEFAULT_DRAG_COEFFICIENT;
+            _carStructure.dragCoefficient = DEFAULT_DRAG_COEFFICIENT;
         }
 
         this.initAttributes();
@@ -70,7 +72,7 @@ export class Car extends Object3D {
     private initAttributes(): void {
         this._carControls.isBraking = false;
         this._carControls.steeringWheelDirection = 0;
-        this._carStructure.weightRear = CarConfig.INITIAL_WEIGHT_DISTRIBUTION;
+        this._carStructure.weightRear = INITIAL_WEIGHT_DISTRIBUTION;
         this._carControls.speed = new Vector3(0, 0, 0);
         this.position.add(new Vector3(0, 0, 0));
         this._carStructure.lights = new CarLights();
@@ -112,6 +114,10 @@ export class Car extends Object3D {
         this._mesh.add(this._carStructure.lights);
         this.turnLightsOff();
         this._carStructure.lights.turnBackLightsOff();
+    }
+
+    public get uniqueid(): number {
+        return this._id;
     }
 
     public get isAI(): boolean {
@@ -181,11 +187,11 @@ export class Car extends Object3D {
     }
 
     public steerLeft(): void {
-        this._carControls.steeringWheelDirection = CarConfig.MAXIMUM_STEERING_ANGLE;
+        this._carControls.steeringWheelDirection = MAXIMUM_STEERING_ANGLE;
     }
 
     public steerRight(): void {
-        this._carControls.steeringWheelDirection = -CarConfig.MAXIMUM_STEERING_ANGLE;
+        this._carControls.steeringWheelDirection = - MAXIMUM_STEERING_ANGLE;
     }
 
     public releaseSteering(): void {
@@ -238,7 +244,7 @@ export class Car extends Object3D {
         this._carControls.speed = this.speed.applyQuaternion(rotationQuaternion.inverse());
 
         // Angular rotation of the car
-        const R: number = CarConfig.DEFAULT_WHEELBASE / Math.sin(this._carControls.steeringWheelDirection * deltaTime);
+        const R: number = DEFAULT_WHEELBASE / Math.sin(this._carControls.steeringWheelDirection * deltaTime);
         const omega: number = this._carControls.speed.length() / R;
         this._mesh.rotateY(omega);
 
@@ -253,7 +259,7 @@ export class Car extends Object3D {
         this._carStructure.engine.update(this._carControls.speed.length(), this._carStructure.rearWheel.radius);
         this._carStructure.weightRear = Physics.getWeightDistribution();
         this._carControls.speed.add(Physics.getDeltaSpeed(deltaTime));
-        this._carControls.speed.setLength(this._carControls.speed.length() <= CarConfig.MINIMUM_SPEED ?
+        this._carControls.speed.setLength(this._carControls.speed.length() <= MINIMUM_SPEED ?
             0 : this._carControls.speed.length());
         this._mesh.position.add(Physics.getDeltaPosition(deltaTime));
         this._carStructure.rearWheel.update(this._carControls.speed.length());
@@ -295,4 +301,7 @@ export class Car extends Object3D {
         return this._carStructure.weightRear;
     }
 
+    public get aiPersonality(): Personality {
+        return this._aiPersonality;
+    }
 }

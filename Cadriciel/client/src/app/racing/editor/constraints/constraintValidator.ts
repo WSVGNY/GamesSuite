@@ -1,8 +1,10 @@
 import { Line, Geometry, Vector3, LineBasicMaterial } from "three";
-import { RED, PI_OVER_4, PI_OVER_2, HALF_TRACK_WIDTH, WALL_DISTANCE_TO_TRACK, WALL_WIDTH } from "../../constants";
 import { CommonCoordinate3D } from "../../../../../../common/racing/commonCoordinate3D";
 import { TrackPointList } from "../../track/trackPointList";
 import { WallMesh } from "../../track/wall";
+import { RED } from "../../constants/color.constants";
+import { HALF_TRACK_WIDTH, WALL_DISTANCE_TO_TRACK, WALL_WIDTH } from "../../constants/scene.constants";
+import { PI_OVER_4, PI_OVER_2 } from "../../constants/math.constants";
 
 const UNAUTHORIZED_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: RED });
 const OFFSET: number = HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH;

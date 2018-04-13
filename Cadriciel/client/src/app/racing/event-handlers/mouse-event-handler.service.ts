@@ -7,7 +7,6 @@ import { PlaceVertex } from "../commands/editorCommands/placeVertex";
 import { RemoveVertex } from "../commands/editorCommands/removeVertex";
 import { MoveVertex } from "../commands/editorCommands/moveVertex";
 import { DeselectVertex } from "../commands/editorCommands/deselectVertex";
-import { HALF } from "../constants";
 import { EditorScene } from "../scenes/editorScene";
 
 const LEFT_CLICK_KEYCODE: number = 1;
@@ -78,8 +77,8 @@ export class MouseEventHandlerService {
     }
 
     private computeCenterOffset(): void {
-        this._centerOffset.x = this._containerEditor.clientWidth * HALF;
-        this._centerOffset.y = this._containerEditor.clientHeight * HALF;
+        this._centerOffset.x = this._containerEditor.clientWidth / 2;
+        this._centerOffset.y = this._containerEditor.clientHeight / 2;
         this._centerOffset.z = 0;
     }
 
@@ -109,7 +108,7 @@ export class MouseEventHandlerService {
 
     private handleLeftClick(editorScene: EditorScene): void {
         if (editorScene.isEmpty) {
-            this._editorControl.command = new PlaceVertex(editorScene, this._mouseWorldCoordinates);
+            this._editorControl.command = new PlaceVertex(editorScene, undefined, this._mouseWorldCoordinates);
             this._editorControl.execute();
         } else if (this.clickOnVertex(editorScene)) {
             if (this.clickOnFirstVertex(editorScene) && editorScene.vertices.length >= REQUIRED_VERTEX_COUNT) {
@@ -121,7 +120,7 @@ export class MouseEventHandlerService {
             }
             this._editorControl.execute();
         } else if (!editorScene.isComplete) {
-            this._editorControl.command = new PlaceVertex(editorScene, this._mouseWorldCoordinates);
+            this._editorControl.command = new PlaceVertex(editorScene, undefined, this._mouseWorldCoordinates);
             this._editorControl.execute();
         }
     }
@@ -152,7 +151,7 @@ export class MouseEventHandlerService {
         if (this.isMouseOnScene(mouseScreenCoordinates)) {
             this.convertToWorldCoordinates(mouseScreenCoordinates);
             if (this._isMouseDown && editorScene.selectedVertex !== undefined) {
-                this._editorControl.command = new MoveVertex(editorScene, this._mouseWorldCoordinates);
+                this._editorControl.command = new MoveVertex(editorScene, undefined, this._mouseWorldCoordinates);
                 this._editorControl.execute();
             }
         }

@@ -1,24 +1,24 @@
 import { Injectable } from "@angular/core";
-import { CommonScore } from "../../../../../../common/racing/commonScore";
+import { Player } from "../../race-game/player";
+import { CURRENT_PLAYER } from "../../constants/global.constants";
 
 @Injectable()
 export class EndGameTableService {
-    public scores: CommonScore[];
+    public players: Player[];
     public showTable: boolean;
 
     public constructor() {
-        this.scores = [];
+        this.players = [];
         this.showTable = false;
     }
 
-    public getPlayerScore(): CommonScore {
-        for (const score of this.scores) {
-            if (score.name === "Player 1") {
-                return score;
+    public getHumanPlayer(): Player {
+        for (const player of this.players) {
+            if (player.name === CURRENT_PLAYER) {
+                return player;
             }
         }
 
-        // throw new Error("Player name is not set to Player 1");
-        return { car: "HELLO", name: "JOHN", position: 1, firstLap: 1000, secondLap: 1000, thirdLap: 1000, totalTime: 2500 };
+        throw new Error("Player name is not set to Player 1");
     }
 }

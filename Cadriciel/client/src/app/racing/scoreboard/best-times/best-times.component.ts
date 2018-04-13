@@ -1,9 +1,8 @@
 import { Component } from "@angular/core";
 import { HighscoreService } from "./highscore.service";
-import { CommonHighscore } from "../../../../../../common/racing/commonHighscore";
 
-const HUNDREDTH_TO_MINUTES: number = 6000;
-const SECONDS_TO_MINUTES: number = 100;
+const SECONDS_TO_HUNDREDTH: number = 100;
+const SECONDS_TO_MINUTES: number = 60;
 
 @Component({
     selector: "app-best-times",
@@ -18,15 +17,16 @@ export class BestTimesComponent {
         return this.highscoreService.showTable;
     }
 
-    public getTime(score: CommonHighscore): string {
+    public getFormatedTime(score: number): string {
         let time: string = "";
-        const minutes: number = Math.floor(score.time / HUNDREDTH_TO_MINUTES);
-        const seconds: number = Math.floor(Math.floor(score.time - minutes * HUNDREDTH_TO_MINUTES) / SECONDS_TO_MINUTES);
+        const minutes: number = Math.floor(score / SECONDS_TO_MINUTES);
+        const seconds: number = Math.floor(score - minutes * SECONDS_TO_MINUTES);
+        const hundredth: number = Math.round((score - minutes * SECONDS_TO_MINUTES - seconds) * SECONDS_TO_HUNDREDTH);
         time += minutes;
         time += ":";
         time += seconds;
         time += ":";
-        time += score.time - minutes * HUNDREDTH_TO_MINUTES - seconds * SECONDS_TO_MINUTES;
+        time += hundredth;
 
         return time;
     }

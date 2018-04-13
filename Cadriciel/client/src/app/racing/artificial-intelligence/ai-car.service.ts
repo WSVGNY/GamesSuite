@@ -6,31 +6,25 @@ import { TurnRight } from "../commands/carAICommands/turnRight";
 import { GoFoward } from "../commands/carAICommands/goFoward";
 import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";
 import { Vector3 } from "three";
-import { PI_OVER_4 } from "../constants";
-import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { AIConfig } from "./ai-config";
 import { AIDebug } from "./ai-debug";
 import { LineEquation } from "./lineEquation";
-import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
+import { PI_OVER_4 } from "../constants/math.constants";
 
 @Injectable()
 export class AICarService {
 
     private _aiControl: CommandController;
     private _trackLineEquations: LineEquation[];
-    private _aiConfig: AIConfig;
     private _trackVertices: Vector3[];
 
     public constructor() { }
 
-    public async initialize(trackVertices: CommonCoordinate3D[], difficulty: Difficulty): Promise<void> {
+    public async initialize(trackVertices: Vector3[]): Promise<void> {
         this._aiControl = new CommandController();
         this._trackVertices = [];
-        trackVertices.forEach((coordinate: CommonCoordinate3D) => {
-            this._trackVertices.push(new Vector3(coordinate.x, coordinate.y, coordinate.z));
-        });
+        this._trackVertices = trackVertices;
         this.createVectorTrackFromPoints(this._trackVertices);
-        this._aiConfig = new AIConfig(difficulty);
     }
 
     public update(car: Car, aiDebug: AIDebug): void {
@@ -76,7 +70,7 @@ export class AICarService {
     }
 
     private updateCarDirection(lineDistance: number, car: Car, goingStraightToLine: boolean): void {
-        if (Math.abs(lineDistance) > this._aiConfig.distanceBeforeReplacement && !goingStraightToLine) {
+        if (Math.abs(lineDistance) > AIConfig.getDistanceBeforeReplacement(car.aiPersonality) && !goingStraightToLine) {
             this.accelerate(car);
             lineDistance < 0 ?
                 this.goLeft(car) :
@@ -121,8 +115,8 @@ export class AICarService {
     private projectInFrontOfCar(car: Car): Vector3 {
         const dir: Vector3 = car.direction.normalize();
         const positionInFront: Vector3 = new Vector3(car.position.x + car.currentPosition.x, 0, car.position.z + car.currentPosition.z);
-        positionInFront.x += dir.x * this._aiConfig.distanceFromVehicule;
-        positionInFront.z += dir.z * this._aiConfig.distanceFromVehicule;
+        positionInFront.x += dir.x * AIConfig.getDistanceFromVehicule(car.aiPersonality);
+        positionInFront.z += dir.z * AIConfig.getDistanceFromVehicule(car.aiPersonality);
 
         return positionInFront;
     }

@@ -1,5 +1,5 @@
 import { Car } from "../car/car";
-import { Vector3, Raycaster, Intersection } from "three";
+import { Vector3 } from "three";
 import { CarCollisionManager } from "./carCollision-manager";
 
 // tslint:disable:no-magic-numbers
@@ -76,7 +76,8 @@ describe("Car collision Manager Service", () => {
         // const collidingVertex: Vector3 = CarCollisionManager["_collisionReceiver"].hitbox.bottomPlaneVertices[0]
         //     .clone().applyMatrix4(firstCar.meshMatrix);
         // const direction: Vector3 = collidingVertex.sub(CarCollisionManager["_collisionEmitter"].currentPosition);
-        // const ray: Raycaster = new Raycaster(CarCollisionManager["_collisionEmitter"].currentPosition.clone(), direction.clone().normalize());
+        // const ray: Raycaster = new Raycaster(
+        //     CarCollisionManager["_collisionEmitter"].currentPosition.clone(), direction.clone().normalize());
         // const collisionResult: Intersection[] = ray.intersectObject(CarCollisionManager["_collisionReceiver"].hitbox);
         // expect(collisionResult.length > 0 && collisionResult[0].distance < direction.length()).toEqual(false);
         expect(false).toBe(true);
