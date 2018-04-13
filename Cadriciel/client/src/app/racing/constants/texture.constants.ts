@@ -21,3 +21,5 @@ export const GROUND_TEXTURE_FACTOR: number = 800;
 export const STARTING_LINE_X_FACTOR: number = 2;
 export const STARTING_LINE_Y_FACTOR: number = 1;
 export const WALL_TEXTURE_FACTOR: number = 1;
+
+export const TEAPOT_TEXTURE: string = BASE_ASSETS_PATH + "teapot/utah-teapot.json";

@@ -1,4 +1,4 @@
-import { Vector3, Matrix4, Object3D, ObjectLoader, Quaternion, Camera } from "three";
+import { Vector3, Matrix4, Object3D, Quaternion, Camera } from "three";
 import { Engine } from "./engine";
 import { Wheel } from "./wheel";
 import { CarLights } from "./carLights";
@@ -10,12 +10,12 @@ import { CarStructure } from "./carStructure";
 import { RaceProgressTracker } from "../carTracking-manager/raceProgressTracker";
 import { Personality } from "../artificial-intelligence/ai-config";
 import { ACCELERATE_KEYCODE, LEFT_KEYCODE, BRAKE_KEYCODE, RIGHT_KEYCODE } from "../constants/keycode.constants";
-import { CAR_TEXTURE } from "../constants/texture.constants";
-import { RAD_TO_DEG, MS_TO_SECONDS } from "../constants/math.constants";
+import { RAD_TO_DEG, MS_TO_SECONDS, PI_OVER_4 } from "../constants/math.constants";
 import {
     DEFAULT_WHEELBASE, DEFAULT_MASS, DEFAULT_DRAG_COEFFICIENT, INITIAL_WEIGHT_DISTRIBUTION,
     MAXIMUM_STEERING_ANGLE, MINIMUM_SPEED
 } from "../constants/car.constants";
+import { Teapot } from "./teapot";
 
 export class Car extends Object3D {
     private _mesh: Object3D;
@@ -78,14 +78,14 @@ export class Car extends Object3D {
         this._carStructure.lights = new CarLights();
     }
 
-    private async load(): Promise<Object3D> {
-        return new Promise<Object3D>((resolve, reject) => {
-            const loader: ObjectLoader = new ObjectLoader();
-            loader.load(CAR_TEXTURE, (object: Object3D) => {
-                resolve(object);
-            });
-        });
-    }
+    // private async load(): Promise<Object3D> {
+    //     return new Promise<Object3D>((resolve, reject) => {
+    //         const loader: ObjectLoader = new ObjectLoader();
+    //         loader.load(CAR_TEXTURE, (object: Object3D) => {
+    //             resolve(object);
+    //         });
+    //     });
+    // }
 
     public async init(startPoint: Vector3, rotationAngle: number): Promise<void> {
         await this.initMesh(startPoint, rotationAngle);
@@ -95,9 +95,11 @@ export class Car extends Object3D {
     }
 
     private async initMesh(startPoint: Vector3, rotationAngle: number): Promise<void> {
-        this._mesh = await this.load();
+        this._mesh = await Teapot.load();
         this._mesh.position.add(startPoint);
-        this._mesh.setRotationFromAxisAngle(new Vector3(0, 1, 0), rotationAngle);
+        // this._mesh.translateY(1);
+        // this._mesh.setRotationFromAxisAngle(new Vector3(0, 1, 0), rotationAngle + PI_OVER_4);
+        this._mesh.rotateY(rotationAngle);
         this._mesh.updateMatrix();
         this.add(this._mesh);
     }
