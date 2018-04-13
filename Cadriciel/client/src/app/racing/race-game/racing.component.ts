@@ -306,7 +306,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
         await this._aiCarService.initialize(this._gameScene.trackMesh.trackPoints.toVectors3, )
             .then().catch((err) => console.error(err));
         this._cameraManager.initializeSpectatingCameraPosition(this._playerCar.currentPosition, this._playerCar.direction);
-        this._trackingManager.init(this._chosenTrack.vertices);
+        this._trackingManager.init(this._gameScene.trackMesh.trackPoints.toVectors3);
         this.bindKeys();
         this.startGameLoop();
     }
