@@ -1,15 +1,15 @@
 import { TestBed, inject } from "@angular/core/testing";
 
-import { LapTimeManagerService } from "./lap-time-manager.service";
+import { GameTimeManagerService } from "./game-time-manager.service";
 
 describe("LapTimeManagerService", () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [LapTimeManagerService]
+      providers: [GameTimeManagerService]
     });
   });
 
-  it("should be created", inject([LapTimeManagerService], (service: LapTimeManagerService) => {
+  it("should be created", inject([GameTimeManagerService], (service: GameTimeManagerService) => {
     expect(service).toBeTruthy();
   }));
 });
