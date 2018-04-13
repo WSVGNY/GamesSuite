@@ -141,13 +141,11 @@ export class RacingComponent implements AfterViewInit, OnInit {
             if (this._cars[i].isAI) {
                 this._aiCarService.update(this._cars[i], this._carDebugs[i]);
                 if (this._trackingManager.update(this._cars[i].currentPosition, this._cars[i].raceProgressTracker)) {
-                    donePlayer.position = this.findPosition(donePlayer);
                     donePlayer.setTotalTime((Date.now() - this._startDate) * MS_TO_SEC);
                     this._cars[i].raceProgressTracker.isTimeLogged = true;
                 }
             } else {
                 if (this._trackingManager.update(this._cars[i].currentPosition, this._cars[i].raceProgressTracker)) {
-                    donePlayer.position = this.findPosition(donePlayer);
                     donePlayer.setTotalTime((Date.now() - this._startDate) * MS_TO_SEC);
                     this._cars[i].raceProgressTracker.isTimeLogged = true;
                     this._currentState = State.END;
@@ -156,23 +154,21 @@ export class RacingComponent implements AfterViewInit, OnInit {
         }
     }
 
-    private findPosition(donePlayer: Player): number {
+    private sortPlayers(): void {
+        this._players.sort((player1: Player, player2: Player) => player1.score.totalTime - player2.score.totalTime);
+    }
+
+    private setPositions(): void {
         let position: number = 1;
         for (const player of this._players) {
-            if (player.position !== undefined) {
-                position++;
-            }
+            player.position = position++;
         }
-
-        return position;
     }
 
     private endGame(elapsedTime: number): void {
         for (const car of this._cars) {
             if (!car.raceProgressTracker.isRaceCompleted && !car.raceProgressTracker.isTimeLogged) {
-                const donePlayer: Player = this._players.find((player: Player) => player.id === car.uniqueid);
-                donePlayer.position = this.findPosition(donePlayer);
-                donePlayer.setTotalTime(
+                this._players.find((player: Player) => player.id === car.uniqueid).setTotalTime(
                     this.simulateRaceTime(
                         car.raceProgressTracker.currentSegmentIndex,
                         car.raceProgressTracker.segmentCounted,
@@ -237,6 +233,8 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private updateEnd(): void {
         if (this._endGameTableService.players.length === 0) {
             this._endGameTableService.showTable = true;
+            this.sortPlayers();
+            this.setPositions();
             this._endGameTableService.players = this._players;
         }
         if (this._highscoreService.highscores.length === 0) {
