@@ -28,6 +28,7 @@ import { EndGameTableComponent } from "./racing/scoreboard/end-game-table/end-ga
 import { EndGameTableService } from "./racing/scoreboard/end-game-table/end-game-table.service";
 import { InputTimeService } from "./racing/scoreboard/input-time/input-time.service";
 import { TrackService } from "./racing/track/track-service/track.service";
+import { LapTimeManagerService } from "./racing/lap-time-manager/lap-time-manager.service";
 
 @NgModule({
     declarations: [
@@ -63,7 +64,8 @@ import { TrackService } from "./racing/track/track-service/track.service";
         CarTrackingManagerService,
         HighscoreService,
         EndGameTableService,
-        InputTimeService
+        InputTimeService,
+        LapTimeManagerService
     ],
     bootstrap: [AppComponent]
 })
