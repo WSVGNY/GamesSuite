@@ -75,28 +75,54 @@ export class ConstraintValidator {
 
     // https://stackoverflow.com/questions/9043805/test-if-two-lines-intersect-javascript-function
     public static checkIntersection(connections: Line[], isComplete: boolean): boolean {
-        return isComplete ? this.checkIntersectionComplete(connections) : this.checkIntersectionIncomplete(connections);
+        return isComplete ? this.checkIntersectionWithCompleteTrack(connections) : this.checkIntersectionWithIncompleteTrack(connections);
     }
 
-    private static checkIntersectionIncomplete(connections: Line[]): boolean {
+    // private static checkIntersection(): void {
+
+    // }
+
+    private static checkIntersectionWithIncompleteTrack(connections: Line[]): boolean {
         const limit: number = connections.length;
+        let isCorrect: boolean = true;
 
         for (let i: number = 0; i < connections.length; i++) {
-            for (let j: number = 0; j < limit; j++) {
-                if (j > i + 1) {
-                    const vectors1: Vector3[][] = this.generateTrackWidth(connections[i]);
-                    const vectors2: Vector3[][] = this.generateTrackWidth(connections[j]);
-                    if (this.checkIntersectionWithOffset(vectors1, vectors2)) {
-                        connections[i].material = UNAUTHORIZED_LINE_MATERIAL;
-                        connections[j].material = UNAUTHORIZED_LINE_MATERIAL;
-
-                        return false;
-                    }
+            for (let j: number = i + 2; j < limit; j++) {
+                const vectors1: Vector3[][] = this.generateTrackWidth(connections[i]);
+                const vectors2: Vector3[][] = this.generateTrackWidth(connections[j]);
+                if (this.checkIntersectionWithOffset(vectors1, vectors2)) {
+                    connections[i].material = UNAUTHORIZED_LINE_MATERIAL;
+                    connections[j].material = UNAUTHORIZED_LINE_MATERIAL;
+                    isCorrect = false;
                 }
             }
         }
 
-        return true;
+        return isCorrect;
+    }
+
+    private static checkIntersectionWithCompleteTrack(connections: Line[]): boolean {
+        const trackPoints: TrackPointList = new TrackPointList(this.convertLinesToCommonCoordinates3D(connections));
+        const interiorWallPoints: Vector3[] = this.convertZXCoordsToXY(new WallMesh(true, trackPoints).holePoints);
+        const exteriorWallPoints: Vector3[] = this.convertZXCoordsToXY(new WallMesh(false, trackPoints).shapePoints);
+        let isCorrect: boolean = true;
+
+        for (let i: number = 0; i < connections.length; i++) {
+            const limit: number = i === 0 ? connections.length - 1 : connections.length;
+
+            for (let j: number = i + 2; j < limit; j++) {
+                const vectors1: Vector3[][] = this.generateTrackWallWidth(interiorWallPoints, exteriorWallPoints, i);
+                const vectors2: Vector3[][] = this.generateTrackWallWidth(interiorWallPoints, exteriorWallPoints, j);
+
+                if (this.checkIntersectionWithOffset(vectors1, vectors2)) {
+                    connections[i].material = UNAUTHORIZED_LINE_MATERIAL;
+                    connections[j].material = UNAUTHORIZED_LINE_MATERIAL;
+                    isCorrect = false;
+                }
+            }
+        }
+
+        return isCorrect;
     }
 
     private static generateTrackWidth(line: Line): Vector3[][] {
@@ -110,32 +136,6 @@ export class ConstraintValidator {
             this.perpendicularVector(vector1, OFFSET),
             this.perpendicularVector(vector1, -OFFSET)
         ];
-    }
-
-    private static checkIntersectionComplete(connections: Line[]): boolean {
-        const trackPoints: TrackPointList = new TrackPointList(this.convertLinesToCommonCoordinates3D(connections));
-        const interiorWallPoints: Vector3[] = this.convertZXCoordsToXY(new WallMesh(true, trackPoints).holePoints);
-        const exteriorWallPoints: Vector3[] = this.convertZXCoordsToXY(new WallMesh(false, trackPoints).shapePoints);
-
-        for (let i: number = 0; i < connections.length; i++) {
-            const limit: number = i === 0 ? connections.length - 1 : connections.length;
-
-            for (let j: number = 0; j < limit; j++) {
-                if (j > i + 1) {
-                    const vectors1: Vector3[][] = this.generateTrackWallWidth(interiorWallPoints, exteriorWallPoints, i);
-                    const vectors2: Vector3[][] = this.generateTrackWallWidth(interiorWallPoints, exteriorWallPoints, j);
-
-                    if (this.checkIntersectionWithOffset(vectors1, vectors2)) {
-                        connections[i].material = UNAUTHORIZED_LINE_MATERIAL;
-                        connections[j].material = UNAUTHORIZED_LINE_MATERIAL;
-
-                        return false;
-                    }
-                }
-            }
-        }
-
-        return true;
     }
 
     private static generateTrackWallWidth(interiorWallPoints: Vector3[], exteriorWallPoints: Vector3[], index: number): Vector3[][] {
