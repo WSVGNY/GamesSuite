@@ -21,7 +21,7 @@
 <P>
   Best times:
   <li *ngFor="let time of currentTrack.bestTimes;">
-    {{time}}
+    {{getFormatedTime(time.time)}}
   </li>
 </P>
 <P>
