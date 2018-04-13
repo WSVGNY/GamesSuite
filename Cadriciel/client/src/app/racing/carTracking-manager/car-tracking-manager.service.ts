@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import { Vector3, Sphere } from "three";
-import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
 import { RaceProgressTracker } from "./raceProgressTracker";
 import { TRACKING_SPHERE_RADIUS, NUMBER_OF_LAPS } from "../constants/car.constants";
 
@@ -15,13 +14,13 @@ export class CarTrackingManagerService {
         this._detectionSpheres = [];
     }
 
-    public init(trackVertices: CommonCoordinate3D[]): void {
+    public init(trackVertices: Vector3[]): void {
         this.createDetectionSpheres(trackVertices);
         this.computeFinishLine(trackVertices);
     }
 
-    private createDetectionSpheres(trackVertices: CommonCoordinate3D[]): void {
-        trackVertices.forEach((coordinate: CommonCoordinate3D) => {
+    private createDetectionSpheres(trackVertices: Vector3[]): void {
+        trackVertices.forEach((coordinate: Vector3) => {
             this._detectionSpheres.push(new Sphere(new Vector3(coordinate.x, coordinate.y, coordinate.z), TRACKING_SPHERE_RADIUS));
         });
     }
@@ -75,7 +74,7 @@ export class CarTrackingManagerService {
     //     return raceProgressTracker.segmentCounted > this._detectionSpheres.length * NUMBER_OF_LAPS;
     // }
 
-    private computeFinishLine(trackVertices: CommonCoordinate3D[]): void {
+    private computeFinishLine(trackVertices: Vector3[]): void {
         const firstVertex: Vector3 = new Vector3(trackVertices[0].x, trackVertices[0].y, trackVertices[0].z);
         const secondVertex: Vector3 = new Vector3(trackVertices[1].x, trackVertices[1].y, trackVertices[1].z);
         const firstToSecondVertex: Vector3 = secondVertex.clone().sub(firstVertex);

@@ -1,9 +1,12 @@
 import { Injectable } from "@angular/core";
+import { InputTimeService } from "../scoreboard/input-time/input-time.service";
 
 @Injectable()
 export class KeyboardEventHandlerService {
     private _keyDownFunctions: Map<number, (() => void)[]>;
     private _keyUpFunctions: Map<number, (() => void)[]>;
+
+    public constructor(private _inputTimeService: InputTimeService) { }
 
     public initialize(): void {
         this._keyDownFunctions = new Map();
@@ -20,6 +23,7 @@ export class KeyboardEventHandlerService {
             keyCode,
             lambdas
         );
+
     }
 
     public bindFunctionToKeyUp(keyCode: number, functionToBind: () => void): void {
@@ -30,7 +34,7 @@ export class KeyboardEventHandlerService {
     }
 
     public handleKeyDown(keyCode: number): void {
-        if (this._keyDownFunctions.get(keyCode) !== undefined) {
+        if (this._keyDownFunctions.get(keyCode) !== undefined && !this._inputTimeService.showInput) {
             const functionsToExecute: (() => void)[] = this._keyDownFunctions.get(keyCode);
             functionsToExecute.forEach((callback: () => void) => callback());
         }

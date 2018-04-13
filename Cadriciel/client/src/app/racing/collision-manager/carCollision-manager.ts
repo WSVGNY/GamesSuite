@@ -2,6 +2,7 @@ import { Car } from "../car/car";
 import { Vector3 } from "three";
 import { SoundManagerService } from "../sound-service/sound-manager.service";
 import { MINIMUM_CAR_DISTANCE } from "../constants/car.constants";
+import { OVERLAP_CORRECTION_SCALAR, HALF } from "../constants/math.constants";
 
 export class CarCollisionManager {
 
@@ -52,11 +53,11 @@ export class CarCollisionManager {
     private static resolveHitboxOverlap(): void {
         this._collisionCarA.setCurrentPosition(
             this._collisionCarA.currentPosition.clone()
-                .add(this._overlapCorrection.clone().multiplyScalar(0.51))
+                .add(this._overlapCorrection.clone().multiplyScalar(OVERLAP_CORRECTION_SCALAR))
         );
         this._collisionCarB.setCurrentPosition(
             this._collisionCarB.currentPosition.clone()
-                .add(this._overlapCorrection.clone().negate().multiplyScalar(0.51))
+                .add(this._overlapCorrection.clone().negate().multiplyScalar(OVERLAP_CORRECTION_SCALAR))
         );
     }
 
@@ -74,7 +75,7 @@ export class CarCollisionManager {
                     const closestSecondSphereVertex: Vector3 = secondCarSphere.clampPoint(firstCarSphere.center);
                     const firstToSecondVertex: Vector3 = closestSecondSphereVertex.clone().sub(closestFirstSphereVertex);
                     if (!collisionDetected) {
-                        this.setCollisionPoint(closestFirstSphereVertex.clone().add(firstToSecondVertex.clone().multiplyScalar(0.5)));
+                        this.setCollisionPoint(closestFirstSphereVertex.clone().add(firstToSecondVertex.clone().multiplyScalar(HALF)));
                         this.setCollisionCars(firstCar, secondCar);
                     }
                     this._overlapCorrection.add(closestSecondSphereVertex.clone().sub(closestFirstSphereVertex));
