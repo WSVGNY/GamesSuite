@@ -3,9 +3,12 @@ import { WallPlane } from "../track/plane";
 import { Car } from "../car/car";
 import { Sphere, Vector3 } from "three";
 import { SoundManagerService } from "../sound-service/sound-manager.service";
+import { POS_Y_AXIS, NEG_Y_AXIS } from "../constants/global.constants";
+import { PI_OVER_2 } from "../constants/math.constants";
 
 export class WallCollisionManager {
     private static readonly SLOW_DOWN_FACTOR: number = 0.985;
+    private static readonly ROTATION_FACTOR: number = 0.001;
     private static _track: TrackMesh;
     private static _projectedPointOnPlane: Vector3;
 
@@ -28,6 +31,7 @@ export class WallCollisionManager {
         car.hitbox.boundingSpheres.forEach((sphere: Sphere) => {
             if (this.isSphereIntersectingWallPlane(sphere, plane)) {
                 this.moveCarAwayFromWall(car, sphere, plane, isInteriorWall);
+                this.rotateCar(car, plane, isInteriorWall);
                 car.speed = car.speed.multiplyScalar(this.SLOW_DOWN_FACTOR);
                 if (!car.isAI) {
                     soundManager.playWallCollision();
@@ -49,6 +53,18 @@ export class WallCollisionManager {
         const overlapCorrection: Vector3 = vectorFromPointOnSphereToCenter.add(vectorFromCenterToWall);
 
         car.setCurrentPosition(car.currentPosition.clone().add(overlapCorrection));
+    }
+
+    private static rotateCar(car: Car, plane: WallPlane, isInteriorWall: boolean): void {
+        const angleBetweenWallAndCar: number = car.direction.clone().angleTo(plane.directorVector);
+        car.rotateMesh(
+            isInteriorWall === angleBetweenWallAndCar < PI_OVER_2 ? POS_Y_AXIS : NEG_Y_AXIS,
+            this.calculateRotationAngle(car, angleBetweenWallAndCar)
+        );
+    }
+
+    private static calculateRotationAngle(car: Car, angleBetweenWallAndCar: number): number {
+        return (car.speed.length() * this.ROTATION_FACTOR) * (Math.cos(angleBetweenWallAndCar * 2) + 1);
     }
 
     private static sphereIsOtherSideOfWall(vectorFromCenterToWall: Vector3, plane: WallPlane, isInteriorWall: boolean): boolean {

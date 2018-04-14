@@ -102,6 +102,10 @@ export class Car extends Object3D {
         this.add(this._mesh);
     }
 
+    public rotateMesh(axis: Vector3, angle: number): void {
+        this._mesh.rotateOnAxis(axis, angle);
+    }
+
     private initHitBox(): void {
         this._hitbox = new Hitbox();
     }
