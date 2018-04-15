@@ -21,6 +21,7 @@ import { Player } from "./player";
 import { MINIMUM_CAR_DISTANCE, NUMBER_OF_LAPS } from "../constants/car.constants";
 import { AI_CARS_QUANTITY, AI_PERSONALITY_QUANTITY } from "../constants/ai.constants";
 import { CURRENT_PLAYER, COMPUTER_PLAYER } from "../constants/global.constants";
+import { GameTimeManagerService } from "../game-time-manager/game-time-manager.service";
 
 enum State {
     START_ANIMATION = 1,
@@ -50,8 +51,8 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private _playerCar: Car;
     private _carDebugs: AIDebug[];
     private _gameScene: GameScene;
-    private _lastDate: number;
-    private _startDate: number;
+    // private _lastDate: number;
+    // private _startDate: number;
     protected _countDownOnScreenValue: string;
     protected _isCountDownOver: boolean;
     private _currentState: State;
@@ -68,7 +69,8 @@ export class RacingComponent implements AfterViewInit, OnInit {
         private _cameraManager: CameraManagerService,
         private _trackingManager: CarTrackingManagerService,
         private _endGameTableService: EndGameTableService,
-        private _highscoreService: HighscoreService
+        private _highscoreService: HighscoreService,
+        private _gameTimeManager: GameTimeManagerService
     ) {
         this._cars = [];
         this._players = [];
@@ -96,9 +98,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
     }
 
     public startGameLoop(): void {
-        this._lastDate = Date.now();
-        this._lastDate = Date.now();
-        this._startDate = Date.now();
+        this._gameTimeManager.initializeTimes();
         this._countDownOnScreenValue = "";
         this._cameraManager.changeToSpectatingCamera();
         this._gameScene.createStartingLine();
