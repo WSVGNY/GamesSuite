@@ -1,5 +1,7 @@
 import { AbstractCar } from "./abstractCar";
 import { Personality } from "../artificial-intelligence/ai-config";
+import { CarStructure } from "./carStructure";
+import { CarControls } from "./carControls";
 
 export class AICar extends AbstractCar {
 
@@ -10,7 +12,7 @@ export class AICar extends AbstractCar {
         lapCounter: number = 0,
         public trackPortionIndex: number = 0,
         private _aiPersonality: Personality = Personality.Player) {
-        super();
+        super(_id, _carStructure, _carControls, lapCounter);
         this.trackPortionIndex = 0;
     }
 

@@ -1,11 +1,18 @@
 import { AbstractCar } from "./abstractCar";
 import { ACCELERATE_KEYCODE, LEFT_KEYCODE, BRAKE_KEYCODE, RIGHT_KEYCODE } from "../constants/keycode.constants";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
+import { CarStructure } from "./carStructure";
+import { CarControls } from "./carControls";
 
 export class HumanCar extends AbstractCar {
 
-    public constructor(private keyBoardService: KeyboardEventHandlerService) {
-        super();
+    public constructor(
+        _id: number,
+        _carStructure: CarStructure,
+        _carControls: CarControls,
+        lapCounter: number = 0,
+        private keyBoardService: KeyboardEventHandlerService) {
+        super(_id, _carStructure, _carControls, lapCounter);
         this.bindKeys();
     }
 
