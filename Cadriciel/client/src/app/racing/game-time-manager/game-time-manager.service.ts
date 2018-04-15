@@ -6,6 +6,9 @@ export class GameTimeManagerService {
     private _lastFrameDate: number;
     private _raceStartDate: number;
 
+    private _startDate: number;
+    private _elaspedTime: number;
+
     public constructor() {
         this._lastFrameDate = 0;
         this._raceStartDate = 0;
@@ -22,6 +25,15 @@ export class GameTimeManagerService {
 
     public get startDate(): number {
         return this._raceStartDate;
+    }
+
+    public get elaspedTime(): number {
+        return this._elaspedTime;
+    }
+
+    public resetStartDate(): void {
+        this._startDate = Date.now();
+        this._elaspedTime = 0;
     }
 
 }
