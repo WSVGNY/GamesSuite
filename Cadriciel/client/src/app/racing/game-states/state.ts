@@ -1,3 +1,5 @@
+import { RacingGame } from "../race-game/racingGame";
+
 export interface State {
-    update(): void;
+    update(racingGame: RacingGame): void;
 }
