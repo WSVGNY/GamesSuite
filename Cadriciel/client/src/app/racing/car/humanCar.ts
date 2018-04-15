@@ -2,7 +2,7 @@ import { AbstractCar } from "./abstractCar";
 
 export class HumanCar extends AbstractCar {
 
-    public constructor() {
+    public constructor(private keyBoardService: KeyboardEventHandlerService) {
         super();
         this.bindKeys();
     }

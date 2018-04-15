@@ -5,7 +5,6 @@ export class AICar extends AbstractCar {
 
     public constructor(
         _id: number,
-        keyBoardService: KeyboardEventHandlerService,
         _carStructure: CarStructure,
         _carControls: CarControls,
         lapCounter: number = 0,
