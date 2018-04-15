@@ -1,7 +1,6 @@
 import { Object3D, Vector3, ObjectLoader, Matrix4, Quaternion, Camera } from "three";
 import { Hitbox } from "../collision-manager/hitbox";
 import { RaceProgressTracker } from "../carTracking-manager/raceProgressTracker";
-import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { CarStructure } from "./carStructure";
 import { CarControls } from "./carControls";
 import {

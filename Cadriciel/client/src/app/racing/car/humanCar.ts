@@ -1,4 +1,6 @@
 import { AbstractCar } from "./abstractCar";
+import { ACCELERATE_KEYCODE, LEFT_KEYCODE, BRAKE_KEYCODE, RIGHT_KEYCODE } from "../constants/keycode.constants";
+import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 
 export class HumanCar extends AbstractCar {
 

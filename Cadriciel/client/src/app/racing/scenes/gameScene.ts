@@ -2,7 +2,7 @@ import { AbstractScene } from "./abstractRacingScene";
 import { Group, Vector3, Geometry, Line, Camera, LineBasicMaterial, PlaneGeometry, MeshBasicMaterial, DoubleSide, Mesh } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { TrackLights } from "../render-service/light";
-import { Car } from "../car/car";
+import { AbstractCar } from "../car/abstractCar";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { Track } from "../../../../../common/racing/track";
@@ -50,8 +50,8 @@ export class GameScene extends AbstractScene {
         this.setCenterLine();
     }
 
-    public async loadCars(cars: Car[], carDebugs: AIDebug[], camera: Camera, trackType: TrackType): Promise<void> {
-        const shuffledCars: Car[] = [];
+    public async loadCars(cars: AbstractCar[], carDebugs: AIDebug[], camera: Camera, trackType: TrackType): Promise<void> {
+        const shuffledCars: AbstractCar[] = [];
         for (const car of cars) {
             shuffledCars.push(car);
         }
@@ -87,14 +87,14 @@ export class GameScene extends AbstractScene {
         this.add(startingLine);
     }
 
-    private shuffle(array: Car[]): void {
+    private shuffle(array: AbstractCar[]): void {
         for (let i: number = array.length - 1; i > 0; i--) {
             const j: number = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
         }
     }
 
-    private async placeCarOnStartingGrid(car: Car, index: number): Promise<void> {
+    private async placeCarOnStartingGrid(car: AbstractCar, index: number): Promise<void> {
         const offset: Vector3 = new Vector3(0, 0, 0);
         offset.x = (index < 2) ? -LATHERAL_OFFSET : LATHERAL_OFFSET;
         offset.z = (index % 2 === 0) ? -VERTICAL_OFFSET : VERTICAL_OFFSET;
@@ -110,7 +110,7 @@ export class GameScene extends AbstractScene {
         await car.init(position, this.findFirstTrackSegmentAngle());
     }
 
-    private setTimeOfDay(cars: Car[], trackType: TrackType): void {
+    private setTimeOfDay(cars: AbstractCar[], trackType: TrackType): void {
         switch (trackType) {
             case TrackType.Night:
                 this.setNight(cars);
@@ -122,7 +122,7 @@ export class GameScene extends AbstractScene {
         }
     }
 
-    public bindGameSceneKeys(cars: Car[]): void {
+    public bindGameSceneKeys(cars: AbstractCar[]): void {
         this._keyBoardHandler.bindFunctionToKeyDown(DAY_KEYCODE, () => this.changeTimeOfDay(cars));
         this._keyBoardHandler.bindFunctionToKeyDown(DEBUG_KEYCODE, () => this.changeDebugMode());
     }
@@ -184,21 +184,21 @@ export class GameScene extends AbstractScene {
         return dashedLine;
     }
 
-    public changeTimeOfDay(cars: Car[]): void {
+    public changeTimeOfDay(cars: AbstractCar[]): void {
         this._isDay = !this._isDay;
         this._isDay ? this.setDay(cars) : this.setNight(cars);
     }
 
-    private setDay(cars: Car[]): void {
+    private setDay(cars: AbstractCar[]): void {
         this.setSkyBox(TrackType.Default);
         this._lighting.updateLightsToTrackType(TrackType.Default);
-        cars.forEach((car: Car) => car.turnLightsOff());
+        cars.forEach((car: AbstractCar) => car.turnLightsOff());
     }
 
-    private setNight(cars: Car[]): void {
+    private setNight(cars: AbstractCar[]): void {
         this.setSkyBox(TrackType.Night);
         this._lighting.updateLightsToTrackType(TrackType.Night);
-        cars.forEach((car: Car) => car.turnLightsOn());
+        cars.forEach((car: AbstractCar) => car.turnLightsOn());
     }
 
     public changeDebugMode(): void {
