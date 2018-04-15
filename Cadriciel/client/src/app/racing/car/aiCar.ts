@@ -7,8 +7,8 @@ export class AICar extends AbstractCar {
 
     public constructor(
         _id: number,
+        private _aiPersonality: Personality = Personality.Curly,
         public trackPortionIndex: number = 0,
-        private _aiPersonality: Personality = Personality.Player,
         _carStructure: CarStructure = new CarStructure(),
         _carControls: CarControls = new CarControls(),
         lapCounter: number = 0) {
