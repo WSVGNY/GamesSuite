@@ -1,9 +1,9 @@
 // tslint:disable:no-magic-numbers
 import { ThirdPersonCamera } from "./thirdPersonCamera";
 import { PerspectiveCamera, Vector3 } from "three";
-import { Car } from "../car/car";
 import { TestBed } from "@angular/core/testing";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
+import { HumanCar } from "../car/humanCar";
 
 describe("Third Person Camera Test", () => {
 
@@ -13,7 +13,7 @@ describe("Third Person Camera Test", () => {
     const EXPECTED_ANGLE: number = Math.tanh(INITIAL_CAMERA_POSITION_Y / INITIAL_CAMERA_POSITION_Z);
 
     let camera: ThirdPersonCamera;
-    let car: Car;
+    let car: HumanCar;
     beforeEach(async (done: () => void) => {
         TestBed.configureTestingModule({
             providers: [KeyboardEventHandlerService]
@@ -21,7 +21,7 @@ describe("Third Person Camera Test", () => {
             .then()
             .catch((e: Error) => console.error(e.message));
         camera = new ThirdPersonCamera(ASPECTRATIO);
-        car = new Car(undefined);
+        car = new HumanCar(0, undefined);
         await car.init(new Vector3(0, 0, 0), 0);
         car.attachCamera(camera);
         done();
