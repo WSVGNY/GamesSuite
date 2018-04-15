@@ -3,6 +3,7 @@ import { Vector3 } from "three";
 import { SoundManagerService } from "../sound-service/sound-manager.service";
 import { MINIMUM_CAR_DISTANCE } from "../constants/car.constants";
 import { OVERLAP_CORRECTION_SCALAR, HALF } from "../constants/math.constants";
+import { AICar } from "../car/aiCar";
 
 export class CarCollisionManager {
 
@@ -26,7 +27,7 @@ export class CarCollisionManager {
             this.resolveHitboxOverlap();
             if (!this.carsInCollision()) {
                 this.applyCollisionPhysics();
-                if (!firstCar.isAI || !secondCar.isAI) {
+                if (!(firstCar instanceof AICar) || !(secondCar instanceof AICar)) {
                     soundManager.playCarCollision();
                 }
             }

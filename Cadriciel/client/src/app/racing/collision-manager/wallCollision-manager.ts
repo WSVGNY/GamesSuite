@@ -3,6 +3,7 @@ import { WallPlane } from "../track/plane";
 import { AbstractCar } from "../car/abstractCar";
 import { Sphere, Vector3 } from "three";
 import { SoundManagerService } from "../sound-service/sound-manager.service";
+import { AICar } from "../car/aiCar";
 
 export class WallCollisionManager {
     private static readonly SLOW_DOWN_FACTOR: number = 0.985;
@@ -31,7 +32,7 @@ export class WallCollisionManager {
             if (this.isSphereIntersectingWallPlane(sphere, plane)) {
                 this.moveCarAwayFromWall(car, sphere, plane, isInteriorWall);
                 car.speed = car.speed.multiplyScalar(this.SLOW_DOWN_FACTOR);
-                if (!car.isAI) {
+                if (!(car instanceof AICar)) {
                     soundManager.playWallCollision();
                 }
             }

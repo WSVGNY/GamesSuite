@@ -140,7 +140,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
         for (let i: number = 0; i < AI_CARS_QUANTITY + 1; ++i) {
             this._cars[i].update(timeSinceLastFrame);
             const donePlayer: Player = this._players.find((player: Player) => player.id === this._cars[i].uniqueid);
-            if (this._cars[i].isAI) {
+            if (this._cars[i] instanceof AICar) {
                 this._aiCarService.update(this._cars[i], this._carDebugs[i]);
                 if (this._trackingManager.update(this._cars[i].currentPosition, this._cars[i].raceProgressTracker)) {
                     donePlayer.setTotalTime((Date.now() - this._startDate) * MS_TO_SEC);

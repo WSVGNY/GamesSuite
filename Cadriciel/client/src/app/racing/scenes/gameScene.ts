@@ -14,6 +14,7 @@ import {
 import { START_LINE_WEIGHT, START_LINE_WIDTH, START_LINE_HEIGHT, START_CAR_DISTANCE } from "../constants/scene.constants";
 import { DAY_KEYCODE, DEBUG_KEYCODE, CHANGE_CAMERA_KEYCODE } from "../constants/keycode.constants";
 import { YELLOW } from "../constants/color.constants";
+import { AICar } from "../car/aiCar";
 
 const LATHERAL_OFFSET: number = 2;
 const VERTICAL_OFFSET: number = 5;
@@ -59,7 +60,7 @@ export class GameScene extends AbstractScene {
         for (let i: number = 0; i < cars.length; ++i) {
             await this.placeCarOnStartingGrid(shuffledCars[i], i);
             this._debugElements.add(carDebugs[i].debugGroup);
-            if (!shuffledCars[i].isAI) {
+            if (!(shuffledCars[i] instanceof AICar)) {
                 shuffledCars[i].attachCamera(camera);
             }
             this._group.add(shuffledCars[i]);
