@@ -1,128 +1,17 @@
-import { Vector3, Matrix4, Object3D, ObjectLoader, Quaternion, Camera } from "three";
+import { Vector3, Matrix4, Object3D, Quaternion, Camera } from "three";
 import { Engine } from "./engine";
 import { Wheel } from "./wheel";
-import { CarLights } from "./carLights";
 import { Hitbox } from "../collision-manager/hitbox";
-import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { Physics } from "./physics";
-import { CarControls } from "./carControls";
-import { CarStructure } from "./carStructure";
 import { RaceProgressTracker } from "../carTracking-manager/raceProgressTracker";
-import { Personality } from "../artificial-intelligence/ai-config";
-import { ACCELERATE_KEYCODE, LEFT_KEYCODE, BRAKE_KEYCODE, RIGHT_KEYCODE } from "../constants/keycode.constants";
-import { CAR_TEXTURE } from "../constants/texture.constants";
 import { RAD_TO_DEG, MS_TO_SECONDS } from "../constants/math.constants";
 import {
-    DEFAULT_WHEELBASE, DEFAULT_MASS, DEFAULT_DRAG_COEFFICIENT, INITIAL_WEIGHT_DISTRIBUTION,
-    MAXIMUM_STEERING_ANGLE, MINIMUM_SPEED
+    DEFAULT_WHEELBASE, MAXIMUM_STEERING_ANGLE, MINIMUM_SPEED
 } from "../constants/car.constants";
 
 export class Car extends Object3D {
-    private _mesh: Object3D;
-    private _hitbox: Hitbox;
-    private _raceProgressTracker: RaceProgressTracker;
 
-    public constructor(
-        private _id: number,
-        private keyBoardService: KeyboardEventHandlerService,
-        private _isAI: boolean = true,
-        private _aiPersonality: Personality = Personality.Player,
-        private _carStructure: CarStructure = new CarStructure(),
-        private _carControls: CarControls = new CarControls(),
-        public trackPortionIndex: number = 0,
-        public lapCounter: number = 0
-    ) {
-        super();
 
-        if (_carStructure.wheelbase <= 0) {
-            console.error("Wheelbase should be greater than 0.");
-            _carStructure.wheelbase = DEFAULT_WHEELBASE;
-        }
-
-        if (_carStructure.mass <= 0) {
-            console.error("Mass should be greater than 0.");
-            _carStructure.mass = DEFAULT_MASS;
-        }
-
-        if (_carStructure.dragCoefficient <= 0) {
-            console.error("Drag coefficient should be greater than 0.");
-            _carStructure.dragCoefficient = DEFAULT_DRAG_COEFFICIENT;
-        }
-
-        this.initAttributes();
-        if (!this._isAI) {
-            this.bindKeys();
-        } else {
-            this.trackPortionIndex = 0;
-        }
-    }
-
-    private bindKeys(): void {
-        this.keyBoardService.bindFunctionToKeyDown(ACCELERATE_KEYCODE, () => this.accelerate());
-        this.keyBoardService.bindFunctionToKeyDown(LEFT_KEYCODE, () => this.steerLeft());
-        this.keyBoardService.bindFunctionToKeyDown(BRAKE_KEYCODE, () => this.brake());
-        this.keyBoardService.bindFunctionToKeyDown(RIGHT_KEYCODE, () => this.steerRight());
-
-        this.keyBoardService.bindFunctionToKeyUp(ACCELERATE_KEYCODE, () => this.releaseAccelerator());
-        this.keyBoardService.bindFunctionToKeyUp(LEFT_KEYCODE, () => this.releaseSteering());
-        this.keyBoardService.bindFunctionToKeyUp(BRAKE_KEYCODE, () => this.releaseBrakes());
-        this.keyBoardService.bindFunctionToKeyUp(RIGHT_KEYCODE, () => this.releaseSteering());
-    }
-
-    private initAttributes(): void {
-        this._carControls.isBraking = false;
-        this._carControls.steeringWheelDirection = 0;
-        this._carStructure.weightRear = INITIAL_WEIGHT_DISTRIBUTION;
-        this._carControls.speed = new Vector3(0, 0, 0);
-        this.position.add(new Vector3(0, 0, 0));
-        this._carStructure.lights = new CarLights();
-    }
-
-    private async load(): Promise<Object3D> {
-        return new Promise<Object3D>((resolve, reject) => {
-            const loader: ObjectLoader = new ObjectLoader();
-            loader.load(CAR_TEXTURE, (object: Object3D) => {
-                resolve(object);
-            });
-        });
-    }
-
-    public async init(startPoint: Vector3, rotationAngle: number): Promise<void> {
-        await this.initMesh(startPoint, rotationAngle);
-        this.initHitBox();
-        this.initRaceProgressTracker();
-        this.initLights();
-    }
-
-    private async initMesh(startPoint: Vector3, rotationAngle: number): Promise<void> {
-        this._mesh = await this.load();
-        this._mesh.position.add(startPoint);
-        this._mesh.setRotationFromAxisAngle(new Vector3(0, 1, 0), rotationAngle);
-        this._mesh.updateMatrix();
-        this.add(this._mesh);
-    }
-
-    private initHitBox(): void {
-        this._hitbox = new Hitbox();
-    }
-
-    private initRaceProgressTracker(): void {
-        this._raceProgressTracker = new RaceProgressTracker();
-    }
-
-    private initLights(): void {
-        this._mesh.add(this._carStructure.lights);
-        this.turnLightsOff();
-        this._carStructure.lights.turnBackLightsOff();
-    }
-
-    public get uniqueid(): number {
-        return this._id;
-    }
-
-    public get isAI(): boolean {
-        return this._isAI;
-    }
 
     public get speed(): Vector3 {
         return this._carControls.speed.clone();
@@ -175,10 +64,6 @@ export class Car extends Object3D {
     public turnLightsOn(): void {
         this._carStructure.lights.turnOn();
         this._carStructure.lights.turnBackLightsOff();
-    }
-
-    public turnLightsOff(): void {
-        this._carStructure.lights.turnOff();
     }
 
     public releaseBrakes(): void {
@@ -299,9 +184,5 @@ export class Car extends Object3D {
 
     public get weightRear(): number {
         return this._carStructure.weightRear;
-    }
-
-    public get aiPersonality(): Personality {
-        return this._aiPersonality;
     }
 }
