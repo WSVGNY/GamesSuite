@@ -8,10 +8,10 @@ export class HumanCar extends AbstractCar {
 
     public constructor(
         _id: number,
-        _carStructure: CarStructure,
-        _carControls: CarControls,
-        lapCounter: number = 0,
-        private keyBoardService: KeyboardEventHandlerService) {
+        private keyBoardService: KeyboardEventHandlerService,
+        _carStructure: CarStructure = new CarStructure(),
+        _carControls: CarControls = new CarControls(),
+        lapCounter: number = 0) {
         super(_id, _carStructure, _carControls, lapCounter);
         this.bindKeys();
     }

@@ -141,7 +141,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
             this._cars[i].update(timeSinceLastFrame);
             const donePlayer: Player = this._players.find((player: Player) => player.id === this._cars[i].uniqueid);
             if (this._cars[i] instanceof AICar) {
-                this._aiCarService.update(this._cars[i], this._carDebugs[i]);
+                this._aiCarService.update(this._cars[i] as AICar, this._carDebugs[i]);
                 if (this._trackingManager.update(this._cars[i].currentPosition, this._cars[i].raceProgressTracker)) {
                     donePlayer.setTotalTime((Date.now() - this._startDate) * MS_TO_SEC);
                     this._cars[i].raceProgressTracker.isTimeLogged = true;
@@ -320,17 +320,17 @@ export class RacingComponent implements AfterViewInit, OnInit {
     private initializeCars(trackType: TrackType): void {
         for (let i: number = 0; i < AI_CARS_QUANTITY + 1; ++i) {
             if (i === 0) {
-                this._cars.push(new HumanCar(i, this._keyBoardHandler, false));
+                this._cars.push(new HumanCar(i, this._keyBoardHandler));
                 this._playerCar = this._cars[0] as HumanCar;
                 this._players.push(new Player(i, CURRENT_PLAYER));
             } else if (i - 1 % AI_PERSONALITY_QUANTITY === 0) {
-                this._cars.push(new AICar(i, this._keyBoardHandler, true, Personality.Larry));
+                this._cars.push(new AICar(i, Personality.Larry));
                 this._players.push(new Player(i, COMPUTER_PLAYER + (i + 1)));
             } else if (i - 1 % AI_PERSONALITY_QUANTITY === 1) {
-                this._cars.push(new AICar(i, this._keyBoardHandler, true, Personality.Curly));
+                this._cars.push(new AICar(i, Personality.Curly));
                 this._players.push(new Player(i, COMPUTER_PLAYER + (i + 1)));
             } else if (i - 1 % AI_PERSONALITY_QUANTITY === 2) {
-                this._cars.push(new AICar(i, this._keyBoardHandler, true, Personality.Moe));
+                this._cars.push(new AICar(i, Personality.Moe));
                 this._players.push(new Player(i, COMPUTER_PLAYER + (i + 1)));
             }
             this._carDebugs.push(new AIDebug());

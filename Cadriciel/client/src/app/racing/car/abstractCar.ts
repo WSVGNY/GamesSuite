@@ -151,6 +151,10 @@ export abstract class AbstractCar extends Object3D {
         this._carStructure.lights.turnOff();
     }
 
+    public get uniqueid(): number {
+        return this._id;
+    }
+
     public get speed(): Vector3 {
         return this._carControls.speed.clone();
     }

@@ -7,11 +7,11 @@ export class AICar extends AbstractCar {
 
     public constructor(
         _id: number,
-        _carStructure: CarStructure,
-        _carControls: CarControls,
-        lapCounter: number = 0,
         public trackPortionIndex: number = 0,
-        private _aiPersonality: Personality = Personality.Player) {
+        private _aiPersonality: Personality = Personality.Player,
+        _carStructure: CarStructure = new CarStructure(),
+        _carControls: CarControls = new CarControls(),
+        lapCounter: number = 0) {
         super(_id, _carStructure, _carControls, lapCounter);
         this.trackPortionIndex = 0;
     }
