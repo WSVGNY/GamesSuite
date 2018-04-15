@@ -53,8 +53,8 @@ export class CameraManagerService {
         });
     }
 
-    public updateCameraPositions(playerCar: Car, timestep?: number): void {
-        this._topViewCamera.updatePosition(playerCar);
+    public updateCameraPositions(position: Vector3, timestep?: number): void {
+        this._topViewCamera.updatePosition(position);
         if (this._currentCamera === this._spectatingCamera) {
             this._spectatingCamera.updatePosition(timestep);
         }
