@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Car } from "../car/car";
+import { AbstractCar } from "../car/abstractCar";
 import { CarCollisionManager } from "./carCollision-manager";
 import { TrackMesh } from "../track/track";
 import { WallCollisionManager } from "./wallCollision-manager";
@@ -15,7 +15,7 @@ export class CollisionManagerService {
         WallCollisionManager.track = track;
     }
 
-    public update(cars: Car[]): void {
+    public update(cars: AbstractCar[]): void {
         CarCollisionManager.update(cars, this.soundManager);
         WallCollisionManager.update(cars, this.soundManager);
     }

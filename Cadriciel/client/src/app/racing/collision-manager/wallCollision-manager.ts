@@ -1,10 +1,11 @@
 import { TrackMesh } from "../track/track";
 import { WallPlane } from "../track/plane";
-import { Car } from "../car/car";
+import { AbstractCar } from "../car/abstractCar";
 import { Sphere, Vector3 } from "three";
 import { SoundManagerService } from "../sound-service/sound-manager.service";
 import { POS_Y_AXIS, NEG_Y_AXIS } from "../constants/global.constants";
 import { PI_OVER_2 } from "../constants/math.constants";
+import { AICar } from "../car/aiCar";
 
 export class WallCollisionManager {
     private static readonly SLOW_DOWN_FACTOR: number = 0.985;
@@ -16,8 +17,8 @@ export class WallCollisionManager {
         this._track = track;
     }
 
-    public static update(cars: Car[], soundManager: SoundManagerService): void {
-        cars.forEach((car: Car) => {
+    public static update(cars: AbstractCar[], soundManager: SoundManagerService): void {
+        cars.forEach((car: AbstractCar) => {
             this._track.interiorPlanes.forEach((plane: WallPlane) => {
                 this.manageCollisionWithWall(car, plane, true, soundManager);
             });
@@ -27,20 +28,22 @@ export class WallCollisionManager {
         });
     }
 
-    private static manageCollisionWithWall(car: Car, plane: WallPlane, isInteriorWall: boolean, soundManager: SoundManagerService): void {
+    private static manageCollisionWithWall(
+        car: AbstractCar, plane: WallPlane, isInteriorWall: boolean,
+        soundManager: SoundManagerService): void {
         car.hitbox.boundingSpheres.forEach((sphere: Sphere) => {
             if (this.isSphereIntersectingWallPlane(sphere, plane)) {
                 this.moveCarAwayFromWall(car, sphere, plane, isInteriorWall);
                 this.rotateCar(car, plane, isInteriorWall);
                 car.speed = car.speed.multiplyScalar(this.SLOW_DOWN_FACTOR);
-                if (!car.isAI) {
+                if (!(car instanceof AICar)) {
                     soundManager.playWallCollision();
                 }
             }
         });
     }
 
-    private static moveCarAwayFromWall(car: Car, sphere: Sphere, plane: WallPlane, isInteriorWall: boolean): void {
+    private static moveCarAwayFromWall(car: AbstractCar, sphere: Sphere, plane: WallPlane, isInteriorWall: boolean): void {
         const vectorFromCenterToWall: Vector3 = this._projectedPointOnPlane.clone().sub(sphere.center);
 
         const unitVectorFromCenterToWall: Vector3 = this.sphereIsOtherSideOfWall(vectorFromCenterToWall, plane, isInteriorWall) ?
@@ -55,7 +58,7 @@ export class WallCollisionManager {
         car.setCurrentPosition(car.currentPosition.clone().add(overlapCorrection));
     }
 
-    private static rotateCar(car: Car, plane: WallPlane, isInteriorWall: boolean): void {
+    private static rotateCar(car: AbstractCar, plane: WallPlane, isInteriorWall: boolean): void {
         const angleBetweenWallAndCar: number = car.direction.clone().angleTo(plane.directorVector);
         car.rotateMesh(
             isInteriorWall === angleBetweenWallAndCar < PI_OVER_2 ? POS_Y_AXIS : NEG_Y_AXIS,
@@ -63,7 +66,7 @@ export class WallCollisionManager {
         );
     }
 
-    private static calculateRotationAngle(car: Car, angleBetweenWallAndCar: number): number {
+    private static calculateRotationAngle(car: AbstractCar, angleBetweenWallAndCar: number): number {
         return (car.speed.length() * this.ROTATION_FACTOR) * (Math.cos(angleBetweenWallAndCar * 2) + 1);
     }
 
