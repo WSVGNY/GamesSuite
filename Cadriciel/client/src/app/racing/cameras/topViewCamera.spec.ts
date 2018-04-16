@@ -1,7 +1,7 @@
 // tslint:disable:no-magic-numbers
 import { TopViewCamera } from "./topViewCamera";
 import { OrthographicCamera, Vector3, Euler } from "three";
-import { Car } from "../car/car";
+import { HumanCar } from "../car/humanCar";
 import { PI_OVER_2 } from "../constants/math.constants";
 
 const INITIAL_CAMERA_POSITION_Y: number = 10;
@@ -9,9 +9,9 @@ const INITIAL_CAMERA_POSITION_Y: number = 10;
 describe("Top View Camera Test", () => {
 
     const camera: TopViewCamera = new TopViewCamera(1);
-    let car: Car;
+    let car: HumanCar;
     beforeEach(async (done: () => void) => {
-        car = new Car(undefined, true);
+        car = new HumanCar(0, undefined);
         await car.init(new Vector3(0, 0, 0), Math.PI);
         done();
     });

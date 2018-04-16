@@ -1,13 +1,13 @@
 import { Vector3 } from "three";
-import { Car } from "./car";
+import { AbstractCar } from "./abstractCar";
 import { NUMBER_REAR_WHEELS, MINIMUM_SPEED, TIRE_ASPHALT_COEFFICIENT, NUMBER_WHEELS } from "../constants/car.constants";
 import { GRAVITY } from "../constants/math.constants";
 
 export class Physics {
 
-    private static _car: Car;
+    private static _car: AbstractCar;
 
-    public static set car(car: Car) {
+    public static set car(car: AbstractCar) {
         this._car = car;
     }
 

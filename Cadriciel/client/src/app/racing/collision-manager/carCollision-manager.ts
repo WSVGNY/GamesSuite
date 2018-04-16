@@ -1,17 +1,18 @@
-import { Car } from "../car/car";
+import { AbstractCar } from "../car/abstractCar";
 import { Vector3 } from "three";
 import { SoundManagerService } from "../sound-service/sound-manager.service";
 import { MINIMUM_CAR_DISTANCE } from "../constants/car.constants";
 import { OVERLAP_CORRECTION_SCALAR, HALF } from "../constants/math.constants";
+import { AICar } from "../car/aiCar";
 
 export class CarCollisionManager {
 
-    private static _collisionCarA: Car;
-    private static _collisionCarB: Car;
+    private static _collisionCarA: AbstractCar;
+    private static _collisionCarB: AbstractCar;
     private static _collisionPoint: Vector3;
     private static _overlapCorrection: Vector3;
 
-    public static update(cars: Car[], soundManager: SoundManagerService): void {
+    public static update(cars: AbstractCar[], soundManager: SoundManagerService): void {
         for (let firstCarIndex: number = 0; firstCarIndex < cars.length; ++firstCarIndex) {
             for (let secondCarIndex: number = firstCarIndex + 1; secondCarIndex < cars.length; ++secondCarIndex) {
                 if (this.checkIfCarsAreClose(cars[firstCarIndex], cars[secondCarIndex])) {
@@ -21,12 +22,12 @@ export class CarCollisionManager {
         }
     }
 
-    private static applyCollisionDetection(firstCar: Car, secondCar: Car, soundManager: SoundManagerService): void {
+    private static applyCollisionDetection(firstCar: AbstractCar, secondCar: AbstractCar, soundManager: SoundManagerService): void {
         if (this.computeCollisionParameters(firstCar, secondCar)) {
             this.resolveHitboxOverlap();
             if (!this.carsInCollision()) {
                 this.applyCollisionPhysics();
-                if (!firstCar.isAI || !secondCar.isAI) {
+                if (!(firstCar instanceof AICar) || !(secondCar instanceof AICar)) {
                     soundManager.playCarCollision();
                 }
             }
@@ -61,11 +62,11 @@ export class CarCollisionManager {
         );
     }
 
-    private static checkIfCarsAreClose(firstCar: Car, secondCar: Car): boolean {
+    private static checkIfCarsAreClose(firstCar: AbstractCar, secondCar: AbstractCar): boolean {
         return (firstCar.currentPosition.distanceTo(secondCar.currentPosition) < MINIMUM_CAR_DISTANCE) ? true : false;
     }
 
-    private static computeCollisionParameters(firstCar: Car, secondCar: Car): boolean {
+    private static computeCollisionParameters(firstCar: AbstractCar, secondCar: AbstractCar): boolean {
         this._overlapCorrection = new Vector3();
         let collisionDetected: boolean = false;
         for (const firstCarSphere of firstCar.hitbox.boundingSpheres) {
@@ -92,12 +93,12 @@ export class CarCollisionManager {
         this._collisionPoint.y = 0;
     }
 
-    private static setCollisionCars(firstCar: Car, secondCar: Car): void {
+    private static setCollisionCars(firstCar: AbstractCar, secondCar: AbstractCar): void {
         this._collisionCarA = firstCar;
         this._collisionCarB = secondCar;
     }
 
-    private static computeResultingForces(movingCar: Car, motionlessCar: Car, collisionPoint: Vector3): void {
+    private static computeResultingForces(movingCar: AbstractCar, motionlessCar: AbstractCar, collisionPoint: Vector3): void {
         const speedCarA: Vector3 = this.getCarSpeed(movingCar);
         const speedCarB: Vector3 = this.getCarSpeed(motionlessCar);
         const positionCarA: Vector3 = movingCar.currentPosition.clone();
@@ -139,7 +140,7 @@ export class CarCollisionManager {
         return force.clone().projectOnVector(carDirection).length() * sign;
     }
 
-    private static getCarSpeed(movingCar: Car): Vector3 {
+    private static getCarSpeed(movingCar: AbstractCar): Vector3 {
         const speed: Vector3 = new Vector3();
         speed.add(movingCar.direction.clone().normalize().multiplyScalar(Math.abs(movingCar.speed.z)));
         speed.add(this.orthogonalVector(movingCar.direction.clone().normalize()).multiplyScalar(Math.abs(movingCar.speed.x)));
