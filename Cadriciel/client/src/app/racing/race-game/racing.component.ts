@@ -21,12 +21,9 @@ import { Player } from "./player";
 import { MINIMUM_CAR_DISTANCE, NUMBER_OF_LAPS } from "../constants/car.constants";
 import { AI_CARS_QUANTITY, AI_PERSONALITY_QUANTITY } from "../constants/ai.constants";
 import { CURRENT_PLAYER, COMPUTER_PLAYER } from "../constants/global.constants";
-<<<<<<< HEAD
 import { GameTimeManagerService } from "../game-time-manager/game-time-manager.service";
-=======
 import { HumanCar } from "../car/humanCar";
 import { AICar } from "../car/aiCar";
->>>>>>> Dev
 
 enum State {
     START_ANIMATION = 1,

@@ -2,25 +2,32 @@ import { State } from "./state";
 import { AbstractState } from "./abstractState";
 import { GameUpdateManagerService } from "../game-update-manager/game-update-manager.service";
 import { RacingGame } from "../race-game/racingGame";
+import { States } from "./states";
 
-export class CountdowngState extends AbstractState implements State {
+export class CountdownState extends AbstractState implements State {
+
+    private _countdownValue: number;
+
+    public init(): void {
+        this._countdownValue = 0;
+    }
 
     public update(gameUpdateManager: GameUpdateManagerService, racingGame: RacingGame): void {
-        let countdownValue: number = +racingGame.countdownOnScreenValue;
-        racingGame.countdownOnScreenValue = (--countdownValue).toString();
-        if (this.isCountDownOver(countdownValue)) {
+        this._countdownValue = +racingGame.countdownOnScreenValue;
+        racingGame.countdownOnScreenValue = (--this._countdownValue).toString();
+        if (this.isStateOver()) {
             racingGame.isCountdownOver = true;
             racingGame.countdownOnScreenValue = "START";
             this.advanceToNextState(gameUpdateManager);
         }
     }
 
-    private isCountDownOver(countdownValue: number): boolean {
-        return countdownValue === 0;
+    public isStateOver(): boolean {
+        return this._countdownValue === 0;
     }
 
-    private advanceToNextState(gameUpdateManager: GameUpdateManagerService): void {
-        gameUpdateManager.setState("RACING");
+    public advanceToNextState(gameUpdateManager: GameUpdateManagerService): void {
+        gameUpdateManager.setState(States.Racing);
         this._gameTimeManager.resetStartDate();
         // this._startDate = Date.now();
     }

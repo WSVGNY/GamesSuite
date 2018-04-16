@@ -6,7 +6,8 @@ import { CarTrackingManagerService } from "../../carTracking-manager/car-trackin
 import { GameTimeManagerService } from "../../game-time-manager/game-time-manager.service";
 import { State } from "../state";
 import { OpeningState } from "../openingState";
-import { CountdowngState } from "../countdownState";
+import { CountdownState } from "../countdownState";
+import { States } from "../states";
 
 @Injectable()
 export class StateFactoryService {
@@ -19,20 +20,20 @@ export class StateFactoryService {
     private _gameTimeManager: GameTimeManagerService
   ) { }
 
-  public getState(stateType: string): State {
-    if (stateType === undefined) {
+  public getState(state: States): State {
+    if (state === undefined) {
       return undefined;
     }
 
-    if (stateType === "OPENING") {
+    if (state === States.Opening) {
       this.createOpeningState();
-    } else if (stateType === "COUNTDOWN") {
+    } else if (state === States.Countdown) {
       this.createCountdownState();
-    } /*else if (stateType === "RACING") {
+    } /*else if (state === States.Racing) {
       return new Square();
-    } else if (stateType === "RESULTS") {
+    } else if (state === States.Result) {
       return new Square();
-    } else if (stateType === "CLOSING") {
+    } else if (state === States.Closing) {
       return new Square();
     }*/
 
@@ -50,7 +51,7 @@ export class StateFactoryService {
   }
 
   private createCountdownState(): State {
-    return new CountdowngState(
+    return new CountdownState(
       this._aiCarService,
       this._collisionManager,
       this._cameraManager,
