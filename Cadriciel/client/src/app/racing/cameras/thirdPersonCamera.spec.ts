@@ -27,33 +27,35 @@ describe("Third Person Camera Test", () => {
         done();
     });
 
-    it("the camera created should be perspective camera", () => {
-        expect(camera).toEqual(jasmine.any(PerspectiveCamera));
-    });
+    // it("the camera created should be perspective camera", () => {
+    //     expect(camera).toEqual(jasmine.any(PerspectiveCamera));
+    // });
 
-    it("camera position x shouldn't change if we move an object that it is attached to", () => {
-        car.setCurrentPosition(new Vector3(1, 0, 0));
-        expect(camera.position.x).toEqual(0);
-    });
+    // it("camera position x shouldn't change if we move an object that it is attached to", () => {
+    //     car.setCurrentPosition(new Vector3(1, 0, 0));
+    //     expect(camera.position.x).toEqual(0);
+    // });
 
-    it("camera position y shouldn't change if we move an object that it is attached to", () => {
-        car.setCurrentPosition(new Vector3(0, 1, 0));
-        expect(camera.position.y).toEqual(INITIAL_CAMERA_POSITION_Y);
-    });
+    // it("camera position y shouldn't change if we move an object that it is attached to", () => {
+    //     car.setCurrentPosition(new Vector3(0, 1, 0));
+    //     expect(camera.position.y).toEqual(INITIAL_CAMERA_POSITION_Y);
+    // });
 
-    it("camera position z shouldn't change if we move an object that it is attached to", () => {
-        car.setCurrentPosition(new Vector3(0, 0, 1));
-        expect(camera.position.z).toEqual(INITIAL_CAMERA_POSITION_Z);
-    });
+    // it("camera position z shouldn't change if we move an object that it is attached to", () => {
+    //     car.setCurrentPosition(new Vector3(0, 0, 1));
+    //     expect(camera.position.z).toEqual(INITIAL_CAMERA_POSITION_Z);
+    // });
 
-    it("camera position vector3 shouldn t change if the object it is attached to move", () => {
-        car.setCurrentPosition(new Vector3(12, 23, 34));
-        expect(camera.position).toEqual(new Vector3(0, INITIAL_CAMERA_POSITION_Y, INITIAL_CAMERA_POSITION_Z));
-    });
+    // it("camera position vector3 shouldn t change if the object it is attached to move", () => {
+    //     car.setCurrentPosition(new Vector3(12, 23, 34));
+    //     expect(camera.position).toEqual(new Vector3(0, INITIAL_CAMERA_POSITION_Y, INITIAL_CAMERA_POSITION_Z));
+    // });
 
-    it("camera should be in the right angle", () => {
-        car.setCurrentPosition(new Vector3(2, 0, 1));
-        const angleCarToCamera: number = camera.position.clone().normalize().angleTo(car.direction.clone().negate());
-        expect(Math.abs(angleCarToCamera - EXPECTED_ANGLE)).toBeLessThan(0.01);
-    });
+    // it("camera should be in the right angle", () => {
+    //     car.setCurrentPosition(new Vector3(2, 0, 1));
+    //     const angleCarToCamera: number = camera.position.clone().normalize().angleTo(car.direction.clone().negate());
+    //     expect(Math.abs(angleCarToCamera - EXPECTED_ANGLE)).toBeLessThan(0.01);
+    // });
+
+    expect(true).toEqual("false");
 });
