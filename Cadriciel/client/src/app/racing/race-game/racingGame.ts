@@ -25,6 +25,18 @@ export class RacingGame {
         return undefined;
     }
 
+    public get cars(): Car[] {
+        return this._cars;
+    }
+
+    public get track(): Track {
+        return this._track;
+    }
+
+    public getPlayerById(id: number): Player {
+        return this._players.find((player: Player) => player.id === id);
+    }
+
     public set isCountdownOver(value: boolean) {
         this._isCountdownOver = value;
     }
