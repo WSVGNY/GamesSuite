@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import { ThirdPersonCamera } from "./thirdPersonCamera";
 import { TopViewCamera } from "./topViewCamera";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
-import { Car } from "../car/car";
 import { Camera, Vector3 } from "three";
 import { SpectatingCamera } from "./spectatingCamera";
 import { CHANGE_CAMERA_KEYCODE } from "../constants/keycode.constants";
@@ -24,6 +23,10 @@ export class CameraManagerService {
         this._topViewCamera = new TopViewCamera(aspectRation);
         this._spectatingCamera = new SpectatingCamera(aspectRation);
         this._currentCamera = this._thirdPersonCamera;
+    }
+
+    public get spectatingCamera(): Camera {
+        return this._spectatingCamera;
     }
 
     public initializeSpectatingCameraPosition(target: Vector3, direction: Vector3): void {
