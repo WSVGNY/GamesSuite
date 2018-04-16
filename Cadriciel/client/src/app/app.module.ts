@@ -30,6 +30,7 @@ import { InputTimeService } from "./racing/scoreboard/input-time/input-time.serv
 import { TrackService } from "./racing/track/track-service/track.service";
 import { GameTimeManagerService } from "./racing/game-time-manager/game-time-manager.service";
 import { GameUpdateManagerService } from './racing/game-update-manager/game-update-manager.service';
+import { StateFactoryService } from './racing/game-states/state-factory/state-factory.service';
 
 @NgModule({
     declarations: [
@@ -67,7 +68,8 @@ import { GameUpdateManagerService } from './racing/game-update-manager/game-upda
         EndGameTableService,
         InputTimeService,
         GameTimeManagerService,
-        GameUpdateManagerService
+        GameUpdateManagerService,
+        StateFactoryService
     ],
     bootstrap: [AppComponent]
 })
