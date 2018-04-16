@@ -80,21 +80,25 @@ export class RacingGame {
 
     // TODO: Car factory service
     private initializeCars(keyboardHandler: KeyboardEventHandlerService): void {
-        for (let i: number = 0; i < AI_CARS_QUANTITY + 1; ++i) {
-            if (i === 0) {
-                this._cars.push(new HumanCar(i, keyboardHandler));
-                this._players.push(new Player(i, CURRENT_PLAYER));
-            } else if (i - 1 % AI_PERSONALITY_QUANTITY === 0) {
-                this._cars.push(new AICar(i, Personality.Larry));
-                this._players.push(new Player(i, COMPUTER_PLAYER + (i + 1)));
-            } else if (i - 1 % AI_PERSONALITY_QUANTITY === 1) {
-                this._cars.push(new AICar(i, Personality.Curly));
-                this._players.push(new Player(i, COMPUTER_PLAYER + (i + 1)));
-            } else if (i - 1 % AI_PERSONALITY_QUANTITY === 2) {
-                this._cars.push(new AICar(i, Personality.Moe));
-                this._players.push(new Player(i, COMPUTER_PLAYER + (i + 1)));
-            }
+        this._cars.push(new HumanCar(0, keyboardHandler));
+        this._players.push(new Player(0, CURRENT_PLAYER));
+        for (let i: number = 1; i < AI_CARS_QUANTITY + 1; ++i) {
+            this._cars.push(new AICar(i, this.getRandomPersonnality()));
+            this._players.push(new Player(i, COMPUTER_PLAYER + (i + 1)));
             this._aiCarDebugs.push(new AIDebug());
+        }
+    }
+
+    private getRandomPersonnality(): Personality {
+        switch (Math.floor(Math.random() * (AI_PERSONALITY_QUANTITY + 1))) {
+            case 0:
+                return Personality.Larry;
+            case 1:
+                return Personality.Curly;
+            case 2:
+                return Personality.Moe;
+            default:
+                return Personality.Larry;
         }
     }
 
