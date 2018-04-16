@@ -1,16 +1,16 @@
-import { Car } from "../car/car";
+import { AICar } from "../car/aiCar";
 import { Vector3 } from "three";
 import { CarCollisionManager } from "./carCollision-manager";
 
 // tslint:disable:no-magic-numbers
 describe("Car collision Manager Service", () => {
 
-    let firstCar: Car;
-    let secondCar: Car;
+    let firstCar: AICar;
+    let secondCar: AICar;
     beforeEach(async (done: () => void) => {
-        firstCar = new Car(undefined, true);
+        firstCar = new AICar(0);
         await firstCar.init(new Vector3(0, 0, 0), Math.PI);
-        secondCar = new Car(undefined, true);
+        secondCar = new AICar(1);
         await secondCar.init(new Vector3(0, 0, 0), Math.PI);
         done();
     });

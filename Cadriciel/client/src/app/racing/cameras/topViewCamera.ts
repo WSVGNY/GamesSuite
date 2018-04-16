@@ -1,5 +1,4 @@
 import { OrthographicCamera, Vector3 } from "three";
-import { Car } from "../car/car";
 import { NEAR_CLIPPING_PLANE, FAR_CLIPPING_PLANE } from "../constants/camera.constants";
 import { PI_OVER_2 } from "../constants/math.constants";
 

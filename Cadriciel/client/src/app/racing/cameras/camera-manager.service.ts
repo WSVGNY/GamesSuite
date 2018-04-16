@@ -2,6 +2,10 @@ import { Injectable } from "@angular/core";
 import { ThirdPersonCamera } from "./thirdPersonCamera";
 import { TopViewCamera } from "./topViewCamera";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
+<<<<<<< HEAD
+=======
+import { HumanCar } from "../car/humanCar";
+>>>>>>> Dev
 import { Camera, Vector3 } from "three";
 import { SpectatingCamera } from "./spectatingCamera";
 import { CHANGE_CAMERA_KEYCODE } from "../constants/keycode.constants";
@@ -56,8 +60,13 @@ export class CameraManagerService {
         });
     }
 
+<<<<<<< HEAD
     public updateCameraPositions(position: Vector3, timestep?: number): void {
         this._topViewCamera.updatePosition(position);
+=======
+    public updateCameraPositions(playerCar: HumanCar, timestep?: number): void {
+        this._topViewCamera.updatePosition(playerCar);
+>>>>>>> Dev
         if (this._currentCamera === this._spectatingCamera) {
             this._spectatingCamera.updatePosition(timestep);
         }

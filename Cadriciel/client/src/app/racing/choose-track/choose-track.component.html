@@ -9,7 +9,7 @@
     <pre>Type: {{track.type}}</pre>
     <pre>Best times:
     <pre *ngFor="let time of track.bestTimes">
-        {{time.time}}
+        {{getFormatedTime(time.time)}}
     </pre>
     </pre>
   </li>
