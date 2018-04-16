@@ -20,7 +20,7 @@ export class StateFactoryService {
   ) { }
 
   public getState(stateType: string): State {
-    if (stateType === null) {
+    if (stateType === undefined) {
       return undefined;
     }
 
