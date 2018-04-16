@@ -3,4 +3,7 @@ import { GameUpdateManagerService } from "../game-update-manager/game-update-man
 
 export interface State {
     update(gameUpdateManager: GameUpdateManagerService, racingGame: RacingGame): void;
+    isStateOver(): boolean;
+    advanceToNextState(gameUpdateManager: GameUpdateManagerService): void;
+    init(): void;
 }
