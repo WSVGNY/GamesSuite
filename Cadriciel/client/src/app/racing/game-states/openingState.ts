@@ -8,9 +8,7 @@ const MINIMUM_CAR_TO_CAMERA_DISTANCE: number = 3;
 
 export class OpeningState extends AbstractState implements State {
 
-    public init(): void {
-
-    }
+    public init(): void { }
 
     public update(gameUpdateManager: GameUpdateManagerService, racingGame: RacingGame): void {
         this._cameraManager.updateCameraPositions(racingGame.playerCarPosition, this._gameTimeManager.elaspedTime);
@@ -20,6 +18,10 @@ export class OpeningState extends AbstractState implements State {
     }
 
     public isStateOver(racingGame?: RacingGame): boolean {
+        if (racingGame === undefined) {
+            return false;
+        }
+
         return this._cameraManager.spectatingCamera.position.clone()
             .distanceTo(racingGame.playerCarPosition) < MINIMUM_CAR_TO_CAMERA_DISTANCE;
     }
