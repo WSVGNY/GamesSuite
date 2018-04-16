@@ -5,6 +5,8 @@ import { GameUpdateManagerService } from "../game-update-manager/game-update-man
 
 export class RacingState extends AbstractState implements State {
 
+    public init(): void { }
+
     public update(gameUpdateManager: GameUpdateManagerService, racingGame: RacingGame): void {
         this.updateCars(racingGame, this._gameTimeManager.getTimeSinceLastFrame());
         this._collisionManager.update(racingGame.cars);
@@ -30,4 +32,10 @@ export class RacingState extends AbstractState implements State {
             // }
         }
     }
+
+    public isStateOver(): boolean {
+        return false;
+    }
+
+    public advanceToNextState(): void { }
 }

@@ -19,7 +19,7 @@ export class OpeningState extends AbstractState implements State {
 
     public isStateOver(racingGame?: RacingGame): boolean {
         if (racingGame === undefined) {
-            return false;
+            throw ReferenceError("Expected racingGame parameter");
         }
 
         return this._cameraManager.spectatingCamera.position.clone()
