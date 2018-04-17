@@ -17,13 +17,15 @@ export class OpeningState implements State {
     ) { }
 
     public init(racingGame?: RacingGame): void {
+        this._cameraManager.changeToSpectatingCamera();
+        this._gameTimeManager.resetStartDate();
         // this._cameraManager.initializeSpectatingCameraPosition(racingGame.playerCar.currentPosition, racingGame.playerCar.direction);
         // this._soundManager.bindSoundKeys();
     }
 
     public update(gameUpdateManager: GameUpdateManagerService, racingGame: RacingGame): void {
         this._cameraManager.updateCameraPositions(racingGame.playerCarPosition, this._gameTimeManager.getElaspedTime());
-        if (this.isStateOver()) {
+        if (this.isStateOver(racingGame)) {
             this.advanceToNextState(gameUpdateManager);
         }
     }
