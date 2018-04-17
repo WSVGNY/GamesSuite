@@ -9,7 +9,7 @@ export class Player {
         this._score = new Score();
     }
 
-    public get id(): number {
+    public get uniqueid(): number {
         return this._id;
     }
 
