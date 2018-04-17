@@ -44,7 +44,6 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
     public ngOnInit(): void {
         this._keyBoardHandler.initialize();
-        this._racingGame = new RacingGame(this._keyBoardHandler);
         // this._gameScene = new GameScene(this._keyBoardHandler/*, this._collisionManagerService*/);
     }
 
@@ -56,10 +55,12 @@ export class RacingComponent implements AfterViewInit, OnInit {
             .then(/* do nothing */)
             .catch((err) => console.error(err));
         this._keyBoardHandler.initialize();
-        this.getTrack();
+        this._racingGame = new RacingGame(this._keyBoardHandler);
+        await this.getTrack();
+        this.startGameLoop();
     }
 
-    public getTrack(): void {
+    public async getTrack(): Promise<void> {
         this._trackService.getTrackFromId(this._route.snapshot.paramMap.get("id"))
             .subscribe((trackFromServer: Track) => {
                 this._racingGame
@@ -68,6 +69,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
                         this._cameraManager.thirdPersonCamera
                     )
                     .catch((err) => console.error(err));
+
             });
     }
 
