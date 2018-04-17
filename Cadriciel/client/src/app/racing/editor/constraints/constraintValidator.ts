@@ -3,11 +3,11 @@ import { CommonCoordinate3D } from "../../../../../../common/racing/commonCoordi
 import { TrackPointList } from "../../track/trackPointList";
 import { WallMesh } from "../../track/wall";
 import { RED } from "../../constants/color.constants";
-import { HALF_TRACK_WIDTH, WALL_DISTANCE_TO_TRACK, WALL_WIDTH } from "../../constants/scene.constants";
+import { WALL_DISTANCE_TO_TRACK, WALL_WIDTH, TRACK_WIDTH } from "../../constants/scene.constants";
 import { PI_OVER_4, PI_OVER_2 } from "../../constants/math.constants";
 
 const UNAUTHORIZED_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: RED });
-const OFFSET: number = HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH;
+const OFFSET: number = TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH;
 
 export class ConstraintValidator {
     public static checkAngle(connections: Line[], isComplete: boolean): boolean {
@@ -49,14 +49,6 @@ export class ConstraintValidator {
 
     public static checkLength(connections: Line[]): boolean {
         let lengthOK: boolean = true;
-
-        if (connections.length > 0) {
-            const geometry: Geometry = (connections[0].geometry) as Geometry;
-            if (this.calculateLength(geometry.vertices) < 50) {
-                connections[0].material = UNAUTHORIZED_LINE_MATERIAL;
-                lengthOK = false;
-            }
-        }
 
         for (const connection of connections) {
             const geometry: Geometry = (connection.geometry) as Geometry;
