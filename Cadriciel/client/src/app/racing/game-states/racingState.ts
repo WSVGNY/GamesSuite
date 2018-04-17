@@ -24,14 +24,10 @@ export class RacingState implements State {
         // private _soundManager: SoundManagerService
     ) { }
 
-    public async init(racingGame?: RacingGame): Promise<void> {
-        this._collisionManager.track = racingGame.gameScene.trackMesh;
-        await this._aiCarService
-            .initialize(racingGame.gameScene.trackMesh.trackPoints.toVectors3)
-            .then()
-            .catch((err) => console.error(err));
-        this._trackingManager.init(racingGame.gameScene.trackMesh.trackPoints.toVectors3);
+    public init(): void {
         this._cameraManager.bindCameraKey();
+        this._gameTimeManager.resetStartDate();
+        this._gameTimeManager.updateLastDate();
     }
 
     public update(gameUpdateManager: GameUpdateManagerService, racingGame: RacingGame): void {
@@ -40,6 +36,7 @@ export class RacingState implements State {
         }
         this._collisionManager.update(racingGame.cars);
         this._cameraManager.updateCameraPositions(racingGame.playerCarPosition);
+        this._gameTimeManager.updateLastDate();
     }
 
     private updateCars(racingGame: RacingGame, timeSinceLastFrame: number): boolean {
