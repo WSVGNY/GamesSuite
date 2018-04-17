@@ -1,33 +1,30 @@
 import { State } from "./state";
-import { RacingGame } from "../race-game/racingGame";
 import { StateTypes } from "./stateTypes";
-import { GameTimeManagerService } from "../game-time-manager/game-time-manager.service";
 
-export class ResultsState implements State {
-
-    public constructor(
-        private _gameTimeManager: GameTimeManagerService,
-    ) { }
+export class ResultsState extends State {
 
     public init(): void { }
 
-    public update(racingGame: RacingGame): void {
-        for (const car of racingGame.cars) {
+    public update(): void {
+        for (const car of this._racingGame.cars) {
             if (!car.raceProgressTracker.isRaceCompleted && !car.raceProgressTracker.isTimeLogged) {
-                racingGame.getPlayerById(car.uniqueid).setTotalTime(
-                    this._gameTimeManager.simulateRaceTime(car.raceProgressTracker, car.currentPosition, racingGame.track)
+                this._racingGame.getPlayerById(car.uniqueid).setTotalTime(
+                    this._serviceLoader.gameTimeService.simulateRaceTime(
+                        car.raceProgressTracker, car.currentPosition,
+                        this._racingGame.track
+                    )
                 );
                 car.raceProgressTracker.isTimeLogged = true;
             }
         }
-        this.advanceToNextState(racingGame);
+        this.advanceToNextState();
     }
 
     public isStateOver(): boolean {
         return false;
     }
 
-    public advanceToNextState(racingGame: RacingGame): void {
-        racingGame.setState(StateTypes.Closing);
+    public advanceToNextState(): void {
+        this._racingGame.setState(StateTypes.ResultsTable);
     }
 }

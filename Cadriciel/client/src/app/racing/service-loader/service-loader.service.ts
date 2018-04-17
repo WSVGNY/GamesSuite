@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { RacingGame } from "../race-game/racingGame";
 import { AICarService } from "../artificial-intelligence/ai-car.service";
 import { CollisionManagerService } from "../collision-manager/collision-manager.service";
 import { CameraManagerService } from "../cameras/camera-manager.service";
@@ -6,10 +7,14 @@ import { CarTrackingManagerService } from "../carTracking-manager/car-tracking-m
 import { GameTimeManagerService } from "../game-time-manager/game-time-manager.service";
 import { CountdownService } from "../countdown/countdown.service";
 import { SoundManagerService } from "../sound-service/sound-manager.service";
-import { RacingGame } from "../race-game/racingGame";
+import { EndGameTableService } from "../scoreboard/end-game-table/end-game-table.service";
+import { HighscoreService } from "../scoreboard/best-times/highscore.service";
+import { InputTimeService } from "../scoreboard/input-time/input-time.service";
+import { TrackService } from "../track/track-service/track.service";
+import { Vector3 } from "three";
 
 @Injectable()
-export class GameUpdateManagerService {
+export class ServiceLoaderService {
     public constructor(
         private _aiCarService: AICarService,
         private _collisionManager: CollisionManagerService,
@@ -17,24 +22,39 @@ export class GameUpdateManagerService {
         private _trackingManager: CarTrackingManagerService,
         private _gameTimeManager: GameTimeManagerService,
         private _countdownService: CountdownService,
-        private _soundManager: SoundManagerService
+        private _soundManager: SoundManagerService,
+        private _endGameTableService: EndGameTableService,
+        private _highscoreService: HighscoreService,
+        private _inputTimeService: InputTimeService,
+        private _trackService: TrackService
     ) { }
 
     public async initializeServices(racingGame: RacingGame): Promise<void> {
         this._aiCarService.initialize(racingGame.gameScene.trackMesh.trackPoints.toVectors3);
         this._collisionManager.track = racingGame.gameScene.trackMesh;
         this._cameraManager.initializeSpectatingCameraPosition(racingGame.playerCar.currentPosition, racingGame.playerCar.direction);
-        this._trackingManager.init(racingGame.gameScene.trackMesh.trackPoints.toVectors3);
+        this._trackingManager.init(
+            this.getTrackPoints(racingGame),
+            this.getStartLinePosition(racingGame),
+            this.getStartSegment(racingGame));
         this._gameTimeManager.initializeDates();
         await this.createSounds(racingGame);
     }
 
+    private getTrackPoints(racingGame: RacingGame): Vector3[] {
+        return racingGame.gameScene.trackMesh.trackPoints.toVectors3;
+    }
+
+    private getStartLinePosition(racingGame: RacingGame): Vector3 {
+        return racingGame.gameScene.trackMesh.startingLine.position;
+    }
+
+    private getStartSegment(racingGame: RacingGame): Vector3 {
+        return racingGame.gameScene.trackMesh.startingSegmentDirection;
+    }
+
     private async createSounds(racingGame: RacingGame): Promise<void> {
-        await this._soundManager.createStartingSound(racingGame.playerCar);
-        await this._soundManager.createMusic(racingGame.playerCar);
-        await this._soundManager.createCarCollisionSound(racingGame.playerCar);
-        await this._soundManager.createAccelerationSound(racingGame.playerCar);
-        await this._soundManager.createWallCollisionSound(racingGame.playerCar);
+        await this._soundManager.init(racingGame.playerCar);
     }
 
     public get aiCarService(): AICarService {
@@ -53,6 +73,10 @@ export class GameUpdateManagerService {
         return this._trackingManager;
     }
 
+    public get trackService(): TrackService {
+        return this._trackService;
+    }
+
     public get gameTimeService(): GameTimeManagerService {
         return this._gameTimeManager;
     }
@@ -65,5 +89,15 @@ export class GameUpdateManagerService {
         return this._soundManager;
     }
 
+    public get endGameTableService(): EndGameTableService {
+        return this._endGameTableService;
+    }
 
+    public get highscoreService(): HighscoreService {
+        return this._highscoreService;
+    }
+
+    public get inputTimeService(): InputTimeService {
+        return this._inputTimeService;
+    }
 }

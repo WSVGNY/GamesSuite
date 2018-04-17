@@ -1,46 +1,36 @@
 import { State } from "./state";
-import { RacingGame } from "../race-game/racingGame";
 import { StateTypes } from "./stateTypes";
-import { GameTimeManagerService } from "../game-time-manager/game-time-manager.service";
-import { CountdownService } from "../countdown/countdown.service";
-import { SoundManagerService } from "../sound-service/sound-manager.service";
 
 const ONE_SECOND: number = 1000;
 const STARTING_TEXT: string = "START";
 
-export class CountdownState implements State {
-
-    public constructor(
-        private _gameTimeManager: GameTimeManagerService,
-        private _countdownService: CountdownService,
-        private _soundManager: SoundManagerService
-    ) { }
+export class CountdownState extends State {
 
     public init(): void {
-        this._gameTimeManager.resetStartDate();
-        this._countdownService.initialize();
-        this._soundManager.playCurrentStartSequenceSound();
+        this._serviceLoader.gameTimeService.resetStartDate();
+        this._serviceLoader.countdownService.initialize();
+        this._serviceLoader.soundService.playCurrentStartSequenceSound();
     }
 
-    public update(racingGame: RacingGame): void {
-        if (this._gameTimeManager.getElaspedTime() > ONE_SECOND) {
-            this._gameTimeManager.resetStartDate();
-            this._countdownService.decreaseOnScreenValue();
-            this._soundManager.playCurrentStartSequenceSound();
+    public update(): void {
+        if (this._serviceLoader.gameTimeService.getElaspedTime() > ONE_SECOND) {
+            this._serviceLoader.gameTimeService.resetStartDate();
+            this._serviceLoader.countdownService.decreaseOnScreenValue();
+            this._serviceLoader.soundService.playCurrentStartSequenceSound();
         }
         if (this.isStateOver()) {
-            this._countdownService.onScreenValue = STARTING_TEXT;
-            this._countdownService.isCountdownOver = true;
-            this.advanceToNextState(racingGame);
+            this._serviceLoader.countdownService.onScreenValue = STARTING_TEXT;
+            this._serviceLoader.countdownService.isCountdownOver = true;
+            this.advanceToNextState();
         }
     }
 
     public isStateOver(): boolean {
-        return +this._countdownService.onScreenValue === 0;
+        return +this._serviceLoader.countdownService.onScreenValue === 0;
     }
 
-    public advanceToNextState(racingGame: RacingGame): void {
-        racingGame.setState(StateTypes.Racing);
-        this._gameTimeManager.resetStartDate();
+    public advanceToNextState(): void {
+        this._racingGame.setState(StateTypes.Racing);
+        this._serviceLoader.gameTimeService.resetStartDate();
     }
 }
