@@ -3,7 +3,6 @@ import { Group, Vector3, Geometry, Line, Camera, LineBasicMaterial, } from "thre
 import { TrackType } from "../../../../../common/racing/trackType";
 import { TrackLights } from "../render-service/light";
 import { AbstractCar } from "../car/abstractCar";
-import { AIDebug } from "../artificial-intelligence/ai-debug";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { Track } from "../../../../../common/racing/track";
 import { TrackMesh } from "../track/track";
@@ -11,6 +10,7 @@ import { TrackPoint } from "../track/trackPoint";
 import { START_CAR_DISTANCE } from "../constants/scene.constants";
 import { DAY_KEYCODE, DEBUG_KEYCODE, CHANGE_CAMERA_KEYCODE } from "../constants/keycode.constants";
 import { YELLOW } from "../constants/color.constants";
+import { HumanCar } from "../car/humanCar";
 import { AICar } from "../car/aiCar";
 
 const LATHERAL_OFFSET: number = 2;
@@ -44,13 +44,14 @@ export class GameScene extends AbstractScene {
         this.setCenterLine();
     }
 
-    public async loadCars(cars: AbstractCar[], carDebugs: AIDebug[], camera: Camera, trackType: TrackType): Promise<void> {
+    public async loadCars(cars: AbstractCar[], camera: Camera, trackType: TrackType): Promise<void> {
         this.shuffle(cars);
         for (let i: number = 0; i < cars.length; ++i) {
             await this.placeCarOnStartingGrid(cars[i], i);
-            this._debugElements.add(carDebugs[i].debugGroup);
-            if (!(cars[i] instanceof AICar)) {
+            if (cars[i] instanceof HumanCar) {
                 cars[i].attachCamera(camera);
+            } else {
+                this._debugElements.add((cars[i] as AICar).aiDebug.debugGroup);
             }
             this.add(cars[i]);
         }

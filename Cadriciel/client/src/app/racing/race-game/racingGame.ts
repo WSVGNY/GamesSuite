@@ -8,7 +8,6 @@ import { HumanCar } from "../car/humanCar";
 import { AICar } from "../car/aiCar";
 import { Personality } from "../artificial-intelligence/ai-config";
 import { COMPUTER_PLAYER, CURRENT_PLAYER } from "../constants/global.constants";
-import { AIDebug } from "../artificial-intelligence/ai-debug";
 import { AbstractCar } from "../car/abstractCar";
 import { State } from "../game-states/state";
 import { StateFactoryService } from "../game-states/state-factory/state-factory.service";
@@ -17,13 +16,10 @@ import { StateTypes } from "../game-states/stateTypes";
 export class RacingGame {
 
     public countdownOnScreenValue: string;
-
     private _players: Player[];
     private _cars: AbstractCar[];
     private _track: Track;
     private _gameScene: GameScene;
-    private _aiCarDebugs: AIDebug[];
-
     private _currentState: State;
 
     public constructor(
@@ -32,7 +28,6 @@ export class RacingGame {
     ) {
         this._players = [];
         this._cars = [];
-        this._aiCarDebugs = [];
         this._gameScene = new GameScene(this._keyboardHandler);
         this.initializeCars(this._keyboardHandler);
     }
@@ -51,20 +46,26 @@ export class RacingGame {
     }
 
     private initializeCars(keyboardHandler: KeyboardEventHandlerService): void {
+        this.createPlayerCar(keyboardHandler);
+        for (let i: number = 1; i < AI_CARS_QUANTITY + 1; ++i) {
+            this.createAICar(i);
+        }
+    }
+
+    private createPlayerCar(keyboardHandler: KeyboardEventHandlerService): void {
         this._cars.push(new HumanCar(0, keyboardHandler));
         this._players.push(new Player(0, CURRENT_PLAYER));
-        this._aiCarDebugs.push(new AIDebug());
-        for (let i: number = 1; i < AI_CARS_QUANTITY + 1; ++i) {
-            this._cars.push(new AICar(i, this.getRandomPersonnality()));
-            this._players.push(new Player(i, COMPUTER_PLAYER + (i + 1)));
-            this._aiCarDebugs.push(new AIDebug());
-        }
+    }
+
+    private createAICar(index: number): void {
+        this._cars.push(new AICar(index, this.getRandomPersonnality()));
+        this._players.push(new Player(index, COMPUTER_PLAYER + (index + 1)));
     }
 
     public async initializeGameFromTrack(track: Track, thirdPersonCamera: Camera): Promise<void> {
         this._track = track;
         this._gameScene.loadTrack(track);
-        await this._gameScene.loadCars(this._cars, this._aiCarDebugs, thirdPersonCamera, track.type);
+        await this._gameScene.loadCars(this._cars, thirdPersonCamera, track.type);
         this._gameScene.bindGameSceneKeys(this._cars);
 
     }
@@ -75,10 +76,6 @@ export class RacingGame {
 
     public get cars(): AbstractCar[] {
         return this._cars;
-    }
-
-    public get aiCarDebugs(): AIDebug[] {
-        return this._aiCarDebugs;
     }
 
     public get track(): Track {
