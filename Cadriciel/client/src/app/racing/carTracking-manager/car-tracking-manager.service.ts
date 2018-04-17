@@ -64,16 +64,6 @@ export class CarTrackingManagerService {
         raceProgressTracker.incrementCurrentIndex(this._detectionSpheres.length);
     }
 
-    // private updateTrackPortionIndex(): void {
-    //     this._car.trackPortionIndex = this._currentIndex === 0 ?
-    //         this._detectionSpheres.length - 1 :
-    //         this._currentIndex - 1;
-    // }
-
-    // private isRaceCompleted(raceProgressTracker: RaceProgressTracker): boolean {
-    //     return raceProgressTracker.segmentCounted > this._detectionSpheres.length * NUMBER_OF_LAPS;
-    // }
-
     private computeFinishLine(trackVertices: Vector3[]): void {
         const firstVertex: Vector3 = new Vector3(trackVertices[0].x, trackVertices[0].y, trackVertices[0].z);
         const secondVertex: Vector3 = new Vector3(trackVertices[1].x, trackVertices[1].y, trackVertices[1].z);
