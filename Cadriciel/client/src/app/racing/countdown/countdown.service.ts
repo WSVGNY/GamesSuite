@@ -9,6 +9,11 @@ export class CountdownService {
     }
 
     public get onScreenValue(): string {
-        return this.onScreenValue;
+        return this._onScreenValue;
+    }
+
+    public decreaseOnScreenValue(): void {
+        let countdownNumericValue: number = +this._onScreenValue;
+        this._onScreenValue = (--countdownNumericValue).toString();
     }
 }
