@@ -26,24 +26,29 @@ export class RacingState extends State {
     private updateCars(timeSinceLastFrame: number): boolean {
         for (let i: number = 0; i < this._racingGame.cars.length; ++i) {
             this._racingGame.cars[i].update(timeSinceLastFrame);
-            const donePlayer: Player = this._racingGame.players.find((player: Player) => player.id === this._racingGame.cars[i].uniqueid);
             if (this._racingGame.cars[i] instanceof AICar) {
                 this._serviceLoader.aiCarService.update(this._racingGame.cars[i] as AICar, this._racingGame.aiCarDebugs[i]);
-                if (this._serviceLoader.trackingService.update(this._racingGame.cars[i].currentPosition, this._racingGame.cars[i].raceProgressTracker)) {
-                    donePlayer.setTotalTime(this._serviceLoader.gameTimeService.getElaspedTime() * MS_TO_SEC);
-                    this._racingGame.cars[i].raceProgressTracker.isTimeLogged = true;
-                }
-            } else {
-                if (this._serviceLoader.trackingService.update(this._racingGame.cars[i].currentPosition, this._racingGame.cars[i].raceProgressTracker)) {
-                    donePlayer.setTotalTime(this._serviceLoader.gameTimeService.getElaspedTime() * MS_TO_SEC);
-                    this._racingGame.cars[i].raceProgressTracker.isTimeLogged = true;
-
+            }
+            if (this.updateTrackingService(i)) {
+                this.logTime(this._racingGame.getPlayerByUniqueId(this._racingGame.cars[i].uniqueid), i);
+                if (this._racingGame.cars[i].uniqueid === this._racingGame.playerCar.uniqueid) {
                     return true;
                 }
             }
         }
 
         return false;
+    }
+
+    private updateTrackingService(carIndex: number): boolean {
+        return this._serviceLoader.trackingService.update(
+            this._racingGame.cars[carIndex].currentPosition,
+            this._racingGame.cars[carIndex].raceProgressTracker);
+    }
+
+    private logTime(donePlayer: Player, carIndex: number): void {
+        donePlayer.setTotalTime(this._serviceLoader.gameTimeService.getElaspedTime() * MS_TO_SEC);
+        this._racingGame.cars[carIndex].raceProgressTracker.isTimeLogged = true;
     }
 
     public isStateOver(): boolean {

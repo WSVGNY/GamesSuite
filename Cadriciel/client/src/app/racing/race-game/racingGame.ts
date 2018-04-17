@@ -89,8 +89,8 @@ export class RacingGame {
         return this._gameScene;
     }
 
-    public getPlayerById(id: number): Player {
-        return this._players.find((player: Player) => player.id === id);
+    public getPlayerByUniqueId(id: number): Player {
+        return this._players.find((player: Player) => player.uniqueid === id);
     }
 
     public get playerCar(): AbstractCar {

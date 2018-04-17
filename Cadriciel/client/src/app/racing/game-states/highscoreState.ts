@@ -5,7 +5,7 @@ export class HighscoreState extends State {
 
     public init(): void {
         this._serviceLoader.highscoreService.highscores = this._racingGame.track.bestTimes;
-        if (this._serviceLoader.highscoreService.isNewHighScore(this._racingGame.getPlayerById(0))) {
+        if (this._serviceLoader.highscoreService.isNewHighScore(this._racingGame.getPlayerByUniqueId(0))) {
             this._serviceLoader.inputTimeService.showInput = true;
         }
     }
