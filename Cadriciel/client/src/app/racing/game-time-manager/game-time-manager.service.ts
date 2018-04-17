@@ -29,6 +29,10 @@ export class GameTimeManagerService {
         this._startDate = Date.now();
     }
 
+    public updateLastDate(): void {
+        this._lastDate = Date.now();
+    }
+
     public simulateRaceTime(raceProgressTracker: RaceProgressTracker, currentPosition: Vector3, track: Track): number {
         const lapSegmentCount: number = track.vertices.length;
         const raceSegmentCount: number = lapSegmentCount * NUMBER_OF_LAPS;
