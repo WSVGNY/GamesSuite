@@ -54,14 +54,6 @@ export class RacingGame {
 
     }
 
-    public get playerCarPosition(): Vector3 {
-        return undefined;
-    }
-
-    public get currentCamera(): Camera {
-        return undefined;
-    }
-
     public get players(): Player[] {
         return this._players;
     }
@@ -88,7 +80,10 @@ export class RacingGame {
 
     public get playerCar(): AbstractCar {
         return this._cars.find((car: AbstractCar) => car.uniqueid === 0);
+    }
 
+    public get playerCarPosition(): Vector3 {
+        return this._cars.find((car: AbstractCar) => car.uniqueid === 0).currentPosition;
     }
 
     public set isCountdownOver(value: boolean) {
