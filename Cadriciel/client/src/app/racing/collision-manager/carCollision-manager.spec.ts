@@ -8,7 +8,7 @@ import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-ha
 import { InputTimeService } from "../scoreboard/input-time/input-time.service";
 
 // tslint:disable:no-magic-numbers
-fdescribe("Car collision Manager Service", () => {
+describe("Car collision Manager Service", () => {
 
     let firstCar: AICar;
     let secondCar: AICar;
