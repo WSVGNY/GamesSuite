@@ -4,7 +4,7 @@ import { GameUpdateManagerService } from "../game-update-manager/game-update-man
 import { StateTypes } from "./stateTypes";
 import { CameraManagerService } from "../cameras/camera-manager.service";
 import { GameTimeManagerService } from "../game-time-manager/game-time-manager.service";
-import { SoundManagerService } from "../sound-service/sound-manager.service";
+// import { SoundManagerService } from "../sound-service/sound-manager.service";
 
 const MINIMUM_CAR_TO_CAMERA_DISTANCE: number = 3;
 
@@ -13,7 +13,7 @@ export class OpeningState implements State {
     public constructor(
         private _cameraManager: CameraManagerService,
         private _gameTimeManager: GameTimeManagerService,
-        private _soundManager: SoundManagerService
+        // private _soundManager: SoundManagerService
     ) { }
 
     public init(racingGame?: RacingGame): void {

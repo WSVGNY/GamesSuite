@@ -2,16 +2,14 @@ import { State } from "./state";
 import { RacingGame } from "../race-game/racingGame";
 import { GameUpdateManagerService } from "../game-update-manager/game-update-manager.service";
 import { StateTypes } from "./stateTypes";
-import { CarTrackingManagerService } from "../carTracking-manager/car-tracking-manager.service";
 import { GameTimeManagerService } from "../game-time-manager/game-time-manager.service";
-import { SoundManagerService } from "../sound-service/sound-manager.service";
+// import { SoundManagerService } from "../sound-service/sound-manager.service";
 
 export class ResultsState implements State {
 
     public constructor(
-        private _trackingManager: CarTrackingManagerService,
         private _gameTimeManager: GameTimeManagerService,
-        private _soundManager: SoundManagerService
+        // private _soundManager: SoundManagerService
     ) { }
 
     public init(): void { }

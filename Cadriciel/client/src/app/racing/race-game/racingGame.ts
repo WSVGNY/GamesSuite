@@ -20,23 +20,35 @@ export class RacingGame {
     private _track: Track;
     private _gameScene: GameScene;
     private _aiCarDebugs: AIDebug[];
-    private _isCountdownOver: boolean;
-    private _currentCamera: Camera;
-    private _aspectRatio: number;
+    // private _isCountdownOver: boolean;
 
-    public constructor() { }
-
-    private async initializeGameFromTrack(track: Track, keyboardHandler: KeyboardEventHandlerService): Promise<void> {
-        this.initializeCars(keyboardHandler);
-        this._gameScene.loadTrack(track);
-        // await this.createSounds();
-        await this._gameScene.loadCars(this._cars, this._aiCarDebugs, this._currentCamera, this._track.type);
-        // this._soundManager.accelerationSoundEffect.play();
-        this._gameScene.bindGameSceneKeys(this._cars);
+    public constructor(
+        private _keyboardHandler: KeyboardEventHandlerService,
+    ) {
+        this._players = [];
+        this._cars = [];
+        this._aiCarDebugs = [];
+        this._gameScene = new GameScene(this._keyboardHandler);
+        this.initializeCars(this._keyboardHandler);
     }
 
-    public get aspectRatio(): number {
-        return this.aspectRatio;
+    private initializeCars(keyboardHandler: KeyboardEventHandlerService): void {
+        this._cars.push(new HumanCar(0, keyboardHandler));
+        this._players.push(new Player(0, CURRENT_PLAYER));
+        for (let i: number = 1; i < AI_CARS_QUANTITY + 1; ++i) {
+            this._cars.push(new AICar(i, this.getRandomPersonnality()));
+            this._players.push(new Player(i, COMPUTER_PLAYER + (i + 1)));
+            this._aiCarDebugs.push(new AIDebug());
+        }
+    }
+
+    public async initializeGameFromTrack(track: Track, thirdPersonCamera: Camera): Promise<void> {
+        this._gameScene.loadTrack(track);
+        this._gameScene.createStartingLine();
+        await this._gameScene.loadCars(this._cars, this._aiCarDebugs, thirdPersonCamera, track.type);
+        // await this.createSounds();
+        // this._soundManager.accelerationSoundEffect.play();
+        this._gameScene.bindGameSceneKeys(this._cars);
     }
 
     public get playerCarPosition(): Vector3 {
@@ -77,17 +89,7 @@ export class RacingGame {
     }
 
     public set isCountdownOver(value: boolean) {
-        this._isCountdownOver = value;
-    }
-
-    private initializeCars(keyboardHandler: KeyboardEventHandlerService): void {
-        this._cars.push(new HumanCar(0, keyboardHandler));
-        this._players.push(new Player(0, CURRENT_PLAYER));
-        for (let i: number = 1; i < AI_CARS_QUANTITY + 1; ++i) {
-            this._cars.push(new AICar(i, this.getRandomPersonnality()));
-            this._players.push(new Player(i, COMPUTER_PLAYER + (i + 1)));
-            this._aiCarDebugs.push(new AIDebug());
-        }
+        // this._isCountdownOver = value;
     }
 
     private getRandomPersonnality(): Personality {

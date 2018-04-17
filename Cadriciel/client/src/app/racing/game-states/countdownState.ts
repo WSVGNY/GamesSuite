@@ -1,10 +1,9 @@
 import { State } from "./state";
-import { AbstractState } from "./abstractState";
 import { GameUpdateManagerService } from "../game-update-manager/game-update-manager.service";
 import { RacingGame } from "../race-game/racingGame";
 import { StateTypes } from "./stateTypes";
 import { GameTimeManagerService } from "../game-time-manager/game-time-manager.service";
-import { SoundManagerService } from "../sound-service/sound-manager.service";
+// import { SoundManagerService } from "../sound-service/sound-manager.service";
 
 export class CountdownState implements State {
 
@@ -12,7 +11,7 @@ export class CountdownState implements State {
 
     public constructor(
         private _gameTimeManager: GameTimeManagerService,
-        private _soundManager: SoundManagerService
+        // private _soundManager: SoundManagerService
     ) { }
 
     public init(): void {
