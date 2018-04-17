@@ -57,7 +57,8 @@ export class RacingComponent implements AfterViewInit, OnInit {
         this._keyBoardHandler.initialize();
         this._racingGame = new RacingGame(this._keyBoardHandler);
         this.getTrack();
-        this.startGameLoop();
+        // console.log(this._racingGame.gameScene.trackMesh);
+        // this.startGameLoop();
     }
 
     public getTrack(): void {
@@ -68,8 +69,9 @@ export class RacingComponent implements AfterViewInit, OnInit {
                         Track.createFromJSON(JSON.stringify(trackFromServer)),
                         this._cameraManager.thirdPersonCamera
                     )
+                    .then()
                     .catch((err) => console.error(err));
-
+                this.startGameLoop();
             });
     }
 

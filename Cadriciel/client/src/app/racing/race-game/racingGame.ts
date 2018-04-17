@@ -33,6 +33,7 @@ export class RacingGame {
     }
 
     private initializeCars(keyboardHandler: KeyboardEventHandlerService): void {
+        this._track = this.track;
         this._cars.push(new HumanCar(0, keyboardHandler));
         this._players.push(new Player(0, CURRENT_PLAYER));
         this._aiCarDebugs.push(new AIDebug());
@@ -50,6 +51,7 @@ export class RacingGame {
         // await this.createSounds();
         // this._soundManager.accelerationSoundEffect.play();
         this._gameScene.bindGameSceneKeys(this._cars);
+
     }
 
     public get playerCarPosition(): Vector3 {
