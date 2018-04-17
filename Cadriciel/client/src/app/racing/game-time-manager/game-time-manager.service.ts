@@ -12,11 +12,7 @@ export class GameTimeManagerService {
     private _startDate: number;
     private _lastDate: number;
 
-    public constructor() {
-        this.initializeDates();
-    }
-
-    private initializeDates(): void {
+    public initializeDates(): void {
         this._startDate = 0;
         this._lastDate = 0;
     }
