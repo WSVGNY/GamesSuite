@@ -19,6 +19,7 @@ export class OpeningState implements State {
         this._cameraManager.changeToSpectatingCamera();
         this._gameTimeManager.resetStartDate();
         this._soundManager.bindSoundKeys();
+        this._soundManager.playAccelerationSound();
     }
 
     public update(racingGame: RacingGame): void {
