@@ -58,7 +58,7 @@ export class StateFactoryService {
       this._gameUpdateService.cameraService,
       this._gameUpdateService.trackingService,
       this._gameUpdateService.gameTimeService,
-      // this._gameUpdateService.soundService
+      this._gameUpdateService.soundService
     );
   }
 

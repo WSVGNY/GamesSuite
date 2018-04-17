@@ -8,7 +8,7 @@ import { CollisionManagerService } from "../collision-manager/collision-manager.
 import { CameraManagerService } from "../cameras/camera-manager.service";
 import { CarTrackingManagerService } from "../carTracking-manager/car-tracking-manager.service";
 import { GameTimeManagerService } from "../game-time-manager/game-time-manager.service";
-// import { SoundManagerService } from "../sound-service/sound-manager.service";
+import { SoundManagerService } from "../sound-service/sound-manager.service";
 
 const MS_TO_SEC: number = 0.001;
 
@@ -20,7 +20,7 @@ export class RacingState implements State {
         private _cameraManager: CameraManagerService,
         private _trackingManager: CarTrackingManagerService,
         private _gameTimeManager: GameTimeManagerService,
-        // private _soundManager: SoundManagerService
+        private _soundManager: SoundManagerService
     ) { }
 
     public init(): void {
@@ -30,6 +30,7 @@ export class RacingState implements State {
     }
 
     public update(racingGame: RacingGame): void {
+        this._soundManager.setAccelerationSound(racingGame.playerCar);
         if (this.updateCars(racingGame, this._gameTimeManager.getTimeSinceLastFrame())) {
             this.advanceToNextState(racingGame);
         }
