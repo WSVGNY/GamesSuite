@@ -41,7 +41,6 @@ export class OpeningState implements State {
 
     public advanceToNextState(gameUpdateManager: GameUpdateManagerService): void {
         gameUpdateManager.setState(StateTypes.Countdown);
-        this._gameTimeManager.resetStartDate();
         this._cameraManager.changeToThirdPersonCamera();
         // this._countDownOnScreenValue = "3";
         // this._soundManager.playCurrentStartSequenceSound();
