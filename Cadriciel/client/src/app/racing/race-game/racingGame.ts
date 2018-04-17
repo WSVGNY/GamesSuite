@@ -64,7 +64,6 @@ export class RacingGame {
     public async initializeGameFromTrack(track: Track, thirdPersonCamera: Camera): Promise<void> {
         this._track = track;
         this._gameScene.loadTrack(track);
-        this._gameScene.createStartingLine();
         await this._gameScene.loadCars(this._cars, this._aiCarDebugs, thirdPersonCamera, track.type);
         this._gameScene.bindGameSceneKeys(this._cars);
 
