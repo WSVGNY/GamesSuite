@@ -1,16 +1,38 @@
 import { State } from "./state";
-import { AbstractState } from "./abstractState";
 import { RacingGame } from "../race-game/racingGame";
 import { GameUpdateManagerService } from "../game-update-manager/game-update-manager.service";
 import { AICar } from "../car/aiCar";
 import { Player } from "../race-game/player";
-import { States } from "./states";
+import { StateTypes } from "./stateTypes";
+import { AICarService } from "../artificial-intelligence/ai-car.service";
+import { CollisionManagerService } from "../collision-manager/collision-manager.service";
+import { CameraManagerService } from "../cameras/camera-manager.service";
+import { CarTrackingManagerService } from "../carTracking-manager/car-tracking-manager.service";
+import { GameTimeManagerService } from "../game-time-manager/game-time-manager.service";
+import { SoundManagerService } from "../sound-service/sound-manager.service";
 
 const MS_TO_SEC: number = 0.001;
 
-export class RacingState extends AbstractState implements State {
+export class RacingState implements State {
 
-    public init(): void { }
+    public constructor(
+        private _aiCarService: AICarService,
+        private _collisionManager: CollisionManagerService,
+        private _cameraManager: CameraManagerService,
+        private _trackingManager: CarTrackingManagerService,
+        private _gameTimeManager: GameTimeManagerService,
+        private _soundManager: SoundManagerService
+    ) { }
+
+    public async init(racingGame?: RacingGame): Promise<void> {
+        this._collisionManager.track = racingGame.gameScene.trackMesh;
+        await this._aiCarService
+            .initialize(racingGame.gameScene.trackMesh.trackPoints.toVectors3)
+            .then()
+            .catch((err) => console.error(err));
+        this._trackingManager.init(racingGame.gameScene.trackMesh.trackPoints.toVectors3);
+        this._cameraManager.bindCameraKey();
+    }
 
     public update(gameUpdateManager: GameUpdateManagerService, racingGame: RacingGame): void {
         if (this.updateCars(racingGame, this._gameTimeManager.getTimeSinceLastFrame())) {
@@ -48,6 +70,6 @@ export class RacingState extends AbstractState implements State {
     }
 
     public advanceToNextState(gameUpdateManager: GameUpdateManagerService): void {
-        gameUpdateManager.setState(States.Results);
+        gameUpdateManager.setState(StateTypes.Results);
     }
 }

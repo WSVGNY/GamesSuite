@@ -1,17 +1,28 @@
 import { State } from "./state";
-import { AbstractState } from "./abstractState";
 import { RacingGame } from "../race-game/racingGame";
 import { GameUpdateManagerService } from "../game-update-manager/game-update-manager.service";
-import { States } from "./states";
+import { StateTypes } from "./stateTypes";
+import { CameraManagerService } from "../cameras/camera-manager.service";
+import { GameTimeManagerService } from "../game-time-manager/game-time-manager.service";
+import { SoundManagerService } from "../sound-service/sound-manager.service";
 
 const MINIMUM_CAR_TO_CAMERA_DISTANCE: number = 3;
 
-export class OpeningState extends AbstractState implements State {
+export class OpeningState implements State {
 
-    public init(): void { }
+    public constructor(
+        private _cameraManager: CameraManagerService,
+        private _gameTimeManager: GameTimeManagerService,
+        private _soundManager: SoundManagerService
+    ) { }
+
+    public init(racingGame?: RacingGame): void {
+        this._cameraManager.initializeSpectatingCameraPosition(racingGame.playerCar.currentPosition, racingGame.playerCar.direction);
+        // this._soundManager.bindSoundKeys();
+    }
 
     public update(gameUpdateManager: GameUpdateManagerService, racingGame: RacingGame): void {
-        this._cameraManager.updateCameraPositions(racingGame.playerCarPosition, this._gameTimeManager.elaspedTime);
+        this._cameraManager.updateCameraPositions(racingGame.playerCarPosition, this._gameTimeManager.getElaspedTime());
         if (this.isStateOver()) {
             this.advanceToNextState(gameUpdateManager);
         }
@@ -27,7 +38,7 @@ export class OpeningState extends AbstractState implements State {
     }
 
     public advanceToNextState(gameUpdateManager: GameUpdateManagerService): void {
-        gameUpdateManager.setState(States.Countdown);
+        gameUpdateManager.setState(StateTypes.Countdown);
         this._gameTimeManager.resetStartDate();
         this._cameraManager.changeToThirdPersonCamera();
         // this._countDownOnScreenValue = "3";

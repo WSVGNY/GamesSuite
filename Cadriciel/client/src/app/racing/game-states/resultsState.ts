@@ -1,10 +1,18 @@
 import { State } from "./state";
-import { AbstractState } from "./abstractState";
 import { RacingGame } from "../race-game/racingGame";
 import { GameUpdateManagerService } from "../game-update-manager/game-update-manager.service";
-import { States } from "./states";
+import { StateTypes } from "./stateTypes";
+import { CarTrackingManagerService } from "../carTracking-manager/car-tracking-manager.service";
+import { GameTimeManagerService } from "../game-time-manager/game-time-manager.service";
+import { SoundManagerService } from "../sound-service/sound-manager.service";
 
-export class ResultsState extends AbstractState implements State {
+export class ResultsState implements State {
+
+    public constructor(
+        private _trackingManager: CarTrackingManagerService,
+        private _gameTimeManager: GameTimeManagerService,
+        private _soundManager: SoundManagerService
+    ) { }
 
     public init(): void { }
 
@@ -25,6 +33,6 @@ export class ResultsState extends AbstractState implements State {
     }
 
     public advanceToNextState(gameUpdateManager: GameUpdateManagerService): void {
-        gameUpdateManager.setState(States.Closing);
+        gameUpdateManager.setState(StateTypes.Closing);
     }
 }
