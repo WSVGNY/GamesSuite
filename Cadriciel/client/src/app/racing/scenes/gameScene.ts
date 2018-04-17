@@ -1,5 +1,5 @@
 import { AbstractScene } from "./abstractRacingScene";
-import { Group, Vector3, Geometry, Line, Camera, LineBasicMaterial, PlaneGeometry, MeshBasicMaterial, DoubleSide, Mesh } from "three";
+import { Group, Vector3, Geometry, Line, Camera, LineBasicMaterial, } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { TrackLights } from "../render-service/light";
 import { AbstractCar } from "../car/abstractCar";
@@ -9,9 +9,9 @@ import { Track } from "../../../../../common/racing/track";
 import { TrackMesh } from "../track/track";
 import { TrackPoint } from "../track/trackPoint";
 import {
-    ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR, STARTING_LINE_PATH, STARTING_LINE_X_FACTOR, STARTING_LINE_Y_FACTOR
+    ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR,
 } from "../constants/texture.constants";
-import { START_LINE_WEIGHT, START_LINE_WIDTH, START_LINE_HEIGHT, START_CAR_DISTANCE } from "../constants/scene.constants";
+import { START_CAR_DISTANCE } from "../constants/scene.constants";
 import { DAY_KEYCODE, DEBUG_KEYCODE, CHANGE_CAMERA_KEYCODE } from "../constants/keycode.constants";
 import { YELLOW } from "../constants/color.constants";
 import { AICar } from "../car/aiCar";
@@ -66,42 +66,6 @@ export class GameScene extends AbstractScene {
             this._group.add(shuffledCars[i]);
         }
         this.setTimeOfDay(cars, trackType);
-    }
-
-    public createStartingLine(): void {
-        const startingLine: Mesh = this.createStartingLineMesh();
-        this.setStartingLinePosition(startingLine);
-        this.rotateStartingLine(startingLine);
-        this.add(startingLine);
-    }
-
-    private createStartingLineMesh(): Mesh {
-        const geometry: PlaneGeometry = new PlaneGeometry(START_LINE_WEIGHT, START_LINE_WIDTH);
-        const texture: MeshBasicMaterial = new MeshBasicMaterial({
-            side: DoubleSide,
-            map: this.loadRepeatingTexture(STARTING_LINE_PATH, STARTING_LINE_X_FACTOR, STARTING_LINE_Y_FACTOR)
-        });
-
-        return new Mesh(geometry, texture);
-    }
-
-    private setStartingLinePosition(startingLine: Mesh): void {
-        const startingLineVector: Vector3 = this._trackMesh.trackPoints.toTrackPoints[1].coordinate.clone().
-            sub(this._trackMesh.trackPoints.toTrackPoints[0].coordinate).normalize();
-
-        const startingLenght: number = this._trackMesh.trackPoints.toTrackPoints[1].coordinate.clone().
-            sub(this._trackMesh.trackPoints.toTrackPoints[0].coordinate).length() / 2;
-
-        const position: Vector3 = this._trackMesh.trackPoints.toTrackPoints[0].coordinate.clone().
-            add(startingLineVector.clone().multiplyScalar(startingLenght));
-
-        startingLine.position.set(position.x, START_LINE_HEIGHT, position.z);
-    }
-
-    private rotateStartingLine(startingLine: Mesh): void {
-        startingLine.rotateZ(Math.PI / 2);
-        startingLine.setRotationFromAxisAngle(new Vector3(0, 1, 0), this.findFirstTrackSegmentAngle());
-        startingLine.rotateX(Math.PI / 2);
     }
 
     private shuffle(array: AbstractCar[]): void {

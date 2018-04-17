@@ -71,6 +71,7 @@ export class CarTrackingManagerService {
         const direction: Vector3 = firstToSecondVertex.clone().normalize();
 
         this._finishLinePosition = firstVertex.clone().add(direction.clone().multiplyScalar(firstToSecondVertex.length() / 2));
+        console.log(this._finishLinePosition);
         this._finishLineSegment = direction.clone();
     }
 

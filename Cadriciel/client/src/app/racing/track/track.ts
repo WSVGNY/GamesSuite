@@ -1,17 +1,20 @@
 import { Track } from "../../../../../common/racing/track";
-import { Shape, Mesh, MeshPhongMaterial, Path, BackSide, Texture, ShapeGeometry, Vector3, Group } from "three";
+import { Shape, Mesh, MeshPhongMaterial, Path, BackSide, Texture, ShapeGeometry, Vector3, Group, PlaneGeometry, MeshBasicMaterial, TextureLoader, DoubleSide, RepeatWrapping } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { WallMesh } from "./wall";
 import { TrackPointList } from "./trackPointList";
 import { WallPlane } from "./plane";
 import { TrackPoint } from "./trackPoint";
 import { PI_OVER_2 } from "../constants/math.constants";
+import { START_LINE_WIDTH, START_LINE_HEIGHT, START_LINE_WEIGHT } from "../constants/scene.constants";
+import { STARTING_LINE_PATH, STARTING_LINE_X_FACTOR, STARTING_LINE_Y_FACTOR } from "../constants/texture.constants";
 
 export class TrackMesh extends Mesh {
     private _trackPoints: TrackPointList;
     private _walls: Group;
     private _interiorPlanes: WallPlane[];
     private _exteriorPlanes: WallPlane[];
+    private _startingLine: Mesh;
 
     public constructor(private _track: Track, texture: Texture) {
         super();
@@ -22,6 +25,7 @@ export class TrackMesh extends Mesh {
         this.createTrackMesh(texture);
         this.createWalls();
         this.createPlanes();
+        this.createStartingLine();
     }
 
     private createWalls(): void {
@@ -102,5 +106,61 @@ export class TrackMesh extends Mesh {
         }
         holePath.lineTo(trackPoints.first.interior.x, trackPoints.first.interior.z);
         trackShape.holes.push(holePath);
+    }
+
+    public createStartingLine(): void {
+        this._startingLine = this.createStartingLineMesh();
+        this.setStartingLinePosition();
+        this.rotateStartingLine();
+        this.add(this._startingLine);
+    }
+
+    private createStartingLineMesh(): Mesh {
+        const geometry: PlaneGeometry = new PlaneGeometry(START_LINE_WEIGHT, START_LINE_WIDTH);
+        const texture: MeshBasicMaterial = new MeshBasicMaterial({
+            side: DoubleSide,
+            map: this.loadRepeatingTexture(STARTING_LINE_PATH, STARTING_LINE_X_FACTOR, STARTING_LINE_Y_FACTOR)
+        });
+
+        return new Mesh(geometry, texture);
+    }
+
+    private setStartingLinePosition(): void {
+        const startingLineVector: Vector3 = this.trackPoints.toTrackPoints[1].coordinate.clone().
+            sub(this.trackPoints.toTrackPoints[0].coordinate).normalize();
+
+        const startingLinePosition: number = this.trackPoints.toTrackPoints[1].coordinate.clone().
+            sub(this.trackPoints.toTrackPoints[0].coordinate).length() / 2;
+
+        const position: Vector3 = this.trackPoints.toTrackPoints[0].coordinate.clone().
+            add(startingLineVector.clone().multiplyScalar(startingLinePosition));
+
+        this._startingLine.position.set(position.x, position.z, START_LINE_HEIGHT);
+        console.log(this._startingLine.position);
+    }
+
+    private rotateStartingLine(): void {
+        // this._startingLine.rotateZ(Math.PI / 4);
+        // this._startingLine.setRotationFromAxisAngle(new Vector3(0, 1, 0), this.findFirstTrackSegmentAngle());
+        // this._startingLine.rotateX(Math.PI / 2);
+    }
+
+    private findFirstTrackSegmentAngle(): number {
+        const carfinalFacingVector: Vector3 = this.trackPoints.toTrackPoints[1].coordinate.clone()
+            .sub(this.trackPoints.toTrackPoints[0].coordinate)
+            .normalize();
+
+        return new Vector3(0, 0, -1).cross(carfinalFacingVector).y > 0 ?
+            new Vector3(0, 0, -1).angleTo(carfinalFacingVector) :
+            - new Vector3(0, 0, -1).angleTo(carfinalFacingVector);
+    }
+
+    protected loadRepeatingTexture(pathToImage: string, imageRatioX: number, imageRatioY: number): Texture {
+        const texture: Texture = new TextureLoader().load(pathToImage);
+        texture.wrapS = RepeatWrapping;
+        texture.wrapT = RepeatWrapping;
+        texture.repeat.set(imageRatioX, imageRatioY);
+
+        return texture;
     }
 }
