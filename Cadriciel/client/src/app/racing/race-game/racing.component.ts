@@ -87,11 +87,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
         requestAnimationFrame(() => {
             this._racingGame.update();
             this._renderService.render(this._racingGame.gameScene, this._cameraManager.currentCamera);
-            if (!this._stopUpdate) {
-                this.update();
-            } else {
-                this._racingGame = undefined;
-            }
+            !this._stopUpdate ? this.update() : this._racingGame = undefined;
         });
     }
 
