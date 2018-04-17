@@ -3,11 +3,12 @@ import { CameraManagerService } from "./camera-manager.service";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { Camera } from "three";
 import { CHANGE_CAMERA_KEYCODE } from "../constants/keycode.constants";
+import { InputTimeService } from "../scoreboard/input-time/input-time.service";
 
 describe("CameraManagerService", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [KeyboardEventHandlerService, CameraManagerService]
+            providers: [KeyboardEventHandlerService, CameraManagerService, InputTimeService]
         }).compileComponents()
             .then()
             .catch((e: Error) => console.error(e.message));

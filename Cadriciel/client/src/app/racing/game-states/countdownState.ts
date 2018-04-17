@@ -19,8 +19,8 @@ export class CountdownState extends State {
             this._serviceLoader.soundService.playCurrentStartSequenceSound();
         }
         if (this.isStateOver()) {
-            this._racingGame.isCountdownOver = true;
-            this._racingGame.countdownOnScreenValue = STARTING_TEXT;
+            this._serviceLoader.countdownService.onScreenValue = STARTING_TEXT;
+            this._serviceLoader.countdownService.isCountdownOver = true;
             this.advanceToNextState();
         }
     }

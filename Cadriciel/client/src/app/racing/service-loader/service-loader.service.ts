@@ -11,83 +11,93 @@ import { EndGameTableService } from "../scoreboard/end-game-table/end-game-table
 import { HighscoreService } from "../scoreboard/best-times/highscore.service";
 import { InputTimeService } from "../scoreboard/input-time/input-time.service";
 import { TrackService } from "../track/track-service/track.service";
+import { Vector3 } from "three";
 
 @Injectable()
 export class ServiceLoaderService {
-  public constructor(
-    private _aiCarService: AICarService,
-    private _collisionManager: CollisionManagerService,
-    private _cameraManager: CameraManagerService,
-    private _trackingManager: CarTrackingManagerService,
-    private _gameTimeManager: GameTimeManagerService,
-    private _countdownService: CountdownService,
-    private _soundManager: SoundManagerService,
-    private _endGameTableService: EndGameTableService,
-    private _highscoreService: HighscoreService,
-    private _inputTimeService: InputTimeService,
-    private _trackService: TrackService
-  ) { }
+    public constructor(
+        private _aiCarService: AICarService,
+        private _collisionManager: CollisionManagerService,
+        private _cameraManager: CameraManagerService,
+        private _trackingManager: CarTrackingManagerService,
+        private _gameTimeManager: GameTimeManagerService,
+        private _countdownService: CountdownService,
+        private _soundManager: SoundManagerService,
+        private _endGameTableService: EndGameTableService,
+        private _highscoreService: HighscoreService,
+        private _inputTimeService: InputTimeService,
+        private _trackService: TrackService
+    ) { }
 
-  public async initializeServices(racingGame: RacingGame): Promise<void> {
-    this._aiCarService.initialize(racingGame.gameScene.trackMesh.trackPoints.toVectors3);
-    this._collisionManager.track = racingGame.gameScene.trackMesh;
-    this._cameraManager.initializeSpectatingCameraPosition(racingGame.playerCar.currentPosition, racingGame.playerCar.direction);
-    this._trackingManager.init(racingGame.gameScene.trackMesh.trackPoints.toVectors3);
-    this._gameTimeManager.initializeDates();
-    this._countdownService.initialize();
-    await this.createSounds(racingGame);
-    console.log("done");
-  }
+    public async initializeServices(racingGame: RacingGame): Promise<void> {
+        this._aiCarService.initialize(racingGame.gameScene.trackMesh.trackPoints.toVectors3);
+        this._collisionManager.track = racingGame.gameScene.trackMesh;
+        this._cameraManager.initializeSpectatingCameraPosition(racingGame.playerCar.currentPosition, racingGame.playerCar.direction);
+        this._trackingManager.init(
+            this.getTrackPoints(racingGame),
+            this.getStartLinePosition(racingGame),
+            this.getStartSegment(racingGame));
+        this._gameTimeManager.initializeDates();
+        await this.createSounds(racingGame);
+    }
 
-  private async createSounds(racingGame: RacingGame): Promise<void> {
-    await this._soundManager.createStartingSound(racingGame.playerCar);
-    await this._soundManager.createMusic(racingGame.playerCar);
-    await this._soundManager.createCarCollisionSound(racingGame.playerCar);
-    await this._soundManager.createAccelerationSound(racingGame.playerCar);
-    await this._soundManager.createWallCollisionSound(racingGame.playerCar);
-  }
+    private getTrackPoints(racingGame: RacingGame): Vector3[] {
+        return racingGame.gameScene.trackMesh.trackPoints.toVectors3;
+    }
 
-  public get aiCarService(): AICarService {
-    return this._aiCarService;
-  }
+    private getStartLinePosition(racingGame: RacingGame): Vector3 {
+        return racingGame.gameScene.trackMesh.startingLine.position;
+    }
 
-  public get collisionService(): CollisionManagerService {
-    return this._collisionManager;
-  }
+    private getStartSegment(racingGame: RacingGame): Vector3 {
+        return racingGame.gameScene.trackMesh.startingSegmentDirection;
+    }
 
-  public get cameraService(): CameraManagerService {
-    return this._cameraManager;
-  }
+    private async createSounds(racingGame: RacingGame): Promise<void> {
+        await this._soundManager.init(racingGame.playerCar);
+    }
 
-  public get trackingService(): CarTrackingManagerService {
-    return this._trackingManager;
-  }
+    public get aiCarService(): AICarService {
+        return this._aiCarService;
+    }
 
-  public get trackService(): TrackService {
-    return this._trackService;
-  }
+    public get collisionService(): CollisionManagerService {
+        return this._collisionManager;
+    }
 
-  public get gameTimeService(): GameTimeManagerService {
-    return this._gameTimeManager;
-  }
+    public get cameraService(): CameraManagerService {
+        return this._cameraManager;
+    }
 
-  public get countdownService(): CountdownService {
-    return this._countdownService;
-  }
+    public get trackingService(): CarTrackingManagerService {
+        return this._trackingManager;
+    }
 
-  public get soundService(): SoundManagerService {
-    return this._soundManager;
-  }
+    public get trackService(): TrackService {
+        return this._trackService;
+    }
 
-  public get endGameTableService(): EndGameTableService {
-    return this._endGameTableService;
-  }
+    public get gameTimeService(): GameTimeManagerService {
+        return this._gameTimeManager;
+    }
 
-  public get highscoreService(): HighscoreService {
-    return this._highscoreService;
-  }
+    public get countdownService(): CountdownService {
+        return this._countdownService;
+    }
 
-  public get inputTimeService(): InputTimeService {
-    return this._inputTimeService;
-  }
+    public get soundService(): SoundManagerService {
+        return this._soundManager;
+    }
+
+    public get endGameTableService(): EndGameTableService {
+        return this._endGameTableService;
+    }
+
+    public get highscoreService(): HighscoreService {
+        return this._highscoreService;
+    }
+
+    public get inputTimeService(): InputTimeService {
+        return this._inputTimeService;
+    }
 }

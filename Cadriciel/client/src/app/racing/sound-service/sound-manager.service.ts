@@ -26,6 +26,14 @@ export class SoundManagerService {
         this._startingSound = [];
     }
 
+    public async init(car: AbstractCar): Promise<void> {
+        await this.createStartingSound(car);
+        await this.createMusic(car);
+        await this.createCarCollisionSound(car);
+        await this.createAccelerationSound(car);
+        await this.createWallCollisionSound(car);
+    }
+
     public bindSoundKeys(): void {
         this._keyBoardHandler.bindFunctionToKeyDown(MUSIC_KEYCODE, () => {
             this._music.isPlaying ?
@@ -58,20 +66,20 @@ export class SoundManagerService {
         ));
     }
 
-    public async createMusic(car: AbstractCar): Promise<void> {
+    private async createMusic(car: AbstractCar): Promise<void> {
         await this.createSound(MUSIC_PATH).then((sound: Audio) => this._music = sound);
         this._music.setVolume(VOLUME);
         this._music.setLoop(true);
         car.add(this._music);
     }
 
-    public async createAccelerationSound(car: AbstractCar): Promise<void> {
+    private async createAccelerationSound(car: AbstractCar): Promise<void> {
         await this.createSound(ACCELERATION_PATH).then((sound: Audio) => this._accelerationSound = sound);
         this._accelerationSound.setLoop(true);
         car.add(this._accelerationSound);
     }
 
-    public async createCarCollisionSound(car: AbstractCar): Promise<void> {
+    private async createCarCollisionSound(car: AbstractCar): Promise<void> {
         await this.createSound(CAR_COLLISION_PATH).then((sound: Audio) => this._carCollisionSound = sound);
         this._carCollisionSound.onEnded = () => {
             this._carCollisionSound.stop();
@@ -79,7 +87,7 @@ export class SoundManagerService {
         car.add(this._carCollisionSound);
     }
 
-    public async createWallCollisionSound(car: AbstractCar): Promise<void> {
+    private async createWallCollisionSound(car: AbstractCar): Promise<void> {
         await this.createSound(WALL_COLLISION_PATH).then((sound: Audio) => this._wallCollisionSound = sound);
         this._wallCollisionSound.onEnded = () => {
             this._wallCollisionSound.stop();
@@ -87,7 +95,7 @@ export class SoundManagerService {
         car.add(this._wallCollisionSound);
     }
 
-    public async createStartingSound(car: AbstractCar): Promise<void> {
+    private async createStartingSound(car: AbstractCar): Promise<void> {
         await this.createSound(START_SOUND_3_PATH).then((sound: Audio) => this._startingSound.push(sound));
         await this.createSound(START_SOUND_2_PATH).then((sound: Audio) => this._startingSound.push(sound));
         await this.createSound(START_SOUND_1_PATH).then((sound: Audio) => this._startingSound.push(sound));

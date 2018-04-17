@@ -27,7 +27,6 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
     @ViewChild("container")
     private _containerRef: ElementRef;
-    // private _uploadTrack: boolean = true;
     private _racingGame: RacingGame;
 
     public _countDownOnScreenValue: string;
@@ -67,8 +66,8 @@ export class RacingComponent implements AfterViewInit, OnInit {
             .subscribe((trackFromServer: Track) => {
                 this._racingGame
                     .initializeGameFromTrack(
-                        Track.createFromJSON(JSON.stringify(trackFromServer)),
-                        this._cameraManager.thirdPersonCamera
+                    Track.createFromJSON(JSON.stringify(trackFromServer)),
+                    this._cameraManager.thirdPersonCamera
                     )
                     .then(() => { this.startGameLoop(); })
                     .catch((err) => console.error(err));

@@ -1,5 +1,5 @@
+// tslint:disable:no-magic-numbers
 import { TestBed, inject } from "@angular/core/testing";
-
 import { CarTrackingManagerService } from "./car-tracking-manager.service";
 import { RaceProgressTracker } from "./raceProgressTracker";
 import { Vector3, Sphere } from "three";
@@ -7,12 +7,12 @@ import { Vector3, Sphere } from "three";
 describe("CarTrackingManagerService", () => {
     const raceProgressTracker: RaceProgressTracker = new RaceProgressTracker();
     const trackingManager: CarTrackingManagerService = new CarTrackingManagerService();
-    const MOCK_TRACK: Vector3[] = [
-        new Vector3(0, 0, 0),
-        new Vector3(100, 0, 0),
-        new Vector3(100, 0, 100),
-        new Vector3(0, 0, 100),
-    ];
+    // const MOCK_TRACK: Vector3[] = [
+    //     new Vector3(0, 0, 0),
+    //     new Vector3(100, 0, 0),
+    //     new Vector3(100, 0, 100),
+    //     new Vector3(0, 0, 100),
+    // ];
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [CarTrackingManagerService]
@@ -24,18 +24,21 @@ describe("CarTrackingManagerService", () => {
     }));
 
     it("should be at finish line", () => {
-        trackingManager.init(MOCK_TRACK);
-        expect(trackingManager["isAtFinishLine"](new Vector3(50, 0, 1), raceProgressTracker)).toEqual(true);
+        // trackingManager.init(MOCK_TRACK);
+        // expect(trackingManager["isAtFinishLine"](new Vector3(50, 0, 1), raceProgressTracker)).toEqual(true);
+        expect(true).toBe(false);
     });
 
     it("shouldn't be at finish line", () => {
-        trackingManager.init(MOCK_TRACK);
-        expect(trackingManager["isAtFinishLine"](new Vector3(10, 10, 10), raceProgressTracker)).toEqual(false);
+        // trackingManager.init(MOCK_TRACK);
+        // expect(trackingManager["isAtFinishLine"](new Vector3(10, 10, 10), raceProgressTracker)).toEqual(false);
+        expect(true).toBe(false);
     });
 
     it("should compute finish line correctly ", () => {
-        trackingManager["computeFinishLine"](MOCK_TRACK);
-        expect(trackingManager["_finishLineSegment"]).toEqual(new Vector3(1, 0, 0));
+        // trackingManager["computeFinishLine"](MOCK_TRACK);
+        // expect(trackingManager["_finishLineSegment"]).toEqual(new Vector3(1, 0, 0));
+        expect(true).toBe(false);
     });
 
     it("should contains the car", () => {
