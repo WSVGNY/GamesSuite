@@ -56,11 +56,11 @@ export class RacingComponent implements AfterViewInit, OnInit {
             .catch((err) => console.error(err));
         this._keyBoardHandler.initialize();
         this._racingGame = new RacingGame(this._keyBoardHandler);
-        await this.getTrack();
+        this.getTrack();
         this.startGameLoop();
     }
 
-    public async getTrack(): Promise<void> {
+    public getTrack(): void {
         this._trackService.getTrackFromId(this._route.snapshot.paramMap.get("id"))
             .subscribe((trackFromServer: Track) => {
                 this._racingGame
