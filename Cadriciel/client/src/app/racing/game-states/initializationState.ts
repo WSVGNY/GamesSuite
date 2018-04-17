@@ -6,6 +6,7 @@ import { CollisionManagerService } from "../collision-manager/collision-manager.
 import { CarTrackingManagerService } from "../carTracking-manager/car-tracking-manager.service";
 import { GameTimeManagerService } from "../game-time-manager/game-time-manager.service";
 import { StateTypes } from "./stateTypes";
+import { CameraManagerService } from "../cameras/camera-manager.service";
 // import { SoundManagerService } from "../sound-service/sound-manager.service";
 
 export class InitializationState implements State {
@@ -16,6 +17,7 @@ export class InitializationState implements State {
         private _trackingManager: CarTrackingManagerService,
         private _gameTimeManager: GameTimeManagerService,
         // private _soundManager: SoundManagerService
+        private _cameraManager: CameraManagerService
     ) { }
 
     public init(racingGame?: RacingGame): void { }
@@ -26,6 +28,9 @@ export class InitializationState implements State {
         this._trackingManager.init(racingGame.gameScene.trackMesh.trackPoints.toVectors3);
         this._gameTimeManager.initializeDates();
         // this._soundManager.
+        console.log(racingGame.playerCar["_mesh"]);
+        this._cameraManager.initializeSpectatingCameraPosition(racingGame.playerCar.currentPosition, racingGame.playerCar.direction);
+
         this.advanceToNextState(gameUpdateManager);
     }
 
