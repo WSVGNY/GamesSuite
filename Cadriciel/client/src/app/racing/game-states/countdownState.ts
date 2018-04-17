@@ -6,6 +6,8 @@ import { GameTimeManagerService } from "../game-time-manager/game-time-manager.s
 import { CountdownService } from "../countdown/countdown.service";
 // import { SoundManagerService } from "../sound-service/sound-manager.service";
 
+const ONE_SECOND: number = 1000;
+
 export class CountdownState implements State {
 
     public constructor(
@@ -15,12 +17,15 @@ export class CountdownState implements State {
     ) { }
 
     public init(): void {
+        this._gameTimeManager.resetStartDate();
         this._countdownService.initialize();
     }
 
     public update(gameUpdateManager: GameUpdateManagerService, racingGame: RacingGame): void {
-        let countdownValue: number = +this._countdownService.onScreenValue;
-        racingGame.countdownOnScreenValue = (--countdownValue).toString();
+        if (this._gameTimeManager.getElaspedTime() > ONE_SECOND) {
+            this._gameTimeManager.resetStartDate();
+            this._countdownService.decreaseOnScreenValue();
+        }
         if (this.isStateOver()) {
             racingGame.isCountdownOver = true;
             racingGame.countdownOnScreenValue = "START";
@@ -29,7 +34,7 @@ export class CountdownState implements State {
     }
 
     public isStateOver(): boolean {
-        return this._countdownValue === 0;
+        return +this._countdownService.onScreenValue === 0;
     }
 
     public advanceToNextState(gameUpdateManager: GameUpdateManagerService): void {
