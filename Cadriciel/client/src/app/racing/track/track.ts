@@ -7,7 +7,7 @@ import { WallPlane } from "./plane";
 import { TrackPoint } from "./trackPoint";
 import { PI_OVER_2 } from "../constants/math.constants";
 import { START_LINE_WIDTH, START_LINE_HEIGHT, START_LINE_WEIGHT } from "../constants/scene.constants";
-import { STARTING_LINE_PATH, STARTING_LINE_X_FACTOR, STARTING_LINE_Y_FACTOR } from "../constants/texture.constants";
+import { STARTING_LINE_PATH, STARTING_LINE_X_FACTOR, STARTING_LINE_Y_FACTOR, ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR } from "../constants/texture.constants";
 
 export class TrackMesh extends Mesh {
     private _trackPoints: TrackPointList;
@@ -16,13 +16,13 @@ export class TrackMesh extends Mesh {
     private _exteriorPlanes: WallPlane[];
     private _startingLine: Mesh;
 
-    public constructor(private _track: Track, texture: Texture) {
+    public constructor(private _track: Track) {
         super();
         this._trackPoints = new TrackPointList(this._track.vertices);
         this._interiorPlanes = [];
         this._exteriorPlanes = [];
         this._walls = new Group();
-        this.createTrackMesh(texture);
+        this.createTrackMesh();
         this.createWalls();
         this.createPlanes();
         this.createStartingLine();
@@ -79,13 +79,16 @@ export class TrackMesh extends Mesh {
         return this._exteriorPlanes;
     }
 
-    private createTrackMesh(texture: Texture): void {
+    private createTrackMesh(): void {
         const shape: Shape = new Shape();
         this.createTrackExterior(shape, this._trackPoints);
         this.drillHoleInTrackShape(shape, this._trackPoints);
 
         this.geometry = new ShapeGeometry(shape);
-        this.material = new MeshPhongMaterial({ side: BackSide, map: texture });
+        this.material = new MeshPhongMaterial({
+            side: BackSide,
+            map: this.loadRepeatingTexture(ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR, ASPHALT_TEXTURE_FACTOR)
+        });
         this.rotateX(PI_OVER_2);
         this.name = "track";
     }

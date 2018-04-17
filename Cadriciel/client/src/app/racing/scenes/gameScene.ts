@@ -8,9 +8,6 @@ import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-ha
 import { Track } from "../../../../../common/racing/track";
 import { TrackMesh } from "../track/track";
 import { TrackPoint } from "../track/trackPoint";
-import {
-    ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR,
-} from "../constants/texture.constants";
 import { START_CAR_DISTANCE } from "../constants/scene.constants";
 import { DAY_KEYCODE, DEBUG_KEYCODE, CHANGE_CAMERA_KEYCODE } from "../constants/keycode.constants";
 import { YELLOW } from "../constants/color.constants";
@@ -31,7 +28,6 @@ export class GameScene extends AbstractScene {
 
     public constructor(private _keyBoardHandler: KeyboardEventHandlerService) {
         super();
-        this._roadTexture = this.loadRepeatingTexture(ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR, ASPHALT_TEXTURE_FACTOR);
         this._skyBoxTextures = new Map();
         this._group = new Group();
         this._debugElements = new Group();
@@ -43,7 +39,7 @@ export class GameScene extends AbstractScene {
             this._group.remove(this._trackMesh);
         }
         this._isDay = track.type === TrackType.Default ? true : false;
-        this._trackMesh = new TrackMesh(track, this._roadTexture);
+        this._trackMesh = new TrackMesh(track);
         this._group.add(this._trackMesh);
         this.addGround();
         this.setSkyBox(track.type);

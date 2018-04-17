@@ -38,7 +38,7 @@ export class PreviewScene extends AbstractScene {
         if (this._track === undefined || this._currentTrack !== track) {
             this._currentTrack = track;
             this._trackType = track.type;
-            this._track = new TrackMesh(track, this._roadTexture);
+            this._track = new TrackMesh(track);
             this._group.remove(this._track);
             this._group.remove(this._rotatingPreview);
             this.loadRotatingPreview(track);
@@ -47,7 +47,7 @@ export class PreviewScene extends AbstractScene {
 
     public loadRotatingPreview(track: Track): void {
         this._group.remove(this._rotatingPreview);
-        this._rotatingPreview = new TrackMesh(track, this._roadTexture);
+        this._rotatingPreview = new TrackMesh(track);
         this._rotatingPreview.scale.set(SCALE_FACTOR, SCALE_FACTOR, SCALE_FACTOR);
         this._rotatingPreview.position.y = 1;
         this._rotatingPreview.geometry.center().copy(new Vector3(0, 0, 0));
