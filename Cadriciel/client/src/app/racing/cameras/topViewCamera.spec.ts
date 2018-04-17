@@ -1,20 +1,20 @@
 // tslint:disable:no-magic-numbers
-import { TopViewCamera } from "./topViewCamera";
-import { OrthographicCamera, Vector3, Euler } from "three";
-import { HumanCar } from "../car/humanCar";
-import { PI_OVER_2 } from "../constants/math.constants";
+// import { TopViewCamera } from "./topViewCamera";
+// import { OrthographicCamera, Vector3, Euler } from "three";
+// import { HumanCar } from "../car/humanCar";
+// import { PI_OVER_2 } from "../constants/math.constants";
 
-const INITIAL_CAMERA_POSITION_Y: number = 10;
+// const INITIAL_CAMERA_POSITION_Y: number = 10;
 
 describe("Top View Camera Test", () => {
 
-    const camera: TopViewCamera = new TopViewCamera(1);
-    let car: HumanCar;
-    beforeEach(async (done: () => void) => {
-        car = new HumanCar(0, undefined);
-        await car.init(new Vector3(0, 0, 0), Math.PI);
-        done();
-    });
+    // const camera: TopViewCamera = new TopViewCamera(1);
+    // let car: HumanCar;
+    // beforeEach(async (done: () => void) => {
+    //     car = new HumanCar(0, undefined);
+    //     await car.init(new Vector3(0, 0, 0), Math.PI);
+    //     done();
+    // });
 
     // it("the camera created should be orthographic camera", async () => {
     //     expect(camera).toEqual(jasmine.any(OrthographicCamera));
@@ -50,5 +50,5 @@ describe("Top View Camera Test", () => {
     //     const angle: Euler = new Euler(-PI_OVER_2, 0, -PI_OVER_2);
     //     expect(camera.getWorldRotation()).toEqual(angle);
     // });
-    expect(true).toEqual("False");
+    expect(true).toBeFalsy();
 });

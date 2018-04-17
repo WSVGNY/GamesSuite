@@ -1,31 +1,33 @@
 // tslint:disable:no-magic-numbers
-import { ThirdPersonCamera } from "./thirdPersonCamera";
-import { PerspectiveCamera, Vector3 } from "three";
-import { TestBed } from "@angular/core/testing";
-import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
-import { HumanCar } from "../car/humanCar";
+// import { ThirdPersonCamera } from "./thirdPersonCamera";
+// import { PerspectiveCamera, Vector3 } from "three";
+// import { TestBed } from "@angular/core/testing";
+// import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
+// import { HumanCar } from "../car/humanCar";
 
 describe("Third Person Camera Test", () => {
 
-    const ASPECTRATIO: number = 1;
-    const INITIAL_CAMERA_POSITION_Z: number = 5;
-    const INITIAL_CAMERA_POSITION_Y: number = 2.5;
-    const EXPECTED_ANGLE: number = Math.tanh(INITIAL_CAMERA_POSITION_Y / INITIAL_CAMERA_POSITION_Z);
+    expect(true).toBeFalsy();
 
-    let camera: ThirdPersonCamera;
-    let car: HumanCar;
-    beforeEach(async (done: () => void) => {
-        TestBed.configureTestingModule({
-            providers: [KeyboardEventHandlerService]
-        }).compileComponents()
-            .then()
-            .catch((e: Error) => console.error(e.message));
-        camera = new ThirdPersonCamera(ASPECTRATIO);
-        car = new HumanCar(0, undefined);
-        await car.init(new Vector3(0, 0, 0), 0);
-        car.attachCamera(camera);
-        done();
-    });
+    // const ASPECTRATIO: number = 1;
+    // const INITIAL_CAMERA_POSITION_Z: number = 5;
+    // const INITIAL_CAMERA_POSITION_Y: number = 2.5;
+    // const EXPECTED_ANGLE: number = Math.tanh(INITIAL_CAMERA_POSITION_Y / INITIAL_CAMERA_POSITION_Z);
+
+    // let camera: ThirdPersonCamera;
+    // let car: HumanCar;
+    // beforeEach(async (done: () => void) => {
+    //     TestBed.configureTestingModule({
+    //         providers: [KeyboardEventHandlerService]
+    //     }).compileComponents()
+    //         .then()
+    //         .catch((e: Error) => console.error(e.message));
+    //     camera = new ThirdPersonCamera(ASPECTRATIO);
+    //     car = new HumanCar(0, undefined);
+    //     await car.init(new Vector3(0, 0, 0), 0);
+    //     car.attachCamera(camera);
+    //     done();
+    // });
 
     // it("the camera created should be perspective camera", () => {
     //     expect(camera).toEqual(jasmine.any(PerspectiveCamera));
@@ -57,5 +59,5 @@ describe("Third Person Camera Test", () => {
     //     expect(Math.abs(angleCarToCamera - EXPECTED_ANGLE)).toBeLessThan(0.01);
     // });
 
-    expect(true).toEqual("false");
+
 });
