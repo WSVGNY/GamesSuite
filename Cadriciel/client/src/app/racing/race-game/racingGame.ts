@@ -21,9 +21,42 @@ export class RacingGame {
     private _gameScene: GameScene;
     private _aiCarDebugs: AIDebug[];
     private _isCountdownOver: boolean;
-    // private _currentCamera: Camera;
+    private _currentCamera: Camera;
+    private _aspectRatio: number;
 
     public constructor() { }
+
+    private async initializeGameFromTrack(track: Track, keyboardHandler: KeyboardEventHandlerService): Promise<void> {
+        this.initializeCars(keyboardHandler);
+        this._gameScene.loadTrack(track);
+        // await this.createSounds();
+        await this._gameScene.loadCars(this._cars, this._aiCarDebugs, this._currentCamera, this._track.type);
+        // this._soundManager.accelerationSoundEffect.play();
+        this._gameScene.bindGameSceneKeys(this._cars);
+    }
+
+    private initializeCars(keyboardHandler: KeyboardEventHandlerService): void {
+        for (let i: number = 0; i < AI_CARS_QUANTITY + 1; ++i) {
+            if (i === 0) {
+                this._cars.push(new HumanCar(i, keyboardHandler));
+                this._players.push(new Player(i, CURRENT_PLAYER));
+            } else if (i - 1 % AI_PERSONALITY_QUANTITY === 0) {
+                this._cars.push(new AICar(i, Personality.Larry));
+                this._players.push(new Player(i, COMPUTER_PLAYER + (i + 1)));
+            } else if (i - 1 % AI_PERSONALITY_QUANTITY === 1) {
+                this._cars.push(new AICar(i, Personality.Curly));
+                this._players.push(new Player(i, COMPUTER_PLAYER + (i + 1)));
+            } else if (i - 1 % AI_PERSONALITY_QUANTITY === 2) {
+                this._cars.push(new AICar(i, Personality.Moe));
+                this._players.push(new Player(i, COMPUTER_PLAYER + (i + 1)));
+            }
+            this._aiCarDebugs.push(new AIDebug());
+        }
+    }
+
+    public get aspectRatio(): number {
+        return this.aspectRatio;
+    }
 
     public get playerCarPosition(): Vector3 {
         return undefined;
@@ -49,53 +82,21 @@ export class RacingGame {
         return this._track;
     }
 
+    public get gameScene(): GameScene {
+        return this._gameScene;
+    }
+
     public getPlayerById(id: number): Player {
         return this._players.find((player: Player) => player.id === id);
     }
 
-    public getPlayerCar(): AbstractCar {
+    public get playerCar(): AbstractCar {
         return this._cars.find((car: AbstractCar) => car.uniqueid === 0);
 
     }
 
     public set isCountdownOver(value: boolean) {
         this._isCountdownOver = value;
-    }
-
-    private async initializeGameFromTrack(track: Track, keyboardHandler: KeyboardEventHandlerService): Promise<void> {
-        this.initializeCars(keyboardHandler);
-        this._gameScene.loadTrack(track);
-        this._collisionManager.track = this._gameScene.trackMesh;
-        await this.createSounds();
-        await this._gameScene.loadCars(this._cars, this._carDebugs, this._cameraManager.currentCamera, this._chosenTrack.type);
-        this._soundManager.accelerationSoundEffect.play();
-        await this._aiCarService.initialize(this._gameScene.trackMesh.trackPoints.toVectors3, )
-            .then().catch((err) => console.error(err));
-        this._cameraManager.initializeSpectatingCameraPosition(this._playerCar.currentPosition, this._playerCar.direction);
-        this._trackingManager.init(this._gameScene.trackMesh.trackPoints.toVectors3);
-        this.bindKeys();
-        this.startGameLoop();
-    }
-
-
-    // TODO: Car factory service
-    private initializeCars(keyboardHandler: KeyboardEventHandlerService): void {
-        for (let i: number = 0; i < AI_CARS_QUANTITY + 1; ++i) {
-            if (i === 0) {
-                this._cars.push(new HumanCar(i, keyboardHandler));
-                this._players.push(new Player(i, CURRENT_PLAYER));
-            } else if (i - 1 % AI_PERSONALITY_QUANTITY === 0) {
-                this._cars.push(new AICar(i, Personality.Larry));
-                this._players.push(new Player(i, COMPUTER_PLAYER + (i + 1)));
-            } else if (i - 1 % AI_PERSONALITY_QUANTITY === 1) {
-                this._cars.push(new AICar(i, Personality.Curly));
-                this._players.push(new Player(i, COMPUTER_PLAYER + (i + 1)));
-            } else if (i - 1 % AI_PERSONALITY_QUANTITY === 2) {
-                this._cars.push(new AICar(i, Personality.Moe));
-                this._players.push(new Player(i, COMPUTER_PLAYER + (i + 1)));
-            }
-            this._aiCarDebugs.push(new AIDebug());
-        }
     }
 
 }
