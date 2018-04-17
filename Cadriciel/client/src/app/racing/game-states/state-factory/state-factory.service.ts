@@ -4,7 +4,7 @@ import { OpeningState } from "../openingState";
 import { CountdownState } from "../countdownState";
 import { RacingState } from "../racingState";
 import { ResultsState } from "../resultsState";
-// import { ClosingState } from "../closingState";
+import { ClosingState } from "../closingState";
 import { StateTypes } from "../stateTypes";
 import { GameUpdateManagerService } from "../../game-update-manager/game-update-manager.service";
 
@@ -29,7 +29,7 @@ export class StateFactoryService {
     } else if (state === StateTypes.Results) {
       return this.createResultsState();
     } else if (state === StateTypes.Closing) {
-      // return this.createClosingState();
+      return this.createClosingState();
     }
 
     return undefined;
@@ -69,15 +69,12 @@ export class StateFactoryService {
     );
   }
 
-  // private createClosingState(): State {
-  //   return new ClosingState(
-  //     this._aiCarService,
-  //     this._collisionManager,
-  //     this._cameraManager,
-  //     this._trackingManager,
-  //     this._gameTimeManager,
-  //     // this._soundManager
-  //   );
-  // }
+  private createClosingState(): State {
+    return new ClosingState(
+      // this._gameUpdateService.aiCarService,
+      // this._gameUpdateService.gameTimeService,
+      // this._gameUpdateService.soundService
+    );
+  }
 
 }
