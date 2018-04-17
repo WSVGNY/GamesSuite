@@ -8,7 +8,6 @@ import { HumanCar } from "../car/humanCar";
 import { AICar } from "../car/aiCar";
 import { Personality } from "../artificial-intelligence/ai-config";
 import { COMPUTER_PLAYER, CURRENT_PLAYER } from "../constants/global.constants";
-import { AIDebug } from "../artificial-intelligence/ai-debug";
 import { AbstractCar } from "../car/abstractCar";
 import { State } from "../game-states/state";
 import { StateFactoryService } from "../game-states/state-factory/state-factory.service";
@@ -21,7 +20,6 @@ export class RacingGame {
     private _cars: AbstractCar[];
     private _track: Track;
     private _gameScene: GameScene;
-    private _aiCarDebugs: AIDebug[];
     private _currentState: State;
 
     public constructor(
@@ -30,7 +28,6 @@ export class RacingGame {
     ) {
         this._players = [];
         this._cars = [];
-        this._aiCarDebugs = [];
         this._gameScene = new GameScene(this._keyboardHandler);
         this.initializeCars(this._keyboardHandler);
     }
@@ -68,7 +65,7 @@ export class RacingGame {
     public async initializeGameFromTrack(track: Track, thirdPersonCamera: Camera): Promise<void> {
         this._track = track;
         this._gameScene.loadTrack(track);
-        this._aiCarDebugs = await this._gameScene.loadCars(this._cars, thirdPersonCamera, track.type);
+        await this._gameScene.loadCars(this._cars, thirdPersonCamera, track.type);
         this._gameScene.bindGameSceneKeys(this._cars);
 
     }
@@ -79,10 +76,6 @@ export class RacingGame {
 
     public get cars(): AbstractCar[] {
         return this._cars;
-    }
-
-    public get aiCarDebugs(): AIDebug[] {
-        return this._aiCarDebugs;
     }
 
     public get track(): Track {

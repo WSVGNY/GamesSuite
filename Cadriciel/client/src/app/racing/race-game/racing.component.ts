@@ -4,17 +4,11 @@ import { Track } from "../../../../../common/racing/track";
 import { ActivatedRoute } from "@angular/router";
 import { RenderService } from "../render-service/render.service";
 import { TrackService } from "../track/track-service/track.service";
-// import { EndGameTableService } from "../scoreboard/end-game-table/end-game-table.service";
-// import { HighscoreService } from "../scoreboard/best-times/highscore.service";
 import { RacingGame } from "./racingGame";
 import { CameraManagerService } from "../cameras/camera-manager.service";
 import { StateFactoryService } from "../game-states/state-factory/state-factory.service";
 import { SoundManagerService } from "../sound-service/sound-manager.service";
 import { ServiceLoaderService } from "../service-loader/service-loader.service";
-
-// const ONE_SECOND: number = 1000;
-// const MS_TO_SEC: number = 0.001;
-// const AVERAGE_CAR_SPEED: number = 45;
 
 @Component({
     moduleId: module.id,
@@ -41,9 +35,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
         private _cameraManager: CameraManagerService,
         private _stateFactory: StateFactoryService,
         private _soundManager: SoundManagerService,
-        private _serviceLoader: ServiceLoaderService,
-        // private _endGameTableService: EndGameTableService,
-        // private _highscoreService: HighscoreService,
+        private _serviceLoader: ServiceLoaderService
     ) { }
 
     public ngOnInit(): void {

@@ -17,6 +17,18 @@ export class Player {
         this._score.totalTime = time;
     }
 
+    public setFirstLapTime(time: number): void {
+        this._score.firstLap = time;
+    }
+
+    public setSecondLapTime(time: number): void {
+        this._score.secondLap = time;
+    }
+
+    public setThirdLapTime(time: number): void {
+        this._score.thirdLap = time;
+    }
+
     public get score(): Score {
         return this._score;
     }
