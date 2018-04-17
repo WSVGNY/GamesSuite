@@ -69,9 +69,8 @@ export class RacingComponent implements AfterViewInit, OnInit {
                         Track.createFromJSON(JSON.stringify(trackFromServer)),
                         this._cameraManager.thirdPersonCamera
                     )
-                    .then()
+                    .then(() => { this.startGameLoop(); })
                     .catch((err) => console.error(err));
-                this.startGameLoop();
             });
     }
 
