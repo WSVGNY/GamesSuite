@@ -5,11 +5,13 @@ export class RaceProgressTracker {
 
     public isTimeLogged: boolean;
     public isRaceCompleted: boolean;
+    public isLapCompleted: boolean;
 
     public constructor() {
         this._currentSegmentIndex = 1;
         this._segmentCounted = 0;
         this.isRaceCompleted = false;
+        this.isLapCompleted = false;
         this.isTimeLogged = false;
     }
 

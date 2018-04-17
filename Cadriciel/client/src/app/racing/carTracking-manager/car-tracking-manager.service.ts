@@ -29,9 +29,13 @@ export class CarTrackingManagerService {
     }
 
     public update(position: Vector3, raceProgressTracker: RaceProgressTracker): boolean {
-        if (this.isLastStretch(raceProgressTracker)) {
+        if (this.isLastSegmentOfLap(raceProgressTracker)) {
             if (this.isAtFinishLine(position, raceProgressTracker)) {
-                raceProgressTracker.isRaceCompleted = true;
+                if (this.isLastStretch(raceProgressTracker)) {
+                    raceProgressTracker.isRaceCompleted = true;
+                } else {
+                    raceProgressTracker.isLapCompleted = true;
+                }
             }
         } else if (this.isRightSequence(position, raceProgressTracker)) {
             raceProgressTracker.incrementIndexCount();
@@ -71,6 +75,10 @@ export class CarTrackingManagerService {
         return raceProgressTracker.segmentCounted === this._detectionSpheres.length * NUMBER_OF_LAPS;
     }
 
+    private isLastSegmentOfLap(raceProgressTracker: RaceProgressTracker): boolean {
+        return raceProgressTracker.segmentCounted % this._detectionSpheres.length === 0;
+    }
+
     private isAtFinishLine(position: Vector3, raceProgressTracker: RaceProgressTracker): boolean {
         const carToFinishLine: Vector3 = this._finishLinePosition.clone().sub(position);
         const parallelDistance: number = (carToFinishLine.clone().projectOnVector(this._finishLineSegment)).length();
@@ -81,5 +89,9 @@ export class CarTrackingManagerService {
         }
 
         return false;
+    }
+
+    public resetIsLapComplete(raceProgressTracker: RaceProgressTracker): void {
+        raceProgressTracker.isLapCompleted = false;
     }
 }
