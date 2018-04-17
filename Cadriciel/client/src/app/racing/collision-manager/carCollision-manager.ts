@@ -33,19 +33,22 @@ export class CarCollisionManager {
                 }
             }
         } else {
-            this._collisionCarA.hitbox.inCollision = false;
-            this._collisionCarB.hitbox.inCollision = false;
+            this.setCollisions(false);
         }
     }
 
     private static applyCollisionPhysics(): void {
-        this._collisionCarA.hitbox.inCollision = true;
-        this._collisionCarB.hitbox.inCollision = true;
+        this.setCollisions(true);
         this.computeResultingForces(
             this._collisionCarA,
             this._collisionCarB,
             this._collisionPoint.clone()
         );
+    }
+
+    private static setCollisions(inCollision: boolean): void {
+        this._collisionCarA.hitbox.inCollision = inCollision;
+        this._collisionCarB.hitbox.inCollision = inCollision;
     }
 
     private static carsInCollision(): boolean {
