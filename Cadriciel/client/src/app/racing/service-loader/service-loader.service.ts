@@ -11,6 +11,7 @@ import { EndGameTableService } from "../scoreboard/end-game-table/end-game-table
 import { HighscoreService } from "../scoreboard/best-times/highscore.service";
 import { InputTimeService } from "../scoreboard/input-time/input-time.service";
 import { TrackService } from "../track/track-service/track.service";
+import { Vector3 } from "three";
 
 @Injectable()
 export class ServiceLoaderService {
@@ -33,12 +34,24 @@ export class ServiceLoaderService {
         this._collisionManager.track = racingGame.gameScene.trackMesh;
         this._cameraManager.initializeSpectatingCameraPosition(racingGame.playerCar.currentPosition, racingGame.playerCar.direction);
         this._trackingManager.init(
-            racingGame.gameScene.trackMesh.trackPoints.toVectors3,
-            racingGame.gameScene.trackMesh.startingLine.position,
-            racingGame.gameScene.trackMesh.startingSegmentDirection);
+            this.getTrackPoints(racingGame),
+            this.getStartLinePosition(racingGame),
+            this.getStartSegment(racingGame));
         this._gameTimeManager.initializeDates();
         this._countdownService.initialize();
         await this.createSounds(racingGame);
+    }
+
+    private getTrackPoints(racingGame: RacingGame): Vector3[] {
+        return racingGame.gameScene.trackMesh.trackPoints.toVectors3;
+    }
+
+    private getStartLinePosition(racingGame: RacingGame): Vector3 {
+        return racingGame.gameScene.trackMesh.startingLine.position;
+    }
+
+    private getStartSegment(racingGame: RacingGame): Vector3 {
+        return racingGame.gameScene.trackMesh.startingSegmentDirection;
     }
 
     private async createSounds(racingGame: RacingGame): Promise<void> {
