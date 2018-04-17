@@ -25,6 +25,6 @@ export class ResultsState extends State {
     }
 
     public advanceToNextState(): void {
-        this._racingGame.setState(StateTypes.Closing);
+        this._racingGame.setState(StateTypes.ResultsTable);
     }
 }

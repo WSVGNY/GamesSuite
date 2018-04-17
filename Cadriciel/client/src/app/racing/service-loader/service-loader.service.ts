@@ -10,6 +10,7 @@ import { SoundManagerService } from "../sound-service/sound-manager.service";
 import { EndGameTableService } from "../scoreboard/end-game-table/end-game-table.service";
 import { HighscoreService } from "../scoreboard/best-times/highscore.service";
 import { InputTimeService } from "../scoreboard/input-time/input-time.service";
+import { TrackService } from "../track/track-service/track.service";
 
 @Injectable()
 export class ServiceLoaderService {
@@ -23,7 +24,8 @@ export class ServiceLoaderService {
     private _soundManager: SoundManagerService,
     private _endGameTableService: EndGameTableService,
     private _highscoreService: HighscoreService,
-    private _inputTimeService: InputTimeService
+    private _inputTimeService: InputTimeService,
+    private _trackService: TrackService
   ) { }
 
   public async initializeServices(racingGame: RacingGame): Promise<void> {
@@ -59,6 +61,10 @@ export class ServiceLoaderService {
 
   public get trackingService(): CarTrackingManagerService {
     return this._trackingManager;
+  }
+
+  public get trackService(): TrackService {
+    return this._trackService;
   }
 
   public get gameTimeService(): GameTimeManagerService {
