@@ -29,6 +29,10 @@ export class CameraManagerService {
         return this._spectatingCamera;
     }
 
+    public get thirdPersonCamera(): Camera {
+        return this._thirdPersonCamera;
+    }
+
     public initializeSpectatingCameraPosition(target: Vector3, direction: Vector3): void {
         this._spectatingCamera.setInitialPosition(target, direction);
     }
