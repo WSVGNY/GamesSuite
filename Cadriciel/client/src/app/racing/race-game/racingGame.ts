@@ -35,6 +35,7 @@ export class RacingGame {
     private initializeCars(keyboardHandler: KeyboardEventHandlerService): void {
         this._cars.push(new HumanCar(0, keyboardHandler));
         this._players.push(new Player(0, CURRENT_PLAYER));
+        this._aiCarDebugs.push(new AIDebug());
         for (let i: number = 1; i < AI_CARS_QUANTITY + 1; ++i) {
             this._cars.push(new AICar(i, this.getRandomPersonnality()));
             this._players.push(new Player(i, COMPUTER_PLAYER + (i + 1)));

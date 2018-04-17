@@ -16,7 +16,7 @@ export class InputTimeComponent {
         this.inputTimeService.showInput = false;
     }
 
-    public readyToView(): boolean {
+    public readyToViewInput(): boolean {
         return this.inputTimeService.showInput;
     }
 }
