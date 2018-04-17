@@ -8,35 +8,46 @@ import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-ha
 import { InputTimeService } from "../scoreboard/input-time/input-time.service";
 
 // tslint:disable:no-magic-numbers
-fdescribe("Car collision Manager Service", () => {
+describe("Car collision Manager Service", () => {
 
     let firstCar: AICar;
     let secondCar: AICar;
+    let cars: AICar[];
     beforeEach(async (done: () => void) => {
         TestBed.configureTestingModule({
             providers: [SoundManagerService, KeyboardEventHandlerService, InputTimeService]
         });
         firstCar = new AICar(0);
         await firstCar.init(new Vector3(0, 0, 0), Math.PI);
+        firstCar["_hitbox"].updatePosition(firstCar.currentPosition, firstCar["_mesh"].matrix);
         secondCar = new AICar(1);
         await secondCar.init(new Vector3(0, 0, 0), Math.PI);
+        secondCar["_hitbox"].updatePosition(secondCar.currentPosition, secondCar["_mesh"].matrix);
+        cars = [];
+        cars.push(firstCar);
+        cars.push(secondCar);
         done();
     });
 
     it("should detect the cars are near each others", () => {
-        firstCar["_mesh"].position.set(MINIMUM_CAR_DISTANCE - 0.01, 0, 0);
+        firstCar.setCurrentPosition(new Vector3(MINIMUM_CAR_DISTANCE - 0.01, 0, 0));
+        firstCar["_mesh"].updateMatrix();
+        firstCar["_hitbox"].updatePosition(firstCar.currentPosition, firstCar["_mesh"].matrix);
         CarCollisionManager["setCollisionCars"](firstCar, secondCar);
         expect(CarCollisionManager["checkIfCarsAreClose"]()).toEqual(true);
     });
 
     it("should ignore the collision detection when cars are far from each others", () => {
-        firstCar["_mesh"].position.set(6, 0, 0);
+        firstCar.setCurrentPosition(new Vector3(6, 0, 0));
+        firstCar["_mesh"].updateMatrix();
         CarCollisionManager["setCollisionCars"](firstCar, secondCar);
         expect(CarCollisionManager["checkIfCarsAreClose"]()).toEqual(false);
     });
 
     it("should detect a collision between two cars", () => {
-        firstCar["_mesh"].position.set(1, 0, 0);
+        firstCar.setCurrentPosition(new Vector3(1, 0, 0));
+        firstCar["_mesh"].updateMatrix();
+        firstCar["_hitbox"].updatePosition(firstCar.currentPosition, firstCar["_mesh"].matrix);
         CarCollisionManager["setCollisionCars"](firstCar, secondCar);
         const collision: boolean = CarCollisionManager["computeCollisionParameters"]();
         expect(collision).toBe(true);

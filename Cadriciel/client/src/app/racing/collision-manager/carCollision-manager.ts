@@ -106,11 +106,8 @@ export class CarCollisionManager {
         const speedCarB: Vector3 = this.getCarSpeed(motionlessCar);
         const positionCarA: Vector3 = movingCar.currentPosition.clone();
         const positionCarB: Vector3 = motionlessCar.currentPosition.clone();
-
         const newSpeedCarA: Vector3 = this.createNewSpeedCar(speedCarA, speedCarB, positionCarA, positionCarB);
-
         const newSpeedCarB: Vector3 = this.createNewSpeedCar(speedCarB, speedCarA, positionCarB, positionCarA);
-
         this._collisionCarA.speed = this.findResultingSpeed(movingCar.direction.clone(), newSpeedCarA);
         this._collisionCarB.speed = this.findResultingSpeed(motionlessCar.direction.clone(), newSpeedCarB);
     }
