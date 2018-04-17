@@ -63,7 +63,7 @@ export class CarCollisionManager {
     }
 
     private static checkIfCarsAreClose(firstCar: AbstractCar, secondCar: AbstractCar): boolean {
-        return (firstCar.currentPosition.distanceTo(secondCar.currentPosition) < MINIMUM_CAR_DISTANCE) ? true : false;
+        return (firstCar.currentPosition.distanceTo(secondCar.currentPosition) < MINIMUM_CAR_DISTANCE);
     }
 
     private static computeCollisionParameters(firstCar: AbstractCar, secondCar: AbstractCar): boolean {

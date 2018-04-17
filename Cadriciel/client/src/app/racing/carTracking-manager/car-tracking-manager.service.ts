@@ -3,6 +3,8 @@ import { Vector3, Sphere } from "three";
 import { RaceProgressTracker } from "./raceProgressTracker";
 import { TRACKING_SPHERE_RADIUS, NUMBER_OF_LAPS } from "../constants/car.constants";
 
+const FINISH_BUFFER: number = 2;
+
 @Injectable()
 export class CarTrackingManagerService {
 
@@ -14,9 +16,10 @@ export class CarTrackingManagerService {
         this._detectionSpheres = [];
     }
 
-    public init(trackVertices: Vector3[]): void {
+    public init(trackVertices: Vector3[], finishLinePosition: Vector3, finishLineSegment: Vector3): void {
+        this._finishLinePosition = finishLinePosition;
+        this._finishLineSegment = finishLineSegment;
         this.createDetectionSpheres(trackVertices);
-        this.computeFinishLine(trackVertices);
     }
 
     private createDetectionSpheres(trackVertices: Vector3[]): void {
@@ -64,16 +67,6 @@ export class CarTrackingManagerService {
         raceProgressTracker.incrementCurrentIndex(this._detectionSpheres.length);
     }
 
-    private computeFinishLine(trackVertices: Vector3[]): void {
-        const firstVertex: Vector3 = new Vector3(trackVertices[0].x, trackVertices[0].y, trackVertices[0].z);
-        const secondVertex: Vector3 = new Vector3(trackVertices[1].x, trackVertices[1].y, trackVertices[1].z);
-        const firstToSecondVertex: Vector3 = secondVertex.clone().sub(firstVertex);
-        const direction: Vector3 = firstToSecondVertex.clone().normalize();
-
-        this._finishLinePosition = firstVertex.clone().add(direction.clone().multiplyScalar(firstToSecondVertex.length() / 2));
-        this._finishLineSegment = direction.clone();
-    }
-
     private isLastStretch(raceProgressTracker: RaceProgressTracker): boolean {
         return raceProgressTracker.segmentCounted === this._detectionSpheres.length * NUMBER_OF_LAPS;
     }
@@ -81,7 +74,7 @@ export class CarTrackingManagerService {
     private isAtFinishLine(position: Vector3, raceProgressTracker: RaceProgressTracker): boolean {
         const carToFinishLine: Vector3 = this._finishLinePosition.clone().sub(position);
         const parallelDistance: number = (carToFinishLine.clone().projectOnVector(this._finishLineSegment)).length();
-        if (parallelDistance < 2) {
+        if (parallelDistance < FINISH_BUFFER) {
             raceProgressTracker.incrementIndexCount();
 
             return true;

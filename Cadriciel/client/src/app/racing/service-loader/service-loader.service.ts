@@ -32,7 +32,10 @@ export class ServiceLoaderService {
     this._aiCarService.initialize(racingGame.gameScene.trackMesh.trackPoints.toVectors3);
     this._collisionManager.track = racingGame.gameScene.trackMesh;
     this._cameraManager.initializeSpectatingCameraPosition(racingGame.playerCar.currentPosition, racingGame.playerCar.direction);
-    this._trackingManager.init(racingGame.gameScene.trackMesh.trackPoints.toVectors3);
+    this._trackingManager.init(
+      racingGame.gameScene.trackMesh.trackPoints.toVectors3,
+      racingGame.gameScene.trackMesh.startingLine.position,
+      racingGame.gameScene.trackMesh.startingSegmentDirection);
     this._gameTimeManager.initializeDates();
     this._countdownService.initialize();
     await this.createSounds(racingGame);
