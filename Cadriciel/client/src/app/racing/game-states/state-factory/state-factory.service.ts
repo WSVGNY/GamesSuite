@@ -55,6 +55,7 @@ export class StateFactoryService {
       this._trackingManager,
       this._gameTimeManager,
       // this._soundManager
+      this._cameraManager
     );
   }
 

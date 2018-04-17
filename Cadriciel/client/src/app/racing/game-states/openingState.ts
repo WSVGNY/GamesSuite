@@ -17,7 +17,7 @@ export class OpeningState implements State {
     ) { }
 
     public init(racingGame?: RacingGame): void {
-        this._cameraManager.initializeSpectatingCameraPosition(racingGame.playerCar.currentPosition, racingGame.playerCar.direction);
+        // this._cameraManager.initializeSpectatingCameraPosition(racingGame.playerCar.currentPosition, racingGame.playerCar.direction);
         // this._soundManager.bindSoundKeys();
     }
 
