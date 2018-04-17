@@ -1,51 +1,26 @@
 import { Injectable } from "@angular/core";
-import { AICarService } from "../../artificial-intelligence/ai-car.service";
-import { CollisionManagerService } from "../../collision-manager/collision-manager.service";
-import { CameraManagerService } from "../../cameras/camera-manager.service";
-import { CarTrackingManagerService } from "../../carTracking-manager/car-tracking-manager.service";
-import { GameTimeManagerService } from "../../game-time-manager/game-time-manager.service";
 import { State } from "../state";
 import { OpeningState } from "../openingState";
 import { CountdownState } from "../countdownState";
-import { StateTypes } from "../stateTypes";
-import { InitializationState } from "../initializationState";
+import { RacingState } from "../racingState";
 import { ResultsState } from "../resultsState";
 // import { ClosingState } from "../closingState";
-import { SoundManagerService } from "../../sound-service/sound-manager.service";
-import { RacingState } from "../racingState";
-import { CountdownService } from "../../countdown/countdown.service";
-// import { RacingGame } from "../../race-game/racingGame";
+import { StateTypes } from "../stateTypes";
+import { GameUpdateManagerService } from "../../game-update-manager/game-update-manager.service";
 
 @Injectable()
 export class StateFactoryService {
 
   public constructor(
-    private _aiCarService: AICarService,
-    private _collisionManager: CollisionManagerService,
-    private _cameraManager: CameraManagerService,
-    private _trackingManager: CarTrackingManagerService,
-    private _gameTimeManager: GameTimeManagerService,
-    private _countdownService: CountdownService,
-    private _soundManager: SoundManagerService
+    private _gameUpdateService: GameUpdateManagerService,
   ) { }
-
-  // public async initialiseUpdateServices(racingGame: RacingGame): Promise<void> {
-  //   this._aiCarService.initialize(racingGame.gameScene.trackMesh.trackPoints.toVectors3);
-  //   this._collisionManager.track = racingGame.gameScene.trackMesh;
-  //   this._trackingManager.init(racingGame.gameScene.trackMesh.trackPoints.toVectors3);
-  //   this._gameTimeManager.initializeDates();
-  //   await this.createSounds(racingGame);
-  //   this._cameraManager.initializeSpectatingCameraPosition(racingGame.playerCar.currentPosition, racingGame.playerCar.direction);
-  // }
 
   public getState(state: StateTypes): State {
     if (state === undefined) {
       return undefined;
     }
 
-    if (state === StateTypes.Initialization) {
-      return this.createInitializationState();
-    } else if (state === StateTypes.Opening) {
+    if (state === StateTypes.Opening) {
       return this.createOpeningState();
     } else if (state === StateTypes.Countdown) {
       return this.createCountdownState();
@@ -60,47 +35,36 @@ export class StateFactoryService {
     return undefined;
   }
 
-  private createInitializationState(): State {
-    return new InitializationState(
-      this._aiCarService,
-      this._collisionManager,
-      this._trackingManager,
-      this._gameTimeManager,
-      // this._soundManager,
-      this._cameraManager
-    );
-  }
-
   private createOpeningState(): State {
     return new OpeningState(
-      this._cameraManager,
-      this._gameTimeManager,
-      this._soundManager
+      this._gameUpdateService.cameraService,
+      this._gameUpdateService.gameTimeService,
+      this._gameUpdateService.soundService
     );
   }
 
   private createCountdownState(): State {
     return new CountdownState(
-      this._gameTimeManager,
-      this._countdownService
-      // this._soundManager
+      this._gameUpdateService.gameTimeService,
+      this._gameUpdateService.countdownService,
+      // this._gameUpdateService.soundService
     );
   }
 
   private createRacingState(): State {
     return new RacingState(
-      this._aiCarService,
-      this._collisionManager,
-      this._cameraManager,
-      this._trackingManager,
-      this._gameTimeManager,
-      // this._soundManager
+      this._gameUpdateService.aiCarService,
+      this._gameUpdateService.collisionService,
+      this._gameUpdateService.cameraService,
+      this._gameUpdateService.trackingService,
+      this._gameUpdateService.gameTimeService,
+      // this._gameUpdateService.soundService
     );
   }
 
   private createResultsState(): State {
     return new ResultsState(
-      this._gameTimeManager,
+      this._gameUpdateService.gameTimeService,
       // this._soundManager
     );
   }

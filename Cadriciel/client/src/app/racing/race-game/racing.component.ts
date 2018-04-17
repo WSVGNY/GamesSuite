@@ -7,7 +7,7 @@ import { TrackService } from "../track/track-service/track.service";
 // import { EndGameTableService } from "../scoreboard/end-game-table/end-game-table.service";
 // import { HighscoreService } from "../scoreboard/best-times/highscore.service";
 import { RacingGame } from "./racingGame";
-// import { GameUpdateManagerService } from "../game-update-manager/game-update-manager.service";
+import { GameUpdateManagerService } from "../game-update-manager/game-update-manager.service";
 import { CameraManagerService } from "../cameras/camera-manager.service";
 import { StateFactoryService } from "../game-states/state-factory/state-factory.service";
 
@@ -37,7 +37,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
         private _route: ActivatedRoute,
         private _keyBoardHandler: KeyboardEventHandlerService,
         private _trackService: TrackService,
-        // private _gameUpdateManager: GameUpdateManagerService,
+        private _gameUpdateManager: GameUpdateManagerService,
         private _cameraManager: CameraManagerService,
         private _stateFactory: StateFactoryService
         // private _endGameTableService: EndGameTableService,
@@ -46,12 +46,10 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
     public ngOnInit(): void {
         this._keyBoardHandler.initialize();
-        // this._gameScene = new GameScene(this._keyBoardHandler/*, this._collisionManagerService*/);
     }
 
     public async ngAfterViewInit(): Promise<void> {
         this._cameraManager.initializeCameras(this.computeAspectRatio());
-        // this._gameUpdateManager.initialize();
         this._renderService
             .initialize(this._containerRef.nativeElement)
             .then(/* do nothing */)
@@ -59,8 +57,6 @@ export class RacingComponent implements AfterViewInit, OnInit {
         this._keyBoardHandler.initialize();
         this._racingGame = new RacingGame(this._keyBoardHandler, this._stateFactory);
         this.getTrack();
-        // console.log(this._racingGame.gameScene.trackMesh);
-        // this.startGameLoop();
     }
 
     public getTrack(): void {
@@ -76,14 +72,15 @@ export class RacingComponent implements AfterViewInit, OnInit {
             });
     }
 
-    private startGameLoop(): void {
+    private async startGameLoop(): Promise<void> {
+        await this._gameUpdateManager.initializeServices(this._racingGame);
+        this._racingGame.startGame();
         this._countDownOnScreenValue = "";
         this.update();
     }
 
     private update(): void {
         requestAnimationFrame(() => {
-            // this._gameUpdateManager.update(this._racingGame);
             this._racingGame.update();
             this._renderService.render(this._racingGame.gameScene, this._cameraManager.currentCamera);
             this.update();

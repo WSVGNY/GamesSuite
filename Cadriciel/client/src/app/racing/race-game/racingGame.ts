@@ -35,7 +35,10 @@ export class RacingGame {
         this._aiCarDebugs = [];
         this._gameScene = new GameScene(this._keyboardHandler);
         this.initializeCars(this._keyboardHandler);
-        this.setState(StateTypes.Initialization);
+    }
+
+    public startGame(): void {
+        this.setState(StateTypes.Opening);
     }
 
     public setState(stateType: StateTypes): void {
