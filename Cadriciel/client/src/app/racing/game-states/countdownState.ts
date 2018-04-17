@@ -29,8 +29,8 @@ export class CountdownState implements State {
             this._soundManager.playCurrentStartSequenceSound();
         }
         if (this.isStateOver()) {
-            racingGame.isCountdownOver = true;
-            racingGame.countdownOnScreenValue = STARTING_TEXT;
+            this._countdownService.isCountdownOver = true;
+            this._countdownService.onScreenValue = STARTING_TEXT;
             this.advanceToNextState(racingGame);
         }
     }

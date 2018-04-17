@@ -26,9 +26,7 @@ export class GameUpdateManagerService {
         this._cameraManager.initializeSpectatingCameraPosition(racingGame.playerCar.currentPosition, racingGame.playerCar.direction);
         this._trackingManager.init(racingGame.gameScene.trackMesh.trackPoints.toVectors3);
         this._gameTimeManager.initializeDates();
-        this._countdownService.initialize();
         await this.createSounds(racingGame);
-        console.log("done");
     }
 
     private async createSounds(racingGame: RacingGame): Promise<void> {
