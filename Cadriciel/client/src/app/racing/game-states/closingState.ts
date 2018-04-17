@@ -1,6 +1,5 @@
 import { State } from "./state";
 import { RacingGame } from "../race-game/racingGame";
-import { GameUpdateManagerService } from "../game-update-manager/game-update-manager.service";
 // import { AICarService } from "../artificial-intelligence/ai-car.service";
 // import { CollisionManagerService } from "../collision-manager/collision-manager.service";
 // import { CameraManagerService } from "../cameras/camera-manager.service";
@@ -21,13 +20,11 @@ export class ClosingState implements State {
 
     public init(): void { }
 
-    public update(gameUpdateManager: GameUpdateManagerService, racingGame: RacingGame): void {
-
-    }
+    public update(racingGame: RacingGame): void { }
 
     public isStateOver(): boolean {
         return false;
     }
 
-    public advanceToNextState(): void { }
+    public advanceToNextState(racingGame: RacingGame): void { }
 }

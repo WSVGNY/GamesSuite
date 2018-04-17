@@ -1,6 +1,5 @@
 import { State } from "./state";
 import { RacingGame } from "../race-game/racingGame";
-import { GameUpdateManagerService } from "../game-update-manager/game-update-manager.service";
 import { StateTypes } from "./stateTypes";
 import { GameTimeManagerService } from "../game-time-manager/game-time-manager.service";
 // import { SoundManagerService } from "../sound-service/sound-manager.service";
@@ -14,7 +13,7 @@ export class ResultsState implements State {
 
     public init(): void { }
 
-    public update(gameUpdateManager: GameUpdateManagerService, racingGame: RacingGame): void {
+    public update(racingGame: RacingGame): void {
         for (const car of racingGame.cars) {
             if (!car.raceProgressTracker.isRaceCompleted && !car.raceProgressTracker.isTimeLogged) {
                 racingGame.getPlayerById(car.uniqueid).setTotalTime(
@@ -23,14 +22,14 @@ export class ResultsState implements State {
                 car.raceProgressTracker.isTimeLogged = true;
             }
         }
-        this.advanceToNextState(gameUpdateManager);
+        this.advanceToNextState(racingGame);
     }
 
     public isStateOver(): boolean {
         return false;
     }
 
-    public advanceToNextState(gameUpdateManager: GameUpdateManagerService): void {
-        gameUpdateManager.setState(StateTypes.Closing);
+    public advanceToNextState(racingGame: RacingGame): void {
+        racingGame.setState(StateTypes.Closing);
     }
 }

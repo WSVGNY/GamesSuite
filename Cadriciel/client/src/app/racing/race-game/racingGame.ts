@@ -10,6 +10,9 @@ import { Personality } from "../artificial-intelligence/ai-config";
 import { COMPUTER_PLAYER, CURRENT_PLAYER } from "../constants/global.constants";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
 import { AbstractCar } from "../car/abstractCar";
+import { State } from "../game-states/state";
+import { StateFactoryService } from "../game-states/state-factory/state-factory.service";
+import { StateTypes } from "../game-states/stateTypes";
 
 export class RacingGame {
 
@@ -20,16 +23,28 @@ export class RacingGame {
     private _track: Track;
     private _gameScene: GameScene;
     private _aiCarDebugs: AIDebug[];
-    // private _isCountdownOver: boolean;
+
+    private _currentState: State;
 
     public constructor(
         private _keyboardHandler: KeyboardEventHandlerService,
+        private _stateFactory: StateFactoryService,
     ) {
         this._players = [];
         this._cars = [];
         this._aiCarDebugs = [];
         this._gameScene = new GameScene(this._keyboardHandler);
         this.initializeCars(this._keyboardHandler);
+        this.setState(StateTypes.Initialization);
+    }
+
+    public setState(stateType: StateTypes): void {
+        this._currentState = this._stateFactory.getState(stateType);
+        this._currentState.init();
+    }
+
+    public update(): void {
+        this._currentState.update(this);
     }
 
     private initializeCars(keyboardHandler: KeyboardEventHandlerService): void {

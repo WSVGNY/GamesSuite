@@ -1,9 +1,8 @@
 import { RacingGame } from "../race-game/racingGame";
-import { GameUpdateManagerService } from "../game-update-manager/game-update-manager.service";
 
 export interface State {
-    update(gameUpdateManager: GameUpdateManagerService, racingGame: RacingGame): void;
+    update(racingGame: RacingGame): void;
     isStateOver(): boolean;
-    advanceToNextState(gameUpdateManager: GameUpdateManagerService): void;
+    advanceToNextState(racingGame: RacingGame): void;
     init(): void;
 }

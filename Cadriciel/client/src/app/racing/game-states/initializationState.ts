@@ -1,6 +1,5 @@
 import { State } from "./state";
 import { RacingGame } from "../race-game/racingGame";
-import { GameUpdateManagerService } from "../game-update-manager/game-update-manager.service";
 import { AICarService } from "../artificial-intelligence/ai-car.service";
 import { CollisionManagerService } from "../collision-manager/collision-manager.service";
 import { CarTrackingManagerService } from "../carTracking-manager/car-tracking-manager.service";
@@ -16,13 +15,13 @@ export class InitializationState implements State {
         private _collisionManager: CollisionManagerService,
         private _trackingManager: CarTrackingManagerService,
         private _gameTimeManager: GameTimeManagerService,
-        // private _soundManager: SoundManagerService
+        // private _soundManager: SoundManagerService,
         private _cameraManager: CameraManagerService
     ) { }
 
     public init(racingGame?: RacingGame): void { }
 
-    public update(gameUpdateManager: GameUpdateManagerService, racingGame: RacingGame): void {
+    public update(racingGame: RacingGame): void {
         this._aiCarService.initialize(racingGame.gameScene.trackMesh.trackPoints.toVectors3);
         this._collisionManager.track = racingGame.gameScene.trackMesh;
         this._trackingManager.init(racingGame.gameScene.trackMesh.trackPoints.toVectors3);
@@ -30,14 +29,14 @@ export class InitializationState implements State {
         // this._soundManager.
         this._cameraManager.initializeSpectatingCameraPosition(racingGame.playerCar.currentPosition, racingGame.playerCar.direction);
 
-        this.advanceToNextState(gameUpdateManager);
+        this.advanceToNextState(racingGame);
     }
 
     public isStateOver(): boolean {
         return false;
     }
 
-    public advanceToNextState(gameUpdateManager: GameUpdateManagerService): void {
-        gameUpdateManager.setState(StateTypes.Opening);
+    public advanceToNextState(racingGame: RacingGame): void {
+        racingGame.setState(StateTypes.Opening);
     }
 }

@@ -11,9 +11,10 @@ import { StateTypes } from "../stateTypes";
 import { InitializationState } from "../initializationState";
 import { ResultsState } from "../resultsState";
 // import { ClosingState } from "../closingState";
-// import { SoundManagerService } from "../../sound-service/sound-manager.service";
+import { SoundManagerService } from "../../sound-service/sound-manager.service";
 import { RacingState } from "../racingState";
 import { CountdownService } from "../../countdown/countdown.service";
+// import { RacingGame } from "../../race-game/racingGame";
 
 @Injectable()
 export class StateFactoryService {
@@ -24,9 +25,18 @@ export class StateFactoryService {
     private _cameraManager: CameraManagerService,
     private _trackingManager: CarTrackingManagerService,
     private _gameTimeManager: GameTimeManagerService,
-    private _countdownService: CountdownService
-    // private _soundManager: SoundManagerService
+    private _countdownService: CountdownService,
+    private _soundManager: SoundManagerService
   ) { }
+
+  // public async initialiseUpdateServices(racingGame: RacingGame): Promise<void> {
+  //   this._aiCarService.initialize(racingGame.gameScene.trackMesh.trackPoints.toVectors3);
+  //   this._collisionManager.track = racingGame.gameScene.trackMesh;
+  //   this._trackingManager.init(racingGame.gameScene.trackMesh.trackPoints.toVectors3);
+  //   this._gameTimeManager.initializeDates();
+  //   await this.createSounds(racingGame);
+  //   this._cameraManager.initializeSpectatingCameraPosition(racingGame.playerCar.currentPosition, racingGame.playerCar.direction);
+  // }
 
   public getState(state: StateTypes): State {
     if (state === undefined) {
@@ -56,7 +66,7 @@ export class StateFactoryService {
       this._collisionManager,
       this._trackingManager,
       this._gameTimeManager,
-      // this._soundManager
+      // this._soundManager,
       this._cameraManager
     );
   }
@@ -65,7 +75,7 @@ export class StateFactoryService {
     return new OpeningState(
       this._cameraManager,
       this._gameTimeManager,
-      // this._soundManager
+      this._soundManager
     );
   }
 

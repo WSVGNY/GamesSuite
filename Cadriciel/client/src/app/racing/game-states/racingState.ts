@@ -1,6 +1,5 @@
 import { State } from "./state";
 import { RacingGame } from "../race-game/racingGame";
-import { GameUpdateManagerService } from "../game-update-manager/game-update-manager.service";
 import { AICar } from "../car/aiCar";
 import { Player } from "../race-game/player";
 import { StateTypes } from "./stateTypes";
@@ -30,9 +29,9 @@ export class RacingState implements State {
         this._gameTimeManager.updateLastDate();
     }
 
-    public update(gameUpdateManager: GameUpdateManagerService, racingGame: RacingGame): void {
+    public update(racingGame: RacingGame): void {
         if (this.updateCars(racingGame, this._gameTimeManager.getTimeSinceLastFrame())) {
-            this.advanceToNextState(gameUpdateManager);
+            this.advanceToNextState(racingGame);
         }
         this._collisionManager.update(racingGame.cars);
         this._cameraManager.updateCameraPositions(racingGame.playerCarPosition);
@@ -66,7 +65,7 @@ export class RacingState implements State {
         return false;
     }
 
-    public advanceToNextState(gameUpdateManager: GameUpdateManagerService): void {
-        gameUpdateManager.setState(StateTypes.Results);
+    public advanceToNextState(racingGame: RacingGame): void {
+        racingGame.setState(StateTypes.Results);
     }
 }

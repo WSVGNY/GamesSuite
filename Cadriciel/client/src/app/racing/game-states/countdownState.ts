@@ -1,5 +1,4 @@
 import { State } from "./state";
-import { GameUpdateManagerService } from "../game-update-manager/game-update-manager.service";
 import { RacingGame } from "../race-game/racingGame";
 import { StateTypes } from "./stateTypes";
 import { GameTimeManagerService } from "../game-time-manager/game-time-manager.service";
@@ -21,7 +20,7 @@ export class CountdownState implements State {
         this._countdownService.initialize();
     }
 
-    public update(gameUpdateManager: GameUpdateManagerService, racingGame: RacingGame): void {
+    public update(racingGame: RacingGame): void {
         if (this._gameTimeManager.getElaspedTime() > ONE_SECOND) {
             this._gameTimeManager.resetStartDate();
             this._countdownService.decreaseOnScreenValue();
@@ -29,7 +28,7 @@ export class CountdownState implements State {
         if (this.isStateOver()) {
             racingGame.isCountdownOver = true;
             racingGame.countdownOnScreenValue = "START";
-            this.advanceToNextState(gameUpdateManager);
+            this.advanceToNextState(racingGame);
         }
     }
 
@@ -37,9 +36,9 @@ export class CountdownState implements State {
         return +this._countdownService.onScreenValue === 0;
     }
 
-    public advanceToNextState(gameUpdateManager: GameUpdateManagerService): void {
+    public advanceToNextState(racingGame: RacingGame): void {
         console.log("countdown over");
-        gameUpdateManager.setState(StateTypes.Racing);
+        racingGame.setState(StateTypes.Racing);
         this._gameTimeManager.resetStartDate();
         // this._startDate = Date.now();
     }
