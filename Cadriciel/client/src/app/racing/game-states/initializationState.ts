@@ -28,7 +28,6 @@ export class InitializationState implements State {
         this._trackingManager.init(racingGame.gameScene.trackMesh.trackPoints.toVectors3);
         this._gameTimeManager.initializeDates();
         // this._soundManager.
-        console.log(racingGame.playerCar);
         this._cameraManager.initializeSpectatingCameraPosition(racingGame.playerCar.currentPosition, racingGame.playerCar.direction);
 
         this.advanceToNextState(gameUpdateManager);
