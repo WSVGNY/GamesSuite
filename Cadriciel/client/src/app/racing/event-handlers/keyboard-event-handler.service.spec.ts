@@ -2,13 +2,14 @@
 import { TestBed, inject } from "@angular/core/testing";
 import { KeyboardEventHandlerService } from "./keyboard-event-handler.service";
 import { RenderService } from "../render-service/render.service";
+import { InputTimeService } from "../scoreboard/input-time/input-time.service";
 
 const TEST_KEYCODE: number = 0;
 
 describe("KeyboardEventHandlerService", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [KeyboardEventHandlerService, RenderService]
+            providers: [KeyboardEventHandlerService, RenderService, InputTimeService]
         });
     });
 
