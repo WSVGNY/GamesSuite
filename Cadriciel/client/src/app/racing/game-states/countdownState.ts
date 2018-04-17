@@ -3,24 +3,24 @@ import { GameUpdateManagerService } from "../game-update-manager/game-update-man
 import { RacingGame } from "../race-game/racingGame";
 import { StateTypes } from "./stateTypes";
 import { GameTimeManagerService } from "../game-time-manager/game-time-manager.service";
+import { CountdownService } from "../countdown/countdown.service";
 // import { SoundManagerService } from "../sound-service/sound-manager.service";
 
 export class CountdownState implements State {
 
-    private _countdownValue: number;
-
     public constructor(
         private _gameTimeManager: GameTimeManagerService,
+        private _countdownService: CountdownService
         // private _soundManager: SoundManagerService
     ) { }
 
     public init(): void {
-        this._countdownValue = 0;
+        this._countdownService.initialize();
     }
 
     public update(gameUpdateManager: GameUpdateManagerService, racingGame: RacingGame): void {
-        this._countdownValue = +racingGame.countdownOnScreenValue;
-        racingGame.countdownOnScreenValue = (--this._countdownValue).toString();
+        let countdownValue: number = +this._countdownService.onScreenValue;
+        racingGame.countdownOnScreenValue = (--countdownValue).toString();
         if (this.isStateOver()) {
             racingGame.isCountdownOver = true;
             racingGame.countdownOnScreenValue = "START";
@@ -33,6 +33,7 @@ export class CountdownState implements State {
     }
 
     public advanceToNextState(gameUpdateManager: GameUpdateManagerService): void {
+        console.log("countdown over");
         gameUpdateManager.setState(StateTypes.Racing);
         this._gameTimeManager.resetStartDate();
         // this._startDate = Date.now();

@@ -13,6 +13,7 @@ import { ResultsState } from "../resultsState";
 // import { ClosingState } from "../closingState";
 // import { SoundManagerService } from "../../sound-service/sound-manager.service";
 import { RacingState } from "../racingState";
+import { CountdownService } from "../../countdown/countdown.service";
 
 @Injectable()
 export class StateFactoryService {
@@ -23,6 +24,7 @@ export class StateFactoryService {
     private _cameraManager: CameraManagerService,
     private _trackingManager: CarTrackingManagerService,
     private _gameTimeManager: GameTimeManagerService,
+    private _countdownService: CountdownService
     // private _soundManager: SoundManagerService
   ) { }
 
@@ -70,6 +72,7 @@ export class StateFactoryService {
   private createCountdownState(): State {
     return new CountdownState(
       this._gameTimeManager,
+      this._countdownService
       // this._soundManager
     );
   }
