@@ -4,7 +4,6 @@ import { InputTimeComponent } from "./input-time.component";
 import { InputTimeService } from "./input-time.service";
 import { HighscoreService } from "../best-times/highscore.service";
 import { Player } from "../../race-game/player";
-import { CommonHighscore } from "../../../../../../common/racing/commonHighscore";
 
 describe("InputTimeComponent", () => {
     let component: InputTimeComponent;

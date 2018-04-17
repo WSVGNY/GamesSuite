@@ -28,6 +28,12 @@ import { EndGameTableComponent } from "./racing/scoreboard/end-game-table/end-ga
 import { EndGameTableService } from "./racing/scoreboard/end-game-table/end-game-table.service";
 import { InputTimeService } from "./racing/scoreboard/input-time/input-time.service";
 import { TrackService } from "./racing/track/track-service/track.service";
+import { GameTimeManagerService } from "./racing/game-time-manager/game-time-manager.service";
+import { GameUpdateManagerService } from "./racing/game-update-manager/game-update-manager.service";
+import { StateFactoryService } from "./racing/game-states/state-factory/state-factory.service";
+import { CountdownComponent } from "./racing/countdown/countdown.component";
+import { CountdownService } from "./racing/countdown/countdown.service";
+import { ServiceLoaderService } from './racing/service-loader/service-loader.service';
 
 @NgModule({
     declarations: [
@@ -40,7 +46,8 @@ import { TrackService } from "./racing/track/track-service/track.service";
         ConfigurationComponent,
         BestTimesComponent,
         InputTimeComponent,
-        EndGameTableComponent
+        EndGameTableComponent,
+        CountdownComponent
     ],
     imports: [
         BrowserModule,
@@ -63,7 +70,12 @@ import { TrackService } from "./racing/track/track-service/track.service";
         CarTrackingManagerService,
         HighscoreService,
         EndGameTableService,
-        InputTimeService
+        InputTimeService,
+        GameTimeManagerService,
+        GameUpdateManagerService,
+        StateFactoryService,
+        CountdownService,
+        ServiceLoaderService
     ],
     bootstrap: [AppComponent]
 })
