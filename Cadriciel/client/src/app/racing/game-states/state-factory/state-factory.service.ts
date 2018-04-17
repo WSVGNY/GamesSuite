@@ -9,6 +9,7 @@ import { ResultsState } from "../resultsState";
 import { StateTypes } from "../stateTypes";
 import { ResultsTableState } from "../resultsTableState";
 import { HighscoreState } from "../highscoreState";
+import { StandbyState } from "../standbyState";
 
 @Injectable()
 export class StateFactoryService {
@@ -31,6 +32,8 @@ export class StateFactoryService {
                 return this.createResultsTableState(racingGame);
             case StateTypes.Highscores:
                 return this.createHighscoreState(racingGame);
+            case StateTypes.Standby:
+                return this.createStandbyState(racingGame);
             default:
                 return undefined;
         }
@@ -58,6 +61,10 @@ export class StateFactoryService {
 
     private createHighscoreState(racingGame: RacingGame): State {
         return new HighscoreState(this._serviceLoader, racingGame);
+    }
+
+    private createStandbyState(racingGame: RacingGame): State {
+        return new StandbyState(this._serviceLoader, racingGame);
     }
 
 }

@@ -1,4 +1,5 @@
 import { State } from "./state";
+import { StateTypes } from "./stateTypes";
 
 export class HighscoreState extends State {
 
@@ -14,6 +15,7 @@ export class HighscoreState extends State {
             this._racingGame.track.bestTimes = this._serviceLoader.highscoreService.highscores;
             this._serviceLoader.highscoreService.showTable = true;
             this._serviceLoader.trackService.putTrack(this._racingGame.track.id, this._racingGame.track).subscribe();
+            this.advanceToNextState();
         }
 
     }
@@ -22,5 +24,7 @@ export class HighscoreState extends State {
         return false;
     }
 
-    public advanceToNextState(): void { }
+    public advanceToNextState(): void {
+        this._racingGame.setState(StateTypes.Standby);
+    }
 }

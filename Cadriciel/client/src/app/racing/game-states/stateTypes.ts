@@ -4,5 +4,6 @@ export enum StateTypes {
     Racing,
     Results,
     ResultsTable,
-    Highscores
+    Highscores,
+    Standby
 }
