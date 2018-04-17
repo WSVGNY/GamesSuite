@@ -68,5 +68,6 @@ export class RacingState implements State {
 
     public advanceToNextState(racingGame: RacingGame): void {
         racingGame.setState(StateTypes.Results);
+        this._soundManager.stopAllSounds();
     }
 }

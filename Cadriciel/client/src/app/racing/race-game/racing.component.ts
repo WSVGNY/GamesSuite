@@ -10,6 +10,7 @@ import { RacingGame } from "./racingGame";
 import { GameUpdateManagerService } from "../game-update-manager/game-update-manager.service";
 import { CameraManagerService } from "../cameras/camera-manager.service";
 import { StateFactoryService } from "../game-states/state-factory/state-factory.service";
+import { SoundManagerService } from "../sound-service/sound-manager.service";
 
 // const ONE_SECOND: number = 1000;
 // const MS_TO_SEC: number = 0.001;
@@ -31,6 +32,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
     public _countDownOnScreenValue: string;
     public _isCountdownOver: boolean;
+    private _stopUpdate: boolean;
 
     public constructor(
         private _renderService: RenderService,
@@ -39,7 +41,8 @@ export class RacingComponent implements AfterViewInit, OnInit {
         private _trackService: TrackService,
         private _gameUpdateManager: GameUpdateManagerService,
         private _cameraManager: CameraManagerService,
-        private _stateFactory: StateFactoryService
+        private _stateFactory: StateFactoryService,
+        private _soundManager: SoundManagerService
         // private _endGameTableService: EndGameTableService,
         // private _highscoreService: HighscoreService,
     ) { }
@@ -76,6 +79,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
         await this._gameUpdateManager.initializeServices(this._racingGame);
         this._racingGame.startGame();
         this._countDownOnScreenValue = "";
+        this._stopUpdate = false;
         this.update();
     }
 
@@ -83,73 +87,17 @@ export class RacingComponent implements AfterViewInit, OnInit {
         requestAnimationFrame(() => {
             this._racingGame.update();
             this._renderService.render(this._racingGame.gameScene, this._cameraManager.currentCamera);
-            this.update();
+            if (!this._stopUpdate) {
+                this.update();
+            } else {
+                this._racingGame = undefined;
+            }
         });
     }
 
     private computeAspectRatio(): number {
         return this._containerRef.nativeElement.clientWidth / this._containerRef.nativeElement.clientHeight;
     }
-
-    // private update(): void {
-    //     requestAnimationFrame(() => {
-    //         const timeSinceLastFrame: number = Date.now() - this._lastDate;
-    //         const elapsedTime: number = Date.now() - this._startDate;
-    //         this._lastDate = Date.now();
-    //         switch (this._currentState) {
-    //             case State.START_ANIMATION:
-    //                 this.updateStartingAnimation(elapsedTime);
-    //                 break;
-    //             case State.COUNTDOWN:
-    //                 if (elapsedTime > ONE_SECOND) {
-    //                     this._startDate += ONE_SECOND;
-    //                     this.updateCountdown();
-    //                     this._soundManager.playCurrentStartSequenceSound();
-    //                 }
-    //                 break;
-    //             case State.RACING:
-    //                 this.updateRacing(timeSinceLastFrame);
-    //                 break;
-    //             case State.END:
-    //                 this.endGame(elapsedTime * MS_TO_SEC);
-    //                 this.updateEnd();
-    //                 break;
-    //             default:
-    //         }
-    //         this._soundManager.setAccelerationSound(this._playerCar);
-    //         this._renderService.render(this._gameScene, this._cameraManager.currentCamera);
-    //         this.update();
-    //     });
-    // }
-
-    // private updateEnd(): void {
-    //     if (this._endGameTableService.players.length === 0) {
-    //         this._endGameTableService.showTable = true;
-    //         this.sortPlayers();
-    //         this.setPositions();
-    //         this._endGameTableService.players = this._players;
-    //     }
-    //     if (this._highscoreService.highscores.length === 0) {
-    //         this._highscoreService.highscores = this._chosenTrack.bestTimes;
-    //     }
-    //     if (this._highscoreService.showTable && this._uploadTrack) {
-    //         this._uploadTrack = false;
-    //         this._chosenTrack.bestTimes = this._highscoreService.highscores;
-    //         this._trackService.putTrack(this._chosenTrack.id, this._chosenTrack).subscribe();
-    //     }
-    // }
-
-    // private async createSounds(): Promise<void> {
-    //     await this._soundManager.createStartingSound(this._playerCar);
-    //     await this._soundManager.createMusic(this._playerCar);
-    //     await this._soundManager.createCarCollisionSound(this._playerCar);
-    //     await this._soundManager.createAccelerationSound(this._playerCar);
-    //     await this._soundManager.createWallCollisionSound(this._playerCar);
-    // }
-
-    // public get car(): HumanCar {
-    //     return this._playerCar;
-    // }
 
     @HostListener("window:resize", ["$event"])
     public onResize(): void {
@@ -168,5 +116,11 @@ export class RacingComponent implements AfterViewInit, OnInit {
         if (this._racingGame !== undefined) {
             this._keyBoardHandler.handleKeyUp(event.keyCode);
         }
+    }
+
+    @HostListener("window:popstate", ["$event"])
+    public onPopState(): void {
+        this._soundManager.stopAllSounds();
+        this._stopUpdate = true;
     }
 }
