@@ -1,13 +1,19 @@
 import { Track } from "../../../../../common/racing/track";
-import { Shape, Mesh, MeshPhongMaterial, Path, BackSide, Texture, ShapeGeometry, Vector3, Group, PlaneGeometry, MeshBasicMaterial, TextureLoader, DoubleSide, RepeatWrapping } from "three";
+import {
+    Shape, Mesh, MeshPhongMaterial, Path, BackSide, Texture,
+    ShapeGeometry, Vector3, Group, PlaneGeometry, MeshBasicMaterial, TextureLoader, DoubleSide, RepeatWrapping
+} from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { WallMesh } from "./wall";
 import { TrackPointList } from "./trackPointList";
 import { WallPlane } from "./plane";
 import { TrackPoint } from "./trackPoint";
 import { PI_OVER_2 } from "../constants/math.constants";
-import { START_LINE_WIDTH, START_LINE_HEIGHT, START_LINE_WEIGHT } from "../constants/scene.constants";
-import { STARTING_LINE_PATH, STARTING_LINE_X_FACTOR, STARTING_LINE_Y_FACTOR, ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR } from "../constants/texture.constants";
+import { START_LINE_WIDTH, START_LINE_HEIGHT, START_LINE_WEIGHT, DEFAULT_TRACK_NAME } from "../constants/scene.constants";
+import {
+    STARTING_LINE_PATH, STARTING_LINE_X_FACTOR,
+    STARTING_LINE_Y_FACTOR, ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR
+} from "../constants/texture.constants";
 
 export class TrackMesh extends Mesh {
     private _trackPoints: TrackPointList;
@@ -22,6 +28,10 @@ export class TrackMesh extends Mesh {
         this._interiorPlanes = [];
         this._exteriorPlanes = [];
         this._walls = new Group();
+        this.createTrackObjects();
+    }
+
+    private createTrackObjects(): void {
         this.createTrackMesh();
         this.createWalls();
         this.createPlanes();
@@ -90,7 +100,7 @@ export class TrackMesh extends Mesh {
             map: this.loadRepeatingTexture(ASPHALT_TEXTURE_PATH, ASPHALT_TEXTURE_FACTOR, ASPHALT_TEXTURE_FACTOR)
         });
         this.rotateX(PI_OVER_2);
-        this.name = "track";
+        this.name = DEFAULT_TRACK_NAME;
     }
 
     private createTrackExterior(trackShape: Shape, trackPoints: TrackPointList): void {
