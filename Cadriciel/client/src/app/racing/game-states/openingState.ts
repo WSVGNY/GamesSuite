@@ -41,7 +41,5 @@ export class OpeningState implements State {
     public advanceToNextState(racingGame: RacingGame): void {
         racingGame.setState(StateTypes.Countdown);
         this._cameraManager.changeToThirdPersonCamera();
-        // this._countDownOnScreenValue = "3";
-        // this._soundManager.playCurrentStartSequenceSound();
     }
 }

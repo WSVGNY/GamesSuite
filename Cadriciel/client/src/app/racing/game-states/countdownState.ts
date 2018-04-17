@@ -6,6 +6,7 @@ import { CountdownService } from "../countdown/countdown.service";
 import { SoundManagerService } from "../sound-service/sound-manager.service";
 
 const ONE_SECOND: number = 1000;
+const STARTING_TEXT: string = "START";
 
 export class CountdownState implements State {
 
@@ -29,7 +30,7 @@ export class CountdownState implements State {
         }
         if (this.isStateOver()) {
             racingGame.isCountdownOver = true;
-            racingGame.countdownOnScreenValue = "START";
+            racingGame.countdownOnScreenValue = STARTING_TEXT;
             this.advanceToNextState(racingGame);
         }
     }
@@ -39,9 +40,7 @@ export class CountdownState implements State {
     }
 
     public advanceToNextState(racingGame: RacingGame): void {
-        console.log("countdown over");
         racingGame.setState(StateTypes.Racing);
         this._gameTimeManager.resetStartDate();
-        // this._startDate = Date.now();
     }
 }
