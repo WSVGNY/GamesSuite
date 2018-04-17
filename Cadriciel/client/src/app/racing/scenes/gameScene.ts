@@ -69,23 +69,39 @@ export class GameScene extends AbstractScene {
     }
 
     public createStartingLine(): void {
+        const startingLine: Mesh = this.createStartingLineMesh();
+        this.setStartingLinePosition(startingLine);
+        this.rotateStartingLine(startingLine);
+        this.add(startingLine);
+    }
+
+    private createStartingLineMesh(): Mesh {
         const geometry: PlaneGeometry = new PlaneGeometry(START_LINE_WEIGHT, START_LINE_WIDTH);
         const texture: MeshBasicMaterial = new MeshBasicMaterial({
             side: DoubleSide,
             map: this.loadRepeatingTexture(STARTING_LINE_PATH, STARTING_LINE_X_FACTOR, STARTING_LINE_Y_FACTOR)
         });
-        const startingLine: Mesh = new Mesh(geometry, texture);
+
+        return new Mesh(geometry, texture);
+    }
+
+    private setStartingLinePosition(startingLine: Mesh): void {
         const startingLineVector: Vector3 = this._trackMesh.trackPoints.toTrackPoints[1].coordinate.clone().
             sub(this._trackMesh.trackPoints.toTrackPoints[0].coordinate).normalize();
+
         const startingLenght: number = this._trackMesh.trackPoints.toTrackPoints[1].coordinate.clone().
             sub(this._trackMesh.trackPoints.toTrackPoints[0].coordinate).length() / 2;
+
         const position: Vector3 = this._trackMesh.trackPoints.toTrackPoints[0].coordinate.clone().
             add(startingLineVector.clone().multiplyScalar(startingLenght));
+
         startingLine.position.set(position.x, START_LINE_HEIGHT, position.z);
+    }
+
+    private rotateStartingLine(startingLine: Mesh): void {
         startingLine.rotateZ(Math.PI / 2);
         startingLine.setRotationFromAxisAngle(new Vector3(0, 1, 0), this.findFirstTrackSegmentAngle());
         startingLine.rotateX(Math.PI / 2);
-        this.add(startingLine);
     }
 
     private shuffle(array: AbstractCar[]): void {
