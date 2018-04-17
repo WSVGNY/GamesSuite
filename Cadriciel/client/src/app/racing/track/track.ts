@@ -124,6 +124,7 @@ export class TrackMesh extends Mesh {
     public createStartingLine(): void {
         this._startingLine = this.createStartingLineMesh();
         this.setStartingLinePosition();
+        this.rotateStartingLine();
         this.add(this._startingLine);
     }
 
@@ -138,16 +139,30 @@ export class TrackMesh extends Mesh {
     }
 
     private setStartingLinePosition(): void {
-        const startingLineVector: Vector3 = this.trackPoints.toTrackPoints[1].coordinate.clone().
-            sub(this.trackPoints.toTrackPoints[0].coordinate).normalize();
+        const startingLineVector: Vector3 = this._trackPoints.toTrackPoints[1].coordinate.clone().
+            sub(this._trackPoints.toTrackPoints[0].coordinate).normalize();
 
-        const startingLinePosition: number = this.trackPoints.toTrackPoints[1].coordinate.clone().
-            sub(this.trackPoints.toTrackPoints[0].coordinate).length() / 2;
+        const startingLinePosition: number = this._trackPoints.toTrackPoints[1].coordinate.clone().
+            sub(this._trackPoints.toTrackPoints[0].coordinate).length() / 2;
 
-        const position: Vector3 = this.trackPoints.toTrackPoints[0].coordinate.clone().
+        const position: Vector3 = this._trackPoints.toTrackPoints[0].coordinate.clone().
             add(startingLineVector.clone().multiplyScalar(startingLinePosition));
 
         this._startingLine.position.set(position.x, position.z, START_LINE_HEIGHT);
+    }
+
+    private rotateStartingLine(): void {
+        this._startingLine.setRotationFromAxisAngle(new Vector3(0, 0, 1), this.findFirstTrackSegmentAngle());
+    }
+
+    private findFirstTrackSegmentAngle(): number {
+        const carfinalFacingVector: Vector3 = this._trackPoints.toTrackPoints[1].coordinate.clone()
+            .sub(this._trackPoints.toTrackPoints[0].coordinate)
+            .normalize();
+
+        return new Vector3(0, 0, -1).cross(carfinalFacingVector).y < 0 ?
+            new Vector3(0, 0, -1).angleTo(carfinalFacingVector) :
+            -new Vector3(0, 0, -1).angleTo(carfinalFacingVector);
     }
 
     protected loadRepeatingTexture(pathToImage: string, imageRatioX: number, imageRatioY: number): Texture {
