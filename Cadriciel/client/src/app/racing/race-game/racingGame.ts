@@ -42,12 +42,12 @@ export class RacingGame {
     }
 
     public setState(stateType: StateTypes): void {
-        this._currentState = this._stateFactory.getState(stateType);
+        this._currentState = this._stateFactory.getState(stateType, this);
         this._currentState.init();
     }
 
     public update(): void {
-        this._currentState.update(this);
+        this._currentState.update();
     }
 
     private initializeCars(keyboardHandler: KeyboardEventHandlerService): void {
