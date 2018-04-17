@@ -121,7 +121,15 @@ export class TrackMesh extends Mesh {
         trackShape.holes.push(holePath);
     }
 
-    public createStartingLine(): void {
+    public get startingSegmentDirection(): Vector3 {
+        return (this._trackPoints.toVectors3[1].clone().sub(this._trackPoints.toVectors3[0].clone())).clone().normalize();
+    }
+
+    public get startingLine(): Mesh {
+        return this._startingLine;
+    }
+
+    private createStartingLine(): void {
         this._startingLine = this.createStartingLineMesh();
         this.setStartingLinePosition();
         this.rotateStartingLine();
