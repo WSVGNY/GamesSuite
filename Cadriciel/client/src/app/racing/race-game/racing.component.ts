@@ -91,17 +91,6 @@ export class RacingComponent implements AfterViewInit, OnInit {
         return this._containerRef.nativeElement.clientWidth / this._containerRef.nativeElement.clientHeight;
     }
 
-    // private sortPlayers(): void {
-    //     this._players.sort((player1: Player, player2: Player) => player1.score.totalTime - player2.score.totalTime);
-    // }
-
-    // private setPositions(): void {
-    //     let position: number = 1;
-    //     for (const player of this._players) {
-    //         player.position = position++;
-    //     }
-    // }
-
     // private update(): void {
     //     requestAnimationFrame(() => {
     //         const timeSinceLastFrame: number = Date.now() - this._lastDate;

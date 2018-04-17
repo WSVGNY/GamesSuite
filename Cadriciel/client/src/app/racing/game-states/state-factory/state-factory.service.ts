@@ -7,12 +7,14 @@ import { ResultsState } from "../resultsState";
 import { ClosingState } from "../closingState";
 import { StateTypes } from "../stateTypes";
 import { GameUpdateManagerService } from "../../game-update-manager/game-update-manager.service";
+import { EndGameTableService } from "../../scoreboard/end-game-table/end-game-table.service";
 
 @Injectable()
 export class StateFactoryService {
 
   public constructor(
     private _gameUpdateService: GameUpdateManagerService,
+    private _endGameTableService: EndGameTableService
   ) { }
 
   public getState(state: StateTypes): State {
@@ -71,6 +73,7 @@ export class StateFactoryService {
 
   private createClosingState(): State {
     return new ClosingState(
+      this._endGameTableService
       // this._gameUpdateService.aiCarService,
       // this._gameUpdateService.gameTimeService,
       // this._gameUpdateService.soundService

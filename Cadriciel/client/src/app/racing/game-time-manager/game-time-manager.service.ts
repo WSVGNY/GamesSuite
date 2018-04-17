@@ -5,6 +5,7 @@ import { Track } from "../../../../../common/racing/track";
 import { NUMBER_OF_LAPS } from "../constants/car.constants";
 
 const AVERAGE_CAR_SPEED: number = 45;
+const MS_TO_SEC: number = 1000;
 
 @Injectable()
 export class GameTimeManagerService {
@@ -39,7 +40,7 @@ export class GameTimeManagerService {
         const remainingSegmentCount: number = raceSegmentCount - raceProgressTracker.segmentCounted;
         const remainingLapCount: number = Math.floor(remainingSegmentCount / lapSegmentCount);
 
-        return this.getElaspedTime() +
+        return this.getElaspedTime() / MS_TO_SEC +
             this.simulateCompleteLapTime(track, remainingLapCount) +
             this.simulatePartialLapTime(track, raceProgressTracker.currentSegmentIndex) +
             this.simulatePartialSegmentTime(currentPosition, track, raceProgressTracker.currentSegmentIndex);
