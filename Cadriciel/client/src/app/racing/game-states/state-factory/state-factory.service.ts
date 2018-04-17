@@ -47,7 +47,7 @@ export class StateFactoryService {
     return new CountdownState(
       this._gameUpdateService.gameTimeService,
       this._gameUpdateService.countdownService,
-      // this._gameUpdateService.soundService
+      this._gameUpdateService.soundService
     );
   }
 
