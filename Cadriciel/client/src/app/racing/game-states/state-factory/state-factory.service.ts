@@ -8,13 +8,17 @@ import { ClosingState } from "../closingState";
 import { StateTypes } from "../stateTypes";
 import { GameUpdateManagerService } from "../../game-update-manager/game-update-manager.service";
 import { EndGameTableService } from "../../scoreboard/end-game-table/end-game-table.service";
+import { HighscoreService } from "../../scoreboard/best-times/highscore.service";
+import { TrackService } from "../../track/track-service/track.service";
 
 @Injectable()
 export class StateFactoryService {
 
     public constructor(
         private _gameUpdateService: GameUpdateManagerService,
-        private _endGameTableService: EndGameTableService
+        private _endGameTableService: EndGameTableService,
+        private _highscoreService: HighscoreService,
+        private _trackService: TrackService
     ) { }
 
     public getState(state: StateTypes): State {
@@ -70,7 +74,9 @@ export class StateFactoryService {
 
     private createClosingState(): State {
         return new ClosingState(
-            this._endGameTableService
+            this._endGameTableService,
+            this._highscoreService,
+            this._trackService
             // this._gameUpdateService.aiCarService,
             // this._gameUpdateService.gameTimeService,
             // this._gameUpdateService.soundService
