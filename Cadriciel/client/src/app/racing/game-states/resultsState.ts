@@ -2,13 +2,11 @@ import { State } from "./state";
 import { RacingGame } from "../race-game/racingGame";
 import { StateTypes } from "./stateTypes";
 import { GameTimeManagerService } from "../game-time-manager/game-time-manager.service";
-// import { SoundManagerService } from "../sound-service/sound-manager.service";
 
 export class ResultsState implements State {
 
     public constructor(
         private _gameTimeManager: GameTimeManagerService,
-        // private _soundManager: SoundManagerService
     ) { }
 
     public init(): void { }
