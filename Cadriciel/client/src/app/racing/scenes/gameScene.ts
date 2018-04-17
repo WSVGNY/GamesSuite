@@ -11,7 +11,7 @@ import { TrackPoint } from "../track/trackPoint";
 import { START_CAR_DISTANCE } from "../constants/scene.constants";
 import { DAY_KEYCODE, DEBUG_KEYCODE, CHANGE_CAMERA_KEYCODE } from "../constants/keycode.constants";
 import { YELLOW } from "../constants/color.constants";
-import { AICar } from "../car/aiCar";
+import { HumanCar } from "../car/humanCar";
 
 const LATHERAL_OFFSET: number = 2;
 const VERTICAL_OFFSET: number = 5;
@@ -44,17 +44,22 @@ export class GameScene extends AbstractScene {
         this.setCenterLine();
     }
 
-    public async loadCars(cars: AbstractCar[], carDebugs: AIDebug[], camera: Camera, trackType: TrackType): Promise<void> {
+    public async loadCars(cars: AbstractCar[], camera: Camera, trackType: TrackType): Promise<AIDebug[]> {
         this.shuffle(cars);
+        const aiCarsDebugs: AIDebug[] = [];
         for (let i: number = 0; i < cars.length; ++i) {
             await this.placeCarOnStartingGrid(cars[i], i);
-            this._debugElements.add(carDebugs[i].debugGroup);
-            if (!(cars[i] instanceof AICar)) {
+            if (cars[i] instanceof HumanCar) {
                 cars[i].attachCamera(camera);
+            } else {
+                this._debugElements.add(new AIDebug().debugGroup);
+                aiCarsDebugs.push(new AIDebug);
             }
             this.add(cars[i]);
         }
         this.setTimeOfDay(cars, trackType);
+
+        return aiCarsDebugs;
     }
 
     private shuffle(array: AbstractCar[]): void {
