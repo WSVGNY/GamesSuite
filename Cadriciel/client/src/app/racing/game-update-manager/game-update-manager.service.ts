@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { State } from "../game-states/state";
 import { RacingGame } from "../race-game/racingGame";
 import { StateFactoryService } from "../game-states/state-factory/state-factory.service";
-import { States } from "../game-states/states";
+import { StateTypes } from "../game-states/stateTypes";
 
 @Injectable()
 export class GameUpdateManagerService {
@@ -11,16 +11,14 @@ export class GameUpdateManagerService {
 
   public constructor(
     private _stateFactory: StateFactoryService
-  ) {
-    this.initialize();
+  ) { }
+
+  public initialize(): void {
+    this.setState(StateTypes.Initialization);
   }
 
-  private initialize(): void {
-    this.setState(States.Opening);
-  }
-
-  public setState(state: States): void {
-    this._currentState = this._stateFactory.getState(state);
+  public setState(stateType: StateTypes): void {
+    this._currentState = this._stateFactory.getState(stateType);
     this._currentState.init();
   }
 
