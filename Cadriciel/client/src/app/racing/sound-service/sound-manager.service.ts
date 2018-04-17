@@ -130,6 +130,10 @@ export class SoundManagerService {
         this._accelerationSound.setPlaybackRate(this.calculateRate(car));
     }
 
+    public playAccelerationSound(): void {
+        this._accelerationSound.play();
+    }
+
     private calculateRate(car: AbstractCar): number {
         return Math.max(1, car.rpm / RPM_FACTOR);
     }

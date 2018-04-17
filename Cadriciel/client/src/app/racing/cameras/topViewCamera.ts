@@ -1,5 +1,4 @@
-import { OrthographicCamera } from "three";
-import { AbstractCar } from "../car/abstractCar";
+import { OrthographicCamera, Vector3 } from "three";
 import { NEAR_CLIPPING_PLANE, FAR_CLIPPING_PLANE } from "../constants/camera.constants";
 import { PI_OVER_2 } from "../constants/math.constants";
 
@@ -27,8 +26,8 @@ export class TopViewCamera extends OrthographicCamera {
         this.updateProjectionMatrix();
     }
 
-    public updatePosition(car: AbstractCar): void {
-        this.position.setX(car.currentPosition.x);
-        this.position.setZ(car.currentPosition.z);
+    public updatePosition(position: Vector3): void {
+        this.position.setX(position.x);
+        this.position.setZ(position.z);
     }
 }
