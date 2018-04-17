@@ -33,30 +33,17 @@ describe("EndGameTableComponent", () => {
         [EndGameTableService],
         (endGameTableService: EndGameTableService) => {
             endGameTableService.players = [new Player(1, "Bill"), new Player(2, "Joe")];
-
-            it("the times for the first lap are defined", () => {
-                endGameTableService.players[0].setFirstLapTime(30);
-                endGameTableService.players[1].setFirstLapTime(50);
-                for (const player of endGameTableService.players) {
-                    expect(player.score.getFormatedTime(player.score.firstLap)).toBeDefined();
-                }
-            });
-
-            it("the times for the first lap are defined", () => {
-                endGameTableService.players[0].setSecondLapTime(30);
-                endGameTableService.players[1].setSecondLapTime(50);
-                for (const player of endGameTableService.players) {
-                    expect(player.score.getFormatedTime(player.score.secondLap)).toBeDefined();
-                }
-            });
-
-            it("the times for the first lap are defined", () => {
-                endGameTableService.players[0].setThirdLapTime(30);
-                endGameTableService.players[1].setThirdLapTime(50);
-                for (const player of endGameTableService.players) {
-                    expect(player.score.getFormatedTime(player.score.thirdLap)).toBeDefined();
-                }
-            });
+            endGameTableService.players[0].setFirstLapTime(30);
+            endGameTableService.players[1].setFirstLapTime(50);
+            endGameTableService.players[0].setSecondLapTime(30);
+            endGameTableService.players[1].setSecondLapTime(50);
+            endGameTableService.players[0].setThirdLapTime(30);
+            endGameTableService.players[1].setThirdLapTime(50);
+            for (const player of endGameTableService.players) {
+                expect(player.score.getFormatedTime(player.score.firstLap)).toBeDefined();
+                expect(player.score.getFormatedTime(player.score.secondLap)).toBeDefined();
+                expect(player.score.getFormatedTime(player.score.thirdLap)).toBeDefined();
+            }
         }));
 
     it("the total times are displayed", inject(
@@ -68,10 +55,18 @@ describe("EndGameTableComponent", () => {
             for (const player of endGameTableService.players) {
                 expect(player.score.getFormatedTime(player.score.totalTime)).toBeDefined();
             }
-
         }));
 
-    it("the players are displayed in the good order", () => {
-        expect(false).toBeTruthy();
-    });
+    it("the players are displayed in the good order", inject(
+        [EndGameTableService],
+        (endGameTableService: EndGameTableService) => {
+            endGameTableService.players = [new Player(1, "Bill"), new Player(2, "Joe"), new Player(3, "Kev")];
+            endGameTableService.players[0].setTotalTime(100);
+            endGameTableService.players[1].setTotalTime(200);
+            endGameTableService.players[1].setTotalTime(300);
+            endGameTableService.setPlayers(endGameTableService.players);
+            expect(endGameTableService.players[0].position).toEqual(1);
+            expect(endGameTableService.players[1].position).toEqual(2);
+            expect(endGameTableService.players[2].position).toEqual(3);
+        }));
 });
