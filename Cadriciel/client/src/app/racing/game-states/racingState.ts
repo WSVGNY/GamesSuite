@@ -27,7 +27,7 @@ export class RacingState extends State {
         for (let i: number = 0; i < this._racingGame.cars.length; ++i) {
             this._racingGame.cars[i].update(timeSinceLastFrame);
             if (this._racingGame.cars[i] instanceof AICar) {
-                this._serviceLoader.aiCarService.update(this._racingGame.cars[i] as AICar, this._racingGame.aiCarDebugs[i]);
+                this._serviceLoader.aiCarService.update(this._racingGame.cars[i] as AICar);
             }
             if (this.updateTrackingService(i)) {
                 this.logTime(this._racingGame.getPlayerByUniqueId(this._racingGame.cars[i].uniqueid), i);

@@ -7,7 +7,6 @@ import { GoFoward } from "../commands/carAICommands/goFoward";
 import { ReleaseSteering } from "../commands/carAICommands/releaseSteering";
 import { Vector3 } from "three";
 import { AIConfig } from "./ai-config";
-import { AIDebug } from "./ai-debug";
 import { LineEquation } from "./lineEquation";
 import { PI_OVER_4 } from "../constants/math.constants";
 
@@ -27,7 +26,7 @@ export class AICarService {
         this.createVectorTrackFromPoints(this._trackVertices);
     }
 
-    public update(car: AICar, aiDebug: AIDebug): void {
+    public update(car: AICar): void {
         const carPosition: Vector3 = new Vector3(
             car.position.x + car.currentPosition.x, 0,
             car.position.z + car.currentPosition.z);
@@ -36,7 +35,7 @@ export class AICarService {
         const lineDistance: number = this.getPointDistanceFromTrack(car, projection);
         const pointOnLine: Vector3 = this.projectPointOnLine(car, projection);
 
-        aiDebug.updateDebugMode(carPosition, projection, pointOnLine, this._trackVertices[car.trackPortionIndex]);
+        car.aiDebug.updateDebugMode(carPosition, projection, pointOnLine, this._trackVertices[car.trackPortionIndex]);
 
         this.updateTrackPortionIndex(car, pointOnLine);
         this.updateCarDirection(lineDistance, car, this.isCarGoingStraightToLine(car, projection, pointOnLine));
