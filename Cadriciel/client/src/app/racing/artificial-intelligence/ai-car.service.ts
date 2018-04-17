@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Car } from "../car/car";
+import { AICar } from "../car/aiCar";
 import { CommandController } from "../commands/commandController";
 import { TurnLeft } from "../commands/carAICommands/turnLeft";
 import { TurnRight } from "../commands/carAICommands/turnRight";
@@ -27,7 +27,7 @@ export class AICarService {
         this.createVectorTrackFromPoints(this._trackVertices);
     }
 
-    public update(car: Car, aiDebug: AIDebug): void {
+    public update(car: AICar, aiDebug: AIDebug): void {
         const carPosition: Vector3 = new Vector3(
             car.position.x + car.currentPosition.x, 0,
             car.position.z + car.currentPosition.z);
@@ -42,7 +42,7 @@ export class AICarService {
         this.updateCarDirection(lineDistance, car, this.isCarGoingStraightToLine(car, projection, pointOnLine));
     }
 
-    private updateTrackPortionIndex(car: Car, pointOnLine: Vector3): void {
+    private updateTrackPortionIndex(car: AICar, pointOnLine: Vector3): void {
         if (this.carPassedTrackPortionEnd(car, pointOnLine)) {
             if (car.trackPortionIndex + 1 >= this._trackLineEquations.length) {
                 car.trackPortionIndex = 0;
@@ -52,7 +52,7 @@ export class AICarService {
         }
     }
 
-    private carPassedTrackPortionEnd(car: Car, pointOnLine: Vector3): boolean {
+    private carPassedTrackPortionEnd(car: AICar, pointOnLine: Vector3): boolean {
         let pointOnLineToNextPoint: Vector3;
         let directorVector: Vector3;
 
@@ -69,7 +69,7 @@ export class AICarService {
         return pointOnLineToNextPoint.dot(directorVector) > 0;
     }
 
-    private updateCarDirection(lineDistance: number, car: Car, goingStraightToLine: boolean): void {
+    private updateCarDirection(lineDistance: number, car: AICar, goingStraightToLine: boolean): void {
         if (Math.abs(lineDistance) > AIConfig.getDistanceBeforeReplacement(car.aiPersonality) && !goingStraightToLine) {
             this.accelerate(car);
             lineDistance < 0 ?
@@ -80,39 +80,39 @@ export class AICarService {
         }
     }
 
-    private isCarGoingStraightToLine(car: Car, projection: Vector3, pointOnLine: Vector3): boolean {
+    private isCarGoingStraightToLine(car: AICar, projection: Vector3, pointOnLine: Vector3): boolean {
         const vectorFromProjectionToCar: Vector3 = car.currentPosition.clone().sub(projection).normalize();
         const vectorFromPointOnLineToCar: Vector3 = pointOnLine.clone().sub(projection).normalize();
 
         return Math.abs(vectorFromProjectionToCar.angleTo(vectorFromPointOnLineToCar)) >= Math.PI - PI_OVER_4;
     }
 
-    private goForward(car: Car): void {
+    private goForward(car: AICar): void {
         this.accelerate(car);
         this.releaseSteering(car);
     }
 
-    private accelerate(car: Car): void {
+    private accelerate(car: AICar): void {
         this._aiControl.command = new GoFoward(car);
         this._aiControl.execute();
     }
 
-    private goLeft(car: Car): void {
+    private goLeft(car: AICar): void {
         this._aiControl.command = new TurnLeft(car);
         this._aiControl.execute();
     }
 
-    private goRight(car: Car): void {
+    private goRight(car: AICar): void {
         this._aiControl.command = new TurnRight(car);
         this._aiControl.execute();
     }
 
-    private releaseSteering(car: Car): void {
+    private releaseSteering(car: AICar): void {
         this._aiControl.command = new ReleaseSteering(car);
         this._aiControl.execute();
     }
 
-    private projectInFrontOfCar(car: Car): Vector3 {
+    private projectInFrontOfCar(car: AICar): Vector3 {
         const dir: Vector3 = car.direction.normalize();
         const positionInFront: Vector3 = new Vector3(car.position.x + car.currentPosition.x, 0, car.position.z + car.currentPosition.z);
         positionInFront.x += dir.x * AIConfig.getDistanceFromVehicule(car.aiPersonality);
@@ -133,7 +133,7 @@ export class AICarService {
         }
     }
 
-    private getPointDistanceFromTrack(car: Car, point: Vector3): number {
+    private getPointDistanceFromTrack(car: AICar, point: Vector3): number {
         const line: LineEquation = this._trackLineEquations[car.trackPortionIndex];
         const top: number = line.a * point.z + line.b * point.x + line.c;
         const bottom: number = Math.sqrt(line.a * line.a + line.b * line.b);
@@ -141,7 +141,7 @@ export class AICarService {
         return top / bottom;
     }
 
-    private projectPointOnLine(car: Car, point: Vector3): Vector3 {
+    private projectPointOnLine(car: AICar, point: Vector3): Vector3 {
         const line: LineEquation = this._trackLineEquations[car.trackPortionIndex];
         const a: number = -this._trackLineEquations[car.trackPortionIndex].b;
         const b: number = this._trackLineEquations[car.trackPortionIndex].a;

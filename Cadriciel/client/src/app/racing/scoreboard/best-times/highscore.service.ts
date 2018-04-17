@@ -36,8 +36,7 @@ export class HighscoreService {
     public isNewHighScore(player: Player): boolean {
         this.newTime = player.score.totalTime;
 
-        return (this.highscores.length < TOPSCORES) || (player.position === 1 &&
-            this.newTime < this.highscores[this.highscores.length - 1].time);
+        return (player.position === 1 && this.newTime < this.highscores[this.highscores.length - 1].time);
     }
 
 }

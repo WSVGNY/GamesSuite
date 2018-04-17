@@ -1,9 +1,9 @@
 import { AbstractCommand } from "./abstractCommand";
-import { Car } from "../car/car";
+import { AICar } from "../car/aiCar";
 
 export abstract class AbstractCarAICommand extends AbstractCommand {
 
-    public constructor(protected _car: Car) {
+    public constructor(protected _car: AICar) {
         super();
     }
 
