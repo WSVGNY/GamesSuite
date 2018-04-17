@@ -3,5 +3,6 @@ export enum StateTypes {
     Countdown,
     Racing,
     Results,
-    Closing
+    ResultsTable,
+    Highscores
 }

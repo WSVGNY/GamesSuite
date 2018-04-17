@@ -29,12 +29,12 @@ export class EndGameTableComponent {
 
     public goToNextView(): void {
         this.endGameTableService.showTable = false;
-        this.changeState = false;
-        if (this.highscoreService.isNewHighScore(this.endGameTableService.getHumanPlayer())) {
-            this.inputTimeService.showInput = true;
-        } else {
-            this.highscoreService.showTable = true;
-        }
+        // this.changeState = false;
+        // if (this.highscoreService.isNewHighScore(this.endGameTableService.getHumanPlayer())) {
+        //     this.inputTimeService.showInput = true;
+        // } else {
+        //     this.highscoreService.showTable = true;
+        // }
     }
 
 }

@@ -1,86 +1,63 @@
 import { Injectable } from "@angular/core";
+import { RacingGame } from "../../race-game/racingGame";
+import { ServiceLoaderService } from "../../service-loader/service-loader.service";
 import { State } from "../state";
 import { OpeningState } from "../openingState";
 import { CountdownState } from "../countdownState";
 import { RacingState } from "../racingState";
 import { ResultsState } from "../resultsState";
-import { ClosingState } from "../closingState";
 import { StateTypes } from "../stateTypes";
-import { GameUpdateManagerService } from "../../game-update-manager/game-update-manager.service";
-import { EndGameTableService } from "../../scoreboard/end-game-table/end-game-table.service";
-import { HighscoreService } from "../../scoreboard/best-times/highscore.service";
-import { TrackService } from "../../track/track-service/track.service";
+import { ResultsTableState } from "../resultsTableState";
+import { HighscoreState } from "../highscoreState";
 
 @Injectable()
 export class StateFactoryService {
 
     public constructor(
-        private _gameUpdateService: GameUpdateManagerService,
-        private _endGameTableService: EndGameTableService,
-        private _highscoreService: HighscoreService,
-        private _trackService: TrackService
+        private _serviceLoader: ServiceLoaderService,
     ) { }
 
-    public getState(state: StateTypes): State {
+    public getState(state: StateTypes, racingGame: RacingGame): State {
         switch (state) {
             case StateTypes.Opening:
-                return this.createOpeningState();
+                return this.createOpeningState(racingGame);
             case StateTypes.Countdown:
-                return this.createCountdownState();
+                return this.createCountdownState(racingGame);
             case StateTypes.Racing:
-                return this.createRacingState();
+                return this.createRacingState(racingGame);
             case StateTypes.Results:
-                return this.createResultsState();
-            case StateTypes.Closing:
-                return this.createClosingState();
+                return this.createResultsState(racingGame);
+            case StateTypes.ResultsTable:
+                return this.createResultsTableState(racingGame);
+            case StateTypes.Highscores:
+                return this.createHighscoreState(racingGame);
             default:
                 return undefined;
         }
     }
 
-    private createOpeningState(): State {
-        return new OpeningState(
-            this._gameUpdateService.cameraService,
-            this._gameUpdateService.gameTimeService,
-            this._gameUpdateService.soundService
-        );
+    private createOpeningState(racingGame: RacingGame): State {
+        return new OpeningState(this._serviceLoader, racingGame);
     }
 
-    private createCountdownState(): State {
-        return new CountdownState(
-            this._gameUpdateService.gameTimeService,
-            this._gameUpdateService.countdownService,
-            this._gameUpdateService.soundService
-        );
+    private createCountdownState(racingGame: RacingGame): State {
+        return new CountdownState(this._serviceLoader, racingGame);
     }
 
-    private createRacingState(): State {
-        return new RacingState(
-            this._gameUpdateService.aiCarService,
-            this._gameUpdateService.collisionService,
-            this._gameUpdateService.cameraService,
-            this._gameUpdateService.trackingService,
-            this._gameUpdateService.gameTimeService,
-            this._gameUpdateService.soundService
-        );
+    private createRacingState(racingGame: RacingGame): State {
+        return new RacingState(this._serviceLoader, racingGame);
     }
 
-    private createResultsState(): State {
-        return new ResultsState(
-            this._gameUpdateService.gameTimeService,
-            // this._soundManager
-        );
+    private createResultsState(racingGame: RacingGame): State {
+        return new ResultsState(this._serviceLoader, racingGame);
     }
 
-    private createClosingState(): State {
-        return new ClosingState(
-            this._endGameTableService,
-            this._highscoreService,
-            this._trackService
-            // this._gameUpdateService.aiCarService,
-            // this._gameUpdateService.gameTimeService,
-            // this._gameUpdateService.soundService
-        );
+    private createResultsTableState(racingGame: RacingGame): State {
+        return new ResultsTableState(this._serviceLoader, racingGame);
+    }
+
+    private createHighscoreState(racingGame: RacingGame): State {
+        return new HighscoreState(this._serviceLoader, racingGame);
     }
 
 }

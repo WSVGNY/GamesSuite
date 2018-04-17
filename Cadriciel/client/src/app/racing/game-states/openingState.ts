@@ -1,45 +1,34 @@
 import { State } from "./state";
-import { RacingGame } from "../race-game/racingGame";
 import { StateTypes } from "./stateTypes";
-import { CameraManagerService } from "../cameras/camera-manager.service";
-import { GameTimeManagerService } from "../game-time-manager/game-time-manager.service";
-import { SoundManagerService } from "../sound-service/sound-manager.service";
 
 const MINIMUM_CAR_TO_CAMERA_DISTANCE: number = 3;
 
-export class OpeningState implements State {
-
-    public constructor(
-        private _cameraManager: CameraManagerService,
-        private _gameTimeManager: GameTimeManagerService,
-        private _soundManager: SoundManagerService
-    ) { }
+export class OpeningState extends State {
 
     public init(): void {
-        this._cameraManager.changeToSpectatingCamera();
-        this._gameTimeManager.resetStartDate();
-        this._soundManager.bindSoundKeys();
-        this._soundManager.playAccelerationSound();
+        this._serviceLoader.cameraService.changeToSpectatingCamera();
+        this._serviceLoader.gameTimeService.resetStartDate();
+        this._serviceLoader.soundService.bindSoundKeys();
+        this._serviceLoader.soundService.playAccelerationSound();
     }
 
-    public update(racingGame: RacingGame): void {
-        this._cameraManager.updateCameraPositions(racingGame.playerCarPosition, this._gameTimeManager.getElaspedTime());
-        if (this.isStateOver(racingGame)) {
-            this.advanceToNextState(racingGame);
+    public update(): void {
+        this._serviceLoader.cameraService.updateCameraPositions(
+            this._racingGame.playerCarPosition,
+            this._serviceLoader.gameTimeService.getElaspedTime()
+        );
+        if (this.isStateOver()) {
+            this.advanceToNextState();
         }
     }
 
-    public isStateOver(racingGame?: RacingGame): boolean {
-        if (racingGame === undefined) {
-            throw ReferenceError("Expected racingGame parameter");
-        }
-
-        return this._cameraManager.spectatingCamera.position.clone()
-            .distanceTo(racingGame.playerCarPosition) < MINIMUM_CAR_TO_CAMERA_DISTANCE;
+    public isStateOver(): boolean {
+        return this._serviceLoader.cameraService.spectatingCamera.position.clone()
+            .distanceTo(this._racingGame.playerCarPosition) < MINIMUM_CAR_TO_CAMERA_DISTANCE;
     }
 
-    public advanceToNextState(racingGame: RacingGame): void {
-        racingGame.setState(StateTypes.Countdown);
-        this._cameraManager.changeToThirdPersonCamera();
+    public advanceToNextState(): void {
+        this._racingGame.setState(StateTypes.Countdown);
+        this._serviceLoader.cameraService.changeToThirdPersonCamera();
     }
 }

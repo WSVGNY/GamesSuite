@@ -7,10 +7,10 @@ import { TrackService } from "../track/track-service/track.service";
 // import { EndGameTableService } from "../scoreboard/end-game-table/end-game-table.service";
 // import { HighscoreService } from "../scoreboard/best-times/highscore.service";
 import { RacingGame } from "./racingGame";
-import { GameUpdateManagerService } from "../game-update-manager/game-update-manager.service";
 import { CameraManagerService } from "../cameras/camera-manager.service";
 import { StateFactoryService } from "../game-states/state-factory/state-factory.service";
 import { SoundManagerService } from "../sound-service/sound-manager.service";
+import { ServiceLoaderService } from "../service-loader/service-loader.service";
 
 // const ONE_SECOND: number = 1000;
 // const MS_TO_SEC: number = 0.001;
@@ -39,10 +39,10 @@ export class RacingComponent implements AfterViewInit, OnInit {
         private _route: ActivatedRoute,
         private _keyBoardHandler: KeyboardEventHandlerService,
         private _trackService: TrackService,
-        private _gameUpdateManager: GameUpdateManagerService,
         private _cameraManager: CameraManagerService,
         private _stateFactory: StateFactoryService,
-        private _soundManager: SoundManagerService
+        private _soundManager: SoundManagerService,
+        private _serviceLoader: ServiceLoaderService,
         // private _endGameTableService: EndGameTableService,
         // private _highscoreService: HighscoreService,
     ) { }
@@ -76,7 +76,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
     }
 
     private async startGameLoop(): Promise<void> {
-        await this._gameUpdateManager.initializeServices(this._racingGame);
+        await this._serviceLoader.initializeServices(this._racingGame);
         this._racingGame.startGame();
         this._countDownOnScreenValue = "";
         this._stopUpdate = false;

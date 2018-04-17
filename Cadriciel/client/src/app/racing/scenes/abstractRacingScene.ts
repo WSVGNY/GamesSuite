@@ -6,12 +6,11 @@ import { TrackType } from "../../../../../common/racing/trackType";
 import { SkyBox } from "../render-service/skybox";
 import { GROUND_SIZE, GRASS_TEXTURE_PATH, GROUND_TEXTURE_FACTOR } from "../constants/texture.constants";
 import { PI_OVER_2 } from "../constants/math.constants";
-import { LOWER_GROUND } from "../constants/scene.constants";
+import { LOWER_GROUND, DEFAULT_GROUND_NAME } from "../constants/scene.constants";
 
 export abstract class AbstractScene extends Scene {
 
     protected _skyBoxTextures: Map<TrackType, CubeTexture>;
-    protected _roadTexture: Texture;
 
     protected addGround(): void {
         const groundGeometry: PlaneGeometry = new PlaneGeometry(GROUND_SIZE, GROUND_SIZE, 1, 1);
@@ -24,7 +23,7 @@ export abstract class AbstractScene extends Scene {
         const ground: Mesh = new Mesh(groundGeometry, groundMaterial);
         ground.rotateX(PI_OVER_2);
         ground.translateZ(LOWER_GROUND);
-        ground.name = "ground";
+        ground.name = DEFAULT_GROUND_NAME;
         this.add(ground);
     }
 
