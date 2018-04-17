@@ -1,12 +1,41 @@
 .stroke {
+    position: absolute;
+    width: 100%;
+    left: 0px;
+    text-align: center; 
+    top: 40px;
+    font-family: "Verdana", Verdana, sans-serif;
+    font-style: italic;
+    font-weight: 900;
+    font-size: 90px;
+    color: orange;
+    text-transform: uppercase;
+    letter-spacing: 0px;
+    -webkit-text-stroke-width: 10px;
+    -webkit-text-stroke-color: black;
+}
+
+.no-stroke {
+    position: absolute;
+    width: 100%;
+    left: 0px;
+    top: 40px;
     font-family: "Verdana", Verdana, sans-serif;
     font-style: italic;
     font-weight: 900;
     font-size: 90px;
     text-align: center; 
-    color: rgb(255, 230, 0);
+    color: orange;
     text-transform: uppercase;
     letter-spacing: 0px;
-    -webkit-text-stroke-width: 5px;
-    -webkit-text-stroke-color: black;
+}
+
+.hide{
+    animation: nomAnim 2s linear 0s;
+    opacity: 0;
+}
+
+@keyframes nomAnim{
+    from { opacity:1; }
+    to   { opacity:0; }
 }

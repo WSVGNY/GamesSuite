@@ -1,1 +1,2 @@
-<h1 class=stroke *ngIf="!this.isCountdownOver()"> {{this.countdownOnScreenValue()}} </h1>
+<h1 class=stroke [ngClass]="{'hide':this.isCountdownOver()}"> {{this.countdownOnScreenValue()}} </h1>
+<h1 class=no-stroke [ngClass]="{'hide':this.isCountdownOver()}"> {{this.countdownOnScreenValue()}} </h1>
