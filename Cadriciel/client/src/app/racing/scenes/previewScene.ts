@@ -52,6 +52,7 @@ export class PreviewScene extends AbstractScene {
         this._rotatingPreview.position.y = 1;
         this._rotatingPreview.geometry.center().copy(new Vector3(0, 0, 0));
         this._rotatingPreview.removeWalls();
+        this._rotatingPreview.removeStartingLine();
         this._group.add(this._rotatingPreview);
     }
 

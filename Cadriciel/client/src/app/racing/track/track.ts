@@ -111,7 +111,6 @@ export class TrackMesh extends Mesh {
     public createStartingLine(): void {
         this._startingLine = this.createStartingLineMesh();
         this.setStartingLinePosition();
-        this.rotateStartingLine();
         this.add(this._startingLine);
     }
 
@@ -136,23 +135,6 @@ export class TrackMesh extends Mesh {
             add(startingLineVector.clone().multiplyScalar(startingLinePosition));
 
         this._startingLine.position.set(position.x, position.z, START_LINE_HEIGHT);
-        console.log(this._startingLine.position);
-    }
-
-    private rotateStartingLine(): void {
-        // this._startingLine.rotateZ(Math.PI / 4);
-        // this._startingLine.setRotationFromAxisAngle(new Vector3(0, 1, 0), this.findFirstTrackSegmentAngle());
-        // this._startingLine.rotateX(Math.PI / 2);
-    }
-
-    private findFirstTrackSegmentAngle(): number {
-        const carfinalFacingVector: Vector3 = this.trackPoints.toTrackPoints[1].coordinate.clone()
-            .sub(this.trackPoints.toTrackPoints[0].coordinate)
-            .normalize();
-
-        return new Vector3(0, 0, -1).cross(carfinalFacingVector).y > 0 ?
-            new Vector3(0, 0, -1).angleTo(carfinalFacingVector) :
-            - new Vector3(0, 0, -1).angleTo(carfinalFacingVector);
     }
 
     protected loadRepeatingTexture(pathToImage: string, imageRatioX: number, imageRatioY: number): Texture {
@@ -162,5 +144,9 @@ export class TrackMesh extends Mesh {
         texture.repeat.set(imageRatioX, imageRatioY);
 
         return texture;
+    }
+
+    public removeStartingLine(): void {
+        this.remove(this._startingLine);
     }
 }
