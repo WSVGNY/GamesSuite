@@ -51,7 +51,6 @@ export class RacingGame {
     }
 
     private initializeCars(keyboardHandler: KeyboardEventHandlerService): void {
-        this._track = this.track;
         this._cars.push(new HumanCar(0, keyboardHandler));
         this._players.push(new Player(0, CURRENT_PLAYER));
         this._aiCarDebugs.push(new AIDebug());
@@ -63,11 +62,10 @@ export class RacingGame {
     }
 
     public async initializeGameFromTrack(track: Track, thirdPersonCamera: Camera): Promise<void> {
+        this._track = track;
         this._gameScene.loadTrack(track);
         this._gameScene.createStartingLine();
         await this._gameScene.loadCars(this._cars, this._aiCarDebugs, thirdPersonCamera, track.type);
-        // await this.createSounds();
-        // this._soundManager.accelerationSoundEffect.play();
         this._gameScene.bindGameSceneKeys(this._cars);
 
     }
