@@ -7,7 +7,11 @@ import { GameTimeManagerService } from "../../game-time-manager/game-time-manage
 import { State } from "../state";
 import { OpeningState } from "../openingState";
 import { CountdownState } from "../countdownState";
-import { States } from "../states";
+import { StateTypes } from "../stateTypes";
+import { InitializationState } from "../initializationState";
+import { ResultsState } from "../resultsState";
+import { ClosingState } from "../closingState";
+import { SoundManagerService } from "../../sound-service/sound-manager.service";
 
 @Injectable()
 export class StateFactoryService {
@@ -17,31 +21,34 @@ export class StateFactoryService {
     private _collisionManager: CollisionManagerService,
     private _cameraManager: CameraManagerService,
     private _trackingManager: CarTrackingManagerService,
-    private _gameTimeManager: GameTimeManagerService
+    private _gameTimeManager: GameTimeManagerService,
+    private _soundManager: SoundManagerService
   ) { }
 
-  public getState(state: States): State {
+  public getState(state: StateTypes): State {
     if (state === undefined) {
       return undefined;
     }
 
-    if (state === States.Opening) {
-      this.createOpeningState();
-    } else if (state === States.Countdown) {
-      this.createCountdownState();
-    } /*else if (state === States.Racing) {
-      return new Square();
-    } else if (state === States.Result) {
-      return new Square();
-    } else if (state === States.Closing) {
-      return new Square();
-    }*/
+    if (state === StateTypes.Initialization) {
+      return this.createInitializationState();
+    } else if (state === StateTypes.Opening) {
+      return this.createOpeningState();
+    } else if (state === StateTypes.Countdown) {
+      return this.createCountdownState();
+    } else if (state === StateTypes.Racing) {
+      return this.createRacingState();
+    } else if (state === StateTypes.Results) {
+      return this.createResultsState();
+    } else if (state === StateTypes.Closing) {
+      return this.createClosingState();
+    }
 
     return undefined;
   }
 
-  private createOpeningState(): State {
-    return new OpeningState(
+  private createInitializationState(): State {
+    return new InitializationState(
       this._aiCarService,
       this._collisionManager,
       this._cameraManager,
@@ -50,8 +57,30 @@ export class StateFactoryService {
     );
   }
 
+  private createOpeningState(): State {
+    return new OpeningState(this._cameraManager, this._gameTimeManager);
+  }
+
   private createCountdownState(): State {
-    return new CountdownState(
+    return new CountdownState(this._gameTimeManager);
+  }
+
+  private createRacingState(): State {
+    return new InitializationState(
+      this._aiCarService,
+      this._collisionManager,
+      this._cameraManager,
+      this._trackingManager,
+      this._gameTimeManager
+    );
+  }
+
+  private createResultsState(): State {
+    return new ResultsState(this._trackingManager, this._gameTimeManager);
+  }
+
+  private createClosingState(): State {
+    return new ClosingState(
       this._aiCarService,
       this._collisionManager,
       this._cameraManager,
