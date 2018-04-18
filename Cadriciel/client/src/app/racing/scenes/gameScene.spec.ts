@@ -1,10 +1,12 @@
 import { GameScene } from "./gameScene";
 import { Vector3, Geometry, Mesh, MeshPhongMaterial } from "three";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
-import { TestBed } from "@angular/core/testing";
+import { TestBed, inject } from "@angular/core/testing";
 import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
 import { Track } from "../../../../../common/racing/track";
 import { TrackMesh } from "../track/track";
+import { AbstractCar } from "../car/abstractCar";
+import { AICar } from "../car/aiCar";
 
 // tslint:disable:no-magic-numbers
 describe("Game Scene", () => {
@@ -61,5 +63,26 @@ describe("Game Scene", () => {
         const track: Mesh = gameScene.getObjectByName("track") as Mesh;
         const ground: Mesh = gameScene.getObjectByName("ground") as Mesh;
         expect((track.material as MeshPhongMaterial).map).not.toEqual((ground.material as MeshPhongMaterial).map);
+    });
+
+    it("cars are shuffled on lineup", () => {
+        const MOCK_CARS: AbstractCar[] = [];
+        for (let i: number = 0; i < 100; i++) {
+            MOCK_CARS.push(new AICar(i));
+        }
+        const EXPECTED_MOCK_CARS: AbstractCar[] = [];
+        for (const element of MOCK_CARS) {
+            EXPECTED_MOCK_CARS.push(element);
+        }
+        gameScene["shuffle"](MOCK_CARS);
+        let success: boolean = false;
+        for (let i: number = 0; i < 100; i++) {
+            if (EXPECTED_MOCK_CARS[i] !== MOCK_CARS[i]) {
+                success = true;
+                break;
+            }
+        }
+
+        expect(success).toEqual(true);
     });
 });
