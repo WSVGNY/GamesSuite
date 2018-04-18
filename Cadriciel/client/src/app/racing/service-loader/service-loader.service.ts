@@ -12,6 +12,7 @@ import { HighscoreService } from "../scoreboard/best-times/highscore.service";
 import { InputTimeService } from "../scoreboard/input-time/input-time.service";
 import { TrackService } from "../track/track-service/track.service";
 import { Vector3 } from "three";
+import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 
 @Injectable()
 export class ServiceLoaderService {
@@ -26,7 +27,8 @@ export class ServiceLoaderService {
         private _endGameTableService: EndGameTableService,
         private _highscoreService: HighscoreService,
         private _inputTimeService: InputTimeService,
-        private _trackService: TrackService
+        private _trackService: TrackService,
+        private _keyboardEventHandler: KeyboardEventHandlerService
     ) { }
 
     public async initializeServices(racingGame: RacingGame): Promise<void> {
@@ -99,5 +101,9 @@ export class ServiceLoaderService {
 
     public get inputTimeService(): InputTimeService {
         return this._inputTimeService;
+    }
+
+    public get keyboardEventHandler(): KeyboardEventHandlerService {
+        return this._keyboardEventHandler;
     }
 }
