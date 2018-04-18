@@ -35,7 +35,7 @@ export class GameScene extends AbstractScene {
         if (this._trackMesh !== undefined) {
             this.remove(this._trackMesh);
         }
-        this._isDay = track.type === TrackType.Default ? true : false;
+        this._isDay = track.type === TrackType.Default;
         this._trackMesh = new TrackMesh(track);
         this.add(this._trackMesh);
         this.addGround();
