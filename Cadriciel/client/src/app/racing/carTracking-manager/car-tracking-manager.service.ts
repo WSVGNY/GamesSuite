@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Vector3, Sphere } from "three";
 import { RaceProgressTracker } from "./raceProgressTracker";
-import { TRACKING_SPHERE_RADIUS } from "../constants/car.constants";
+import { TRACKING_SPHERE_RADIUS, NUMBER_OF_LAPS } from "../constants/car.constants";
 
 const FINISH_BUFFER: number = 3;
 
@@ -11,9 +11,11 @@ export class CarTrackingManagerService {
     private _detectionSpheres: Sphere[];
     private _finishLinePosition: Vector3;
     private _finishLineSegment: Vector3;
+    private _shouldBeInStartingSphere: boolean;
 
     public constructor() {
         this._detectionSpheres = [];
+        this._shouldBeInStartingSphere = false;
     }
 
     public init(trackVertices: Vector3[], finishLinePosition: Vector3, finishLineSegment: Vector3): void {
@@ -39,6 +41,7 @@ export class CarTrackingManagerService {
 
     public update(position: Vector3, raceProgressTracker: RaceProgressTracker): void {
         if (this.isRightSequence(position, raceProgressTracker)) {
+            this._shouldBeInStartingSphere = this.isCarAtStartingSphere(position);
             raceProgressTracker.incrementIndexCount();
             this.goToNextSphere(raceProgressTracker);
         }
@@ -50,7 +53,7 @@ export class CarTrackingManagerService {
                 if (raceProgressTracker.lapCount === (raceProgressTracker.segmentCounted / this._detectionSpheres.length)) {
                     raceProgressTracker.incrementLapCount();
                     console.log("lap number " + raceProgressTracker.lapCount);
-                    if (raceProgressTracker.lapCount > 3) {
+                    if (raceProgressTracker.lapCount > NUMBER_OF_LAPS) {
                         raceProgressTracker.isRaceCompleted = true;
                     }
 
@@ -63,13 +66,19 @@ export class CarTrackingManagerService {
     }
 
     private isRightSequence(position: Vector3, raceProgressTracker: RaceProgressTracker): boolean {
-        if (this.isCarAtStartingSphere(position) && !this.isCarAtDesiredSphere(position, raceProgressTracker)) {
-            raceProgressTracker.resetCurrentSegmentIndex();
+        if (this.isWrongSequence(position, raceProgressTracker)) {
+            raceProgressTracker.resetCurrentSegmentIndex(this._detectionSpheres.length);
 
             return false;
         }
 
         return this.isCarAtDesiredSphere(position, raceProgressTracker);
+    }
+
+    private isWrongSequence(position: Vector3, raceProgressTracker: RaceProgressTracker): boolean {
+        return this.isCarAtStartingSphere(position)
+            && !this.isCarAtDesiredSphere(position, raceProgressTracker)
+            && !this._shouldBeInStartingSphere;
     }
 
     private isCarAtStartingSphere(position: Vector3): boolean {
@@ -81,6 +90,12 @@ export class CarTrackingManagerService {
     }
 
     private isCarAtDesiredSphere(position: Vector3, raceProgressTracker: RaceProgressTracker): boolean {
+        // if (raceProgressTracker.currentSegmentIndex === 0) {
+        //     console.log("CurrentSegmentIndex : " + raceProgressTracker.currentSegmentIndex);
+        //     console.log("CurrentDetectionSphere: " + this._detectionSpheres[raceProgressTracker.currentSegmentIndex]);
+        //     raceProgressTracker.didonce = true;
+        // }
+
         return this.sphereContainsCar(this._detectionSpheres[raceProgressTracker.currentSegmentIndex], position);
     }
 

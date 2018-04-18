@@ -21,8 +21,9 @@ export class RaceProgressTracker {
         this._segmentCounted++;
     }
 
-    public resetCurrentSegmentIndex(): void {
+    public resetCurrentSegmentIndex(lapSize: number): void {
         this._currentSegmentIndex = 1;
+        this._segmentCounted = (this._lapCount - 1) * lapSize;
     }
 
     public get segmentCounted(): number {
