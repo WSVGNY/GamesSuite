@@ -43,7 +43,7 @@ export class GameTimeManagerService {
             this.simulateCompleteLapTime(trackVertices, remainingLapCount) +
             this.simulatePartialLapTime(trackVertices, raceProgressTracker.currentSegmentIndex) +
             this.simulatePartialSegmentTime(currentPosition, trackVertices, raceProgressTracker.currentSegmentIndex) +
-            this.simulateStartingLineTime(trackVertices);
+            this.simulateStartingLineTime(currentPosition, trackVertices, raceProgressTracker.currentSegmentIndex);
 
     }
 
@@ -62,7 +62,7 @@ export class GameTimeManagerService {
 
     private simulatePartialLapTime(trackVertices: Vector3[], currentSegmentIndex: number): number {
         let simulatedTime: number = 0;
-        if (currentSegmentIndex !== 1) {
+        if (currentSegmentIndex !== 1 && currentSegmentIndex !== 1) {
             for (let i: number = currentSegmentIndex; i < trackVertices.length; ++i) {
                 if ((i + 1) !== trackVertices.length) {
                     const currentVertice: Vector3 = new Vector3(trackVertices[i].x, 0, trackVertices[i].z);
@@ -87,8 +87,22 @@ export class GameTimeManagerService {
 
     }
 
-    private simulateStartingLineTime(trackVertices: Vector3[]): number {
-        return ((trackVertices[0].distanceTo(trackVertices[1]) / 2) / AVERAGE_CAR_SPEED);
+    private simulateStartingLineTime(position: Vector3, trackVertices: Vector3[], currentSegmentIndex: number): number {
+        let simulatedTime: number = 0;
+        if (currentSegmentIndex !== 1) {
+            simulatedTime = (trackVertices[0].distanceTo(trackVertices[1]) / 2) / AVERAGE_CAR_SPEED;
+        } else {
+            const firstVertex: Vector3 = new Vector3(trackVertices[0].x, trackVertices[0].y, trackVertices[0].z);
+            const secondVertex: Vector3 = new Vector3(trackVertices[1].x, trackVertices[1].y, trackVertices[1].z);
+            const firstToSecondVertex: Vector3 = secondVertex.clone().sub(firstVertex);
+            const direction: Vector3 = firstToSecondVertex.clone().normalize();
+            const finishLinePosition: Vector3 = firstVertex.clone().add(direction.clone().multiplyScalar(firstToSecondVertex.length() / 2));
+
+            simulatedTime = position.distanceTo(finishLinePosition) / AVERAGE_CAR_SPEED;
+        }
+
+        return simulatedTime;
+
     }
 
 }
