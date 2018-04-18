@@ -134,9 +134,3 @@ describe("Car", () => {
         expect(car["_carStructure"].dragCoefficient).toBe(DEFAULT_DRAG_COEFFICIENT);
     });
 });
-
-// describe("Car", () => {
-//     it("should not pass to inform that the tests are commented", () => {
-//         expect(true).toBeFalsy();
-//     });
-// });

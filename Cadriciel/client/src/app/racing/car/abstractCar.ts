@@ -54,15 +54,6 @@ export abstract class AbstractCar extends Object3D {
         this._carStructure.lights = new CarLights();
     }
 
-    private async load(): Promise<Object3D> {
-        return new Promise<Object3D>((resolve, reject) => {
-            const loader: ObjectLoader = new ObjectLoader();
-            loader.load(CAR_TEXTURE, (object: Object3D) => {
-                resolve(object);
-            });
-        });
-    }
-
     public async init(startPoint: Vector3, rotationAngle: number): Promise<void> {
         await this.initMesh(startPoint, rotationAngle);
         this.initHitBox();
@@ -76,6 +67,15 @@ export abstract class AbstractCar extends Object3D {
         this._mesh.setRotationFromAxisAngle(new Vector3(0, 1, 0), rotationAngle);
         this._mesh.updateMatrix();
         this.add(this._mesh);
+    }
+
+    private async load(): Promise<Object3D> {
+        return new Promise<Object3D>((resolve, reject) => {
+            const loader: ObjectLoader = new ObjectLoader();
+            loader.load(CAR_TEXTURE, (object: Object3D) => {
+                resolve(object);
+            });
+        });
     }
 
     public rotateMesh(axis: Vector3, angle: number): void {
@@ -117,7 +117,6 @@ export abstract class AbstractCar extends Object3D {
 
         // Hitbox global position
         this._hitbox.updatePosition(this._mesh.position, this._mesh.matrix);
-
     }
 
     private physicsUpdate(deltaTime: number): void {
@@ -135,7 +134,6 @@ export abstract class AbstractCar extends Object3D {
     public get direction(): Vector3 {
         const rotationMatrix: Matrix4 = new Matrix4();
         const carDirection: Vector3 = this._carControls.initialDirection.clone();
-
         rotationMatrix.extractRotation(this._mesh.matrix);
         carDirection.applyMatrix4(rotationMatrix);
 
