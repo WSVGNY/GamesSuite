@@ -35,35 +35,28 @@ export class AICarService {
         const lineDistance: number = this.getPointDistanceFromTrack(car, projection);
         const pointOnLine: Vector3 = this.projectPointOnLine(car, projection);
 
-        car.aiDebug.updateDebugMode(carPosition, projection, pointOnLine, this._trackVertices[car.trackPortionIndex]);
-
+        car.aiDebug.updateDebugMode(carPosition, projection, pointOnLine);
         this.updateTrackPortionIndex(car, pointOnLine);
         this.updateCarDirection(lineDistance, car, this.isCarGoingStraightToLine(car, projection, pointOnLine));
     }
 
     private updateTrackPortionIndex(car: AICar, pointOnLine: Vector3): void {
         if (this.carPassedTrackPortionEnd(car, pointOnLine)) {
-            if (car.trackPortionIndex + 1 >= this._trackLineEquations.length) {
-                car.trackPortionIndex = 0;
-            } else {
-                car.trackPortionIndex++;
-            }
+            car.trackPortionIndex = (car.trackPortionIndex + 1 >= this._trackLineEquations.length) ?
+                0 :
+                car.trackPortionIndex + 1;
+
         }
     }
 
     private carPassedTrackPortionEnd(car: AICar, pointOnLine: Vector3): boolean {
         let pointOnLineToNextPoint: Vector3;
         let directorVector: Vector3;
+        const index: number = car.trackPortionIndex + 1 === this._trackVertices.length ? 0 : car.trackPortionIndex + 1;
 
-        if (car.trackPortionIndex + 1 === this._trackVertices.length) {
-            pointOnLineToNextPoint = pointOnLine.clone().sub(this._trackLineEquations[0].initialPoint);
-            directorVector = this._trackLineEquations[0].initialPoint.clone()
-                .sub(this._trackLineEquations[car.trackPortionIndex].initialPoint);
-        } else {
-            pointOnLineToNextPoint = pointOnLine.clone().sub(this._trackLineEquations[car.trackPortionIndex + 1].initialPoint);
-            directorVector = this._trackLineEquations[car.trackPortionIndex + 1].initialPoint.clone()
-                .sub(this._trackLineEquations[car.trackPortionIndex].initialPoint);
-        }
+        pointOnLineToNextPoint = pointOnLine.clone().sub(this._trackLineEquations[index].initialPoint);
+        directorVector = this._trackLineEquations[index].initialPoint.clone()
+            .sub(this._trackLineEquations[car.trackPortionIndex].initialPoint);
 
         return pointOnLineToNextPoint.dot(directorVector) > 0;
     }
