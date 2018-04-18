@@ -32,7 +32,7 @@ export class ServiceLoaderService {
     ) { }
 
     public async initializeServices(racingGame: RacingGame): Promise<void> {
-        this._aiCarService.initialize(racingGame.gameScene.trackMesh.trackPoints.toVectors3);
+        this._aiCarService.initialize(racingGame.gameScene.trackMesh.trackPoints.toVectors3).then().catch();
         this._collisionManager.track = racingGame.gameScene.trackMesh;
         this._cameraManager.initializeSpectatingCameraPosition(racingGame.playerCar.currentPosition, racingGame.playerCar.direction);
         this._trackingManager.init(
