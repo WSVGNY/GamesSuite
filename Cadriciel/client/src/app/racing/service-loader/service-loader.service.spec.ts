@@ -1,9 +1,7 @@
 import { TestBed, inject } from "@angular/core/testing";
 import { ServiceLoaderService } from "./service-loader.service";
 import { AICarService } from "../artificial-intelligence/ai-car.service";
-import { CollisionManagerService } from "../collision-manager/collision-manager.service";
 import { CameraManagerService } from "../cameras/camera-manager.service";
-import { CarTrackingService } from "../carTracking-manager/car-tracking-manager.service";
 import { GameTimeManagerService } from "../game-time-manager/game-time-manager.service";
 import { TrackService } from "../track/track-service/track.service";
 import { InputTimeService } from "../scoreboard/input-time/input-time.service";
@@ -13,6 +11,9 @@ import { SoundManagerService } from "../sound-service/sound-manager.service";
 import { CountdownService } from "../countdown/countdown.service";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { HttpClient, HttpHandler } from "@angular/common/http";
+import { CarCollisionService } from "../collision-manager/carCollision.service";
+import { CarTrackingService } from "../tracking-service/tracking.service";
+import { WallCollisionService } from "../collision-manager/wallCollision.service";
 
 describe("ServiceLoaderService", () => {
     beforeEach(() => {
@@ -20,7 +21,8 @@ describe("ServiceLoaderService", () => {
             providers: [
                 ServiceLoaderService,
                 AICarService,
-                CollisionManagerService,
+                CarCollisionService,
+                WallCollisionService,
                 CameraManagerService,
                 CarTrackingService,
                 GameTimeManagerService,
