@@ -25,7 +25,7 @@ export class Track {
         public name: string = "New Track",
         public description: string = "",
         public timesPlayed: number = 0,
-        public bestTimes: CommonHighscore[] = [{ car: "YELLOW", name: "Bertrand", position: 1, time: 3000 }],
+        public bestTimes: CommonHighscore[] = [],
         public type: TrackType = TrackType.Default,
         public vertices: CommonCoordinate3D[] = [new CommonCoordinate3D(0, 0, 0), new CommonCoordinate3D(100, 0, 0), new CommonCoordinate3D(100, 0, 100), new CommonCoordinate3D(0, 0, 100)]) {
     }
