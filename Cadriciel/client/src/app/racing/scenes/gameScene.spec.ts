@@ -5,6 +5,7 @@ import { TestBed } from "@angular/core/testing";
 import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
 import { Track } from "../../../../../common/racing/track";
 import { TrackMesh } from "../track/track";
+import { DEFAULT_GROUND_NAME, DEFAULT_TRACK_NAME } from "../constants/scene.constants";
 
 // tslint:disable:no-magic-numbers
 describe("Game Scene", () => {
@@ -57,9 +58,10 @@ describe("Game Scene", () => {
         const mockTrack: Track = new Track("");
         mockTrack.vertices = MOCK_TRACK;
         gameScene["_trackMesh"] = new TrackMesh(mockTrack);
+        gameScene.add(gameScene["_trackMesh"]);
         gameScene["addGround"]();
-        const track: Mesh = gameScene.getObjectByName("track") as Mesh;
-        const ground: Mesh = gameScene.getObjectByName("ground") as Mesh;
+        const track: Mesh = gameScene.getObjectByName(DEFAULT_TRACK_NAME) as Mesh;
+        const ground: Mesh = gameScene.getObjectByName(DEFAULT_GROUND_NAME) as Mesh;
         expect((track.material as MeshPhongMaterial).map).not.toEqual((ground.material as MeshPhongMaterial).map);
     });
 });
