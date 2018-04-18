@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Vector3 } from "three";
-import { RaceProgressTracker } from "../carTracking-manager/raceProgressTracker";
 import { NUMBER_OF_LAPS } from "../constants/car.constants";
+import { RaceProgressTracker } from "../tracking-service/raceProgressTracker";
 
 const AVERAGE_CAR_SPEED: number = 45;
 const MS_TO_SEC: number = 1000;

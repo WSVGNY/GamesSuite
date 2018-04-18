@@ -10,6 +10,8 @@ export const START_LINE_HEIGHT: number = -0.001;
 export const START_CAR_DISTANCE: number = 12;
 export const DEFAULT_TRACK_NAME: string = "track";
 export const DEFAULT_GROUND_NAME: string = "ground";
+// countdown
+export const COUNTDOWN_INITIAL_VALUE: string = "3";
 // other
 export const LOWER_GROUND: number = 0.01;
 export const SKYBOX_SIZE: number = 700;
