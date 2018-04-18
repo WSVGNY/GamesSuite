@@ -10,10 +10,7 @@ import { TrackType } from "../../../../../common/racing/trackType";
 import { RenderService } from "../render-service/render.service";
 import { TrackService } from "../track/track-service/track.service";
 import { Formater } from "../scoreboard/formater";
-
-const CAMERA_Z_POSITION: number = 480;
-const CAMERA_POSITION: Vector3 = new Vector3(0, 0, CAMERA_Z_POSITION);
-const VIEW_SIZE: number = 500;
+import { EDITOR_VIEW_SIZE, EDITOR_CAMERA_Z_POSITION } from "../constants/camera.constants";
 
 @Component({
     selector: "app-editor",
@@ -46,14 +43,14 @@ export class EditorComponent implements AfterViewInit, OnInit {
 
     public ngAfterViewInit(): void {
         this.getTrack();
-        this._editorCamera = new EditorCamera(this.computeAspectRatio(), VIEW_SIZE);
-        this._editorCamera.setPosition(CAMERA_POSITION);
+        this._editorCamera = new EditorCamera(this.computeAspectRatio(), EDITOR_VIEW_SIZE);
+        this._editorCamera.setPosition(new Vector3(0, 0, EDITOR_CAMERA_Z_POSITION));
         this._editorRenderService
             .initialize(this._containerRef.nativeElement, this._editorScene, this._editorCamera)
             .then(/* do nothing */)
             .catch((err) => console.error(err));
         this._mouseEventHandlerService
-            .initialize(this._containerRef.nativeElement, VIEW_SIZE)
+            .initialize(this._containerRef.nativeElement, EDITOR_VIEW_SIZE)
             .then(/* do nothing */)
             .catch((err) => console.error(err));
         this.update();
