@@ -3,7 +3,10 @@ import { CommonCoordinate3D } from "../../../../../../common/racing/commonCoordi
 import { TrackPointList } from "../../track/trackPointList";
 import { WallMesh } from "../../track/wall";
 import { RED } from "../../constants/color.constants";
-import { WALL_DISTANCE_TO_TRACK, WALL_WIDTH, TRACK_WIDTH, STARTING_LINE_SEGMENT_MINIMAL_LENGTH, HALF_TRACK_WIDTH } from "../../constants/scene.constants";
+import {
+    WALL_DISTANCE_TO_TRACK, WALL_WIDTH, TRACK_WIDTH,
+    STARTING_LINE_SEGMENT_MINIMAL_LENGTH, HALF_TRACK_WIDTH
+} from "../../constants/scene.constants";
 import { PI_OVER_4, PI_OVER_2 } from "../../constants/math.constants";
 
 const UNAUTHORIZED_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: RED });
