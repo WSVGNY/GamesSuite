@@ -13,3 +13,12 @@ export const SPECTATING_CAMERA_START_DISTANCE: number = 50;
 export const SPECTATING_CAMERA_START_POSITION_Y: number = 20;
 export const SPECTATING_CAMERA_BASE: number = 1.07;
 export const SPECTATING_CAMERA_INITIAL: number = 50;
+export const SPECTATING_CAMERA_NAME: string = "SPECTATING_CAMERA";
+
+export const PLAYER_CAMERA_NAME: string = "PLAYER_CAMERA";
+export const INITIAL_PLAYER_CAMERA_POSITION_Z: number = 5;
+export const INITIAL_PLAYER_CAMERA_POSITION_Y: number = 2.5;
+
+export const INITIAL_TOP_VIEW_CAMERA_POSITION_Y: number = 10;
+export const TOP_VIEW_CAMERA_VIEW_SIZE: number = 150;
+export const TOP_VIEW_CAMERA_NAME: string = "TOP_VIEW_CAMERA";

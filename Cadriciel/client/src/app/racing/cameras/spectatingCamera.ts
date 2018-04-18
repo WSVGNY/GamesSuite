@@ -6,7 +6,7 @@ import {
     SPECTATING_CAMERA_START_DISTANCE,
     SPECTATING_CAMERA_START_POSITION_Y,
     SPECTATING_CAMERA_TIMESTEP_ADJUSTMENT,
-    SPECTATING_CAMERA_BASE, SPECTATING_CAMERA_INITIAL
+    SPECTATING_CAMERA_BASE, SPECTATING_CAMERA_INITIAL, SPECTATING_CAMERA_NAME
 } from "../constants/camera.constants";
 
 export class SpectatingCamera extends PerspectiveCamera {
@@ -16,21 +16,21 @@ export class SpectatingCamera extends PerspectiveCamera {
 
     public constructor(aspectRatio: number) {
         super(GAME_FIELD_OF_VIEW, aspectRatio, NEAR_CLIPPING_PLANE, FAR_CLIPPING_PLANE);
-        this.name = "SPECTATING_CAMERA";
+        this.name = SPECTATING_CAMERA_NAME;
     }
 
     public setInitialPosition(target: Vector3, direction: Vector3): void {
         const position: Vector3 = target.clone().add(direction.clone().multiplyScalar(SPECTATING_CAMERA_START_DISTANCE));
         position.y = SPECTATING_CAMERA_START_POSITION_Y;
-        const groundPosition: Vector3 = position.clone();
-        groundPosition.y = 0;
-        const groundTarget: Vector3 = target.clone();
-        groundTarget.y = 0;
-        this._xAxis = groundTarget.clone().sub(groundPosition).normalize();
-        this._yAxis = new Vector3(0, 1, 0);
-        this._initialPosition = groundPosition.clone();
+        this._initialPosition = new Vector3(position.x, 0, position.z);
+        this.setAxis(new Vector3(target.x, 0, target.z));
         this.position.copy(position);
         this.lookAt(target);
+    }
+
+    private setAxis(groundTarget: Vector3): void {
+        this._xAxis = groundTarget.clone().sub(this._initialPosition.clone()).normalize();
+        this._yAxis = new Vector3(0, 1, 0);
     }
 
     public updatePosition(timeStep: number): void {

@@ -1,25 +1,28 @@
 import { OrthographicCamera, Vector3 } from "three";
-import { NEAR_CLIPPING_PLANE, FAR_CLIPPING_PLANE } from "../constants/camera.constants";
+import {
+    NEAR_CLIPPING_PLANE,
+    FAR_CLIPPING_PLANE,
+    TOP_VIEW_CAMERA_VIEW_SIZE,
+    INITIAL_TOP_VIEW_CAMERA_POSITION_Y,
+    TOP_VIEW_CAMERA_NAME
+} from "../constants/camera.constants";
 import { PI_OVER_2 } from "../constants/math.constants";
-
-const INITIAL_CAMERA_POSITION_Y: number = 10;
-const VIEW_SIZE: number = 150;
 
 export class TopViewCamera extends OrthographicCamera {
 
     public constructor(aspectRatio: number) {
         super(
-            -aspectRatio * VIEW_SIZE / 2,
-            aspectRatio * VIEW_SIZE / 2,
-            VIEW_SIZE / 2,
-            -VIEW_SIZE / 2,
+            -aspectRatio * TOP_VIEW_CAMERA_VIEW_SIZE / 2,
+            aspectRatio * TOP_VIEW_CAMERA_VIEW_SIZE / 2,
+            TOP_VIEW_CAMERA_VIEW_SIZE / 2,
+            -TOP_VIEW_CAMERA_VIEW_SIZE / 2,
             NEAR_CLIPPING_PLANE,
             FAR_CLIPPING_PLANE
         );
-        this.name = "PLAYER_CAMERA";
+        this.name = TOP_VIEW_CAMERA_NAME;
         this.rotateX(-PI_OVER_2);
         this.rotateZ(-PI_OVER_2);
-        this.position.setY(INITIAL_CAMERA_POSITION_Y);
+        this.position.setY(INITIAL_TOP_VIEW_CAMERA_POSITION_Y);
     }
 
     public onResize(): void {
