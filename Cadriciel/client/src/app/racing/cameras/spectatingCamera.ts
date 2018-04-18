@@ -6,6 +6,8 @@ export class SpectatingCamera extends PerspectiveCamera {
     private readonly TIMESTEP_ADJUSTMENT: number = 0.01;
     private readonly START_DISTANCE: number = 50;
     private readonly START_POSITION_Y: number = 20;
+    private readonly BASE: number = 1.07;
+    private readonly INITIAL: number = 50;
 
     private _initialPosition: Vector3;
     private _xAxis: Vector3;
@@ -33,7 +35,7 @@ export class SpectatingCamera extends PerspectiveCamera {
     public updatePosition(timeStep: number): void {
         const displacement: Vector3 = new Vector3();
         displacement.add(this._xAxis.clone().multiplyScalar(timeStep * this.TIMESTEP_ADJUSTMENT));
-        displacement.add(this._yAxis.clone().multiplyScalar(Math.pow(1.07, -((timeStep * this.TIMESTEP_ADJUSTMENT) - 50))));
+        displacement.add(this._yAxis.clone().multiplyScalar(Math.pow(this.BASE, -((timeStep * this.TIMESTEP_ADJUSTMENT) - this.INITIAL))));
         const newPosition: Vector3 = this._initialPosition.clone().add(displacement);
         this.position.copy(newPosition);
     }

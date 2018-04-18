@@ -17,7 +17,6 @@ export class HighscoreState extends State {
             this._serviceLoader.trackService.putTrack(this._racingGame.track.id, this._racingGame.track).subscribe();
             this.advanceToNextState();
         }
-
     }
 
     public isStateOver(): boolean {
