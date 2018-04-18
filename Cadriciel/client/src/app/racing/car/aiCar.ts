@@ -2,8 +2,11 @@ import { AbstractCar } from "./abstractCar";
 import { Personality } from "../artificial-intelligence/ai-config";
 import { CarStructure } from "./carStructure";
 import { CarControls } from "./carControls";
+import { AIDebug } from "../artificial-intelligence/ai-debug";
 
 export class AICar extends AbstractCar {
+
+    private _aiDebug: AIDebug;
 
     public constructor(
         _id: number,
@@ -14,10 +17,15 @@ export class AICar extends AbstractCar {
         lapCounter: number = 0) {
         super(_id, _carStructure, _carControls, lapCounter);
         this.trackPortionIndex = 0;
+        this._aiDebug = new AIDebug();
     }
 
     public get aiPersonality(): Personality {
         return this._aiPersonality;
+    }
+
+    public get aiDebug(): AIDebug {
+        return this._aiDebug;
     }
 
 }

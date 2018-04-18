@@ -3,7 +3,7 @@ import { Line, Geometry, Vector3, LineBasicMaterial } from "three";
 import { ConstraintValidator } from "./constraintValidator";
 import { WHITE } from "../../constants/color.constants";
 import { PI_OVER_2 } from "../../constants/math.constants";
-import { HALF_TRACK_WIDTH, WALL_DISTANCE_TO_TRACK, WALL_WIDTH } from "../../constants/scene.constants";
+import { HALF_TRACK_WIDTH, WALL_DISTANCE_TO_TRACK, WALL_WIDTH, TRACK_WIDTH } from "../../constants/scene.constants";
 
 const LINE_GEOMETRY1: Geometry = new Geometry();
 LINE_GEOMETRY1.vertices.push(new Vector3(0, 0, 0));
@@ -148,7 +148,7 @@ describe("Constraints Validator", () => {
     it("should be long enough", () => {
         const lineGeomerty: Geometry = new Geometry();
         lineGeomerty.vertices.push(new Vector3(0, 0, 0));
-        lineGeomerty.vertices.push(new Vector3(0, HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH, 0));
+        lineGeomerty.vertices.push(new Vector3(0, TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH + 0.01, 0));
         const line1: Line = new Line(lineGeomerty, SIMPLE_LINE_MATERIAL);
         const lines: Line[] = [line1];
         expect(ConstraintValidator.checkLength(lines)).toEqual(true);

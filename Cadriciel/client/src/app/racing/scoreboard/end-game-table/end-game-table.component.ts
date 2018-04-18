@@ -2,6 +2,7 @@ import { Component } from "@angular/core";
 import { EndGameTableService } from "./end-game-table.service";
 import { InputTimeService } from "../input-time/input-time.service";
 import { HighscoreService } from "../best-times/highscore.service";
+import { Formater } from "../formater";
 
 @Component({
     selector: "app-end-game-table",
@@ -20,21 +21,16 @@ export class EndGameTableComponent {
     }
 
     public readyToView(): boolean {
-        // if (this.carTrackingManagerService.isCompleted && this.changeState) {
-        //     this.endGameTableService.showTable = true;
-        // }
 
         return this.endGameTableService.showTable;
     }
 
     public goToNextView(): void {
         this.endGameTableService.showTable = false;
-        this.changeState = false;
-        if (this.highscoreService.isNewHighScore(this.endGameTableService.getHumanPlayer())) {
-            this.inputTimeService.showInput = true;
-        } else {
-            this.highscoreService.showTable = true;
-        }
+    }
+
+    public getFormatedTime(time: number): string {
+        return Formater.formatTime(time);
     }
 
 }

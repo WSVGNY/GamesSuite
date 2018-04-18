@@ -3,7 +3,6 @@
     <tr>
       <th>Position</th>
       <th>Driver</th>
-      <!-- <th>Car</th> -->
       <th>Lap one</th>
       <th>Lap two</th>
       <th>Lap three</th>
@@ -12,11 +11,10 @@
     <tr *ngFor="let player of endGameTableService.players">
       <td id="position">{{player.position}}</td>
       <td>{{player.name}}</td>
-      <!-- <td>{{player.car}}</td> -->
-      <td>{{player.score.firstLap}}</td>
-      <td>{{player.score.secondLap}}</td>
-      <td>{{player.score.thirdLap}}</td>
-      <td>{{player.score.getFormatedTime(player.score.totalTime)}}</td>
+      <td>{{getFormatedTime(player.score.firstLap)}}</td>
+      <td>{{getFormatedTime(player.score.secondLap)}}</td>
+      <td>{{getFormatedTime(player.score.thirdLap)}}</td>
+      <td>{{getFormatedTime(player.score.totalTime)}}</td>
     </tr>
   </table>
   <a id="next" (click)="goToNextView()">Next</a>

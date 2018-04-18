@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import { ThirdPersonCamera } from "./thirdPersonCamera";
 import { TopViewCamera } from "./topViewCamera";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
-import { HumanCar } from "../car/humanCar";
 import { Camera, Vector3 } from "three";
 import { SpectatingCamera } from "./spectatingCamera";
 import { CHANGE_CAMERA_KEYCODE } from "../constants/keycode.constants";
@@ -24,6 +23,14 @@ export class CameraManagerService {
         this._topViewCamera = new TopViewCamera(aspectRation);
         this._spectatingCamera = new SpectatingCamera(aspectRation);
         this._currentCamera = this._thirdPersonCamera;
+    }
+
+    public get spectatingCamera(): Camera {
+        return this._spectatingCamera;
+    }
+
+    public get thirdPersonCamera(): Camera {
+        return this._thirdPersonCamera;
     }
 
     public initializeSpectatingCameraPosition(target: Vector3, direction: Vector3): void {
@@ -53,8 +60,8 @@ export class CameraManagerService {
         });
     }
 
-    public updateCameraPositions(playerCar: HumanCar, timestep?: number): void {
-        this._topViewCamera.updatePosition(playerCar);
+    public updateCameraPositions(position: Vector3, timestep?: number): void {
+        this._topViewCamera.updatePosition(position);
         if (this._currentCamera === this._spectatingCamera) {
             this._spectatingCamera.updatePosition(timestep);
         }

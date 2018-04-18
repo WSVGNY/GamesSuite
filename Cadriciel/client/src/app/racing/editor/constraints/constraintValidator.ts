@@ -3,10 +3,11 @@ import { CommonCoordinate3D } from "../../../../../../common/racing/commonCoordi
 import { TrackPointList } from "../../track/trackPointList";
 import { WallMesh } from "../../track/wall";
 import { RED } from "../../constants/color.constants";
-import { HALF_TRACK_WIDTH, WALL_DISTANCE_TO_TRACK, WALL_WIDTH } from "../../constants/scene.constants";
+import { WALL_DISTANCE_TO_TRACK, WALL_WIDTH, TRACK_WIDTH, STARTING_LINE_SEGMENT_MINIMAL_LENGTH, HALF_TRACK_WIDTH } from "../../constants/scene.constants";
 import { PI_OVER_4, PI_OVER_2 } from "../../constants/math.constants";
 
 const UNAUTHORIZED_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: RED });
+const MINIMAL_SEGMENT_LENGTH: number = TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH + STARTING_LINE_SEGMENT_MINIMAL_LENGTH;
 const OFFSET: number = HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH;
 
 export class ConstraintValidator {
@@ -50,17 +51,15 @@ export class ConstraintValidator {
     public static checkLength(connections: Line[]): boolean {
         let lengthOK: boolean = true;
 
-        if (connections.length > 0) {
-            const geometry: Geometry = (connections[0].geometry) as Geometry;
-            if (this.calculateLength(geometry.vertices) < 50) {
-                connections[0].material = UNAUTHORIZED_LINE_MATERIAL;
-                lengthOK = false;
-            }
+        if (connections.length !== 0 &&
+            this.calculateLength((connections[0].geometry as Geometry).vertices) < MINIMAL_SEGMENT_LENGTH) {
+            connections[0].material = UNAUTHORIZED_LINE_MATERIAL;
+            lengthOK = false;
         }
 
         for (const connection of connections) {
             const geometry: Geometry = (connection.geometry) as Geometry;
-            if (this.calculateLength(geometry.vertices) < OFFSET) {
+            if (this.calculateLength(geometry.vertices) < MINIMAL_SEGMENT_LENGTH) {
                 connection.material = UNAUTHORIZED_LINE_MATERIAL;
                 lengthOK = false;
             }
@@ -77,10 +76,6 @@ export class ConstraintValidator {
     public static checkIntersection(connections: Line[], isComplete: boolean): boolean {
         return isComplete ? this.checkIntersectionWithCompleteTrack(connections) : this.checkIntersectionWithIncompleteTrack(connections);
     }
-
-    // private static checkIntersection(): void {
-
-    // }
 
     private static checkIntersectionWithIncompleteTrack(connections: Line[]): boolean {
         const limit: number = connections.length;

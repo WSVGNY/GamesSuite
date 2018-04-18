@@ -5,6 +5,9 @@ import { TestBed } from "@angular/core/testing";
 import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
 import { Track } from "../../../../../common/racing/track";
 import { TrackMesh } from "../track/track";
+import { DEFAULT_GROUND_NAME, DEFAULT_TRACK_NAME } from "../constants/scene.constants";
+import { AbstractCar } from "../car/abstractCar";
+import { AICar } from "../car/aiCar";
 
 // tslint:disable:no-magic-numbers
 describe("Game Scene", () => {
@@ -33,7 +36,7 @@ describe("Game Scene", () => {
         ];
         const track: Track = new Track("");
         track.vertices = MOCK_TRACK;
-        const shape: TrackMesh = new TrackMesh(track, gameScene["_roadTexture"]);
+        const shape: TrackMesh = new TrackMesh(track);
         const EXPECTED_MOCK_TRACK: Vector3[] = [
             new Vector3(-10, -10, 0),
             new Vector3(-10, 110, 0),
@@ -56,11 +59,32 @@ describe("Game Scene", () => {
         ];
         const mockTrack: Track = new Track("");
         mockTrack.vertices = MOCK_TRACK;
-        gameScene["_trackMesh"] = new TrackMesh(mockTrack, gameScene["_roadTexture"]);
-        gameScene["_group"].add(gameScene["_trackMesh"]);
+        gameScene["_trackMesh"] = new TrackMesh(mockTrack);
+        gameScene.add(gameScene["_trackMesh"]);
         gameScene["addGround"]();
-        const track: Mesh = gameScene.getObjectByName("track") as Mesh;
-        const ground: Mesh = gameScene.getObjectByName("ground") as Mesh;
+        const track: Mesh = gameScene.getObjectByName(DEFAULT_TRACK_NAME) as Mesh;
+        const ground: Mesh = gameScene.getObjectByName(DEFAULT_GROUND_NAME) as Mesh;
         expect((track.material as MeshPhongMaterial).map).not.toEqual((ground.material as MeshPhongMaterial).map);
+    });
+
+    it("cars are shuffled on lineup", () => {
+        const MOCK_CARS: AbstractCar[] = [];
+        for (let i: number = 0; i < 100; i++) {
+            MOCK_CARS.push(new AICar(i));
+        }
+        const EXPECTED_MOCK_CARS: AbstractCar[] = [];
+        for (const element of MOCK_CARS) {
+            EXPECTED_MOCK_CARS.push(element);
+        }
+        gameScene["shuffle"](MOCK_CARS);
+        let success: boolean = false;
+        for (let i: number = 0; i < 100; i++) {
+            if (EXPECTED_MOCK_CARS[i] !== MOCK_CARS[i]) {
+                success = true;
+                break;
+            }
+        }
+
+        expect(success).toEqual(true);
     });
 });

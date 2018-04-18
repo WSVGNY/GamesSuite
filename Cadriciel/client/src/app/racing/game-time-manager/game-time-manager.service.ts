@@ -1,0 +1,94 @@
+import { Injectable } from "@angular/core";
+import { Vector3 } from "three";
+import { RaceProgressTracker } from "../carTracking-manager/raceProgressTracker";
+import { NUMBER_OF_LAPS } from "../constants/car.constants";
+
+const AVERAGE_CAR_SPEED: number = 45;
+const MS_TO_SEC: number = 1000;
+
+@Injectable()
+export class GameTimeManagerService {
+
+    private _startDate: number;
+    private _lastDate: number;
+
+    public initializeDates(): void {
+        this._startDate = 0;
+        this._lastDate = 0;
+    }
+
+    public getElaspedTime(): number {
+        return Date.now() - this._startDate;
+    }
+
+    public getTimeSinceLastFrame(): number {
+        return Date.now() - this._lastDate;
+    }
+
+    public resetStartDate(): void {
+        this._startDate = Date.now();
+    }
+
+    public updateLastDate(): void {
+        this._lastDate = Date.now();
+    }
+
+    public simulateRaceTime(raceProgressTracker: RaceProgressTracker, currentPosition: Vector3, trackVertices: Vector3[]): number {
+        const lapSegmentCount: number = trackVertices.length;
+        const raceSegmentCount: number = lapSegmentCount * NUMBER_OF_LAPS;
+        const remainingSegmentCount: number = raceSegmentCount - raceProgressTracker.segmentCounted;
+        const remainingLapCount: number = Math.floor(remainingSegmentCount / lapSegmentCount);
+
+        return this.getElaspedTime() / MS_TO_SEC +
+            this.simulateCompleteLapTime(trackVertices, remainingLapCount) +
+            this.simulatePartialLapTime(trackVertices, raceProgressTracker.currentSegmentIndex) +
+            this.simulatePartialSegmentTime(currentPosition, trackVertices, raceProgressTracker.currentSegmentIndex) +
+            this.simulateStartingLineTime(trackVertices);
+
+    }
+
+    private simulateCompleteLapTime(trackVertices: Vector3[], lapAmount: number): number {
+        let simulatedTime: number = 0;
+        for (let i: number = 0; i < trackVertices.length; ++i) {
+            if ((i + 1) !== trackVertices.length) {
+                const currentVertice: Vector3 = new Vector3(trackVertices[i].x, 0, trackVertices[i].z);
+                const nextVertice: Vector3 = new Vector3(trackVertices[i + 1].x, 0, trackVertices[i + 1].z);
+                simulatedTime += (currentVertice.distanceTo(nextVertice) / AVERAGE_CAR_SPEED);
+            }
+        }
+
+        return simulatedTime * lapAmount;
+    }
+
+    private simulatePartialLapTime(trackVertices: Vector3[], currentSegmentIndex: number): number {
+        let simulatedTime: number = 0;
+        if (currentSegmentIndex !== 1) {
+            for (let i: number = currentSegmentIndex; i < trackVertices.length; ++i) {
+                if ((i + 1) !== trackVertices.length) {
+                    const currentVertice: Vector3 = new Vector3(trackVertices[i].x, 0, trackVertices[i].z);
+                    const nextVertice: Vector3 = new Vector3(trackVertices[i + 1].x, 0, trackVertices[i + 1].z);
+                    simulatedTime += (currentVertice.distanceTo(nextVertice) / AVERAGE_CAR_SPEED);
+                } else {
+                    simulatedTime += (trackVertices[i].distanceTo(trackVertices[0]) / AVERAGE_CAR_SPEED);
+                }
+            }
+        }
+
+        return simulatedTime;
+    }
+
+    private simulatePartialSegmentTime(position: Vector3, trackVertices: Vector3[], currentSegmentIndex: number): number {
+        let simulatedTime: number = 0;
+        if (currentSegmentIndex !== 1) {
+            simulatedTime = (position.distanceTo(trackVertices[currentSegmentIndex]) / AVERAGE_CAR_SPEED);
+        }
+
+        return simulatedTime;
+
+    }
+
+    private simulateStartingLineTime(trackVertices: Vector3[]): number {
+        return ((trackVertices[0].distanceTo(trackVertices[1]) / 2) / AVERAGE_CAR_SPEED);
+    }
+
+}

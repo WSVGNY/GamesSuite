@@ -32,10 +32,6 @@ export class Hitbox {
         }
     }
 
-    public getPointOnPerimeter(index: number, collisionPoint: Vector3): Vector3 {
-        return this._boundingSpheres[index].clampPoint(collisionPoint);
-    }
-
     public get boundingSpheres(): Sphere[] {
         return this._boundingSpheres;
     }

@@ -33,6 +33,11 @@ export class KeyboardEventHandlerService {
         this._keyUpFunctions.get(keyCode).push(functionToBind);
     }
 
+    public unbindAllKeys(): void {
+        this._keyUpFunctions.clear();
+        this._keyDownFunctions.clear();
+    }
+
     public handleKeyDown(keyCode: number): void {
         if (this._keyDownFunctions.get(keyCode) !== undefined && !this._inputTimeService.showInput) {
             const functionsToExecute: (() => void)[] = this._keyDownFunctions.get(keyCode);

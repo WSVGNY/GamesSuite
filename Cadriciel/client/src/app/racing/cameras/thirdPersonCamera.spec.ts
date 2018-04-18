@@ -3,7 +3,8 @@ import { ThirdPersonCamera } from "./thirdPersonCamera";
 import { PerspectiveCamera, Vector3 } from "three";
 import { TestBed } from "@angular/core/testing";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
-import { HumanCar } from "../car/humanCar";
+import { InputTimeService } from "../scoreboard/input-time/input-time.service";
+import { AICar } from "../car/aiCar";
 
 describe("Third Person Camera Test", () => {
 
@@ -13,15 +14,15 @@ describe("Third Person Camera Test", () => {
     const EXPECTED_ANGLE: number = Math.tanh(INITIAL_CAMERA_POSITION_Y / INITIAL_CAMERA_POSITION_Z);
 
     let camera: ThirdPersonCamera;
-    let car: HumanCar;
+    let car: AICar;
     beforeEach(async (done: () => void) => {
         TestBed.configureTestingModule({
-            providers: [KeyboardEventHandlerService]
+            providers: [KeyboardEventHandlerService, InputTimeService]
         }).compileComponents()
             .then()
             .catch((e: Error) => console.error(e.message));
         camera = new ThirdPersonCamera(ASPECTRATIO);
-        car = new HumanCar(0, undefined);
+        car = new AICar(0);
         await car.init(new Vector3(0, 0, 0), 0);
         car.attachCamera(camera);
         done();
@@ -56,4 +57,5 @@ describe("Third Person Camera Test", () => {
         const angleCarToCamera: number = camera.position.clone().normalize().angleTo(car.direction.clone().negate());
         expect(Math.abs(angleCarToCamera - EXPECTED_ANGLE)).toBeLessThan(0.01);
     });
+
 });

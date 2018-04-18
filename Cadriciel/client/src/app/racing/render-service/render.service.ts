@@ -7,7 +7,7 @@ export class RenderService {
     private _containerEditor: HTMLDivElement;
     private _renderer: WebGLRenderer;
 
-    public async initialize(containerEditor: HTMLDivElement, scene: Scene, camera: Camera): Promise<void> {
+    public async initialize(containerEditor: HTMLDivElement, scene?: Scene, camera?: Camera): Promise<void> {
         if (containerEditor) {
             this._containerEditor = containerEditor;
         }

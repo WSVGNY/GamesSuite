@@ -21,4 +21,16 @@ export class EndGameTableService {
 
         throw new Error("Player name is not set to Player 1");
     }
+
+    public setPlayers(players: Player[]): void {
+        this.players = players.sort((player1: Player, player2: Player) => player1.score.totalTime - player2.score.totalTime);
+        this.setPositions();
+    }
+
+    private setPositions(): void {
+        let position: number = 1;
+        for (const player of this.players) {
+            player.position = position++;
+        }
+    }
 }

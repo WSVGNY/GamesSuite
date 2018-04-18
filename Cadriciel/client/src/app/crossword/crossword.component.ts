@@ -9,19 +9,7 @@ import { Comparator } from "./comparator";
 import { Updater } from "./updater";
 import { Player } from "../../../../common/crossword/player";
 import { CompletedWordControler } from "./completedWordControler";
-
-const BACKSPACE_KEYCODE: number = 8;
-const HORIZONTAL: number = 0;
-const VERTICAL: number = 1;
-const NOT_COLORED_DEFINITION: string = "transparent";
-const BLACK: string = "black";
-const WHITE: string = "white";
-
-enum State {
-    FREE = 0,
-    SELECTED,
-    FOUND
-}
+import { HORIZONTAL, State, VERTICAL, NOT_COLORED_DEFINITION, BLACK, WHITE, BACKSPACE_KEYCODE } from "./crosswordConstants";
 
 @Component({
     selector: "app-crossword",
@@ -104,13 +92,13 @@ export class CrosswordComponent {
 
     public getState(word: CommonWord): State {
         if (ListChecker.playersFoundWord(word, this.configuration)) {
-            return State.FOUND;
+            return State.Found;
         }
         if (Comparator.compareWords(this.configuration.currentPlayer.selectedWord, word)) {
-            return State.SELECTED;
+            return State.Selected;
         }
 
-        return State.FREE;
+        return State.Free;
     }
 
     public setSelectedWordOfBox(gridBox: CommonGridBox): void {
@@ -273,15 +261,19 @@ export class CrosswordComponent {
 
     public isEndGame(): boolean {
         if (this.configuration.configurationDone && this.configuration.grid !== undefined) {
-            if (!this.configuration.isTwoPlayerGame && this.configuration.currentPlayer.score >= this.configuration.grid.words.length) {
+            if (!this.configuration.isTwoPlayerGame &&
+                this.checkScore(this.configuration.currentPlayer.score)) {
                 return true;
             }
             if (this.configuration.isTwoPlayerGame &&
-                this.configuration.currentPlayer.score + this.configuration.otherPlayer.score >= this.configuration.grid.words.length) {
+                this.checkScore(this.configuration.currentPlayer.score + this.configuration.otherPlayer.score)) {
                 return true;
             }
         }
 
         return false;
+    }
+    private checkScore(score: number): boolean {
+        return score >= this.configuration.grid.words.length;
     }
 }
