@@ -14,7 +14,9 @@ export class Player {
     }
 
     public pushLapTime(lapTime: number): void {
-        this._score.lapTimes.push(lapTime);
+        if (this._score.lapTimes.length < 3) {
+            this._score.lapTimes.push(lapTime);
+        }
     }
 
     public setTotalTime(time: number): void {

@@ -3,7 +3,7 @@ import { Vector3, Sphere } from "three";
 import { RaceProgressTracker } from "./raceProgressTracker";
 import { TRACKING_SPHERE_RADIUS, NUMBER_OF_LAPS } from "../constants/car.constants";
 
-const FINISH_BUFFER: number = 2;
+const FINISH_BUFFER: number = 3;
 
 @Injectable()
 export class CarTrackingManagerService {
@@ -31,7 +31,7 @@ export class CarTrackingManagerService {
     public update(position: Vector3, raceProgressTracker: RaceProgressTracker): void {
         if (this.isRightSequence(position, raceProgressTracker)) {
             raceProgressTracker.incrementIndexCount();
-            console.log(raceProgressTracker.segmentCounted);
+            // console.log(raceProgressTracker.segmentCounted);
             this.goToNextSphere(raceProgressTracker);
         }
     }
@@ -41,6 +41,7 @@ export class CarTrackingManagerService {
             if (this.isAtFinishLine(position, raceProgressTracker)) {
                 if (raceProgressTracker.lapCount === (raceProgressTracker.segmentCounted / this._detectionSpheres.length)) {
                     raceProgressTracker.incrementLapCount();
+                    console.log("lap number " + raceProgressTracker.lapCount);
                     if (raceProgressTracker.lapCount > 3) {
                         raceProgressTracker.isRaceCompleted = true;
                     }

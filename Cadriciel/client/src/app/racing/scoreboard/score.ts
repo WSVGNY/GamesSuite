@@ -3,7 +3,7 @@ const SECONDS_TO_MINUTES: number = 60;
 
 export class Score {
     public lapTimes: number[];
-    public totalTime: number;
+    // private _totalTime: number;
 
     public constructor() {
         this.lapTimes = [];
@@ -32,10 +32,14 @@ export class Score {
     }
 
     public get secondLap(): number {
-        return this.lapTimes[1];
+        return this.lapTimes[1] - this.lapTimes[0];
     }
 
     public get thirdLap(): number {
+        return this.lapTimes[2] - this.lapTimes[1];
+    }
+
+    public get totalTime(): number {
         return this.lapTimes[2];
     }
 }
