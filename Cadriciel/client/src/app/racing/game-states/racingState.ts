@@ -42,7 +42,6 @@ export class RacingState extends State {
                 this._racingGame
                     .getPlayerByUniqueId(this._racingGame.cars[i].uniqueid)
                     .pushLapTime(this._serviceLoader.gameTimeService.getElaspedTime() * MS_TO_SEC);
-                // console.log(this._racingGame.getPlayerByUniqueId(this._racingGame.cars[i].uniqueid).score.lapTimes);
             }
         }
     }

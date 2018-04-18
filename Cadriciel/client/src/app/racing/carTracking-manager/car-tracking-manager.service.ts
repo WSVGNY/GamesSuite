@@ -17,9 +17,18 @@ export class CarTrackingManagerService {
     }
 
     public init(trackVertices: Vector3[], finishLinePosition: Vector3, finishLineSegment: Vector3): void {
-        this._finishLinePosition = finishLinePosition;
-        this._finishLineSegment = finishLineSegment;
         this.createDetectionSpheres(trackVertices);
+        this.computeFinishLine(trackVertices);
+    }
+
+    private computeFinishLine(trackVertices: Vector3[]): void {
+        const firstVertex: Vector3 = new Vector3(trackVertices[0].x, trackVertices[0].y, trackVertices[0].z);
+        const secondVertex: Vector3 = new Vector3(trackVertices[1].x, trackVertices[1].y, trackVertices[1].z);
+        const firstToSecondVertex: Vector3 = secondVertex.clone().sub(firstVertex);
+        const direction: Vector3 = firstToSecondVertex.clone().normalize();
+
+        this._finishLinePosition = firstVertex.clone().add(direction.clone().multiplyScalar(firstToSecondVertex.length() / 2));
+        this._finishLineSegment = direction.clone();
     }
 
     private createDetectionSpheres(trackVertices: Vector3[]): void {
