@@ -22,3 +22,6 @@ export const INITIAL_PLAYER_CAMERA_POSITION_Y: number = 2.5;
 export const INITIAL_TOP_VIEW_CAMERA_POSITION_Y: number = 10;
 export const TOP_VIEW_CAMERA_VIEW_SIZE: number = 150;
 export const TOP_VIEW_CAMERA_NAME: string = "TOP_VIEW_CAMERA";
+
+export const EDITOR_CAMERA_Z_POSITION: number = 480;
+export const EDITOR_VIEW_SIZE: number = 500;

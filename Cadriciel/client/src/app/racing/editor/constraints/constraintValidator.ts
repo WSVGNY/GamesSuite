@@ -1,18 +1,10 @@
-import { Line, Geometry, Vector3, LineBasicMaterial } from "three";
+import { Line, Geometry, Vector3 } from "three";
 import { CommonCoordinate3D } from "../../../../../../common/racing/commonCoordinate3D";
 import { TrackPointList } from "../../track/trackPointList";
 import { WallMesh } from "../../track/wall";
-import { RED } from "../../constants/color.constants";
-import {
-    WALL_DISTANCE_TO_TRACK, WALL_WIDTH, TRACK_WIDTH,
-    STARTING_LINE_SEGMENT_MINIMAL_LENGTH, HALF_TRACK_WIDTH
-} from "../../constants/scene.constants";
 import { PI_OVER_4, PI_OVER_2 } from "../../constants/math.constants";
-
-const UNAUTHORIZED_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: RED });
-const MINIMAL_SEGMENT_LENGTH: number = TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH;
-const MINIMAL_STARTING_LINE_SEGMENT_LENGTH: number = MINIMAL_SEGMENT_LENGTH + STARTING_LINE_SEGMENT_MINIMAL_LENGTH;
-const OFFSET: number = HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH;
+import { UNAUTHORIZED_LINE_MATERIAL } from "../../constants/texture.constants";
+import { MINIMAL_STARTING_LINE_SEGMENT_LENGTH, MINIMAL_SEGMENT_LENGTH, OFFSET } from "../../constants/scene.constants";
 
 export class ConstraintValidator {
     public static checkAngle(connections: Line[], isComplete: boolean): boolean {

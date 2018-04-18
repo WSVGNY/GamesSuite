@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { COUNTDOWN_INITIAL_VALUE } from "../constants/scene.constants";
 
 @Injectable()
 export class CountdownService {
@@ -6,7 +7,7 @@ export class CountdownService {
     public isCountdownOver: boolean;
 
     public initialize(): void {
-        this.onScreenValue = "3";
+        this.onScreenValue = COUNTDOWN_INITIAL_VALUE;
         this.isCountdownOver = false;
     }
 
