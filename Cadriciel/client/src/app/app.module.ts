@@ -9,10 +9,8 @@ import { GridService } from "./crossword/grid.service";
 import { AdminComponent } from "./racing/admin/admin.component";
 import { RacingComponent } from "./racing/race-game/racing.component";
 import { EditorComponent } from "./racing/editor/editor.component";
-import { MouseEventHandlerService } from "./racing/event-handlers/mouse-event-handler.service";
 import { ConfigurationComponent } from "./crossword/configuration/configuration.component";
 import { AICarService } from "./racing/artificial-intelligence/ai-car.service";
-import { KeyboardEventHandlerService } from "./racing/event-handlers/keyboard-event-handler.service";
 import { ConfigurationService } from "./crossword/configuration/configuration.service";
 import { ChooseTrackComponent } from "./racing/choose-track/choose-track.component";
 import { RenderService } from "./racing/render-service/render.service";
@@ -34,6 +32,8 @@ import { ServiceLoaderService } from "./racing/service-loader/service-loader.ser
 import { CarCollisionService } from "./racing/collision-manager/carCollision.service";
 import { WallCollisionService } from "./racing/collision-manager/wallCollision.service";
 import { CarTrackingService } from "./racing/tracking-service/tracking.service";
+import { MouseEventService } from "./racing/user-input-services/mouse-event.service";
+import { KeyboardEventService } from "./racing/user-input-services/keyboard-event.service";
 
 @NgModule({
     declarations: [
@@ -59,9 +59,9 @@ import { CarTrackingService } from "./racing/tracking-service/tracking.service";
         GridService,
         TrackService,
         ConfigurationService,
-        MouseEventHandlerService,
+        MouseEventService,
         AICarService,
-        KeyboardEventHandlerService,
+        KeyboardEventService,
         RenderService,
         SoundManagerService,
         MultiplayerCommunicationService,

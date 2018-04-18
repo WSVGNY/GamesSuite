@@ -3,7 +3,7 @@ import { TestBed, inject } from "@angular/core/testing";
 import { StateFactoryService } from "./state-factory.service";
 import { ServiceLoaderService } from "../../service-loader/service-loader.service";
 import { HttpHandler, HttpClient } from "@angular/common/http";
-import { KeyboardEventHandlerService } from "../../event-handlers/keyboard-event-handler.service";
+import { KeyboardEventService } from "../../event-handlers/keyboard-event-handler.service";
 import { TrackService } from "../../track/track-service/track.service";
 import { InputTimeService } from "../../scoreboard/input-time/input-time.service";
 import { HighscoreService } from "../../scoreboard/best-times/highscore.service";
@@ -33,7 +33,7 @@ describe("StateFactoryService", () => {
                 HighscoreService,
                 InputTimeService,
                 TrackService,
-                KeyboardEventHandlerService,
+                KeyboardEventService,
                 HttpClient,
                 HttpHandler]
         });

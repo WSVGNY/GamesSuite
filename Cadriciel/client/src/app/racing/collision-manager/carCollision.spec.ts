@@ -4,7 +4,7 @@ import { Vector3 } from "three";
 import { CarCollisionManager } from "./carCollision-manager";
 import { MINIMUM_CAR_DISTANCE } from "../constants/car.constants";
 import { SoundManagerService } from "../sound-service/sound-manager.service";
-import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
+import { KeyboardEventService } from "../event-handlers/keyboard-event-handler.service";
 import { InputTimeService } from "../scoreboard/input-time/input-time.service";
 
 // tslint:disable:no-magic-numbers
@@ -15,7 +15,7 @@ describe("Car collision Manager Service", () => {
     let cars: AICar[];
     beforeEach(async (done: () => void) => {
         TestBed.configureTestingModule({
-            providers: [SoundManagerService, KeyboardEventHandlerService, InputTimeService]
+            providers: [SoundManagerService, KeyboardEventService, InputTimeService]
         });
         firstCar = new AICar(0);
         await firstCar.init(new Vector3(0, 0, 0), Math.PI);

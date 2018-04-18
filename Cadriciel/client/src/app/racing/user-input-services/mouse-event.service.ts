@@ -14,7 +14,7 @@ const RIGHT_CLICK_KEYCODE: number = 3;
 const REQUIRED_VERTEX_COUNT: number = 3;
 
 @Injectable()
-export class MouseEventHandlerService {
+export class MouseEventService {
 
     private _editorControl: CommandController;
     private _containerEditor: HTMLDivElement;

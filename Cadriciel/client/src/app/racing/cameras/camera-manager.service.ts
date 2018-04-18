@@ -1,10 +1,10 @@
 import { Injectable } from "@angular/core";
 import { ThirdPersonCamera } from "./thirdPersonCamera";
 import { TopViewCamera } from "./topViewCamera";
-import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { Camera, Vector3 } from "three";
 import { SpectatingCamera } from "./spectatingCamera";
 import { CHANGE_CAMERA_KEYCODE } from "../constants/keycode.constants";
+import { KeyboardEventService } from "../user-input-services/keyboard-event.service";
 
 @Injectable()
 export class CameraManagerService {
@@ -14,7 +14,7 @@ export class CameraManagerService {
     private _useThirdPersonCamera: boolean;
     private _currentCamera: Camera;
 
-    public constructor(private _keyBoardHandler: KeyboardEventHandlerService) {
+    public constructor(private _keyBoardHandler: KeyboardEventService) {
         this._useThirdPersonCamera = true;
     }
 

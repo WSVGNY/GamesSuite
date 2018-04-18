@@ -4,13 +4,13 @@ import { Location } from "@angular/common";
 import { Track } from "../../../../../common/racing/track";
 import { EditorCamera } from "../cameras/editorCamera";
 import { EditorScene } from "../scenes/editorScene";
-import { MouseEventHandlerService } from "../event-handlers/mouse-event-handler.service";
 import { Vector3 } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { RenderService } from "../render-service/render.service";
 import { TrackService } from "../track/track-service/track.service";
 import { Formater } from "../scoreboard/formater";
 import { EDITOR_VIEW_SIZE, EDITOR_CAMERA_Z_POSITION } from "../constants/camera.constants";
+import { MouseEventService } from "../user-input-services/mouse-event.service";
 
 @Component({
     selector: "app-editor",
@@ -33,7 +33,7 @@ export class EditorComponent implements AfterViewInit, OnInit {
         private _trackService: TrackService,
         private _location: Location,
         private _editorRenderService: RenderService,
-        private _mouseEventHandlerService: MouseEventHandlerService) {
+        private _mouseEventHandlerService: MouseEventService) {
         this.currentTrack = new Track(undefined);
     }
 

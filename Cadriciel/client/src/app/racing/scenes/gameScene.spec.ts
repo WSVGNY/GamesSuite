@@ -1,6 +1,5 @@
 import { GameScene } from "./gameScene";
 import { Vector3, Geometry, Mesh, MeshPhongMaterial } from "three";
-import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { TestBed } from "@angular/core/testing";
 import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
 import { Track } from "../../../../../common/racing/track";
@@ -8,6 +7,7 @@ import { TrackMesh } from "../track/track";
 import { DEFAULT_GROUND_NAME, DEFAULT_TRACK_NAME } from "../constants/scene.constants";
 import { AbstractCar } from "../car/abstractCar";
 import { AICar } from "../car/aiCar";
+import { KeyboardEventService } from "../user-input-services/keyboard-event.service";
 
 // tslint:disable:no-magic-numbers
 describe("Game Scene", () => {
@@ -16,7 +16,7 @@ describe("Game Scene", () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [KeyboardEventHandlerService]
+            providers: [KeyboardEventService]
         }).compileComponents()
             .then()
             .catch((e: Error) => console.error(e.message));

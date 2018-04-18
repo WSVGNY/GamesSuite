@@ -1,6 +1,6 @@
 /* tslint:disable: no-magic-numbers */
 import { TestBed, inject } from "@angular/core/testing";
-import { KeyboardEventHandlerService } from "./keyboard-event-handler.service";
+import { KeyboardEventService } from "./keyboard-event-handler.service";
 import { InputTimeService } from "../scoreboard/input-time/input-time.service";
 
 const TEST_KEYCODE: number = 0;
@@ -8,16 +8,16 @@ const TEST_KEYCODE: number = 0;
 describe("KeyboardEventHandlerService", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [KeyboardEventHandlerService, InputTimeService]
+            providers: [KeyboardEventService, InputTimeService]
         });
     });
 
-    it("should be created", inject([KeyboardEventHandlerService], (keyboardService: KeyboardEventHandlerService) => {
+    it("should be created", inject([KeyboardEventService], (keyboardService: KeyboardEventService) => {
         expect(keyboardService).toBeTruthy();
     }));
 
     it("should bind a function to a key down", inject(
-        [KeyboardEventHandlerService], async (keyBoardService: KeyboardEventHandlerService) => {
+        [KeyboardEventService], async (keyBoardService: KeyboardEventService) => {
             let testnumber: number = 0;
             keyBoardService.bindFunctionToKeyDown(TEST_KEYCODE, () => testnumber = 5);
             expect(keyBoardService["_keyDownFunctions"]
@@ -28,7 +28,7 @@ describe("KeyboardEventHandlerService", () => {
     );
 
     it("should bind a function to a key up", inject(
-        [KeyboardEventHandlerService], async (keyBoardService: KeyboardEventHandlerService) => {
+        [KeyboardEventService], async (keyBoardService: KeyboardEventService) => {
             let testnumber: number = 0;
             keyBoardService.bindFunctionToKeyUp(TEST_KEYCODE, () => testnumber = 5);
             expect(keyBoardService["_keyUpFunctions"]
@@ -39,7 +39,7 @@ describe("KeyboardEventHandlerService", () => {
     );
 
     it("should execute a function on key down", inject(
-        [KeyboardEventHandlerService], async (keyBoardService: KeyboardEventHandlerService) => {
+        [KeyboardEventService], async (keyBoardService: KeyboardEventService) => {
             const testnumber: number = 0;
             keyBoardService.handleKeyDown(TEST_KEYCODE);
             expect(testnumber).toEqual(5);
@@ -47,7 +47,7 @@ describe("KeyboardEventHandlerService", () => {
     );
 
     it("should execute a function on key up", inject(
-        [KeyboardEventHandlerService], async (keyBoardService: KeyboardEventHandlerService) => {
+        [KeyboardEventService], async (keyBoardService: KeyboardEventService) => {
             const testnumber: number = 0;
             keyBoardService.handleKeyUp(TEST_KEYCODE);
             expect(testnumber).toEqual(5);

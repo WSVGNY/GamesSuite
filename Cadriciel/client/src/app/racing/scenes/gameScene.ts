@@ -3,7 +3,6 @@ import { Group, Vector3, Geometry, Line, Camera, LineBasicMaterial, } from "thre
 import { TrackType } from "../../../../../common/racing/trackType";
 import { TrackLights } from "../render-service/light";
 import { AbstractCar } from "../car/abstractCar";
-import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { Track } from "../../../../../common/racing/track";
 import { TrackMesh } from "../track/track";
 import { TrackPoint } from "../track/trackPoint";
@@ -12,6 +11,7 @@ import { DAY_KEYCODE, DEBUG_KEYCODE, CHANGE_CAMERA_KEYCODE } from "../constants/
 import { YELLOW } from "../constants/color.constants";
 import { HumanCar } from "../car/humanCar";
 import { AICar } from "../car/aiCar";
+import { KeyboardEventService } from "../user-input-services/keyboard-event.service";
 
 const LATHERAL_OFFSET: number = 2;
 const VERTICAL_OFFSET: number = 5;
@@ -25,7 +25,7 @@ export class GameScene extends AbstractScene {
     private _debugElements: Group;
     private _isDay: boolean;
 
-    public constructor(private _keyBoardHandler: KeyboardEventHandlerService) {
+    public constructor(private _keyBoardHandler: KeyboardEventService) {
         super();
         this._skyBoxTextures = new Map();
         this._debugElements = new Group();

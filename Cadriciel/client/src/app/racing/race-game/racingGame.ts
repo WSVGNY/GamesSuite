@@ -3,7 +3,6 @@ import { Track } from "../../../../../common/racing/track";
 import { GameScene } from "../scenes/gameScene";
 import { Vector3, Camera } from "three";
 import { AI_CARS_QUANTITY, AI_PERSONALITY_QUANTITY, Personality } from "../constants/ai.constants";
-import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { HumanCar } from "../car/humanCar";
 import { AICar } from "../car/aiCar";
 import { COMPUTER_PLAYER, CURRENT_PLAYER } from "../constants/global.constants";
@@ -11,6 +10,7 @@ import { AbstractCar } from "../car/abstractCar";
 import { State } from "../game-states/state";
 import { StateFactoryService } from "../game-states/state-factory/state-factory.service";
 import { StateTypes } from "../game-states/stateTypes";
+import { KeyboardEventService } from "../user-input-services/keyboard-event.service";
 
 export class RacingGame {
 
@@ -22,7 +22,7 @@ export class RacingGame {
     private _currentState: State;
 
     public constructor(
-        private _keyboardHandler: KeyboardEventHandlerService,
+        private _keyboardHandler: KeyboardEventService,
         private _stateFactory: StateFactoryService,
     ) {
         this._players = [];
@@ -44,14 +44,14 @@ export class RacingGame {
         this._currentState.update();
     }
 
-    private initializeCars(keyboardHandler: KeyboardEventHandlerService): void {
+    private initializeCars(keyboardHandler: KeyboardEventService): void {
         this.createPlayerCar(keyboardHandler);
         for (let i: number = 1; i < AI_CARS_QUANTITY + 1; ++i) {
             this.createAICar(i);
         }
     }
 
-    private createPlayerCar(keyboardHandler: KeyboardEventHandlerService): void {
+    private createPlayerCar(keyboardHandler: KeyboardEventService): void {
         this._cars.push(new HumanCar(0, keyboardHandler));
         this._players.push(new Player(0, CURRENT_PLAYER));
     }

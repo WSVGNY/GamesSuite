@@ -1,5 +1,4 @@
 import { AfterViewInit, Component, ElementRef, ViewChild, HostListener, OnInit } from "@angular/core";
-import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { Track } from "../../../../../common/racing/track";
 import { ActivatedRoute } from "@angular/router";
 import { RenderService } from "../render-service/render.service";
@@ -9,6 +8,7 @@ import { CameraManagerService } from "../cameras/camera-manager.service";
 import { StateFactoryService } from "../game-states/state-factory/state-factory.service";
 import { SoundManagerService } from "../sound-service/sound-manager.service";
 import { ServiceLoaderService } from "../service-loader/service-loader.service";
+import { KeyboardEventService } from "../user-input-services/keyboard-event.service";
 
 @Component({
     moduleId: module.id,
@@ -30,7 +30,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
     public constructor(
         private _renderService: RenderService,
         private _route: ActivatedRoute,
-        private _keyBoardHandler: KeyboardEventHandlerService,
+        private _keyBoardHandler: KeyboardEventService,
         private _trackService: TrackService,
         private _cameraManager: CameraManagerService,
         private _stateFactory: StateFactoryService,

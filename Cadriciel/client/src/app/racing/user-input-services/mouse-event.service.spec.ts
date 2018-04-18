@@ -1,15 +1,15 @@
 import { TestBed, inject } from "@angular/core/testing";
 
-import { MouseEventHandlerService } from "./mouse-event-handler.service";
+import { MouseEventService } from "./mouse-event-handler.service";
 
 describe("MouseEventHandlerService", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [MouseEventHandlerService]
+            providers: [MouseEventService]
         });
     });
 
-    it("should be created", inject([MouseEventHandlerService], (service: MouseEventHandlerService) => {
+    it("should be created", inject([MouseEventService], (service: MouseEventService) => {
         expect(service).toBeTruthy();
     }));
 });

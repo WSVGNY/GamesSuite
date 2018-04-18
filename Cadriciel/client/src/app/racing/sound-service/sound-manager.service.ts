@@ -1,13 +1,13 @@
 import { Injectable } from "@angular/core";
 import { AudioListener, AudioLoader, AudioBuffer, Audio } from "three";
 import { AbstractCar } from "../car/abstractCar";
-import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { MUSIC_KEYCODE } from "../constants/keycode.constants";
 import {
     MUSIC_PATH, VOLUME, ACCELERATION_PATH, CAR_COLLISION_PATH, WALL_COLLISION_PATH, START_SOUND_3_PATH, START_SOUND_2_PATH,
     START_SOUND_1_PATH, START_SOUND_GO_PATH
 } from "../constants/sound.constants";
 import { RPM_FACTOR } from "../constants/car.constants";
+import { KeyboardEventService } from "../user-input-services/keyboard-event.service";
 
 const START_SEQUENCE_LENGTH: number = 4;
 
@@ -21,7 +21,7 @@ export class SoundManagerService {
     private _startingSound: Audio[];
     private _startSequenceIndex: number;
 
-    public constructor(private _keyBoardHandler: KeyboardEventHandlerService) {
+    public constructor(private _keyBoardHandler: KeyboardEventService) {
         this._startSequenceIndex = 0;
         this._startingSound = [];
     }

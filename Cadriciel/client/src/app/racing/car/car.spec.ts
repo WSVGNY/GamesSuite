@@ -1,12 +1,12 @@
 import { Engine } from "./engine";
 import { Vector3 } from "three";
 import { TestBed } from "@angular/core/testing";
-import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { Physics } from "./physics";
 import { CarStructure } from "./carStructure";
 import { Personality } from "../constants/ai.constants";
 import { AICar } from "./aiCar";
 import { DEFAULT_WHEELBASE, DEFAULT_MASS, DEFAULT_DRAG_COEFFICIENT } from "../constants/car.constants";
+import { KeyboardEventService } from "../user-input-services/keyboard-event.service";
 
 const MS_BETWEEN_FRAMES: number = 16.6667;
 
@@ -22,7 +22,7 @@ describe("Car", () => {
 
     beforeEach(async (done: () => void) => {
         TestBed.configureTestingModule({
-            providers: [KeyboardEventHandlerService]
+            providers: [KeyboardEventService]
         }).compileComponents()
             .then()
             .catch((e: Error) => console.error(e.message));

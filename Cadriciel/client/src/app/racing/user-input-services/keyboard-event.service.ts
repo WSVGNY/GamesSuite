@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { InputTimeService } from "../scoreboard/input-time/input-time.service";
 
 @Injectable()
-export class KeyboardEventHandlerService {
+export class KeyboardEventService {
     private _keyDownFunctions: Map<number, (() => void)[]>;
     private _keyUpFunctions: Map<number, (() => void)[]>;
 
