@@ -62,7 +62,6 @@ describe("CarTrackingManagerService", () => {
         trackingManager.init(MOCK_TRACK);
         raceProgressTracker["_lapCount"] = 4;
         raceProgressTracker["_segmentCounted"] = 16 * 3;
-        // trackingManager.update(new Vector3(0, 0, 0), raceProgressTracker);
         trackingManager.isLapComplete(new Vector3(50, 0, 1), raceProgressTracker);
         expect(raceProgressTracker.isRaceCompleted).toEqual(true);
     });
