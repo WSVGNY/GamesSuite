@@ -50,7 +50,6 @@ export class CarTrackingManagerService {
             if (this.isAtFinishLine(position, raceProgressTracker)) {
                 if (raceProgressTracker.lapCount === (raceProgressTracker.segmentCounted / this._detectionSpheres.length)) {
                     raceProgressTracker.incrementLapCount();
-                    console.log("lap number " + raceProgressTracker.lapCount);
                     if (raceProgressTracker.lapCount > NUMBER_OF_LAPS) {
                         raceProgressTracker.isRaceCompleted = true;
                     }
