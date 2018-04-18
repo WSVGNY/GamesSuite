@@ -33,12 +33,8 @@ describe("EndGameTableComponent", () => {
         [EndGameTableService],
         (endGameTableService: EndGameTableService) => {
             endGameTableService.players = [new Player(1, "Bill"), new Player(2, "Joe")];
-            endGameTableService.players[0].setFirstLapTime(30);
-            endGameTableService.players[1].setFirstLapTime(50);
-            endGameTableService.players[0].setSecondLapTime(30);
-            endGameTableService.players[1].setSecondLapTime(50);
-            endGameTableService.players[0].setThirdLapTime(30);
-            endGameTableService.players[1].setThirdLapTime(50);
+            endGameTableService.players[0].score.lapTimes = [100, 200, 300];
+            endGameTableService.players[1].score.lapTimes = [50, 200, 400];
             for (const player of endGameTableService.players) {
                 expect(player.score.getFormatedTime(player.score.firstLap)).toBeDefined();
                 expect(player.score.getFormatedTime(player.score.secondLap)).toBeDefined();
@@ -50,8 +46,8 @@ describe("EndGameTableComponent", () => {
         [EndGameTableService],
         (endGameTableService: EndGameTableService) => {
             endGameTableService.players = [new Player(1, "Bill"), new Player(2, "Joe")];
-            endGameTableService.players[0].setTotalTime(100);
-            endGameTableService.players[1].setTotalTime(200);
+            endGameTableService.players[0].score.lapTimes = [100, 200, 300];
+            endGameTableService.players[0].score.lapTimes = [50, 100, 200];
             for (const player of endGameTableService.players) {
                 expect(player.score.getFormatedTime(player.score.totalTime)).toBeDefined();
             }
@@ -63,16 +59,12 @@ describe("EndGameTableComponent", () => {
             const players: Player[] = [
                 new Player(1, "Bill"),
                 new Player(2, "Joe"),
-                new Player(3, "JoeBlo"),
-                new Player(4, "Jav"),
-                new Player(5, "Joy")];
-            players[1].setTotalTime(500);
-            players[3].setTotalTime(300);
-            players[2].setTotalTime(200);
-            players[4].setTotalTime(400);
-            players[0].setTotalTime(100);
+                new Player(3, "JoeBlo")];
+            players[0].score.lapTimes = [100, 200, 300];
+            players[1].score.lapTimes = [100, 200, 400];
+            players[2].score.lapTimes = [200, 250, 270];
             endGameTableService.setPlayers(players);
-            for (let i: number = 0; i < 4; i++) {
+            for (let i: number = 0; i < 2; i++) {
                 expect(endGameTableService.players[i].score.totalTime)
                     .toBeLessThan(endGameTableService.players[i + 1].score.totalTime);
             }

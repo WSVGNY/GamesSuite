@@ -53,7 +53,8 @@ describe("CarTrackingManagerService", () => {
 
     it("should update the race correctly", () => {
         // trackingManager.update(new Vector3(0, 0, 0), raceProgressTracker);
-        expect(trackingManager.update(new Vector3(0, 0, 0), raceProgressTracker)).toEqual(false);
+        // expect(trackingManager.update(new Vector3(0, 0, 0), raceProgressTracker)).toEqual(false);
+        expect(false).toBeTruthy();
     });
 
     it("should update the race correctly", () => {

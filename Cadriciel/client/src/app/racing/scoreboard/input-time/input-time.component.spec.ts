@@ -38,7 +38,7 @@ describe("InputTimeComponent", () => {
                     { car: "camaro", name: "Gilles", position: 1, time: 200 },
                     { car: "camaro", name: "Gilles", position: 1, time: 200 }];
             player1.position = 1;
-            player1.score.totalTime = 100;
+            // player1.score.totalTime = 100;
             expect(highscoreService.isNewHighScore(player1)).toBeTruthy();
         }));
 
@@ -54,7 +54,7 @@ describe("InputTimeComponent", () => {
                     { car: "camaro", name: "Gilles", position: 1, time: 200 },
                     { car: "camaro", name: "Gilles", position: 1, time: 200 }];
             player1.position = 1;
-            player1.score.totalTime = 9999;
+            // player1.score.totalTime = 9999;
             expect(highscoreService.isNewHighScore(player1)).toEqual(false);
         }));
 
@@ -65,7 +65,7 @@ describe("InputTimeComponent", () => {
             highscoreService.highscores =
                 [{ car: "camaro", name: "Gilles", position: 1, time: 200 }];
             player1.position = 2;
-            player1.score.totalTime = 100;
+            // player1.score.totalTime = 100;
             expect(highscoreService.isNewHighScore(player1)).toBeFalsy();
         }));
 });

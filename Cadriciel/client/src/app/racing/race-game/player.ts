@@ -1,5 +1,7 @@
 import { Score } from "../scoreboard/score";
 
+const LAP_NUMBER: number = 3;
+
 export class Player {
 
     private _score: Score;
@@ -14,7 +16,7 @@ export class Player {
     }
 
     public pushLapTime(lapTime: number): void {
-        if (this._score.lapTimes.length < 3) {
+        if (this._score.lapTimes.length < LAP_NUMBER) {
             this._score.lapTimes.push(lapTime);
         }
     }
