@@ -93,7 +93,7 @@ export class EditorComponent implements AfterViewInit, OnInit {
     }
 
     public saveTrackName(trackName: string): void {
-        this._trackChosenFromAdmin.name = trackName;
+        this.currentTrack.name = trackName;
     }
 
     public saveTrackDescription(trackDescription: string): void {
