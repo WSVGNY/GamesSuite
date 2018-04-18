@@ -7,6 +7,7 @@ export class RaceProgressTracker {
     public isTimeLogged: boolean;
     public isRaceCompleted: boolean;
     public isLapCompleted: boolean;
+    public shouldBeInStartingSphere: boolean;
 
     public constructor() {
         this._currentSegmentIndex = 1;
@@ -15,6 +16,7 @@ export class RaceProgressTracker {
         this.isRaceCompleted = false;
         this.isLapCompleted = false;
         this.isTimeLogged = false;
+        this.shouldBeInStartingSphere = false;
     }
 
     public incrementIndexCount(): void {

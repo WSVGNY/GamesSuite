@@ -11,11 +11,9 @@ export class CarTrackingManagerService {
     private _detectionSpheres: Sphere[];
     private _finishLinePosition: Vector3;
     private _finishLineSegment: Vector3;
-    private _shouldBeInStartingSphere: boolean;
 
     public constructor() {
         this._detectionSpheres = [];
-        this._shouldBeInStartingSphere = false;
     }
 
     public init(trackVertices: Vector3[], finishLinePosition: Vector3, finishLineSegment: Vector3): void {
@@ -41,7 +39,7 @@ export class CarTrackingManagerService {
 
     public update(position: Vector3, raceProgressTracker: RaceProgressTracker): void {
         if (this.isRightSequence(position, raceProgressTracker)) {
-            this._shouldBeInStartingSphere = this.isCarAtStartingSphere(position);
+            raceProgressTracker.shouldBeInStartingSphere = this.isCarAtStartingSphere(position);
             raceProgressTracker.incrementIndexCount();
             this.goToNextSphere(raceProgressTracker);
         }
@@ -78,7 +76,7 @@ export class CarTrackingManagerService {
     private isWrongSequence(position: Vector3, raceProgressTracker: RaceProgressTracker): boolean {
         return this.isCarAtStartingSphere(position)
             && !this.isCarAtDesiredSphere(position, raceProgressTracker)
-            && !this._shouldBeInStartingSphere;
+            && !raceProgressTracker.shouldBeInStartingSphere;
     }
 
     private isCarAtStartingSphere(position: Vector3): boolean {
