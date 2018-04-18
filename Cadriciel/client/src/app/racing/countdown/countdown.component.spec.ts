@@ -11,7 +11,9 @@ describe("CountdownComponent", () => {
         TestBed.configureTestingModule({
             declarations: [CountdownComponent],
             providers: [CountdownService]
-        }).compileComponents();
+        }).compileComponents()
+            .then()
+            .catch((e: Error) => console.error(e.message));
     }));
 
     beforeEach(() => {

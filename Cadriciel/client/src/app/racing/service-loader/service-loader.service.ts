@@ -32,7 +32,7 @@ export class ServiceLoaderService {
     ) { }
 
     public async initializeServices(racingGame: RacingGame): Promise<void> {
-        this._aiCarService.initialize(racingGame.gameScene.trackMesh.trackPoints.toVectors3);
+        this._aiCarService.initialize(racingGame.gameScene.trackMesh.trackPoints.toVectors3).then().catch();
         this._collisionManager.track = racingGame.gameScene.trackMesh;
         this._cameraManager.initializeSpectatingCameraPosition(racingGame.playerCar.currentPosition, racingGame.playerCar.direction);
         this._trackingManager.init(
@@ -48,7 +48,7 @@ export class ServiceLoaderService {
     }
 
     private getStartLinePosition(racingGame: RacingGame): Vector3 {
-        return racingGame.gameScene.trackMesh.startingLine.position;
+        return racingGame.gameScene.trackMesh.startLineWorldPosition;
     }
 
     private getStartSegment(racingGame: RacingGame): Vector3 {
