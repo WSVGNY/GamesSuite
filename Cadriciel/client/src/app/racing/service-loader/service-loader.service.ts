@@ -3,7 +3,7 @@ import { RacingGame } from "../race-game/racingGame";
 import { AICarService } from "../artificial-intelligence/ai-car.service";
 import { CollisionManagerService } from "../collision-manager/collision-manager.service";
 import { CameraManagerService } from "../cameras/camera-manager.service";
-import { CarTrackingManagerService } from "../carTracking-manager/car-tracking-manager.service";
+import { CarTrackingService } from "../carTracking-manager/car-tracking-manager.service";
 import { GameTimeManagerService } from "../game-time-manager/game-time-manager.service";
 import { CountdownService } from "../countdown/countdown.service";
 import { SoundManagerService } from "../sound-service/sound-manager.service";
@@ -20,7 +20,7 @@ export class ServiceLoaderService {
         private _aiCarService: AICarService,
         private _collisionManager: CollisionManagerService,
         private _cameraManager: CameraManagerService,
-        private _trackingManager: CarTrackingManagerService,
+        private _trackingManager: CarTrackingService,
         private _gameTimeManager: GameTimeManagerService,
         private _countdownService: CountdownService,
         private _soundManager: SoundManagerService,
@@ -71,7 +71,7 @@ export class ServiceLoaderService {
         return this._cameraManager;
     }
 
-    public get trackingService(): CarTrackingManagerService {
+    public get trackingService(): CarTrackingService {
         return this._trackingManager;
     }
 

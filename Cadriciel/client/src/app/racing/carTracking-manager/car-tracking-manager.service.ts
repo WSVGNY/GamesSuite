@@ -6,7 +6,7 @@ import { TRACKING_SPHERE_RADIUS, NUMBER_OF_LAPS } from "../constants/car.constan
 const FINISH_BUFFER: number = 3;
 
 @Injectable()
-export class CarTrackingManagerService {
+export class CarTrackingService {
 
     private _detectionSpheres: Sphere[];
     private _finishLinePosition: Vector3;
@@ -37,20 +37,22 @@ export class CarTrackingManagerService {
     }
 
     public isLapComplete(position: Vector3, raceProgressTracker: RaceProgressTracker): boolean {
-        if (this.isOnLastSegmentOfLap(raceProgressTracker)) {
-            if (this.isAtFinishLine(position, raceProgressTracker)) {
-                if (raceProgressTracker.lapCount === (raceProgressTracker.segmentCounted / this._detectionSpheres.length)) {
-                    raceProgressTracker.incrementLapCount();
-                    if (raceProgressTracker.lapCount > NUMBER_OF_LAPS) {
-                        raceProgressTracker.isRaceCompleted = true;
-                    }
-
-                    return true;
-                }
+        if (this.isFinishLineCrossed(position, raceProgressTracker)) {
+            raceProgressTracker.incrementLapCount();
+            if (raceProgressTracker.lapCount > NUMBER_OF_LAPS) {
+                raceProgressTracker.isRaceCompleted = true;
             }
+
+            return true;
         }
 
         return false;
+    }
+
+    private isFinishLineCrossed(position: Vector3, raceProgressTracker: RaceProgressTracker): boolean {
+        return this.isOnLastSegmentOfLap(raceProgressTracker) &&
+            this.isAtFinishLine(position, raceProgressTracker) &&
+            raceProgressTracker.lapCount === (raceProgressTracker.segmentCounted / this._detectionSpheres.length);
     }
 
     private isRightSequence(position: Vector3, raceProgressTracker: RaceProgressTracker): boolean {
@@ -78,7 +80,6 @@ export class CarTrackingManagerService {
     }
 
     private isCarAtDesiredSphere(position: Vector3, raceProgressTracker: RaceProgressTracker): boolean {
-
         return this.sphereContainsCar(this._detectionSpheres[raceProgressTracker.currentSegmentIndex], position);
     }
 
@@ -93,12 +94,8 @@ export class CarTrackingManagerService {
     private isAtFinishLine(position: Vector3, raceProgressTracker: RaceProgressTracker): boolean {
         const carToFinishLine: Vector3 = this._finishLinePosition.clone().sub(position);
         const parallelDistance: number = (carToFinishLine.clone().projectOnVector(this._finishLineSegment)).length();
-        if (parallelDistance < FINISH_BUFFER) {
 
-            return true;
-        }
-
-        return false;
+        return parallelDistance < FINISH_BUFFER;
     }
 
     public resetIsLapComplete(raceProgressTracker: RaceProgressTracker): void {

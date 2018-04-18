@@ -1,12 +1,12 @@
 // tslint:disable:no-magic-numbers
 import { TestBed, inject } from "@angular/core/testing";
-import { CarTrackingManagerService } from "./car-tracking-manager.service";
+import { CarTrackingService } from "./car-tracking-manager.service";
 import { RaceProgressTracker } from "./raceProgressTracker";
 import { Vector3, Sphere } from "three";
 
 describe("CarTrackingManagerService", () => {
     const raceProgressTracker: RaceProgressTracker = new RaceProgressTracker();
-    const trackingManager: CarTrackingManagerService = new CarTrackingManagerService();
+    const trackingManager: CarTrackingService = new CarTrackingService();
     const MOCK_TRACK: Vector3[] = [
         new Vector3(0, 0, 0),
         new Vector3(100, 0, 0),
@@ -15,11 +15,11 @@ describe("CarTrackingManagerService", () => {
     ];
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [CarTrackingManagerService]
+            providers: [CarTrackingService]
         });
     });
 
-    it("should be created", inject([CarTrackingManagerService], (service: CarTrackingManagerService) => {
+    it("should be created", inject([CarTrackingService], (service: CarTrackingService) => {
         expect(service).toBeTruthy();
     }));
 

@@ -3,7 +3,7 @@ import { ServiceLoaderService } from "./service-loader.service";
 import { AICarService } from "../artificial-intelligence/ai-car.service";
 import { CollisionManagerService } from "../collision-manager/collision-manager.service";
 import { CameraManagerService } from "../cameras/camera-manager.service";
-import { CarTrackingManagerService } from "../carTracking-manager/car-tracking-manager.service";
+import { CarTrackingService } from "../carTracking-manager/car-tracking-manager.service";
 import { GameTimeManagerService } from "../game-time-manager/game-time-manager.service";
 import { TrackService } from "../track/track-service/track.service";
 import { InputTimeService } from "../scoreboard/input-time/input-time.service";
@@ -22,7 +22,7 @@ describe("ServiceLoaderService", () => {
                 AICarService,
                 CollisionManagerService,
                 CameraManagerService,
-                CarTrackingManagerService,
+                CarTrackingService,
                 GameTimeManagerService,
                 CountdownService,
                 SoundManagerService,

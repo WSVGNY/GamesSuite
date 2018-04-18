@@ -10,7 +10,8 @@ import {
 import { PI_OVER_4, PI_OVER_2 } from "../../constants/math.constants";
 
 const UNAUTHORIZED_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: RED });
-const MINIMAL_SEGMENT_LENGTH: number = TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH + STARTING_LINE_SEGMENT_MINIMAL_LENGTH;
+const MINIMAL_SEGMENT_LENGTH: number = TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH;
+const MINIMAL_STARTING_LINE_SEGMENT_LENGTH: number = MINIMAL_SEGMENT_LENGTH + STARTING_LINE_SEGMENT_MINIMAL_LENGTH;
 const OFFSET: number = HALF_TRACK_WIDTH + WALL_DISTANCE_TO_TRACK + WALL_WIDTH;
 
 export class ConstraintValidator {
@@ -55,7 +56,7 @@ export class ConstraintValidator {
         let lengthOK: boolean = true;
 
         if (connections.length !== 0 &&
-            this.calculateLength((connections[0].geometry as Geometry).vertices) < MINIMAL_SEGMENT_LENGTH) {
+            this.calculateLength((connections[0].geometry as Geometry).vertices) < MINIMAL_STARTING_LINE_SEGMENT_LENGTH) {
             connections[0].material = UNAUTHORIZED_LINE_MATERIAL;
             lengthOK = false;
         }

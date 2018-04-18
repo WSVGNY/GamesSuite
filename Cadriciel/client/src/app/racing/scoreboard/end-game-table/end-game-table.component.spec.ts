@@ -5,7 +5,7 @@ import { EndGameTableComponent } from "./end-game-table.component";
 import { HighscoreService } from "../best-times/highscore.service";
 import { InputTimeService } from "../input-time/input-time.service";
 import { EndGameTableService } from "./end-game-table.service";
-import { CarTrackingManagerService } from "../../carTracking-manager/car-tracking-manager.service";
+import { CarTrackingService } from "../../carTracking-manager/car-tracking-manager.service";
 import { Player } from "../../race-game/player";
 
 describe("EndGameTableComponent", () => {
@@ -15,7 +15,7 @@ describe("EndGameTableComponent", () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [EndGameTableComponent],
-            providers: [HighscoreService, InputTimeService, EndGameTableService, CarTrackingManagerService]
+            providers: [HighscoreService, InputTimeService, EndGameTableService, CarTrackingService]
         }).compileComponents().then().catch((e: Error) => console.error(e.message));
     }));
 

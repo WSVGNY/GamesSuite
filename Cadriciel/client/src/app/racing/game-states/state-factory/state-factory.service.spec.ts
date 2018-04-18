@@ -11,7 +11,7 @@ import { EndGameTableService } from "../../scoreboard/end-game-table/end-game-ta
 import { SoundManagerService } from "../../sound-service/sound-manager.service";
 import { CountdownService } from "../../countdown/countdown.service";
 import { GameTimeManagerService } from "../../game-time-manager/game-time-manager.service";
-import { CarTrackingManagerService } from "../../carTracking-manager/car-tracking-manager.service";
+import { CarTrackingService } from "../../carTracking-manager/car-tracking-manager.service";
 import { CameraManagerService } from "../../cameras/camera-manager.service";
 import { CollisionManagerService } from "../../collision-manager/collision-manager.service";
 import { AICarService } from "../../artificial-intelligence/ai-car.service";
@@ -25,7 +25,7 @@ describe("StateFactoryService", () => {
                 AICarService,
                 CollisionManagerService,
                 CameraManagerService,
-                CarTrackingManagerService,
+                CarTrackingService,
                 GameTimeManagerService,
                 CountdownService,
                 SoundManagerService,
