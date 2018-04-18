@@ -71,7 +71,24 @@ describe("EndGameTableComponent", () => {
 
         }));
 
-    it("the players are displayed in the good order", () => {
-        expect(false).toBeTruthy();
-    });
+    it("the players are displayed in the good order", inject(
+        [EndGameTableService],
+        (endGameTableService: EndGameTableService) => {
+            const players: Player[] = [
+                new Player(1, "Bill"),
+                new Player(2, "Joe"),
+                new Player(3, "JoeBlo"),
+                new Player(4, "Jav"),
+                new Player(5, "Joy")];
+            players[1].setTotalTime(500);
+            players[3].setTotalTime(300);
+            players[2].setTotalTime(200);
+            players[4].setTotalTime(400);
+            players[0].setTotalTime(100);
+            endGameTableService.setPlayers(players);
+            for (let i: number = 0; i < 4; i++) {
+                expect(endGameTableService.players[i].score.totalTime)
+                    .toBeLessThan(endGameTableService.players[i + 1].score.totalTime);
+            }
+        }));
 });
