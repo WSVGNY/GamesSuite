@@ -1,7 +1,6 @@
 import { State } from "./state";
 import { StateTypes } from "./stateTypes";
 import { AICar } from "../car/aiCar";
-import { Player } from "../race-game/player";
 
 const MS_TO_SEC: number = 0.001;
 
@@ -14,45 +13,42 @@ export class RacingState extends State {
     }
 
     public update(): void {
-        this._serviceLoader.soundService.setAccelerationSound(this._racingGame.playerCar);
-        if (this.updateCars(this._serviceLoader.gameTimeService.getTimeSinceLastFrame())) {
+        this.updateCars(this._serviceLoader.gameTimeService.getTimeSinceLastFrame());
+        if (this.isStateOver()) {
             this.advanceToNextState();
+        } else {
+            this._serviceLoader.soundService.setAccelerationSound(this._racingGame.playerCar);
+            this._serviceLoader.collisionService.update(this._racingGame.cars);
+            this._serviceLoader.cameraService.updateCameraPositions(this._racingGame.playerCarPosition);
+            this._serviceLoader.gameTimeService.updateLastDate();
         }
-        this._serviceLoader.collisionService.update(this._racingGame.cars);
-        this._serviceLoader.cameraService.updateCameraPositions(this._racingGame.playerCarPosition);
-        this._serviceLoader.gameTimeService.updateLastDate();
     }
 
-    private updateCars(timeSinceLastFrame: number): boolean {
+    private updateCars(timeSinceLastFrame: number): void {
         for (let i: number = 0; i < this._racingGame.cars.length; ++i) {
             this._racingGame.cars[i].update(timeSinceLastFrame);
             if (this._racingGame.cars[i] instanceof AICar) {
                 this._serviceLoader.aiCarService.update(this._racingGame.cars[i] as AICar, this._racingGame.aiCarDebugs[i]);
             }
-            if (this.updateTrackingService(i)) {
-                this.logTime(this._racingGame.getPlayerByUniqueId(this._racingGame.cars[i].uniqueid), i);
-                if (this._racingGame.cars[i].uniqueid === this._racingGame.playerCar.uniqueid) {
-                    return true;
-                }
+            this._serviceLoader.trackingService.update(
+                this._racingGame.cars[i].currentPosition,
+                this._racingGame.cars[i].raceProgressTracker
+            );
+
+            if (this._serviceLoader.trackingService.isLapComplete(
+                this._racingGame.cars[i].currentPosition,
+                this._racingGame.cars[i].raceProgressTracker
+            )) {
+                this._racingGame
+                    .getPlayerByUniqueId(this._racingGame.cars[i].uniqueid)
+                    .pushLapTime(this._serviceLoader.gameTimeService.getElaspedTime() * MS_TO_SEC);
+                console.log(this._racingGame.getPlayerByUniqueId(this._racingGame.cars[i].uniqueid).score.lapTimes);
             }
         }
-
-        return false;
-    }
-
-    private updateTrackingService(carIndex: number): boolean {
-        return this._serviceLoader.trackingService.update(
-            this._racingGame.cars[carIndex].currentPosition,
-            this._racingGame.cars[carIndex].raceProgressTracker);
-    }
-
-    private logTime(donePlayer: Player, carIndex: number): void {
-        donePlayer.setTotalTime(this._serviceLoader.gameTimeService.getElaspedTime() * MS_TO_SEC);
-        this._racingGame.cars[carIndex].raceProgressTracker.isTimeLogged = true;
     }
 
     public isStateOver(): boolean {
-        return false;
+        return this._racingGame.playerCar.raceProgressTracker.isRaceCompleted;
     }
 
     public advanceToNextState(): void {

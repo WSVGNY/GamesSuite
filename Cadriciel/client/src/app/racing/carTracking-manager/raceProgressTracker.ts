@@ -2,6 +2,7 @@ export class RaceProgressTracker {
 
     private _currentSegmentIndex: number;
     private _segmentCounted: number;
+    private _lapCount: number;
 
     public isTimeLogged: boolean;
     public isRaceCompleted: boolean;
@@ -10,6 +11,7 @@ export class RaceProgressTracker {
     public constructor() {
         this._currentSegmentIndex = 1;
         this._segmentCounted = 0;
+        this._lapCount = 1;
         this.isRaceCompleted = false;
         this.isLapCompleted = false;
         this.isTimeLogged = false;
@@ -25,6 +27,14 @@ export class RaceProgressTracker {
 
     public get segmentCounted(): number {
         return this._segmentCounted;
+    }
+
+    public incrementLapCount(): void {
+        this._lapCount++;
+    }
+
+    public get lapCount(): number {
+        return this._lapCount;
     }
 
     public incrementCurrentIndex(indexQuantity: number): void {

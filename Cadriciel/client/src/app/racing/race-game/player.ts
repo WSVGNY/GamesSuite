@@ -13,6 +13,10 @@ export class Player {
         return this._uniqueid;
     }
 
+    public pushLapTime(lapTime: number): void {
+        this._score.lapTimes.push(lapTime);
+    }
+
     public setTotalTime(time: number): void {
         this._score.totalTime = time;
     }
