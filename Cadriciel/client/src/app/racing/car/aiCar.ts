@@ -1,5 +1,5 @@
 import { AbstractCar } from "./abstractCar";
-import { Personality } from "../artificial-intelligence/ai-config";
+import { Personality } from "../constants/ai.constants";
 import { CarStructure } from "./carStructure";
 import { CarControls } from "./carControls";
 import { AIDebug } from "../artificial-intelligence/ai-debug";
