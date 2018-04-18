@@ -1,7 +1,7 @@
 import { GameScene } from "./gameScene";
 import { Vector3, Geometry, Mesh, MeshPhongMaterial } from "three";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
-import { TestBed, inject } from "@angular/core/testing";
+import { TestBed } from "@angular/core/testing";
 import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
 import { Track } from "../../../../../common/racing/track";
 import { TrackMesh } from "../track/track";
