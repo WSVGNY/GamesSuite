@@ -2,10 +2,15 @@ const SECONDS_TO_HUNDREDTH: number = 100;
 const SECONDS_TO_MINUTES: number = 60;
 
 export class Score {
-    public totalTime: number;
-    public firstLap: number;
-    public secondLap: number;
-    public thirdLap: number;
+    public lapTimes: number[];
+    // private _totalTime: number;
+
+    public constructor() {
+        this.lapTimes = [];
+    }
+    // public firstLap: number;
+    // public secondLap: number;
+    // public thirdLap: number;
 
     public getFormatedTime(score: number): string {
         const time: string[] = ["00", "00", "00"];
@@ -20,5 +25,21 @@ export class Score {
         time[2] = (time[2] + hundredthString).substring(hundredthString.length);
 
         return time.join(" : ");
+    }
+
+    public get firstLap(): number {
+        return this.lapTimes[0];
+    }
+
+    public get secondLap(): number {
+        return this.lapTimes[1] - this.lapTimes[0];
+    }
+
+    public get thirdLap(): number {
+        return this.lapTimes[2] - this.lapTimes[1];
+    }
+
+    public get totalTime(): number {
+        return this.lapTimes[2];
     }
 }
