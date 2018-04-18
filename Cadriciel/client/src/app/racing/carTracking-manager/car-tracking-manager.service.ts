@@ -4,6 +4,7 @@ import { RaceProgressTracker } from "./raceProgressTracker";
 import { TRACKING_SPHERE_RADIUS } from "../constants/car.constants";
 
 const FINISH_BUFFER: number = 3;
+const LAP_NUMBER: number = 3;
 
 @Injectable()
 export class CarTrackingManagerService {
@@ -50,7 +51,8 @@ export class CarTrackingManagerService {
                 if (raceProgressTracker.lapCount === (raceProgressTracker.segmentCounted / this._detectionSpheres.length)) {
                     raceProgressTracker.incrementLapCount();
                     console.log("lap number " + raceProgressTracker.lapCount);
-                    if (raceProgressTracker.lapCount > 3) {
+                    console.log("aaaaa" + raceProgressTracker.isRaceCompleted);
+                    if (raceProgressTracker.lapCount > LAP_NUMBER) {
                         raceProgressTracker.isRaceCompleted = true;
                     }
 
