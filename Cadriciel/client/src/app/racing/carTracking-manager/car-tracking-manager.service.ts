@@ -18,17 +18,8 @@ export class CarTrackingManagerService {
 
     public init(trackVertices: Vector3[], finishLinePosition: Vector3, finishLineSegment: Vector3): void {
         this.createDetectionSpheres(trackVertices);
-        this.computeFinishLine(trackVertices);
-    }
-
-    private computeFinishLine(trackVertices: Vector3[]): void {
-        const firstVertex: Vector3 = new Vector3(trackVertices[0].x, trackVertices[0].y, trackVertices[0].z);
-        const secondVertex: Vector3 = new Vector3(trackVertices[1].x, trackVertices[1].y, trackVertices[1].z);
-        const firstToSecondVertex: Vector3 = secondVertex.clone().sub(firstVertex);
-        const direction: Vector3 = firstToSecondVertex.clone().normalize();
-
-        this._finishLinePosition = firstVertex.clone().add(direction.clone().multiplyScalar(firstToSecondVertex.length() / 2));
-        this._finishLineSegment = direction.clone();
+        this._finishLinePosition = finishLinePosition;
+        this._finishLineSegment = finishLineSegment;
     }
 
     private createDetectionSpheres(trackVertices: Vector3[]): void {
@@ -50,7 +41,6 @@ export class CarTrackingManagerService {
             if (this.isAtFinishLine(position, raceProgressTracker)) {
                 if (raceProgressTracker.lapCount === (raceProgressTracker.segmentCounted / this._detectionSpheres.length)) {
                     raceProgressTracker.incrementLapCount();
-                    console.log("lap number " + raceProgressTracker.lapCount);
                     if (raceProgressTracker.lapCount > NUMBER_OF_LAPS) {
                         raceProgressTracker.isRaceCompleted = true;
                     }
@@ -88,11 +78,6 @@ export class CarTrackingManagerService {
     }
 
     private isCarAtDesiredSphere(position: Vector3, raceProgressTracker: RaceProgressTracker): boolean {
-        // if (raceProgressTracker.currentSegmentIndex === 0) {
-        //     console.log("CurrentSegmentIndex : " + raceProgressTracker.currentSegmentIndex);
-        //     console.log("CurrentDetectionSphere: " + this._detectionSpheres[raceProgressTracker.currentSegmentIndex]);
-        //     raceProgressTracker.didonce = true;
-        // }
 
         return this.sphereContainsCar(this._detectionSpheres[raceProgressTracker.currentSegmentIndex], position);
     }
@@ -100,10 +85,6 @@ export class CarTrackingManagerService {
     private goToNextSphere(raceProgressTracker: RaceProgressTracker): void {
         raceProgressTracker.incrementCurrentIndex(this._detectionSpheres.length);
     }
-
-    // private isLastStretch(raceProgressTracker: RaceProgressTracker): boolean {
-    //     return raceProgressTracker.segmentCounted === this._detectionSpheres.length * NUMBER_OF_LAPS;
-    // }
 
     private isOnLastSegmentOfLap(raceProgressTracker: RaceProgressTracker): boolean {
         return raceProgressTracker.segmentCounted % this._detectionSpheres.length === 0;
