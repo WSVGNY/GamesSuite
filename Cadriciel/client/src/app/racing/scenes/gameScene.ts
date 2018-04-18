@@ -103,11 +103,11 @@ export class GameScene extends AbstractScene {
     public bindGameSceneKeys(cars: AbstractCar[]): void {
         this._keyBoardHandler.bindFunctionToKeyDown(DAY_KEYCODE, () => this.changeTimeOfDay(cars));
         this._keyBoardHandler.bindFunctionToKeyDown(DEBUG_KEYCODE, () => this.changeDebugMode());
+        this._keyBoardHandler.bindFunctionToKeyDown(CHANGE_CAMERA_KEYCODE, () => this._lighting.changePerspective());
     }
 
     private loadLights(trackType: TrackType): void {
         this._lighting = new TrackLights(trackType);
-        this._keyBoardHandler.bindFunctionToKeyDown(CHANGE_CAMERA_KEYCODE, () => this._lighting.changePerspective());
         this.add(this._lighting);
     }
 

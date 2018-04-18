@@ -10,6 +10,7 @@ export class RacingState extends State {
         this._serviceLoader.cameraService.bindCameraKey();
         this._serviceLoader.gameTimeService.resetStartDate();
         this._serviceLoader.gameTimeService.updateLastDate();
+        this._racingGame.bindGameSceneKeys();
     }
 
     public update(): void {
@@ -25,22 +26,14 @@ export class RacingState extends State {
     }
 
     private updateCars(timeSinceLastFrame: number): void {
-        for (let i: number = 0; i < this._racingGame.cars.length; ++i) {
-            this._racingGame.cars[i].update(timeSinceLastFrame);
-            if (this._racingGame.cars[i] instanceof AICar) {
-                this._serviceLoader.aiCarService.update(this._racingGame.cars[i] as AICar);
+        for (const car of this._racingGame.cars) {
+            car.update(timeSinceLastFrame);
+            if (car instanceof AICar) {
+                this._serviceLoader.aiCarService.update(car as AICar);
             }
-            this._serviceLoader.trackingService.update(
-                this._racingGame.cars[i].currentPosition,
-                this._racingGame.cars[i].raceProgressTracker
-            );
-
-            if (this._serviceLoader.trackingService.isLapComplete(
-                this._racingGame.cars[i].currentPosition,
-                this._racingGame.cars[i].raceProgressTracker
-            )) {
-                this._racingGame
-                    .getPlayerByUniqueId(this._racingGame.cars[i].uniqueid)
+            this._serviceLoader.trackingService.update(car.currentPosition, car.raceProgressTracker);
+            if (this._serviceLoader.trackingService.isLapComplete(car.currentPosition, car.raceProgressTracker)) {
+                this._racingGame.getPlayerByUniqueId(car.uniqueid)
                     .pushLapTime(this._serviceLoader.gameTimeService.getElaspedTime() * MS_TO_SEC);
             }
         }
