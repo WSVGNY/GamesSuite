@@ -9,12 +9,11 @@ import { Vector3 } from "three";
 import { TrackType } from "../../../../../common/racing/trackType";
 import { RenderService } from "../render-service/render.service";
 import { TrackService } from "../track/track-service/track.service";
+import { Formater } from "../scoreboard/formater";
 
 const CAMERA_Z_POSITION: number = 480;
 const CAMERA_POSITION: Vector3 = new Vector3(0, 0, CAMERA_Z_POSITION);
 const VIEW_SIZE: number = 500;
-const SECONDS_TO_HUNDREDTH: number = 100;
-const SECONDS_TO_MINUTES: number = 60;
 
 @Component({
     selector: "app-editor",
@@ -102,18 +101,7 @@ export class EditorComponent implements AfterViewInit, OnInit {
     }
 
     public getFormatedTime(score: number): string {
-        const time: string[] = ["00", "00", "00"];
-        const minutes: number = Math.floor(score / SECONDS_TO_MINUTES);
-        const seconds: number = Math.floor(score - minutes * SECONDS_TO_MINUTES);
-        const hundredth: number = Math.round((score - minutes * SECONDS_TO_MINUTES - seconds) * SECONDS_TO_HUNDREDTH);
-        const minutesString: string = minutes.toString();
-        const secondsString: string = seconds.toString();
-        const hundredthString: string = hundredth.toString();
-        time[0] = (time[0] + minutesString).substring(minutesString.length);
-        time[1] = (time[1] + secondsString).substring(secondsString.length);
-        time[2] = (time[2] + hundredthString).substring(hundredthString.length);
-
-        return time.join(" : ");
+        return Formater.formatTime(score);
     }
 
     public goBack(): void {
