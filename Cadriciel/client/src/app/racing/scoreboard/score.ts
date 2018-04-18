@@ -3,14 +3,10 @@ const SECONDS_TO_MINUTES: number = 60;
 
 export class Score {
     public lapTimes: number[];
-    // private _totalTime: number;
 
     public constructor() {
         this.lapTimes = [];
     }
-    // public firstLap: number;
-    // public secondLap: number;
-    // public thirdLap: number;
 
     public getFormatedTime(score: number): string {
         const time: string[] = ["00", "00", "00"];

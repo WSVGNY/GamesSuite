@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Vector3, Sphere } from "three";
 import { RaceProgressTracker } from "./raceProgressTracker";
-import { TRACKING_SPHERE_RADIUS, NUMBER_OF_LAPS } from "../constants/car.constants";
+import { TRACKING_SPHERE_RADIUS } from "../constants/car.constants";
 
 const FINISH_BUFFER: number = 3;
 
@@ -81,9 +81,9 @@ export class CarTrackingManagerService {
         raceProgressTracker.incrementCurrentIndex(this._detectionSpheres.length);
     }
 
-    private isLastStretch(raceProgressTracker: RaceProgressTracker): boolean {
-        return raceProgressTracker.segmentCounted === this._detectionSpheres.length * NUMBER_OF_LAPS;
-    }
+    // private isLastStretch(raceProgressTracker: RaceProgressTracker): boolean {
+    //     return raceProgressTracker.segmentCounted === this._detectionSpheres.length * NUMBER_OF_LAPS;
+    // }
 
     private isOnLastSegmentOfLap(raceProgressTracker: RaceProgressTracker): boolean {
         return raceProgressTracker.segmentCounted % this._detectionSpheres.length === 0;
