@@ -66,8 +66,10 @@ export class RacingGame {
         this._track = track;
         this._gameScene.loadTrack(track);
         await this._gameScene.loadCars(this._cars, thirdPersonCamera, track.type);
-        this._gameScene.bindGameSceneKeys(this._cars);
+    }
 
+    public bindGameSceneKeys(): void {
+        this._gameScene.bindGameSceneKeys(this._cars);
     }
 
     public get players(): Player[] {

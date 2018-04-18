@@ -10,6 +10,7 @@ export class RacingState extends State {
         this._serviceLoader.cameraService.bindCameraKey();
         this._serviceLoader.gameTimeService.resetStartDate();
         this._serviceLoader.gameTimeService.updateLastDate();
+        this._racingGame.bindGameSceneKeys();
     }
 
     public update(): void {
