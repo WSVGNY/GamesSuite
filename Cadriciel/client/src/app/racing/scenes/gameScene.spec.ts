@@ -6,6 +6,8 @@ import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinat
 import { Track } from "../../../../../common/racing/track";
 import { TrackMesh } from "../track/track";
 import { DEFAULT_GROUND_NAME, DEFAULT_TRACK_NAME } from "../constants/scene.constants";
+import { AbstractCar } from "../car/abstractCar";
+import { AICar } from "../car/aiCar";
 
 // tslint:disable:no-magic-numbers
 describe("Game Scene", () => {
@@ -63,5 +65,26 @@ describe("Game Scene", () => {
         const track: Mesh = gameScene.getObjectByName(DEFAULT_TRACK_NAME) as Mesh;
         const ground: Mesh = gameScene.getObjectByName(DEFAULT_GROUND_NAME) as Mesh;
         expect((track.material as MeshPhongMaterial).map).not.toEqual((ground.material as MeshPhongMaterial).map);
+    });
+
+    it("cars are shuffled on lineup", () => {
+        const MOCK_CARS: AbstractCar[] = [];
+        for (let i: number = 0; i < 100; i++) {
+            MOCK_CARS.push(new AICar(i));
+        }
+        const EXPECTED_MOCK_CARS: AbstractCar[] = [];
+        for (const element of MOCK_CARS) {
+            EXPECTED_MOCK_CARS.push(element);
+        }
+        gameScene["shuffle"](MOCK_CARS);
+        let success: boolean = false;
+        for (let i: number = 0; i < 100; i++) {
+            if (EXPECTED_MOCK_CARS[i] !== MOCK_CARS[i]) {
+                success = true;
+                break;
+            }
+        }
+
+        expect(success).toEqual(true);
     });
 });
