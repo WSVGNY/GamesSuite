@@ -57,9 +57,6 @@ export class GameTimeManagerService {
             }
         }
 
-        console.log("complete lap");
-        console.log(simulatedTime * lapAmount);
-
         return simulatedTime * lapAmount;
     }
 
@@ -77,9 +74,6 @@ export class GameTimeManagerService {
             }
         }
 
-        console.log("partial lap");
-        console.log(simulatedTime);
-
         return simulatedTime;
     }
 
@@ -89,17 +83,11 @@ export class GameTimeManagerService {
             simulatedTime = (position.distanceTo(trackVertices[currentSegmentIndex]) / AVERAGE_CAR_SPEED);
         }
 
-        console.log("segment");
-        console.log(simulatedTime);
-
         return simulatedTime;
 
     }
 
     private simulateStartingLineTime(trackVertices: Vector3[]): number {
-        console.log("starting");
-        console.log((trackVertices[0].distanceTo(trackVertices[1]) / 2) / AVERAGE_CAR_SPEED);
-
         return ((trackVertices[0].distanceTo(trackVertices[1]) / 2) / AVERAGE_CAR_SPEED);
     }
 

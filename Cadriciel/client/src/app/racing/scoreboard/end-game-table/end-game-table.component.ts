@@ -2,6 +2,7 @@ import { Component } from "@angular/core";
 import { EndGameTableService } from "./end-game-table.service";
 import { InputTimeService } from "../input-time/input-time.service";
 import { HighscoreService } from "../best-times/highscore.service";
+import { Formater } from "../formater";
 
 @Component({
     selector: "app-end-game-table",
@@ -26,6 +27,10 @@ export class EndGameTableComponent {
 
     public goToNextView(): void {
         this.endGameTableService.showTable = false;
+    }
+
+    public getFormatedTime(time: number): string {
+        return Formater.formatTime(time);
     }
 
 }

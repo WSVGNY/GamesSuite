@@ -40,7 +40,6 @@ export class CarTrackingManagerService {
     public update(position: Vector3, raceProgressTracker: RaceProgressTracker): void {
         if (this.isRightSequence(position, raceProgressTracker)) {
             raceProgressTracker.incrementIndexCount();
-            // console.log(raceProgressTracker.segmentCounted);
             this.goToNextSphere(raceProgressTracker);
         }
     }
@@ -56,7 +55,6 @@ export class CarTrackingManagerService {
                     }
 
                     return true;
-                    // console.log("lap no: " + raceProgressTracker.lapCount);
                 }
             }
         }
