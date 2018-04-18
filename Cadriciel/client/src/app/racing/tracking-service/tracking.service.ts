@@ -16,7 +16,7 @@ export class CarTrackingService {
         this._detectionSpheres = [];
     }
 
-    public init(trackVertices: Vector3[], finishLinePosition: Vector3, finishLineSegment: Vector3): void {
+    public initialize(trackVertices: Vector3[], finishLinePosition: Vector3, finishLineSegment: Vector3): void {
         this.createDetectionSpheres(trackVertices);
         this._finishLinePosition = finishLinePosition;
         this._finishLineSegment = finishLineSegment;

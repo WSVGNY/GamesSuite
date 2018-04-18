@@ -18,7 +18,7 @@ export class CameraManagerService {
         this._useThirdPersonCamera = true;
     }
 
-    public initializeCameras(aspectRation: number): void {
+    public initialize(aspectRation: number): void {
         this._thirdPersonCamera = new ThirdPersonCamera(aspectRation);
         this._topViewCamera = new TopViewCamera(aspectRation);
         this._spectatingCamera = new SpectatingCamera(aspectRation);

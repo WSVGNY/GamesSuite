@@ -21,7 +21,7 @@ describe("CameraManagerService", () => {
     it("should switch between cameras", inject(
         [CameraManagerService, KeyboardEventHandlerService],
         (cameraManager: CameraManagerService, keyboardManager: KeyboardEventHandlerService) => {
-            cameraManager.initializeCameras(1);
+            cameraManager.initialize(1);
             keyboardManager.initialize();
             cameraManager.bindCameraKey();
             const oldCamera: Camera = cameraManager.currentCamera;

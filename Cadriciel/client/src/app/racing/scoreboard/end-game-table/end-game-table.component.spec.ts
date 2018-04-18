@@ -5,8 +5,8 @@ import { EndGameTableComponent } from "./end-game-table.component";
 import { HighscoreService } from "../best-times/highscore.service";
 import { InputTimeService } from "../input-time/input-time.service";
 import { EndGameTableService } from "./end-game-table.service";
-import { CarTrackingService } from "../../carTracking-manager/car-tracking-manager.service";
 import { Player } from "../../race-game/player";
+import { CarTrackingService } from "../../tracking-service/tracking.service";
 
 describe("EndGameTableComponent", () => {
     let component: EndGameTableComponent;

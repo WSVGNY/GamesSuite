@@ -43,7 +43,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
     }
 
     public async ngAfterViewInit(): Promise<void> {
-        this._cameraManager.initializeCameras(this.computeAspectRatio());
+        this._cameraManager.initialize(this.computeAspectRatio());
         this._renderService
             .initialize(this._containerRef.nativeElement)
             .then(/* do nothing */)
@@ -58,8 +58,8 @@ export class RacingComponent implements AfterViewInit, OnInit {
             .subscribe((trackFromServer: Track) => {
                 this._racingGame
                     .initializeGameFromTrack(
-                    Track.createFromJSON(JSON.stringify(trackFromServer)),
-                    this._cameraManager.thirdPersonCamera
+                        Track.createFromJSON(JSON.stringify(trackFromServer)),
+                        this._cameraManager.thirdPersonCamera
                     )
                     .then(() => {
                         this.startGameLoop().then().catch();

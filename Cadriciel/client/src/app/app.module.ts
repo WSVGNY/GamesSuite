@@ -19,7 +19,6 @@ import { RenderService } from "./racing/render-service/render.service";
 import { SoundManagerService } from "./racing/sound-service/sound-manager.service";
 import { MultiplayerCommunicationService } from "./crossword/multiplayer-communication.service";
 import { CameraManagerService } from "./racing/cameras/camera-manager.service";
-import { CarTrackingService } from "./racing/carTracking-manager/car-tracking-manager.service";
 import { BestTimesComponent } from "./racing/scoreboard/best-times/best-times.component";
 import { InputTimeComponent } from "./racing/scoreboard/input-time/input-time.component";
 import { HighscoreService } from "./racing/scoreboard/best-times/highscore.service";
@@ -34,6 +33,7 @@ import { CountdownService } from "./racing/countdown/countdown.service";
 import { ServiceLoaderService } from "./racing/service-loader/service-loader.service";
 import { CarCollisionService } from "./racing/collision-manager/carCollision.service";
 import { WallCollisionService } from "./racing/collision-manager/wallCollision.service";
+import { CarTrackingService } from "./racing/tracking-service/tracking.service";
 
 @NgModule({
     declarations: [

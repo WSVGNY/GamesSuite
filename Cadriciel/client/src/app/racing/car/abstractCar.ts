@@ -1,6 +1,5 @@
 import { Object3D, Vector3, ObjectLoader, Matrix4, Quaternion, Camera } from "three";
 import { Hitbox } from "../collision-manager/hitbox";
-import { RaceProgressTracker } from "../carTracking-manager/raceProgressTracker";
 import { CarStructure } from "./carStructure";
 import { CarControls } from "./carControls";
 import {
@@ -13,6 +12,7 @@ import { RAD_TO_DEG, MS_TO_SECONDS } from "../constants/math.constants";
 import { Physics } from "./physics";
 import { Engine } from "./engine";
 import { Wheel } from "./wheel";
+import { RaceProgressTracker } from "../tracking-service/raceProgressTracker";
 
 export abstract class AbstractCar extends Object3D {
     private _mesh: Object3D;

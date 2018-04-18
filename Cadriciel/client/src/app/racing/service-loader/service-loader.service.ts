@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import { RacingGame } from "../race-game/racingGame";
 import { AICarService } from "../artificial-intelligence/ai-car.service";
 import { CameraManagerService } from "../cameras/camera-manager.service";
-import { CarTrackingService } from "../carTracking-manager/car-tracking-manager.service";
 import { GameTimeManagerService } from "../game-time-manager/game-time-manager.service";
 import { CountdownService } from "../countdown/countdown.service";
 import { SoundManagerService } from "../sound-service/sound-manager.service";
@@ -14,6 +13,7 @@ import { Vector3 } from "three";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { CarCollisionService } from "../collision-manager/carCollision.service";
 import { WallCollisionService } from "../collision-manager/wallCollision.service";
+import { CarTrackingService } from "../tracking-service/tracking.service";
 
 @Injectable()
 export class ServiceLoaderService {
@@ -37,7 +37,7 @@ export class ServiceLoaderService {
         this._aiCarService.initialize(racingGame.gameScene.trackMesh.trackPoints.toVectors3).then().catch();
         this._wallCollisionService.track = racingGame.gameScene.trackMesh;
         this._cameraManager.initializeSpectatingCameraPosition(racingGame.playerCar.currentPosition, racingGame.playerCar.direction);
-        this._trackingManager.init(
+        this._trackingManager.initialize(
             this.getTrackPoints(racingGame),
             this.getStartLinePosition(racingGame),
             this.getStartSegment(racingGame));

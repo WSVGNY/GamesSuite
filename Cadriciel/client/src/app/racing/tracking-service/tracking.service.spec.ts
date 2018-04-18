@@ -1,8 +1,8 @@
 // tslint:disable:no-magic-numbers
 import { TestBed, inject } from "@angular/core/testing";
-import { CarTrackingService } from "./car-tracking-manager.service";
 import { RaceProgressTracker } from "./raceProgressTracker";
 import { Vector3, Sphere } from "three";
+import { CarTrackingService } from "./tracking.service";
 
 describe("CarTrackingManagerService", () => {
     const raceProgressTracker: RaceProgressTracker = new RaceProgressTracker();
@@ -24,12 +24,12 @@ describe("CarTrackingManagerService", () => {
     }));
 
     it("should be at finish line", () => {
-        trackingManager.init(MOCK_TRACK, new Vector3(50, 0, 1), new Vector3(0, 0, 0));
+        trackingManager.initialize(MOCK_TRACK, new Vector3(50, 0, 1), new Vector3(0, 0, 0));
         expect(trackingManager["isAtFinishLine"](new Vector3(50, 0, 1), raceProgressTracker)).toEqual(true);
     });
 
     it("shouldn't be at finish line", () => {
-        trackingManager.init(MOCK_TRACK, new Vector3(50, 0, 1), new Vector3(2, 0, 5));
+        trackingManager.initialize(MOCK_TRACK, new Vector3(50, 0, 1), new Vector3(2, 0, 5));
         expect(trackingManager["isAtFinishLine"](new Vector3(0, 0, 0), raceProgressTracker)).toEqual(false);
     });
 
@@ -54,7 +54,7 @@ describe("CarTrackingManagerService", () => {
     });
 
     it("should update the race correctly to Completed", () => {
-        trackingManager.init(MOCK_TRACK, new Vector3(50, 0, 1), new Vector3(0, 0, 0));
+        trackingManager.initialize(MOCK_TRACK, new Vector3(50, 0, 1), new Vector3(0, 0, 0));
         raceProgressTracker["_lapCount"] = 4;
         raceProgressTracker["_segmentCounted"] = 16 * 3;
         trackingManager.isLapComplete(new Vector3(50, 0, 1), raceProgressTracker);
@@ -62,14 +62,14 @@ describe("CarTrackingManagerService", () => {
     });
 
     it("should complete the lap", () => {
-        trackingManager.init(MOCK_TRACK, new Vector3(50, 0, 1), new Vector3(0, 0, 0));
+        trackingManager.initialize(MOCK_TRACK, new Vector3(50, 0, 1), new Vector3(0, 0, 0));
         raceProgressTracker["_segmentCounted"] = 16;
         raceProgressTracker["_lapCount"] = 1;
         expect(trackingManager.isLapComplete(new Vector3(50, 0, 1), raceProgressTracker)).toEqual(true);
     });
 
     it("should not complete the lap", () => {
-        trackingManager.init(MOCK_TRACK, new Vector3(50, 0, 1), new Vector3(0, 0, 0));
+        trackingManager.initialize(MOCK_TRACK, new Vector3(50, 0, 1), new Vector3(0, 0, 0));
         raceProgressTracker["_segmentCounted"] = 16;
         raceProgressTracker["_lapCount"] = 2;
         expect(trackingManager.isLapComplete(new Vector3(0, 0, 1), raceProgressTracker)).toEqual(false);
