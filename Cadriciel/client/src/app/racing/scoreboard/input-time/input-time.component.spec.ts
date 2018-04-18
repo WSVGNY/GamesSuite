@@ -38,7 +38,7 @@ describe("InputTimeComponent", () => {
                     { car: "camaro", name: "Gilles", position: 1, time: 200 },
                     { car: "camaro", name: "Gilles", position: 1, time: 200 }];
             player1.position = 1;
-            player1.score.totalTime = 100;
+            player1.score.lapTimes = [50, 100, 170];
             expect(highscoreService.isNewHighScore(player1)).toBeTruthy();
         }));
 
@@ -54,8 +54,8 @@ describe("InputTimeComponent", () => {
                     { car: "camaro", name: "Gilles", position: 1, time: 200 },
                     { car: "camaro", name: "Gilles", position: 1, time: 200 }];
             player1.position = 1;
-            player1.score.totalTime = 9999;
-            expect(highscoreService.isNewHighScore(player1)).toEqual(false);
+            player1.score.lapTimes = [50, 100, 999];
+            expect(highscoreService.isNewHighScore(player1)).toBeFalsy();
         }));
 
     it("if player is not first and is one of the best time, he can not enter his name", inject(
@@ -63,9 +63,14 @@ describe("InputTimeComponent", () => {
         (highscoreService: HighscoreService) => {
             const player1: Player = new Player(1, "Mathieu");
             highscoreService.highscores =
-                [{ car: "camaro", name: "Gilles", position: 1, time: 200 }];
+                [
+                    { car: "camaro", name: "Gilles", position: 1, time: 200 },
+                    { car: "camaro", name: "Gilles", position: 1, time: 200 },
+                    { car: "camaro", name: "Gilles", position: 1, time: 200 },
+                    { car: "camaro", name: "Gilles", position: 1, time: 200 },
+                    { car: "camaro", name: "Gilles", position: 1, time: 200 }];
             player1.position = 2;
-            player1.score.totalTime = 100;
+            player1.score.lapTimes = [50, 100, 170];
             expect(highscoreService.isNewHighScore(player1)).toBeFalsy();
         }));
 });
