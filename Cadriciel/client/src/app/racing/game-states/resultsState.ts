@@ -7,16 +7,18 @@ export class ResultsState extends State {
 
     public update(): void {
         for (const car of this._racingGame.cars) {
-            if (!car.raceProgressTracker.isRaceCompleted && !car.raceProgressTracker.isTimeLogged) {
+            if (car.raceProgressTracker.lapCount <= 3) {
+                console.log(car.raceProgressTracker.currentSegmentIndex);
                 this._racingGame.getPlayerByUniqueId(car.uniqueid).pushLapTime(
                     this._serviceLoader.gameTimeService.simulateRaceTime(
                         car.raceProgressTracker,
                         car.currentPosition,
-                        this._racingGame.track
+                        this._racingGame.gameScene.trackMesh.trackPoints.toVectors3
                     )
                 );
                 car.raceProgressTracker.isTimeLogged = true;
             }
+            console.log(this._racingGame.getPlayerByUniqueId(car.uniqueid).score.lapTimes);
         }
         this.advanceToNextState();
     }
