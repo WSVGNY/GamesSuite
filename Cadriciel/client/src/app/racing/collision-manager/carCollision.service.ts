@@ -4,15 +4,17 @@ import { SoundManagerService } from "../sound-service/sound-manager.service";
 import { MINIMUM_CAR_DISTANCE } from "../constants/car.constants";
 import { OVERLAP_CORRECTION_SCALAR, HALF } from "../constants/math.constants";
 import { AICar } from "../car/aiCar";
+import { Injectable } from "@angular/core";
 
-export class CarCollisionManager {
+@Injectable()
+export class CarCollisionService {
 
-    private static _collisionCarA: AbstractCar;
-    private static _collisionCarB: AbstractCar;
-    private static _collisionPoint: Vector3;
-    private static _overlapCorrection: Vector3;
+    private _collisionCarA: AbstractCar;
+    private _collisionCarB: AbstractCar;
+    private _collisionPoint: Vector3;
+    private _overlapCorrection: Vector3;
 
-    public static update(cars: AbstractCar[], soundManager: SoundManagerService): void {
+    public update(cars: AbstractCar[], soundManager: SoundManagerService): void {
         for (let firstCarIndex: number = 0; firstCarIndex < cars.length; ++firstCarIndex) {
             for (let secondCarIndex: number = firstCarIndex + 1; secondCarIndex < cars.length; ++secondCarIndex) {
                 this.setCollisionCars(cars[firstCarIndex], cars[secondCarIndex]);
@@ -23,7 +25,7 @@ export class CarCollisionManager {
         }
     }
 
-    private static applyCollisionDetection(soundManager: SoundManagerService): void {
+    private applyCollisionDetection(soundManager: SoundManagerService): void {
         if (this.computeCollisionParameters()) {
             this.resolveHitboxOverlap();
             if (!this.carsInCollision()) {
@@ -37,7 +39,7 @@ export class CarCollisionManager {
         }
     }
 
-    private static applyCollisionPhysics(): void {
+    private applyCollisionPhysics(): void {
         this.setCollisions(true);
         this.computeResultingForces(
             this._collisionCarA,
@@ -46,16 +48,16 @@ export class CarCollisionManager {
         );
     }
 
-    private static setCollisions(inCollision: boolean): void {
+    private setCollisions(inCollision: boolean): void {
         this._collisionCarA.hitbox.inCollision = inCollision;
         this._collisionCarB.hitbox.inCollision = inCollision;
     }
 
-    private static carsInCollision(): boolean {
+    private carsInCollision(): boolean {
         return this._collisionCarA.hitbox.inCollision || this._collisionCarB.hitbox.inCollision;
     }
 
-    private static resolveHitboxOverlap(): void {
+    private resolveHitboxOverlap(): void {
         this._collisionCarA.setCurrentPosition(
             this._collisionCarA.currentPosition.clone()
                 .add(this._overlapCorrection.clone().multiplyScalar(OVERLAP_CORRECTION_SCALAR))
@@ -66,11 +68,11 @@ export class CarCollisionManager {
         );
     }
 
-    private static checkIfCarsAreClose(): boolean {
+    private checkIfCarsAreClose(): boolean {
         return (this._collisionCarA.currentPosition.distanceTo(this._collisionCarB.currentPosition) < MINIMUM_CAR_DISTANCE);
     }
 
-    private static computeCollisionParameters(): boolean {
+    private computeCollisionParameters(): boolean {
         this._overlapCorrection = new Vector3();
         let collisionDetected: boolean = false;
         for (const firstCarSphere of this._collisionCarA.hitbox.boundingSpheres) {
@@ -91,17 +93,17 @@ export class CarCollisionManager {
         return collisionDetected;
     }
 
-    private static setCollisionPoint(collisionPoint: Vector3): void {
+    private setCollisionPoint(collisionPoint: Vector3): void {
         this._collisionPoint = collisionPoint;
         this._collisionPoint.y = 0;
     }
 
-    private static setCollisionCars(firstCar: AbstractCar, secondCar: AbstractCar): void {
+    private setCollisionCars(firstCar: AbstractCar, secondCar: AbstractCar): void {
         this._collisionCarA = firstCar;
         this._collisionCarB = secondCar;
     }
 
-    private static computeResultingForces(movingCar: AbstractCar, motionlessCar: AbstractCar, collisionPoint: Vector3): void {
+    private computeResultingForces(movingCar: AbstractCar, motionlessCar: AbstractCar, collisionPoint: Vector3): void {
         const speedCarA: Vector3 = this.getCarSpeed(movingCar);
         const speedCarB: Vector3 = this.getCarSpeed(motionlessCar);
         const positionCarA: Vector3 = movingCar.currentPosition.clone();
@@ -112,7 +114,7 @@ export class CarCollisionManager {
         this._collisionCarB.speed = this.findResultingSpeed(motionlessCar.direction.clone(), newSpeedCarB);
     }
 
-    private static createNewSpeedCar(speedCar1: Vector3, speedCar2: Vector3, positionCar1: Vector3, positionCar2: Vector3): Vector3 {
+    private createNewSpeedCar(speedCar1: Vector3, speedCar2: Vector3, positionCar1: Vector3, positionCar2: Vector3): Vector3 {
         return speedCar1.clone().sub(
             (positionCar1.clone().sub(positionCar2)).multiplyScalar(
                 ((speedCar1.clone().sub(speedCar2)).dot(positionCar1.clone().sub(positionCar2))) /
@@ -120,7 +122,7 @@ export class CarCollisionManager {
         );
     }
 
-    private static findResultingSpeed(carDirection: Vector3, force: Vector3): Vector3 {
+    private findResultingSpeed(carDirection: Vector3, force: Vector3): Vector3 {
         const resultingSpeed: Vector3 = new Vector3(0, 0, 0);
         resultingSpeed.x = this.computeSpeedXComponent(force, carDirection);
         resultingSpeed.z = this.computeSpeedZComponent(force, carDirection);
@@ -128,19 +130,19 @@ export class CarCollisionManager {
         return resultingSpeed;
     }
 
-    private static computeSpeedXComponent(force: Vector3, carDirection: Vector3): number {
+    private computeSpeedXComponent(force: Vector3, carDirection: Vector3): number {
         const sign: number = Math.sign(force.clone().cross(carDirection).y);
 
         return force.clone().projectOnVector(this.orthogonalVector(carDirection)).length() * sign;
     }
 
-    private static computeSpeedZComponent(force: Vector3, carDirection: Vector3): number {
+    private computeSpeedZComponent(force: Vector3, carDirection: Vector3): number {
         const sign: number = -Math.sign(force.clone().dot(carDirection));
 
         return force.clone().projectOnVector(carDirection).length() * sign;
     }
 
-    private static getCarSpeed(movingCar: AbstractCar): Vector3 {
+    private getCarSpeed(movingCar: AbstractCar): Vector3 {
         const speed: Vector3 = new Vector3();
         speed.add(movingCar.direction.clone().normalize().multiplyScalar(Math.abs(movingCar.speed.z)));
         speed.add(this.orthogonalVector(movingCar.direction.clone().normalize()).multiplyScalar(Math.abs(movingCar.speed.x)));
@@ -148,7 +150,7 @@ export class CarCollisionManager {
         return speed;
     }
 
-    private static orthogonalVector(vector: Vector3): Vector3 {
+    private orthogonalVector(vector: Vector3): Vector3 {
         return new Vector3(vector.z, 0, - vector.x);
     }
 }

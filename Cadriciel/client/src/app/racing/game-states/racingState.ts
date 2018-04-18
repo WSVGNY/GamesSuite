@@ -19,7 +19,8 @@ export class RacingState extends State {
             this.advanceToNextState();
         } else {
             this._serviceLoader.soundService.setAccelerationSound(this._racingGame.playerCar);
-            this._serviceLoader.collisionService.update(this._racingGame.cars);
+            this._serviceLoader.carCollisionService.update(this._racingGame.cars, this._serviceLoader.soundService);
+            this._serviceLoader.wallCollisionService.update(this._racingGame.cars, this._serviceLoader.soundService);
             this._serviceLoader.cameraService.updateCameraPositions(this._racingGame.playerCarPosition);
             this._serviceLoader.gameTimeService.updateLastDate();
         }

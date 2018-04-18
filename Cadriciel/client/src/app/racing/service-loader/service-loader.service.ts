@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { RacingGame } from "../race-game/racingGame";
 import { AICarService } from "../artificial-intelligence/ai-car.service";
-import { CollisionManagerService } from "../collision-manager/collision-manager.service";
 import { CameraManagerService } from "../cameras/camera-manager.service";
 import { CarTrackingService } from "../carTracking-manager/car-tracking-manager.service";
 import { GameTimeManagerService } from "../game-time-manager/game-time-manager.service";
@@ -13,12 +12,15 @@ import { InputTimeService } from "../scoreboard/input-time/input-time.service";
 import { TrackService } from "../track/track-service/track.service";
 import { Vector3 } from "three";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
+import { CarCollisionService } from "../collision-manager/carCollision.service";
+import { WallCollisionService } from "../collision-manager/wallCollision.service";
 
 @Injectable()
 export class ServiceLoaderService {
     public constructor(
         private _aiCarService: AICarService,
-        private _collisionManager: CollisionManagerService,
+        private _carCollisionService: CarCollisionService,
+        private _wallCollisionService: WallCollisionService,
         private _cameraManager: CameraManagerService,
         private _trackingManager: CarTrackingService,
         private _gameTimeManager: GameTimeManagerService,
@@ -33,7 +35,7 @@ export class ServiceLoaderService {
 
     public async initializeServices(racingGame: RacingGame): Promise<void> {
         this._aiCarService.initialize(racingGame.gameScene.trackMesh.trackPoints.toVectors3).then().catch();
-        this._collisionManager.track = racingGame.gameScene.trackMesh;
+        this._wallCollisionService.track = racingGame.gameScene.trackMesh;
         this._cameraManager.initializeSpectatingCameraPosition(racingGame.playerCar.currentPosition, racingGame.playerCar.direction);
         this._trackingManager.init(
             this.getTrackPoints(racingGame),
@@ -63,8 +65,12 @@ export class ServiceLoaderService {
         return this._aiCarService;
     }
 
-    public get collisionService(): CollisionManagerService {
-        return this._collisionManager;
+    public get carCollisionService(): CarCollisionService {
+        return this._carCollisionService;
+    }
+
+    public get wallCollisionService(): WallCollisionService {
+        return this._wallCollisionService;
     }
 
     public get cameraService(): CameraManagerService {

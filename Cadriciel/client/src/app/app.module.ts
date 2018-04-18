@@ -18,7 +18,6 @@ import { ChooseTrackComponent } from "./racing/choose-track/choose-track.compone
 import { RenderService } from "./racing/render-service/render.service";
 import { SoundManagerService } from "./racing/sound-service/sound-manager.service";
 import { MultiplayerCommunicationService } from "./crossword/multiplayer-communication.service";
-import { CollisionManagerService } from "./racing/collision-manager/collision-manager.service";
 import { CameraManagerService } from "./racing/cameras/camera-manager.service";
 import { CarTrackingService } from "./racing/carTracking-manager/car-tracking-manager.service";
 import { BestTimesComponent } from "./racing/scoreboard/best-times/best-times.component";
@@ -33,6 +32,8 @@ import { StateFactoryService } from "./racing/game-states/state-factory/state-fa
 import { CountdownComponent } from "./racing/countdown/countdown.component";
 import { CountdownService } from "./racing/countdown/countdown.service";
 import { ServiceLoaderService } from "./racing/service-loader/service-loader.service";
+import { CarCollisionService } from "./racing/collision-manager/carCollision.service";
+import { WallCollisionService } from "./racing/collision-manager/wallCollision.service";
 
 @NgModule({
     declarations: [
@@ -64,7 +65,6 @@ import { ServiceLoaderService } from "./racing/service-loader/service-loader.ser
         RenderService,
         SoundManagerService,
         MultiplayerCommunicationService,
-        CollisionManagerService,
         CameraManagerService,
         CarTrackingService,
         HighscoreService,
@@ -73,7 +73,9 @@ import { ServiceLoaderService } from "./racing/service-loader/service-loader.ser
         GameTimeManagerService,
         StateFactoryService,
         CountdownService,
-        ServiceLoaderService
+        ServiceLoaderService,
+        CarCollisionService,
+        WallCollisionService
     ],
     bootstrap: [AppComponent]
 })
