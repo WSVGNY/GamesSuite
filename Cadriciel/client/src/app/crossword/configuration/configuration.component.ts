@@ -4,8 +4,7 @@ import { Difficulty } from "../../../../../common/crossword/difficulty";
 import { MultiplayerCommunicationService } from "../multiplayer-communication.service";
 import { SocketEvents } from "../../../../../common/communication/socketEvents";
 import { MultiplayerCrosswordGame } from "../../../../../common/crossword/multiplayerCrosswordGame";
-
-const FIRST_PLAYER_COLOR: string = "steelblue";
+import { FIRST_PLAYER_COLOR } from "../crosswordConstants";
 
 @Component({
     selector: "app-configuration",
