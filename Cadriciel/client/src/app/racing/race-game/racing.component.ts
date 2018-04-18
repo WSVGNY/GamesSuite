@@ -58,10 +58,12 @@ export class RacingComponent implements AfterViewInit, OnInit {
             .subscribe((trackFromServer: Track) => {
                 this._racingGame
                     .initializeGameFromTrack(
-                        Track.createFromJSON(JSON.stringify(trackFromServer)),
-                        this._cameraManager.thirdPersonCamera
+                    Track.createFromJSON(JSON.stringify(trackFromServer)),
+                    this._cameraManager.thirdPersonCamera
                     )
-                    .then(() => { this.startGameLoop(); })
+                    .then(() => {
+                        this.startGameLoop().then().catch();
+                    })
                     .catch((err) => console.error(err));
             });
     }

@@ -32,7 +32,7 @@ import { GameTimeManagerService } from "./racing/game-time-manager/game-time-man
 import { StateFactoryService } from "./racing/game-states/state-factory/state-factory.service";
 import { CountdownComponent } from "./racing/countdown/countdown.component";
 import { CountdownService } from "./racing/countdown/countdown.service";
-import { ServiceLoaderService } from './racing/service-loader/service-loader.service';
+import { ServiceLoaderService } from "./racing/service-loader/service-loader.service";
 
 @NgModule({
     declarations: [
