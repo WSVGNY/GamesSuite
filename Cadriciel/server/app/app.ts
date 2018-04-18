@@ -23,9 +23,7 @@ export class Application {
     ) {
 
         this.app = express();
-
         this.configMiddleware();
-
         this.addService(this.lexicon);
         this.addService(this.grid);
         this.addService(this.tracks);

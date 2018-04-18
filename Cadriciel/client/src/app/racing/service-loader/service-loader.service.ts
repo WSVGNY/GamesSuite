@@ -48,7 +48,7 @@ export class ServiceLoaderService {
     }
 
     private getStartLinePosition(racingGame: RacingGame): Vector3 {
-        return racingGame.gameScene.trackMesh.startingLine.position;
+        return racingGame.gameScene.trackMesh.startLineWorldPosition;
     }
 
     private getStartSegment(racingGame: RacingGame): Vector3 {

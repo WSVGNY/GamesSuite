@@ -13,7 +13,8 @@ export class ResultsState extends State {
                     this._serviceLoader.gameTimeService.simulateRaceTime(
                         car.raceProgressTracker,
                         car.currentPosition,
-                        this._racingGame.gameScene.trackMesh.trackPoints.toVectors3
+                        this._racingGame.gameScene.trackMesh.trackPoints.toVectors3,
+                        this._racingGame.gameScene.trackMesh.startLineWorldPosition
                     )
                 );
                 car.raceProgressTracker.isTimeLogged = true;

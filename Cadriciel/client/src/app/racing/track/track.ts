@@ -125,8 +125,8 @@ export class TrackMesh extends Mesh {
         return (this._trackPoints.toVectors3[1].clone().sub(this._trackPoints.toVectors3[0].clone())).clone().normalize();
     }
 
-    public get startingLine(): Mesh {
-        return this._startingLine;
+    public get startLineWorldPosition(): Vector3 {
+        return new Vector3(this._startingLine.position.x, START_LINE_HEIGHT, this._startingLine.position.y);
     }
 
     private createStartingLine(): void {
