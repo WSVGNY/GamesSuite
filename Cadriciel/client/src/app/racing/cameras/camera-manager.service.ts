@@ -66,5 +66,4 @@ export class CameraManagerService {
             this._spectatingCamera.updatePosition(timestep);
         }
     }
-
 }

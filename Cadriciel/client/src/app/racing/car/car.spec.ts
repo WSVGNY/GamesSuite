@@ -4,7 +4,7 @@ import { TestBed } from "@angular/core/testing";
 import { KeyboardEventHandlerService } from "../event-handlers/keyboard-event-handler.service";
 import { Physics } from "./physics";
 import { CarStructure } from "./carStructure";
-import { Personality } from "../artificial-intelligence/ai-config";
+import { Personality } from "../constants/ai.constants";
 import { AICar } from "./aiCar";
 import { DEFAULT_WHEELBASE, DEFAULT_MASS, DEFAULT_DRAG_COEFFICIENT } from "../constants/car.constants";
 
