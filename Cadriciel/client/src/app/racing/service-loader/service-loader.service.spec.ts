@@ -3,10 +3,7 @@ import { ServiceLoaderService } from "./service-loader.service";
 import { AICarService } from "../artificial-intelligence/ai-car.service";
 import { CameraManagerService } from "../cameras/camera-manager.service";
 import { TrackService } from "../track/track-service/track.service";
-import { InputTimeService } from "../scoreboard/input-time/input-time.service";
-import { HighscoreService } from "../scoreboard/best-times/highscore.service";
 import { EndGameTableService } from "../scoreboard/end-game-table/end-game-table.service";
-import { SoundService } from "../sound-service/sound-manager.service";
 import { CountdownService } from "../countdown/countdown.service";
 import { HttpClient, HttpHandler } from "@angular/common/http";
 import { CarTrackingService } from "../tracking-service/tracking.service";
@@ -14,6 +11,9 @@ import { KeyboardEventService } from "../user-input-services/keyboard-event.serv
 import { CarCollisionService } from "../collision-manager/carCollision.service";
 import { WallCollisionService } from "../collision-manager/wallCollision.service";
 import { TimeService } from "../time-service/time.service";
+import { HighscoreService } from "../scoreboard/highscores/highscore.service";
+import { InputNameService } from "../scoreboard/input-name/input-name.service";
+import { SoundService } from "../sound-service/sound.service";
 
 describe("ServiceLoaderService", () => {
     beforeEach(() => {
@@ -30,7 +30,7 @@ describe("ServiceLoaderService", () => {
                 SoundService,
                 EndGameTableService,
                 HighscoreService,
-                InputTimeService,
+                InputNameService,
                 TrackService,
                 KeyboardEventService,
                 HttpClient,

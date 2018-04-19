@@ -2,9 +2,9 @@
 import { ThirdPersonCamera } from "./thirdPersonCamera";
 import { PerspectiveCamera, Vector3 } from "three";
 import { TestBed } from "@angular/core/testing";
-import { InputTimeService } from "../scoreboard/input-time/input-time.service";
 import { AICar } from "../car/aiCar";
 import { KeyboardEventService } from "../user-input-services/keyboard-event.service";
+import { InputNameService } from "../scoreboard/input-name/input-name.service";
 
 describe("Third Person Camera Test", () => {
 
@@ -17,7 +17,7 @@ describe("Third Person Camera Test", () => {
     let car: AICar;
     beforeEach(async (done: () => void) => {
         TestBed.configureTestingModule({
-            providers: [KeyboardEventService, InputTimeService]
+            providers: [KeyboardEventService, InputNameService]
         }).compileComponents()
             .then()
             .catch((e: Error) => console.error(e.message));

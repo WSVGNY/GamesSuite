@@ -1,14 +1,14 @@
 /* tslint:disable: no-magic-numbers */
 import { TestBed, inject } from "@angular/core/testing";
-import { InputTimeService } from "../scoreboard/input-time/input-time.service";
 import { KeyboardEventService } from "./keyboard-event.service";
+import { InputNameService } from "../scoreboard/input-name/input-name.service";
 
 const TEST_KEYCODE: number = 0;
 
 describe("KeyboardEventHandlerService", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [KeyboardEventService, InputTimeService]
+            providers: [KeyboardEventService, InputNameService]
         });
     });
 

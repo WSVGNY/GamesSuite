@@ -1,5 +1,7 @@
-import { EditorScene, VERTEX_GEOMETRY, SIMPLE_VERTEX_MATERIAL, SIMPLE_LINE_MATERIAL } from "./editorScene";
+import { EditorScene } from "./editorScene";
 import { Vector3, Scene, Mesh, Geometry, Line } from "three";
+import { VERTEX_GEOMETRY } from "../constants/scene.constants";
+import { SIMPLE_VERTEX_MATERIAL, SIMPLE_LINE_MATERIAL } from "../constants/texture.constants";
 
 // tslint:disable:no-magic-numbers
 describe("Editor Scene", () => {

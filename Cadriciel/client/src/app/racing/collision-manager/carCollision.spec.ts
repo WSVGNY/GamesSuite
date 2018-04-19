@@ -2,11 +2,11 @@ import { AICar } from "../car/aiCar";
 import { TestBed, inject } from "@angular/core/testing";
 import { Vector3 } from "three";
 import { MINIMUM_CAR_DISTANCE } from "../constants/car.constants";
-import { SoundService } from "../sound-service/sound-manager.service";
-import { InputTimeService } from "../scoreboard/input-time/input-time.service";
 import { CarCollisionService } from "./carCollision.service";
 import { WallCollisionService } from "./wallCollision.service";
 import { KeyboardEventService } from "../user-input-services/keyboard-event.service";
+import { InputNameService } from "../scoreboard/input-name/input-name.service";
+import { SoundService } from "../sound-service/sound.service";
 
 // tslint:disable:no-magic-numbers
 describe("Car collision Manager Service", () => {
@@ -16,7 +16,7 @@ describe("Car collision Manager Service", () => {
     let cars: AICar[];
     beforeEach(async (done: () => void) => {
         TestBed.configureTestingModule({
-            providers: [SoundService, KeyboardEventService, InputTimeService, CarCollisionService, WallCollisionService]
+            providers: [SoundService, KeyboardEventService, InputNameService, CarCollisionService, WallCollisionService]
         });
         firstCar = new AICar(0);
         await firstCar.init(new Vector3(0, 0, 0), Math.PI);

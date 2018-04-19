@@ -2,11 +2,11 @@
 import { async, ComponentFixture, TestBed, inject } from "@angular/core/testing";
 
 import { EndGameTableComponent } from "./end-game-table.component";
-import { HighscoreService } from "../best-times/highscore.service";
-import { InputTimeService } from "../input-time/input-time.service";
 import { EndGameTableService } from "./end-game-table.service";
 import { Player } from "../../race-game/player";
 import { CarTrackingService } from "../../tracking-service/tracking.service";
+import { HighscoreService } from "../highscores/highscore.service";
+import { InputNameService } from "../input-name/input-name.service";
 
 describe("EndGameTableComponent", () => {
     let component: EndGameTableComponent;
@@ -15,7 +15,7 @@ describe("EndGameTableComponent", () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [EndGameTableComponent],
-            providers: [HighscoreService, InputTimeService, EndGameTableService, CarTrackingService]
+            providers: [HighscoreService, InputNameService, EndGameTableService, CarTrackingService]
         }).compileComponents().then().catch((e: Error) => console.error(e.message));
     }));
 
