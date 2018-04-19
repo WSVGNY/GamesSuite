@@ -5,7 +5,6 @@ import { ServiceLoaderService } from "../../service-loader/service-loader.servic
 import { HttpHandler, HttpClient } from "@angular/common/http";
 import { TrackService } from "../../track/track-service/track.service";
 import { EndGameTableService } from "../../scoreboard/end-game-table/end-game-table.service";
-import { SoundService } from "../../sound-service/sound-manager.service";
 import { CountdownService } from "../../countdown/countdown.service";
 import { CameraManagerService } from "../../cameras/camera-manager.service";
 import { AICarService } from "../../artificial-intelligence/ai-car.service";
@@ -16,6 +15,7 @@ import { KeyboardEventService } from "../../user-input-services/keyboard-event.s
 import { TimeService } from "../../time-service/time.service";
 import { HighscoreService } from "../../scoreboard/highscores/highscore.service";
 import { InputNameService } from "../../scoreboard/input-name/input-name.service";
+import { SoundService } from "../../sound-service/sound.service";
 
 describe("StateFactoryService", () => {
     beforeEach(() => {
