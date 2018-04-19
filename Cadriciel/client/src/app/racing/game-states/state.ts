@@ -9,7 +9,7 @@ export abstract class State {
     ) { }
 
     public abstract update(): void;
-    public abstract init(): void;
+    public abstract initialize(): void;
     protected abstract isStateOver(): boolean;
     protected abstract advanceToNextState(): void;
 }

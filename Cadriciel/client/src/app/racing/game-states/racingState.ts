@@ -1,12 +1,11 @@
 import { State } from "./state";
-import { StateTypes } from "./stateTypes";
+import { StateType } from "./stateTypes";
 import { AICar } from "../car/aiCar";
-
-const MS_TO_SEC: number = 0.001;
+import { MS_TO_SECONDS } from "../constants/math.constants";
 
 export class RacingState extends State {
 
-    public init(): void {
+    public initialize(): void {
         this._serviceLoader.cameraService.bindCameraKey();
         this._serviceLoader.gameTimeService.resetStartDate();
         this._serviceLoader.gameTimeService.updateLastDate();
@@ -15,14 +14,13 @@ export class RacingState extends State {
 
     public update(): void {
         this.updateCars(this._serviceLoader.gameTimeService.getTimeSinceLastFrame());
+        this._serviceLoader.soundService.setAccelerationSound(this._racingGame.playerCar);
+        this._serviceLoader.carCollisionService.update(this._racingGame.cars, this._serviceLoader.soundService);
+        this._serviceLoader.wallCollisionService.update(this._racingGame.cars, this._serviceLoader.soundService);
+        this._serviceLoader.cameraService.updateCameraPositions(this._racingGame.playerCarPosition);
+        this._serviceLoader.gameTimeService.updateLastDate();
         if (this.isStateOver()) {
             this.advanceToNextState();
-        } else {
-            this._serviceLoader.soundService.setAccelerationSound(this._racingGame.playerCar);
-            this._serviceLoader.carCollisionService.update(this._racingGame.cars, this._serviceLoader.soundService);
-            this._serviceLoader.wallCollisionService.update(this._racingGame.cars, this._serviceLoader.soundService);
-            this._serviceLoader.cameraService.updateCameraPositions(this._racingGame.playerCarPosition);
-            this._serviceLoader.gameTimeService.updateLastDate();
         }
     }
 
@@ -35,18 +33,18 @@ export class RacingState extends State {
             this._serviceLoader.trackingService.update(car.currentPosition, car.raceProgressTracker);
             if (this._serviceLoader.trackingService.isLapComplete(car.currentPosition, car.raceProgressTracker)) {
                 this._racingGame.getPlayerByUniqueId(car.uniqueid)
-                    .pushLapTime(this._serviceLoader.gameTimeService.getElaspedTime() * MS_TO_SEC);
+                    .pushLapTime(this._serviceLoader.gameTimeService.getElaspedTime() * MS_TO_SECONDS);
             }
         }
     }
 
-    public isStateOver(): boolean {
+    protected isStateOver(): boolean {
         return this._racingGame.playerCar.raceProgressTracker.isRaceCompleted;
     }
 
-    public advanceToNextState(): void {
+    protected advanceToNextState(): void {
         this._serviceLoader.soundService.stopAllSounds();
         this._serviceLoader.keyboardEventHandler.unbindAllKeys();
-        this._racingGame.setState(StateTypes.Results);
+        this._racingGame.setState(StateType.Results);
     }
 }

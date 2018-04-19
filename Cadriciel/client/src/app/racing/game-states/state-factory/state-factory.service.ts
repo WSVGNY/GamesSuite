@@ -6,7 +6,7 @@ import { OpeningState } from "../openingState";
 import { CountdownState } from "../countdownState";
 import { RacingState } from "../racingState";
 import { ResultsState } from "../resultsState";
-import { StateTypes } from "../stateTypes";
+import { StateType } from "../stateTypes";
 import { ResultsTableState } from "../resultsTableState";
 import { HighscoreState } from "../highscoreState";
 import { StandbyState } from "../standbyState";
@@ -18,21 +18,21 @@ export class StateFactoryService {
         private _serviceLoader: ServiceLoaderService,
     ) { }
 
-    public getState(state: StateTypes, racingGame: RacingGame): State {
+    public getState(state: StateType, racingGame: RacingGame): State {
         switch (state) {
-            case StateTypes.Opening:
+            case StateType.Opening:
                 return this.createOpeningState(racingGame);
-            case StateTypes.Countdown:
+            case StateType.Countdown:
                 return this.createCountdownState(racingGame);
-            case StateTypes.Racing:
+            case StateType.Racing:
                 return this.createRacingState(racingGame);
-            case StateTypes.Results:
+            case StateType.Results:
                 return this.createResultsState(racingGame);
-            case StateTypes.ResultsTable:
+            case StateType.ResultsTable:
                 return this.createResultsTableState(racingGame);
-            case StateTypes.Highscores:
+            case StateType.Highscores:
                 return this.createHighscoreState(racingGame);
-            case StateTypes.Standby:
+            case StateType.Standby:
                 return this.createStandbyState(racingGame);
             default:
                 return undefined;

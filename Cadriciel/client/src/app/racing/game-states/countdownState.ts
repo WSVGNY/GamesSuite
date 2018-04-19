@@ -1,12 +1,10 @@
 import { State } from "./state";
-import { StateTypes } from "./stateTypes";
-
-const ONE_SECOND: number = 1000;
-const STARTING_TEXT: string = "START";
+import { StateType } from "./stateTypes";
+import { ONE_SECOND, STARTING_TEXT } from "../constants/scene.constants";
 
 export class CountdownState extends State {
 
-    public init(): void {
+    public initialize(): void {
         this._serviceLoader.gameTimeService.resetStartDate();
         this._serviceLoader.countdownService.initialize();
         this._serviceLoader.soundService.playCurrentStartSequenceSound();
@@ -25,12 +23,12 @@ export class CountdownState extends State {
         }
     }
 
-    public isStateOver(): boolean {
+    protected isStateOver(): boolean {
         return +this._serviceLoader.countdownService.onScreenValue === 0;
     }
 
-    public advanceToNextState(): void {
-        this._racingGame.setState(StateTypes.Racing);
+    protected advanceToNextState(): void {
+        this._racingGame.setState(StateType.Racing);
         this._serviceLoader.gameTimeService.resetStartDate();
     }
 }

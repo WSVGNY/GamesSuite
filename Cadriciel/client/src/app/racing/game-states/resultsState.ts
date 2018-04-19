@@ -1,11 +1,11 @@
 import { State } from "./state";
-import { StateTypes } from "./stateTypes";
+import { StateType } from "./stateTypes";
 import { NUMBER_OF_LAPS } from "../constants/car.constants";
 import { AbstractCar } from "../car/abstractCar";
 
 export class ResultsState extends State {
 
-    public init(): void { }
+    public initialize(): void { }
 
     public update(): void {
         for (const car of this._racingGame.cars) {
@@ -14,7 +14,9 @@ export class ResultsState extends State {
                 car.raceProgressTracker.isTimeLogged = true;
             }
         }
-        this.advanceToNextState();
+        if (this.isStateOver()) {
+            this.advanceToNextState();
+        }
     }
 
     private pushLapTime(car: AbstractCar): void {
@@ -28,11 +30,11 @@ export class ResultsState extends State {
         );
     }
 
-    public isStateOver(): boolean {
-        return false;
+    protected isStateOver(): boolean {
+        return true;
     }
 
-    public advanceToNextState(): void {
-        this._racingGame.setState(StateTypes.ResultsTable);
+    protected advanceToNextState(): void {
+        this._racingGame.setState(StateType.ResultsTable);
     }
 }

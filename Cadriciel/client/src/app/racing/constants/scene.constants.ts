@@ -14,7 +14,9 @@ export const START_CAR_DISTANCE: number = 12;
 export const DEFAULT_TRACK_NAME: string = "track";
 export const DEFAULT_GROUND_NAME: string = "ground";
 // countdown
-export const COUNTDOWN_INITIAL_VALUE: string = "3";
+export const STARTING_TEXT: string = "START";
+export const COUNTDOWN_INITIAL_TEXT: string = "3";
+export const ONE_SECOND: number = 1000;
 // other
 export const LOWER_GROUND: number = 0.01;
 export const SKYBOX_SIZE: number = 700;

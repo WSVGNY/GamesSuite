@@ -1,4 +1,4 @@
-export enum StateTypes {
+export enum StateType {
     Opening,
     Countdown,
     Racing,

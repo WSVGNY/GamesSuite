@@ -25,3 +25,5 @@ export const TOP_VIEW_CAMERA_NAME: string = "TOP_VIEW_CAMERA";
 
 export const EDITOR_CAMERA_Z_POSITION: number = 480;
 export const EDITOR_VIEW_SIZE: number = 500;
+
+export const MINIMUM_CAR_TO_CAMERA_DISTANCE: number = 3;

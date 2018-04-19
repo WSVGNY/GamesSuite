@@ -8,7 +8,7 @@ import {
 } from "../constants/car.constants";
 import { CarLights } from "./carLights";
 import { CAR_TEXTURE } from "../constants/texture.constants";
-import { RAD_TO_DEG, MS_TO_SECONDS } from "../constants/math.constants";
+import { RAD_TO_DEG, SECONDS_TO_MS } from "../constants/math.constants";
 import { Physics } from "./physics";
 import { Engine } from "./engine";
 import { Wheel } from "./wheel";
@@ -97,7 +97,7 @@ export abstract class AbstractCar extends Object3D {
     }
 
     public update(deltaTime: number): void {
-        deltaTime = deltaTime / MS_TO_SECONDS;
+        deltaTime = deltaTime / SECONDS_TO_MS;
 
         // Move to car coordinates
         const rotationMatrix: Matrix4 = new Matrix4();

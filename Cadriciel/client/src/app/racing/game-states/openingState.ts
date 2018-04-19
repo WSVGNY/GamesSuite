@@ -1,11 +1,10 @@
 import { State } from "./state";
-import { StateTypes } from "./stateTypes";
-
-const MINIMUM_CAR_TO_CAMERA_DISTANCE: number = 3;
+import { StateType } from "./stateTypes";
+import { MINIMUM_CAR_TO_CAMERA_DISTANCE } from "../constants/camera.constants";
 
 export class OpeningState extends State {
 
-    public init(): void {
+    public initialize(): void {
         this._serviceLoader.cameraService.changeToSpectatingCamera();
         this._serviceLoader.gameTimeService.resetStartDate();
         this._serviceLoader.soundService.bindSoundKeys();
@@ -22,13 +21,13 @@ export class OpeningState extends State {
         }
     }
 
-    public isStateOver(): boolean {
+    protected isStateOver(): boolean {
         return this._serviceLoader.cameraService.spectatingCamera.position.clone()
             .distanceTo(this._racingGame.playerCarPosition) < MINIMUM_CAR_TO_CAMERA_DISTANCE;
     }
 
-    public advanceToNextState(): void {
-        this._racingGame.setState(StateTypes.Countdown);
+    protected advanceToNextState(): void {
+        this._racingGame.setState(StateType.Countdown);
         this._serviceLoader.cameraService.changeToThirdPersonCamera();
     }
 }

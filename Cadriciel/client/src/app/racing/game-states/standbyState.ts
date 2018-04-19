@@ -2,13 +2,18 @@ import { State } from "./state";
 
 export class StandbyState extends State {
 
-    public init(): void { }
+    public initialize(): void { }
 
-    public update(): void { }
+    public update(): void {
+        // do nothing at the end of the game
+        if (this.isStateOver()) {
+            this.advanceToNextState();
+        }
+    }
 
-    public isStateOver(): boolean {
+    protected isStateOver(): boolean {
         return false;
     }
 
-    public advanceToNextState(): void { }
+    protected advanceToNextState(): void { }
 }

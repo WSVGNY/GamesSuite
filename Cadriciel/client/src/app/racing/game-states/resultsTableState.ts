@@ -1,24 +1,24 @@
 import { State } from "./state";
-import { StateTypes } from "./stateTypes";
+import { StateType } from "./stateTypes";
 
 export class ResultsTableState extends State {
 
-    public init(): void {
+    public initialize(): void {
         this._serviceLoader.endGameTableService.showTable = true;
         this._serviceLoader.endGameTableService.setPlayers(this._racingGame.players);
     }
 
     public update(): void {
-        if (!this._serviceLoader.endGameTableService.showTable) {
+        if (this.isStateOver()) {
             this.advanceToNextState();
         }
     }
 
-    public isStateOver(): boolean {
-        return false;
+    protected isStateOver(): boolean {
+        return !this._serviceLoader.endGameTableService.showTable;
     }
 
-    public advanceToNextState(): void {
-        this._racingGame.setState(StateTypes.Highscores);
+    protected advanceToNextState(): void {
+        this._racingGame.setState(StateType.Highscores);
     }
 }

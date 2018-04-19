@@ -9,7 +9,7 @@ import { COMPUTER_PLAYER, CURRENT_PLAYER } from "../constants/global.constants";
 import { AbstractCar } from "../car/abstractCar";
 import { State } from "../game-states/state";
 import { StateFactoryService } from "../game-states/state-factory/state-factory.service";
-import { StateTypes } from "../game-states/stateTypes";
+import { StateType } from "../game-states/stateTypes";
 import { KeyboardEventService } from "../user-input-services/keyboard-event.service";
 
 export class RacingGame {
@@ -32,12 +32,12 @@ export class RacingGame {
     }
 
     public startGame(): void {
-        this.setState(StateTypes.Opening);
+        this.setState(StateType.Opening);
     }
 
-    public setState(stateType: StateTypes): void {
+    public setState(stateType: StateType): void {
         this._currentState = this._stateFactory.getState(stateType, this);
-        this._currentState.init();
+        this._currentState.initialize();
     }
 
     public update(): void {
