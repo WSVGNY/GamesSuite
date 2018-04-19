@@ -2,51 +2,101 @@
     margin: 0 0 2em 0;
     list-style-type: none;
     padding: 0;
-    width: 15em;
+    width: 450px;
+    height: 550px;
+    overflow: auto;
+    position: absolute;
+    top:200px;
+    left:500px;
+    font-size: large;
 }
 
-.tracks li {
-    position: relative;
-    cursor: pointer;
-    background-color: #EEE;
-    margin: .5em;
-    padding: .3em 0;
-    height: 1.6em;
-    border-radius: 4px;
-    display: inline-block;
-}
-
-.tracks li:hover {
-    color: #607D8B;
-    background-color: #DDD;
-    left: .1em;
+.tracks a:hover{
+    background: linear-gradient(rgba(59, 59, 59, 0.726),rgba(0, 0, 0, 0.726));
 }
 
 .tracks a {
-    color: #888;
+    color: white;
+    background: linear-gradient(rgba(0, 0, 0, 0.726),rgba(59, 59, 59, 0.726));
+    border-radius: 4px;
+    left: 5px;
     text-decoration: none;
     position: relative;
     display: block;
-    width: 250px;
+    width: 330px;
 }
 
-.tracks a:hover {
-    color:#607D8B;
-}
-
-.tracks .badge {
-    display: inline-block;
-    font-size: small;
-    color: white;
-    padding: 0.8em 0.7em 0 0.7em;
-    background-color: #607D8B;
-    line-height: 1em;
+.element{
     position: relative;
-    left: -1px;
-    top: -4px;
-    height: 1.8em;
-    min-width: 16px;
-    text-align: right;
-    margin-right: .8em;
+    width: 250px;
+    overflow: auto;
+    left:25px;
+}
+
+.subelement{
+    position: relative;
+    width: 200px;
+    overflow: auto;
+    left:30px;
+}
+
+.badge {
+    display: inline-block;
+    font-size: large;
+    color: white;
+    background: linear-gradient(rgba(0, 0, 0, 0.726),rgba(59, 59, 59, 0.726));
+    position: relative;
+    width: 30px;
+    text-align: center;
+    text-indent: -2px;
     border-radius: 4px 0 0 4px;
+}
+
+h2{
+    position:absolute;
+    left:650px;
+    top:160px;
+    color: rgb(34, 45, 54);
+}
+ul::-webkit-scrollbar {
+    width: 4px;
+}
+ul::-webkit-scrollbar-thumb {
+    background: rgb(88, 88, 88);
+    border-radius: 2px;
+}
+
+#delete{
+    /* display: inline-block; */
+    position: relative;
+    bottom: 27px;
+    left: 350px;
+    background: linear-gradient(rgba(0, 0, 0, 0.726),rgba(59, 59, 59, 0.726));
+    border-radius: 4px;
+    border:none;
+    color: white;
+}
+
+#newtrack{
+    position: relative;
+    background: linear-gradient(rgba(0, 0, 0, 0.726),rgba(59, 59, 59, 0.726));
+    border-radius: 4px;
+    left: 15px;
+    border:none;
+    color: white;
+}
+
+#trackname{
+    position: relative;
+    width: 300px;
+    left:5px;
+    color: white;
+    background: linear-gradient(rgba(0, 0, 0, 0.726),rgba(59, 59, 59, 0.726));
+    border-radius: 4px;
+    text-align: center;
+    border:none;
+}
+
+button:hover{
+    background: linear-gradient(rgba(59, 59, 59, 0.726),rgba(0, 0, 0, 0.726));
 }

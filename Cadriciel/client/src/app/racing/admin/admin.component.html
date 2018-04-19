@@ -4,8 +4,8 @@
     <a routerLink="/admin/{{track.id}}">
       <span class="badge">{{i+1}}</span> {{track.name}}
     </a>
-    <button (click)="deleteTrack(track.id)">Delete</button>
+    <button id="delete" (click)="deleteTrack(track.id)">Delete</button>
   </li>
-  <input #trackName value="New Track">
-  <button (click)="newTrack(trackName.value)">New Track</button>
+  <input id="trackname" #trackName value="New Track">
+  <button id="newtrack" (click)="newTrack(trackName.value)">New Track</button>
 </ul>
