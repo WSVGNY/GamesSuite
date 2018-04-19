@@ -1,7 +1,7 @@
 /* tslint:disable: no-magic-numbers */
 import { TestBed, inject } from "@angular/core/testing";
-import { KeyboardEventService } from "./keyboard-event-handler.service";
 import { InputTimeService } from "../scoreboard/input-time/input-time.service";
+import { KeyboardEventService } from "./keyboard-event.service";
 
 const TEST_KEYCODE: number = 0;
 
