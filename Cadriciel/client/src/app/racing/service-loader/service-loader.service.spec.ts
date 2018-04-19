@@ -12,6 +12,8 @@ import { CountdownService } from "../countdown/countdown.service";
 import { HttpClient, HttpHandler } from "@angular/common/http";
 import { CarTrackingService } from "../tracking-service/tracking.service";
 import { KeyboardEventService } from "../user-input-services/keyboard-event.service";
+import { CarCollisionService } from "../collision-manager/carCollision.service";
+import { WallCollisionService } from "../collision-manager/wallCollision.service";
 
 describe("ServiceLoaderService", () => {
     beforeEach(() => {
@@ -19,6 +21,8 @@ describe("ServiceLoaderService", () => {
             providers: [
                 ServiceLoaderService,
                 AICarService,
+                CarCollisionService,
+                WallCollisionService,
                 CameraManagerService,
                 CarTrackingService,
                 GameTimeManagerService,
