@@ -9,13 +9,13 @@ import { HighscoreService } from "../../scoreboard/best-times/highscore.service"
 import { EndGameTableService } from "../../scoreboard/end-game-table/end-game-table.service";
 import { SoundManagerService } from "../../sound-service/sound-manager.service";
 import { CountdownService } from "../../countdown/countdown.service";
-import { GameTimeManagerService } from "../../game-time-manager/game-time-manager.service";
 import { CameraManagerService } from "../../cameras/camera-manager.service";
 import { AICarService } from "../../artificial-intelligence/ai-car.service";
 import { CarTrackingService } from "../../tracking-service/tracking.service";
 import { CarCollisionService } from "../../collision-manager/carCollision.service";
 import { WallCollisionService } from "../../collision-manager/wallCollision.service";
 import { KeyboardEventService } from "../../user-input-services/keyboard-event.service";
+import { TimeService } from "../../time-service/time.service";
 
 describe("StateFactoryService", () => {
     beforeEach(() => {
@@ -28,7 +28,7 @@ describe("StateFactoryService", () => {
                 WallCollisionService,
                 CameraManagerService,
                 CarTrackingService,
-                GameTimeManagerService,
+                TimeService,
                 CountdownService,
                 SoundManagerService,
                 EndGameTableService,

@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import { RacingGame } from "../race-game/racingGame";
 import { AICarService } from "../artificial-intelligence/ai-car.service";
 import { CameraManagerService } from "../cameras/camera-manager.service";
-import { GameTimeManagerService } from "../game-time-manager/game-time-manager.service";
 import { CountdownService } from "../countdown/countdown.service";
 import { SoundManagerService } from "../sound-service/sound-manager.service";
 import { EndGameTableService } from "../scoreboard/end-game-table/end-game-table.service";
@@ -14,6 +13,7 @@ import { CarCollisionService } from "../collision-manager/carCollision.service";
 import { WallCollisionService } from "../collision-manager/wallCollision.service";
 import { CarTrackingService } from "../tracking-service/tracking.service";
 import { KeyboardEventService } from "../user-input-services/keyboard-event.service";
+import { TimeService } from "../time-service/time.service";
 
 @Injectable()
 export class ServiceLoaderService {
@@ -23,7 +23,7 @@ export class ServiceLoaderService {
         private _wallCollisionService: WallCollisionService,
         private _cameraManager: CameraManagerService,
         private _trackingManager: CarTrackingService,
-        private _gameTimeManager: GameTimeManagerService,
+        private _gameTimeManager: TimeService,
         private _countdownService: CountdownService,
         private _soundManager: SoundManagerService,
         private _endGameTableService: EndGameTableService,
@@ -85,7 +85,7 @@ export class ServiceLoaderService {
         return this._trackService;
     }
 
-    public get gameTimeService(): GameTimeManagerService {
+    public get gameTimeService(): TimeService {
         return this._gameTimeManager;
     }
 

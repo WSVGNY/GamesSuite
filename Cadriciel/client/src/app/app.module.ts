@@ -24,7 +24,6 @@ import { EndGameTableComponent } from "./racing/scoreboard/end-game-table/end-ga
 import { EndGameTableService } from "./racing/scoreboard/end-game-table/end-game-table.service";
 import { InputTimeService } from "./racing/scoreboard/input-time/input-time.service";
 import { TrackService } from "./racing/track/track-service/track.service";
-import { GameTimeManagerService } from "./racing/game-time-manager/game-time-manager.service";
 import { StateFactoryService } from "./racing/game-states/state-factory/state-factory.service";
 import { CountdownComponent } from "./racing/countdown/countdown.component";
 import { CountdownService } from "./racing/countdown/countdown.service";
@@ -34,6 +33,7 @@ import { WallCollisionService } from "./racing/collision-manager/wallCollision.s
 import { CarTrackingService } from "./racing/tracking-service/tracking.service";
 import { MouseEventService } from "./racing/user-input-services/mouse-event.service";
 import { KeyboardEventService } from "./racing/user-input-services/keyboard-event.service";
+import { TimeService } from "./racing/time-service/time.service";
 
 @NgModule({
     declarations: [
@@ -70,7 +70,7 @@ import { KeyboardEventService } from "./racing/user-input-services/keyboard-even
         HighscoreService,
         EndGameTableService,
         InputTimeService,
-        GameTimeManagerService,
+        TimeService,
         StateFactoryService,
         CountdownService,
         ServiceLoaderService,

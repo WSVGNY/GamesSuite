@@ -7,7 +7,7 @@ const AVERAGE_CAR_SPEED: number = 45;
 const MS_TO_SEC: number = 1000;
 
 @Injectable()
-export class GameTimeManagerService {
+export class TimeService {
 
     private _startDate: number;
     private _lastDate: number;
