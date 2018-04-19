@@ -30,7 +30,7 @@ export class ServiceLoaderService {
         private _highscoreService: HighscoreService,
         private _inputTimeService: InputTimeService,
         private _trackService: TrackService,
-        private _keyboardEventHandler: KeyboardEventService
+        private _keyboardEventService: KeyboardEventService
     ) { }
 
     public async initializeServices(racingGame: RacingGame): Promise<void> {
@@ -109,7 +109,7 @@ export class ServiceLoaderService {
         return this._inputTimeService;
     }
 
-    public get keyboardEventHandler(): KeyboardEventService {
-        return this._keyboardEventHandler;
+    public get keyboardEventService(): KeyboardEventService {
+        return this._keyboardEventService;
     }
 }

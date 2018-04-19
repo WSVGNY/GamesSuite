@@ -44,7 +44,7 @@ export class RacingState extends State {
 
     protected advanceToNextState(): void {
         this._serviceLoader.soundService.stopAllSounds();
-        this._serviceLoader.keyboardEventHandler.unbindAllKeys();
+        this._serviceLoader.keyboardEventService.unbindAllKeys();
         this._racingGame.setState(StateType.Results);
     }
 }

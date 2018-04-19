@@ -99,10 +99,6 @@ export class RacingGame {
         return this._cars.find((car: AbstractCar) => car.uniqueid === 0).currentPosition;
     }
 
-    public set isCountdownOver(value: boolean) {
-        // this._isCountdownOver = value;
-    }
-
     private getRandomPersonnality(): Personality {
         switch (Math.floor(Math.random() * (AI_PERSONALITY_QUANTITY + 1))) {
             case 0:

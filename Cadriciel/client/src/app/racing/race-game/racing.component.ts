@@ -22,9 +22,6 @@ export class RacingComponent implements AfterViewInit, OnInit {
     @ViewChild("container")
     private _containerRef: ElementRef;
     private _racingGame: RacingGame;
-
-    public _countDownOnScreenValue: string;
-    public _isCountdownOver: boolean;
     private _stopUpdate: boolean;
 
     public constructor(
@@ -48,7 +45,6 @@ export class RacingComponent implements AfterViewInit, OnInit {
             .initialize(this._containerRef.nativeElement)
             .then(/* do nothing */)
             .catch((err) => console.error(err));
-        this._keyBoardHandler.initialize();
         this._racingGame = new RacingGame(this._keyBoardHandler, this._stateFactory);
         this.getTrack();
     }
@@ -56,22 +52,18 @@ export class RacingComponent implements AfterViewInit, OnInit {
     public getTrack(): void {
         this._trackService.getTrackFromId(this._route.snapshot.paramMap.get("id"))
             .subscribe((trackFromServer: Track) => {
-                this._racingGame
-                    .initializeGameFromTrack(
-                        Track.createFromJSON(JSON.stringify(trackFromServer)),
-                        this._cameraManager.thirdPersonCamera
-                    )
-                    .then(() => {
-                        this.startGameLoop().then().catch();
-                    })
-                    .catch((err) => console.error(err));
+                this._racingGame.initializeGameFromTrack(
+                    Track.createFromJSON(JSON.stringify(trackFromServer)),
+                    this._cameraManager.thirdPersonCamera
+                ).then(() => {
+                    this.startGameLoop().then().catch();
+                }).catch((err) => console.error(err));
             });
     }
 
     private async startGameLoop(): Promise<void> {
         await this._serviceLoader.initializeServices(this._racingGame);
         this._racingGame.startGame();
-        this._countDownOnScreenValue = "";
         this._stopUpdate = false;
         this.update();
     }

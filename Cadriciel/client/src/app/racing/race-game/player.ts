@@ -1,6 +1,5 @@
 import { Score } from "../scoreboard/score";
-
-const LAP_NUMBER: number = 3;
+import { NUMBER_OF_LAPS } from "../constants/car.constants";
 
 export class Player {
 
@@ -16,7 +15,7 @@ export class Player {
     }
 
     public pushLapTime(lapTime: number): void {
-        if (this._score.lapTimes.length < LAP_NUMBER) {
+        if (this._score.lapTimes.length < NUMBER_OF_LAPS) {
             this._score.lapTimes.push(lapTime);
         }
     }
