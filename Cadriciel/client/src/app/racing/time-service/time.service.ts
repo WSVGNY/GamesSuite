@@ -1,10 +1,8 @@
 import { Injectable } from "@angular/core";
 import { Vector3 } from "three";
-import { NUMBER_OF_LAPS } from "../constants/car.constants";
+import { NUMBER_OF_LAPS, AVERAGE_CAR_SPEED } from "../constants/car.constants";
 import { RaceProgressTracker } from "../tracking-service/raceProgressTracker";
-
-const AVERAGE_CAR_SPEED: number = 45;
-const MS_TO_SEC: number = 1000;
+import { MS_TO_SECONDS } from "../constants/math.constants";
 
 @Injectable()
 export class TimeService {
@@ -44,7 +42,7 @@ export class TimeService {
         const remainingSegmentCount: number = raceSegmentCount - raceProgressTracker.segmentCounted;
         const remainingLapCount: number = Math.floor(remainingSegmentCount / lapSegmentCount);
 
-        return this.getElaspedTime() / MS_TO_SEC +
+        return this.getElaspedTime() * MS_TO_SECONDS +
             this.simulateCompleteLapTime(trackVertices, remainingLapCount) +
             this.simulatePartialLapTime(trackVertices, raceProgressTracker.currentSegmentIndex) +
             this.simulatePartialSegmentTime(currentPosition, trackVertices, raceProgressTracker.currentSegmentIndex) +

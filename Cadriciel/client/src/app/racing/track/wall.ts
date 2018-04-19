@@ -6,14 +6,9 @@ import { TrackPointList } from "./trackPointList";
 import { TrackPoint } from "./trackPoint";
 import { HALF_TRACK_WIDTH, WALL_DISTANCE_TO_TRACK, WALL_WIDTH } from "../constants/scene.constants";
 import { WALL_TEXTURE_PATH, WALL_TEXTURE_FACTOR } from "../constants/texture.constants";
+import { EXTRUDE_SETTINGS } from "../constants/track.constants";
 
 export class WallMesh extends Mesh {
-    private readonly HEIGHT: number = 0.5;
-    private readonly EXTRUDE_SETTINGS: Object = {
-        steps: 1,
-        amount: -this.HEIGHT,
-        bevelEnabled: false
-    };
 
     private _shapePoints: Vector3[];
     private _holePoints: Vector3[];
@@ -119,7 +114,7 @@ export class WallMesh extends Mesh {
     }
 
     private extrudeShapeToGeometry(): WallMesh {
-        this.geometry = new ExtrudeGeometry(this._wallShape, this.EXTRUDE_SETTINGS);
+        this.geometry = new ExtrudeGeometry(this._wallShape, EXTRUDE_SETTINGS);
 
         return this;
     }

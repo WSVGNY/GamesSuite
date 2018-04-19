@@ -14,7 +14,7 @@ export class WallPlane extends Plane {
     }
 
     private findConstant(): void {
-        this.constant = this.wallLimits[0].x * this.normal.x + this.wallLimits[0].y * this.normal.y + this.wallLimits[0].z * this.normal.z;
+        this.constant = this.wallLimits[0].dot(this.normal);
     }
 
     private findNormalVector(): void {

@@ -8,8 +8,7 @@ export class TrackPoint {
     private _exterior: Vector3;
     private _smallAngle: number;
 
-    public constructor(private _coordinate: Vector3 = new Vector3(0, 0, 0)) {
-    }
+    public constructor(private _coordinate: Vector3 = new Vector3(0, 0, 0)) { }
 
     public findInteriorExteriorPoints(): void {
         const interiorVector: Vector3 = this.vectorToInteriorPoint;

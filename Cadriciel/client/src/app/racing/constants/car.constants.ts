@@ -11,3 +11,4 @@ export const INITIAL_WEIGHT_DISTRIBUTION: number = 0.5;
 export const MINIMUM_SPEED: number = 0.05;
 export const NUMBER_REAR_WHEELS: number = 2;
 export const NUMBER_WHEELS: number = 4;
+export const AVERAGE_CAR_SPEED: number = 45;

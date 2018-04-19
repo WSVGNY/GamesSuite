@@ -7,3 +7,10 @@ export const DELETE_TRACK_ERROR: string = "getTrackList";
 // wall
 export const SLOW_DOWN_FACTOR: number = 0.985;
 export const ROTATION_FACTOR: number = 0.001;
+
+export const HEIGHT: number = 0.5;
+export const EXTRUDE_SETTINGS: Object = {
+    steps: 1,
+    amount: -HEIGHT,
+    bevelEnabled: false
+};

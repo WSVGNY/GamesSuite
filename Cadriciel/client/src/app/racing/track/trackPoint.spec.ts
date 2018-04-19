@@ -24,7 +24,7 @@ describe("TrackPoint", () => {
         trackPoint.previous = new TrackPoint(new Vector3(1, 0, 0));
         trackPoint.next = new TrackPoint(new Vector3(0, 0, 1));
         trackPoint.findInteriorExteriorPoints();
-        expect(trackPoint.interior).toEqual(new Vector3(-10.000000000000002, 0, -10));
+        expect(trackPoint.interior.sub(new Vector3(-10, 0, -10)).length).toBeLessThan(0.0001);
     });
 
     it("should find interior opposite point", () => {
