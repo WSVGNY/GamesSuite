@@ -4,8 +4,6 @@ import { StateFactoryService } from "./state-factory.service";
 import { ServiceLoaderService } from "../../service-loader/service-loader.service";
 import { HttpHandler, HttpClient } from "@angular/common/http";
 import { TrackService } from "../../track/track-service/track.service";
-import { InputTimeService } from "../../scoreboard/input-time/input-time.service";
-import { HighscoreService } from "../../scoreboard/best-times/highscore.service";
 import { EndGameTableService } from "../../scoreboard/end-game-table/end-game-table.service";
 import { SoundManagerService } from "../../sound-service/sound-manager.service";
 import { CountdownService } from "../../countdown/countdown.service";
@@ -16,6 +14,8 @@ import { CarCollisionService } from "../../collision-manager/carCollision.servic
 import { WallCollisionService } from "../../collision-manager/wallCollision.service";
 import { KeyboardEventService } from "../../user-input-services/keyboard-event.service";
 import { TimeService } from "../../time-service/time.service";
+import { HighscoreService } from "../../scoreboard/highscores/highscore.service";
+import { InputNameService } from "../../scoreboard/input-name/input-name.service";
 
 describe("StateFactoryService", () => {
     beforeEach(() => {
@@ -33,7 +33,7 @@ describe("StateFactoryService", () => {
                 SoundManagerService,
                 EndGameTableService,
                 HighscoreService,
-                InputTimeService,
+                InputNameService,
                 TrackService,
                 KeyboardEventService,
                 HttpClient,
