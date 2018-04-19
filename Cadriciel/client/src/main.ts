@@ -1,3 +1,4 @@
+// #1 https://www.youtube.com/watch?v=GGXzlRoNtHU
 import { enableProdMode } from "@angular/core";
 import { platformBrowserDynamic } from "@angular/platform-browser-dynamic";
 
