@@ -4,9 +4,7 @@ import { TrackType } from "../../../../../common/racing/trackType";
 import { TrackLights } from "../render-service/light";
 import { Track } from "../../../../../common/racing/track";
 import { TrackMesh } from "../track/track";
-
-const ROTATION_STEP: number = 0.01;
-const SCALE_FACTOR: number = 0.5;
+import { ROTATION_STEP, SCALE_FACTOR } from "../constants/scene.constants";
 
 export class PreviewScene extends AbstractScene {
 

@@ -1,18 +1,9 @@
-import {
-    Vector3, AmbientLight, Mesh, Line, SphereGeometry,
-    MeshBasicMaterial, LineBasicMaterial, Geometry, BackSide, Scene
-} from "three";
+import { Vector3, AmbientLight, Mesh, Line, MeshBasicMaterial, Geometry, BackSide, Scene } from "three";
 import { CommonCoordinate3D } from "../../../../../common/racing/commonCoordinate3D";
 import { ConstraintValidator } from "../editor/constraints/constraintValidator";
-import { WHITE, PINK, BLUE } from "../constants/color.constants";
-
-const RADIUS: number = 2.5;
-const OUTLINE_TO_VERTEX_RATIO: number = 1.25;
-const AMBIENT_LIGHT_OPACITY: number = 0.5;
-export const VERTEX_GEOMETRY: SphereGeometry = new SphereGeometry(RADIUS);
-export const SIMPLE_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: WHITE });
-export const START_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: PINK });
-export const SIMPLE_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: BLUE });
+import { WHITE } from "../constants/color.constants";
+import { START_VERTEX_MATERIAL, SIMPLE_VERTEX_MATERIAL, SIMPLE_LINE_MATERIAL } from "../constants/texture.constants";
+import { EDITOR_AMBIENT_LIGHT_OPACITY, OUTLINE_TO_VERTEX_RATIO, VERTEX_GEOMETRY } from "../constants/scene.constants";
 
 export class EditorScene extends Scene {
     private _vertices: Mesh[];
@@ -24,7 +15,7 @@ export class EditorScene extends Scene {
 
     public constructor() {
         super();
-        this.add(new AmbientLight(WHITE, AMBIENT_LIGHT_OPACITY));
+        this.add(new AmbientLight(WHITE, EDITOR_AMBIENT_LIGHT_OPACITY));
         this._vertices = [];
         this._connections = [];
         this._isComplete = false;
