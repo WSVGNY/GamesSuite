@@ -5,8 +5,6 @@ import { CameraManagerService } from "../cameras/camera-manager.service";
 import { CountdownService } from "../countdown/countdown.service";
 import { SoundManagerService } from "../sound-service/sound-manager.service";
 import { EndGameTableService } from "../scoreboard/end-game-table/end-game-table.service";
-import { HighscoreService } from "../scoreboard/best-times/highscore.service";
-import { InputTimeService } from "../scoreboard/input-time/input-time.service";
 import { TrackService } from "../track/track-service/track.service";
 import { Vector3 } from "three";
 import { CarCollisionService } from "../collision-manager/carCollision.service";
@@ -14,6 +12,8 @@ import { WallCollisionService } from "../collision-manager/wallCollision.service
 import { CarTrackingService } from "../tracking-service/tracking.service";
 import { KeyboardEventService } from "../user-input-services/keyboard-event.service";
 import { TimeService } from "../time-service/time.service";
+import { HighscoreService } from "../scoreboard/highscores/highscore.service";
+import { InputNameService } from "../scoreboard/input-name/input-name.service";
 
 @Injectable()
 export class ServiceLoaderService {
@@ -28,7 +28,7 @@ export class ServiceLoaderService {
         private _soundManager: SoundManagerService,
         private _endGameTableService: EndGameTableService,
         private _highscoreService: HighscoreService,
-        private _inputTimeService: InputTimeService,
+        private _inputTimeService: InputNameService,
         private _trackService: TrackService,
         private _keyboardEventService: KeyboardEventService
     ) { }
@@ -105,7 +105,7 @@ export class ServiceLoaderService {
         return this._highscoreService;
     }
 
-    public get inputTimeService(): InputTimeService {
+    public get inputTimeService(): InputNameService {
         return this._inputTimeService;
     }
 

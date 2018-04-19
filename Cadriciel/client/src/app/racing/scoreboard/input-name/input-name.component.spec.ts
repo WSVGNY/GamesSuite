@@ -1,23 +1,23 @@
 // tslint:disable:no-magic-numbers
 import { async, ComponentFixture, TestBed, inject } from "@angular/core/testing";
-import { InputTimeComponent } from "./input-time.component";
-import { InputTimeService } from "./input-time.service";
-import { HighscoreService } from "../best-times/highscore.service";
 import { Player } from "../../race-game/player";
+import { InputNameComponent } from "./input-name.component";
+import { HighscoreService } from "../highscores/highscore.service";
+import { InputNameService } from "./input-name.service";
 
 describe("InputTimeComponent", () => {
-    let component: InputTimeComponent;
-    let fixture: ComponentFixture<InputTimeComponent>;
+    let component: InputNameComponent;
+    let fixture: ComponentFixture<InputNameComponent>;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [InputTimeComponent],
-            providers: [HighscoreService, InputTimeService]
+            declarations: [InputNameComponent],
+            providers: [HighscoreService, InputNameService]
         }).compileComponents().then().catch((e: Error) => console.error(e.message));
     }));
 
     beforeEach(() => {
-        fixture = TestBed.createComponent(InputTimeComponent);
+        fixture = TestBed.createComponent(InputNameComponent);
         component = fixture.componentInstance;
         fixture.detectChanges();
     });

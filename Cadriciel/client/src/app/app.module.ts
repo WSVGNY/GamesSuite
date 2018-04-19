@@ -17,12 +17,8 @@ import { RenderService } from "./racing/render-service/render.service";
 import { SoundManagerService } from "./racing/sound-service/sound-manager.service";
 import { MultiplayerCommunicationService } from "./crossword/multiplayer-communication.service";
 import { CameraManagerService } from "./racing/cameras/camera-manager.service";
-import { BestTimesComponent } from "./racing/scoreboard/best-times/best-times.component";
-import { InputTimeComponent } from "./racing/scoreboard/input-time/input-time.component";
-import { HighscoreService } from "./racing/scoreboard/best-times/highscore.service";
 import { EndGameTableComponent } from "./racing/scoreboard/end-game-table/end-game-table.component";
 import { EndGameTableService } from "./racing/scoreboard/end-game-table/end-game-table.service";
-import { InputTimeService } from "./racing/scoreboard/input-time/input-time.service";
 import { TrackService } from "./racing/track/track-service/track.service";
 import { StateFactoryService } from "./racing/game-states/state-factory/state-factory.service";
 import { CountdownComponent } from "./racing/countdown/countdown.component";
@@ -34,6 +30,10 @@ import { CarTrackingService } from "./racing/tracking-service/tracking.service";
 import { MouseEventService } from "./racing/user-input-services/mouse-event.service";
 import { KeyboardEventService } from "./racing/user-input-services/keyboard-event.service";
 import { TimeService } from "./racing/time-service/time.service";
+import { HighscoreComponent } from "./racing/scoreboard/highscores/highscore.component";
+import { HighscoreService } from "./racing/scoreboard/highscores/highscore.service";
+import { InputNameComponent } from "./racing/scoreboard/input-name/input-name.component";
+import { InputNameService } from "./racing/scoreboard/input-name/input-name.service";
 
 @NgModule({
     declarations: [
@@ -44,8 +44,8 @@ import { TimeService } from "./racing/time-service/time.service";
         EditorComponent,
         ChooseTrackComponent,
         ConfigurationComponent,
-        BestTimesComponent,
-        InputTimeComponent,
+        HighscoreComponent,
+        InputNameComponent,
         EndGameTableComponent,
         CountdownComponent
     ],
@@ -69,7 +69,7 @@ import { TimeService } from "./racing/time-service/time.service";
         CarTrackingService,
         HighscoreService,
         EndGameTableService,
-        InputTimeService,
+        InputNameService,
         TimeService,
         StateFactoryService,
         CountdownService,
