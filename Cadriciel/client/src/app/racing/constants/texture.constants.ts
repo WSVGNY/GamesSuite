@@ -1,6 +1,6 @@
 import { BASE_ASSETS_PATH } from "./global.constants";
-import { LineBasicMaterial } from "three";
-import { RED } from "./color.constants";
+import { LineBasicMaterial, MeshBasicMaterial } from "three";
+import { RED, WHITE, PINK, BLUE } from "./color.constants";
 
 const BASE_TEXTURE_PATH: string = BASE_ASSETS_PATH + "textures/";
 const SKYBOX_PATH: string = BASE_ASSETS_PATH + "skyboxes/";
@@ -25,3 +25,6 @@ export const STARTING_LINE_Y_FACTOR: number = 1;
 export const WALL_TEXTURE_FACTOR: number = 1;
 
 export const UNAUTHORIZED_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: RED });
+export const SIMPLE_LINE_MATERIAL: LineBasicMaterial = new LineBasicMaterial({ color: WHITE });
+export const START_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: PINK });
+export const SIMPLE_VERTEX_MATERIAL: MeshBasicMaterial = new MeshBasicMaterial({ color: BLUE });

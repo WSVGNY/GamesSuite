@@ -3,11 +3,11 @@ import { HighscoreService } from "./highscore.service";
 import { Formater } from "../formater";
 
 @Component({
-    selector: "app-best-times",
-    templateUrl: "./best-times.component.html",
-    styleUrls: ["./best-times.component.css"]
+    selector: "app-highscore",
+    templateUrl: "./highscore.component.html",
+    styleUrls: ["./highscore.component.css"]
 })
-export class BestTimesComponent {
+export class HighscoreComponent {
 
     public constructor(public highscoreService: HighscoreService) { }
 

@@ -6,15 +6,12 @@ import { AbstractCar } from "../car/abstractCar";
 import { Track } from "../../../../../common/racing/track";
 import { TrackMesh } from "../track/track";
 import { TrackPoint } from "../track/trackPoint";
-import { START_CAR_DISTANCE } from "../constants/scene.constants";
+import { START_CAR_DISTANCE, LATERAL_CAR_OFFSET, VERTICAL_CAR_OFFSET } from "../constants/scene.constants";
 import { DAY_KEYCODE, DEBUG_KEYCODE, CHANGE_CAMERA_KEYCODE } from "../constants/keycode.constants";
 import { YELLOW } from "../constants/color.constants";
 import { HumanCar } from "../car/humanCar";
 import { AICar } from "../car/aiCar";
 import { KeyboardEventService } from "../user-input-services/keyboard-event.service";
-
-const LATHERAL_OFFSET: number = 2;
-const VERTICAL_OFFSET: number = 5;
 
 export class GameScene extends AbstractScene {
 
@@ -71,8 +68,8 @@ export class GameScene extends AbstractScene {
 
     private computeCarOffset(index: number): Vector3 {
         const offset: Vector3 = new Vector3(0, 0, 0);
-        offset.x = (index < 2) ? -LATHERAL_OFFSET : LATHERAL_OFFSET;
-        offset.z = (index % 2 === 0) ? -VERTICAL_OFFSET : VERTICAL_OFFSET;
+        offset.x = (index < 2) ? -LATERAL_CAR_OFFSET : LATERAL_CAR_OFFSET;
+        offset.z = (index % 2 === 0) ? -VERTICAL_CAR_OFFSET : VERTICAL_CAR_OFFSET;
 
         return offset.applyAxisAngle(new Vector3(0, 1, 0), this.findFirstTrackSegmentAngle());
     }
@@ -142,10 +139,8 @@ export class GameScene extends AbstractScene {
         for (let i: number = 0; i < thickness * 2; i++) {
             const routerLineGeometry: Geometry = new Geometry();
             const offset: number = i / LINE_OFFSET + i / LINE_OFFSET + i / LINE_OFFSET;
-
             routerLineGeometry.vertices.push(new Vector3(currentPoint.x + offset, currentPoint.y, currentPoint.z + offset));
             routerLineGeometry.vertices.push(new Vector3(nextPoint.x + offset, nextPoint.y, nextPoint.z + offset));
-
             dashedLine.add(new Line(routerLineGeometry, lineMaterial));
         }
 

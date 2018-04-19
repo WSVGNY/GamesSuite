@@ -1,5 +1,4 @@
-const SECONDS_TO_HUNDREDTH: number = 100;
-const SECONDS_TO_MINUTES: number = 60;
+import { SECONDS_TO_MINUTES, SECONDS_TO_HUNDREDTH } from "../constants/math.constants";
 
 export abstract class Formater {
     public static formatTime(score: number): string {
@@ -7,12 +6,10 @@ export abstract class Formater {
         const minutes: number = Math.floor(score / SECONDS_TO_MINUTES);
         const seconds: number = Math.floor(score - minutes * SECONDS_TO_MINUTES);
         const hundredth: number = Math.round((score - minutes * SECONDS_TO_MINUTES - seconds) * SECONDS_TO_HUNDREDTH);
-        const minutesString: string = minutes.toString();
-        const secondsString: string = seconds.toString();
-        const hundredthString: string = hundredth.toString();
-        time[0] = (time[0] + minutesString).substring(minutesString.length);
-        time[1] = (time[1] + secondsString).substring(secondsString.length);
-        time[2] = (time[2] + hundredthString).substring(hundredthString.length);
+
+        time[0] = (time[0] + minutes.toString()).substring(minutes.toString().length);
+        time[1] = (time[1] + seconds.toString()).substring(seconds.toString().length);
+        time[2] = (time[2] + hundredth.toString()).substring(hundredth.toString().length);
 
         return time.join(":");
     }

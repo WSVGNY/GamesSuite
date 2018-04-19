@@ -1,12 +1,12 @@
 import { Injectable } from "@angular/core";
-import { InputTimeService } from "../scoreboard/input-time/input-time.service";
+import { InputNameService } from "../scoreboard/input-name/input-name.service";
 
 @Injectable()
 export class KeyboardEventService {
     private _keyDownFunctions: Map<number, (() => void)[]>;
     private _keyUpFunctions: Map<number, (() => void)[]>;
 
-    public constructor(private _inputTimeService: InputTimeService) { }
+    public constructor(private _inputTimeService: InputNameService) { }
 
     public initialize(): void {
         this._keyDownFunctions = new Map();

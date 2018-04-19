@@ -1,15 +1,14 @@
 import { TestBed, inject } from "@angular/core/testing";
-
-import { InputTimeService } from "./input-time.service";
+import { InputNameService } from "./input-name.service";
 
 describe("InputTimeService", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [InputTimeService]
+            providers: [InputNameService]
         });
     });
 
-    it("should be created", inject([InputTimeService], (service: InputTimeService) => {
+    it("should be created", inject([InputNameService], (service: InputNameService) => {
         expect(service).toBeTruthy();
     }));
 });
