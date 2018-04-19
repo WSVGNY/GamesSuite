@@ -2,8 +2,7 @@ import { Injectable } from "@angular/core";
 import { Vector3, Sphere } from "three";
 import { RaceProgressTracker } from "./raceProgressTracker";
 import { TRACKING_SPHERE_RADIUS, NUMBER_OF_LAPS } from "../constants/car.constants";
-
-const FINISH_BUFFER: number = 3;
+import { FINISH_LINE_DETECTION_BUFFER } from "../constants/track.constants";
 
 @Injectable()
 export class CarTrackingService {
@@ -95,7 +94,7 @@ export class CarTrackingService {
         const carToFinishLine: Vector3 = this._finishLinePosition.clone().sub(position);
         const parallelDistance: number = (carToFinishLine.clone().projectOnVector(this._finishLineSegment)).length();
 
-        return parallelDistance < FINISH_BUFFER;
+        return parallelDistance < FINISH_LINE_DETECTION_BUFFER;
     }
 
     public resetIsLapComplete(raceProgressTracker: RaceProgressTracker): void {
