@@ -4,14 +4,14 @@
     <a routerLink="/race/{{track.id}}" (mouseover)="displayTrackPreview(track) " (click)=updateSelectedTrack(track)>
       <span class="badge">{{i+1}}</span> {{track.name}}
     </a>
-    <pre>Description: {{track.description}}</pre>
-    <pre>Times Played: {{track.timesPlayed}}</pre>
-    <pre>Type: {{track.type}}</pre>
-    <pre>Best times:
-    <pre *ngFor="let time of track.bestTimes">
-        {{getFormatedTime(time.time)}}
-    </pre>
-    </pre>
+    <div class="element">Description: {{track.description}}</div>
+    <div class="element">Times Played: {{track.timesPlayed}}</div>
+    <div class="element">Type: {{track.type}}</div>
+    <div class="element">Highscores:
+      <div class="subelement" *ngFor="let time of track.bestTimes; let j = index">
+        {{j+1}} : {{getFormatedTime(time.time)}}
+      </div>
+    </div>
   </li>
 </ul>
-<div #preview></div>
+<div id="preview" #preview></div>
