@@ -45,13 +45,10 @@ export class EditorComponent implements AfterViewInit, OnInit {
         this.getTrack();
         this._editorCamera = new EditorCamera(this.computeAspectRatio(), EDITOR_VIEW_SIZE);
         this._editorCamera.setPosition(new Vector3(0, 0, EDITOR_CAMERA_Z_POSITION));
-        this._editorRenderService
-            .initialize(this._containerRef.nativeElement, this._editorScene, this._editorCamera)
-            .then(/* do nothing */)
-            .catch((err) => console.error(err));
+        this._editorRenderService.initialize(this._containerRef.nativeElement).then().catch((err) => console.error(err));
         this._mouseEventHandlerService
             .initialize(this._containerRef.nativeElement, EDITOR_VIEW_SIZE)
-            .then(/* do nothing */)
+            .then()
             .catch((err) => console.error(err));
         this.update();
     }

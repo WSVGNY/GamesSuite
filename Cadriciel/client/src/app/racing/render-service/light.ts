@@ -1,9 +1,9 @@
 import { Group, AmbientLight, DirectionalLight } from "three";
-import { AbstractLightingConfig } from "./lighting-config/abstractConfig";
 import { TrackType } from "../../../../../common/racing/trackType";
-import { NightConfig } from "./lighting-config/nightConfig";
-import { DefaultConfig } from "./lighting-config/defaultConfig";
 import { WHITE } from "../constants/color.constants";
+import { AbstractLightingConfig } from "../constants/scene-lighting-config/abstractConfig";
+import { NightConfig } from "../constants/scene-lighting-config/nightConfig";
+import { DefaultConfig } from "../constants/scene-lighting-config/defaultConfig";
 
 export class TrackLights extends Group {
     private _lightingConfig: AbstractLightingConfig;

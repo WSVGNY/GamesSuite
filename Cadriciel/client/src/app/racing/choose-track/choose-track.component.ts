@@ -34,10 +34,7 @@ export class ChooseTrackComponent implements OnInit, AfterViewInit {
 
     public ngAfterViewInit(): void {
         this._previewCamera = new PreviewCamera(this.computeAspectRatio());
-        this._renderService
-            .initialize(this._containerRef.nativeElement, this._previewScene, this._previewCamera)
-            .then(/* do nothing */)
-            .catch((err) => console.error(err));
+        this._renderService.initialize(this._containerRef.nativeElement).then().catch((err) => console.error(err));
         this.update();
     }
 
