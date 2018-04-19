@@ -6,9 +6,9 @@ import { TrackService } from "../track/track-service/track.service";
 import { RacingGame } from "./racingGame";
 import { CameraManagerService } from "../cameras/camera-manager.service";
 import { StateFactoryService } from "../game-states/state-factory/state-factory.service";
-import { SoundManagerService } from "../sound-service/sound-manager.service";
 import { ServiceLoaderService } from "../service-loader/service-loader.service";
 import { KeyboardEventService } from "../user-input-services/keyboard-event.service";
+import { SoundService } from "../sound-service/sound.service";
 
 @Component({
     moduleId: module.id,
@@ -31,7 +31,7 @@ export class RacingComponent implements AfterViewInit, OnInit {
         private _trackService: TrackService,
         private _cameraManager: CameraManagerService,
         private _stateFactory: StateFactoryService,
-        private _soundManager: SoundManagerService,
+        private _soundManager: SoundService,
         private _serviceLoader: ServiceLoaderService
     ) { }
 

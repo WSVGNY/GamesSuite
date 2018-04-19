@@ -29,6 +29,7 @@ export const STARTING_TEXT: string = "START";
 export const COUNTDOWN_INITIAL_TEXT: string = "3";
 export const ONE_SECOND: number = 1000;
 export const EDITOR_AMBIENT_LIGHT_OPACITY: number = 0.5;
+export const START_SEQUENCE_LENGTH: number = 4;
 // other
 export const LOWER_GROUND: number = 0.01;
 export const SKYBOX_SIZE: number = 700;

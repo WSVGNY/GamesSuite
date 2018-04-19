@@ -8,11 +8,10 @@ import {
 } from "../constants/sound.constants";
 import { RPM_FACTOR } from "../constants/car.constants";
 import { KeyboardEventService } from "../user-input-services/keyboard-event.service";
-
-const START_SEQUENCE_LENGTH: number = 4;
+import { START_SEQUENCE_LENGTH } from "../constants/scene.constants";
 
 @Injectable()
-export class SoundManagerService {
+export class SoundService {
 
     private _music: Audio;
     private _accelerationSound: Audio;
@@ -26,7 +25,7 @@ export class SoundManagerService {
         this._startingSound = [];
     }
 
-    public async init(car: AbstractCar): Promise<void> {
+    public async initialize(car: AbstractCar): Promise<void> {
         await this.createStartingSound(car);
         await this.createMusic(car);
         await this.createCarCollisionSound(car);

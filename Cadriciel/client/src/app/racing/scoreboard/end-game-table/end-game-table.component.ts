@@ -1,8 +1,6 @@
 import { Component } from "@angular/core";
 import { EndGameTableService } from "./end-game-table.service";
 import { Formater } from "../formater";
-import { HighscoreService } from "../highscores/highscore.service";
-import { InputNameService } from "../input-name/input-name.service";
 
 @Component({
     selector: "app-end-game-table",
@@ -14,14 +12,11 @@ export class EndGameTableComponent {
     public changeState: boolean;
 
     public constructor(
-        public endGameTableService: EndGameTableService,
-        public inputTimeService: InputNameService,
-        public highscoreService: HighscoreService) {
+        private endGameTableService: EndGameTableService) {
         this.changeState = true;
     }
 
     public readyToView(): boolean {
-
         return this.endGameTableService.showTable;
     }
 

@@ -2,24 +2,23 @@ import { TrackMesh } from "../track/track";
 import { WallPlane } from "../track/plane";
 import { AbstractCar } from "../car/abstractCar";
 import { Sphere, Vector3 } from "three";
-import { SoundManagerService } from "../sound-service/sound-manager.service";
 import { POS_Y_AXIS, NEG_Y_AXIS } from "../constants/global.constants";
 import { PI_OVER_2 } from "../constants/math.constants";
 import { AICar } from "../car/aiCar";
 import { Injectable } from "@angular/core";
+import { SLOW_DOWN_FACTOR, ROTATION_FACTOR } from "../constants/track.constants";
+import { SoundService } from "../sound-service/sound.service";
 
 @Injectable()
 export class WallCollisionService {
-    private readonly SLOW_DOWN_FACTOR: number = 0.985;
-    private readonly ROTATION_FACTOR: number = 0.001;
     private _track: TrackMesh;
     private _projectedPointOnPlane: Vector3;
 
-    public set track(track: TrackMesh) {
+    public initialize(track: TrackMesh): void {
         this._track = track;
     }
 
-    public update(cars: AbstractCar[], soundManager: SoundManagerService): void {
+    public update(cars: AbstractCar[], soundManager: SoundService): void {
         cars.forEach((car: AbstractCar) => {
             this._track.interiorPlanes.forEach((plane: WallPlane) => {
                 this.manageCollisionWithWall(car, plane, true, soundManager);
@@ -32,12 +31,12 @@ export class WallCollisionService {
 
     private manageCollisionWithWall(
         car: AbstractCar, plane: WallPlane, isInteriorWall: boolean,
-        soundManager: SoundManagerService): void {
+        soundManager: SoundService): void {
         car.hitbox.boundingSpheres.forEach((sphere: Sphere) => {
             if (this.isSphereIntersectingWallPlane(sphere, plane)) {
                 this.moveCarAwayFromWall(car, sphere, plane, isInteriorWall);
                 this.rotateCar(car, plane, isInteriorWall);
-                car.speed = car.speed.multiplyScalar(this.SLOW_DOWN_FACTOR);
+                car.speed = car.speed.multiplyScalar(SLOW_DOWN_FACTOR);
                 if (!(car instanceof AICar)) {
                     soundManager.playWallCollision();
                 }
@@ -69,7 +68,7 @@ export class WallCollisionService {
     }
 
     private calculateRotationAngle(car: AbstractCar, angleBetweenWallAndCar: number): number {
-        return (car.speed.length() * this.ROTATION_FACTOR) * (Math.cos(angleBetweenWallAndCar * 2) + 1);
+        return (car.speed.length() * ROTATION_FACTOR) * (Math.cos(angleBetweenWallAndCar * 2) + 1);
     }
 
     private sphereIsOtherSideOfWall(vectorFromCenterToWall: Vector3, plane: WallPlane, isInteriorWall: boolean): boolean {

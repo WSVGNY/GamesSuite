@@ -6,7 +6,7 @@ import { TrackService } from "../track/track-service/track.service";
 import { InputTimeService } from "../scoreboard/input-time/input-time.service";
 import { HighscoreService } from "../scoreboard/best-times/highscore.service";
 import { EndGameTableService } from "../scoreboard/end-game-table/end-game-table.service";
-import { SoundManagerService } from "../sound-service/sound-manager.service";
+import { SoundService } from "../sound-service/sound-manager.service";
 import { CountdownService } from "../countdown/countdown.service";
 import { HttpClient, HttpHandler } from "@angular/common/http";
 import { CarTrackingService } from "../tracking-service/tracking.service";
@@ -27,7 +27,7 @@ describe("ServiceLoaderService", () => {
                 CarTrackingService,
                 TimeService,
                 CountdownService,
-                SoundManagerService,
+                SoundService,
                 EndGameTableService,
                 HighscoreService,
                 InputTimeService,

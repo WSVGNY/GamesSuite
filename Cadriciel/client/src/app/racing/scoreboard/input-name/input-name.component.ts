@@ -9,7 +9,7 @@ import { InputNameService } from "./input-name.service";
 })
 export class InputNameComponent {
 
-    public constructor(public highscoreService: HighscoreService, public inputTimeService: InputNameService) { }
+    public constructor(private highscoreService: HighscoreService, private inputTimeService: InputNameService) { }
 
     public loadLeaderBoard(name: string): void {
         this.highscoreService.addNewScore(name);

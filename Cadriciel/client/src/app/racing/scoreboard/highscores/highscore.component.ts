@@ -9,7 +9,7 @@ import { Formater } from "../formater";
 })
 export class HighscoreComponent {
 
-    public constructor(public highscoreService: HighscoreService) { }
+    public constructor(private highscoreService: HighscoreService) { }
 
     public readyToView(): boolean {
         return this.highscoreService.showTable;

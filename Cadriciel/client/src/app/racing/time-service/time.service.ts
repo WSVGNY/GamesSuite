@@ -12,7 +12,7 @@ export class TimeService {
     private _startDate: number;
     private _lastDate: number;
 
-    public initializeDates(): void {
+    public initialize(): void {
         this._startDate = 0;
         this._lastDate = 0;
     }

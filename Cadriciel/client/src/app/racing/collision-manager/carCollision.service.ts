@@ -1,10 +1,10 @@
 import { AbstractCar } from "../car/abstractCar";
 import { Vector3 } from "three";
-import { SoundManagerService } from "../sound-service/sound-manager.service";
 import { MINIMUM_CAR_DISTANCE } from "../constants/car.constants";
 import { OVERLAP_CORRECTION_SCALAR, HALF } from "../constants/math.constants";
 import { AICar } from "../car/aiCar";
 import { Injectable } from "@angular/core";
+import { SoundService } from "../sound-service/sound.service";
 
 @Injectable()
 export class CarCollisionService {
@@ -14,7 +14,7 @@ export class CarCollisionService {
     private _collisionPoint: Vector3;
     private _overlapCorrection: Vector3;
 
-    public update(cars: AbstractCar[], soundManager: SoundManagerService): void {
+    public update(cars: AbstractCar[], soundManager: SoundService): void {
         for (let firstCarIndex: number = 0; firstCarIndex < cars.length; ++firstCarIndex) {
             for (let secondCarIndex: number = firstCarIndex + 1; secondCarIndex < cars.length; ++secondCarIndex) {
                 this.setCollisionCars(cars[firstCarIndex], cars[secondCarIndex]);
@@ -25,7 +25,7 @@ export class CarCollisionService {
         }
     }
 
-    private applyCollisionDetection(soundManager: SoundManagerService): void {
+    private applyCollisionDetection(soundManager: SoundService): void {
         if (this.computeCollisionParameters()) {
             this.resolveHitboxOverlap();
             if (!this.carsInCollision()) {

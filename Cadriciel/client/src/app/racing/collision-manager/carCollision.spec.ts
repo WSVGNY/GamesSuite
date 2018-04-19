@@ -2,7 +2,7 @@ import { AICar } from "../car/aiCar";
 import { TestBed, inject } from "@angular/core/testing";
 import { Vector3 } from "three";
 import { MINIMUM_CAR_DISTANCE } from "../constants/car.constants";
-import { SoundManagerService } from "../sound-service/sound-manager.service";
+import { SoundService } from "../sound-service/sound-manager.service";
 import { InputTimeService } from "../scoreboard/input-time/input-time.service";
 import { CarCollisionService } from "./carCollision.service";
 import { WallCollisionService } from "./wallCollision.service";
@@ -16,7 +16,7 @@ describe("Car collision Manager Service", () => {
     let cars: AICar[];
     beforeEach(async (done: () => void) => {
         TestBed.configureTestingModule({
-            providers: [SoundManagerService, KeyboardEventService, InputTimeService, CarCollisionService, WallCollisionService]
+            providers: [SoundService, KeyboardEventService, InputTimeService, CarCollisionService, WallCollisionService]
         });
         firstCar = new AICar(0);
         await firstCar.init(new Vector3(0, 0, 0), Math.PI);
@@ -61,7 +61,7 @@ describe("Car collision Manager Service", () => {
         }));
 
     it("should detect if cars are colliding in an array of cars that are colliding", inject(
-        [SoundManagerService, CarCollisionService], (_soundManager: SoundManagerService, carCollisionService: CarCollisionService) => {
+        [SoundService, CarCollisionService], (_soundManager: SoundService, carCollisionService: CarCollisionService) => {
             cars[0].setCurrentPosition(new Vector3(1, 0, 0));
             cars[0]["_mesh"].updateMatrix();
             cars[0]["_hitbox"].updatePosition(cars[0].currentPosition, cars[0]["_mesh"].matrix);
@@ -70,7 +70,7 @@ describe("Car collision Manager Service", () => {
         }));
 
     it("should not detect if cars are colliding in an array of cars that aren't colliding", inject(
-        [SoundManagerService, CarCollisionService], (_soundManager: SoundManagerService, carCollisionService: CarCollisionService) => {
+        [SoundService, CarCollisionService], (_soundManager: SoundService, carCollisionService: CarCollisionService) => {
             cars[0].setCurrentPosition(new Vector3(0, 0, MINIMUM_CAR_DISTANCE));
             cars[0]["_mesh"].updateMatrix();
             cars[0]["_hitbox"].updatePosition(cars[0].currentPosition, cars[0]["_mesh"].matrix);
@@ -79,7 +79,7 @@ describe("Car collision Manager Service", () => {
         }));
 
     it("should resolve the hitbox overlap", inject(
-        [SoundManagerService, CarCollisionService], (_soundManager: SoundManagerService, carCollisionService: CarCollisionService) => {
+        [SoundService, CarCollisionService], (_soundManager: SoundService, carCollisionService: CarCollisionService) => {
             cars[0].setCurrentPosition(new Vector3(0, 0, 2.75));
             cars[0]["_mesh"].updateMatrix();
             cars[0].hitbox.updatePosition(new Vector3(0, 0, 2.75), cars[0]["_mesh"].matrix);
@@ -88,7 +88,7 @@ describe("Car collision Manager Service", () => {
         }));
 
     it("should change speed of first car", inject(
-        [SoundManagerService, CarCollisionService], (_soundManager: SoundManagerService, carCollisionService: CarCollisionService) => {
+        [SoundService, CarCollisionService], (_soundManager: SoundService, carCollisionService: CarCollisionService) => {
             cars[0].setCurrentPosition(new Vector3(0, 0, 2.75));
             cars[0]["_carControls"].speed.add(new Vector3(0, 0, 5));
             cars[0]["_mesh"].updateMatrix();
@@ -99,7 +99,7 @@ describe("Car collision Manager Service", () => {
         }));
 
     it("should change speed of second car", inject(
-        [SoundManagerService, CarCollisionService], (_soundManager: SoundManagerService, carCollisionService: CarCollisionService) => {
+        [SoundService, CarCollisionService], (_soundManager: SoundService, carCollisionService: CarCollisionService) => {
             cars[0].setCurrentPosition(new Vector3(0, 0, 2.75));
             cars[0]["_carControls"].speed.add(new Vector3(0, 0, 5));
             cars[0]["_mesh"].updateMatrix();
@@ -110,7 +110,7 @@ describe("Car collision Manager Service", () => {
         }));
 
     it("collision should be elastic (no energy loss)", inject(
-        [SoundManagerService, CarCollisionService], (_soundManager: SoundManagerService, carCollisionService: CarCollisionService) => {
+        [SoundService, CarCollisionService], (_soundManager: SoundService, carCollisionService: CarCollisionService) => {
             cars[0].setCurrentPosition(new Vector3(0, 0, 2.75));
             cars[0]["_carControls"].speed.add(new Vector3(0, 0, 5));
             cars[0]["_mesh"].updateMatrix();

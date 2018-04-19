@@ -14,7 +14,6 @@ import { AICarService } from "./racing/artificial-intelligence/ai-car.service";
 import { ConfigurationService } from "./crossword/configuration/configuration.service";
 import { ChooseTrackComponent } from "./racing/choose-track/choose-track.component";
 import { RenderService } from "./racing/render-service/render.service";
-import { SoundManagerService } from "./racing/sound-service/sound-manager.service";
 import { MultiplayerCommunicationService } from "./crossword/multiplayer-communication.service";
 import { CameraManagerService } from "./racing/cameras/camera-manager.service";
 import { EndGameTableComponent } from "./racing/scoreboard/end-game-table/end-game-table.component";
@@ -34,6 +33,7 @@ import { HighscoreComponent } from "./racing/scoreboard/highscores/highscore.com
 import { HighscoreService } from "./racing/scoreboard/highscores/highscore.service";
 import { InputNameComponent } from "./racing/scoreboard/input-name/input-name.component";
 import { InputNameService } from "./racing/scoreboard/input-name/input-name.service";
+import { SoundService } from "./racing/sound-service/sound.service";
 
 @NgModule({
     declarations: [
@@ -63,7 +63,7 @@ import { InputNameService } from "./racing/scoreboard/input-name/input-name.serv
         AICarService,
         KeyboardEventService,
         RenderService,
-        SoundManagerService,
+        SoundService,
         MultiplayerCommunicationService,
         CameraManagerService,
         CarTrackingService,
