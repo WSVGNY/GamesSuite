@@ -12,12 +12,18 @@
 }
 
 .tracks a:hover{
-    background: linear-gradient(rgba(59, 59, 59, 0.726),rgba(0, 0, 0, 0.726));
+    background: linear-gradient(rgba(0, 0, 0, 0.726),rgba(59, 59, 59, 0.726));
 }
 
+button:hover{
+    background: linear-gradient(rgba(0, 0, 0, 0.726),rgba(59, 59, 59, 0.726));
+}
+button{
+    background: linear-gradient(rgba(59, 59, 59, 0.726),rgba(0, 0, 0, 0.726));
+}
 .tracks a {
     color: white;
-    background: linear-gradient(rgba(0, 0, 0, 0.726),rgba(59, 59, 59, 0.726));
+    background: linear-gradient(rgba(59, 59, 59, 0.726),rgba(0, 0, 0, 0.726));
     border-radius: 4px;
     left: 5px;
     text-decoration: none;
@@ -71,7 +77,6 @@ ul::-webkit-scrollbar-thumb {
     position: relative;
     bottom: 27px;
     left: 350px;
-    background: linear-gradient(rgba(0, 0, 0, 0.726),rgba(59, 59, 59, 0.726));
     border-radius: 4px;
     border:none;
     color: white;
@@ -79,7 +84,6 @@ ul::-webkit-scrollbar-thumb {
 
 #newtrack{
     position: relative;
-    background: linear-gradient(rgba(0, 0, 0, 0.726),rgba(59, 59, 59, 0.726));
     border-radius: 4px;
     left: 15px;
     border:none;
@@ -95,8 +99,4 @@ ul::-webkit-scrollbar-thumb {
     border-radius: 4px;
     text-align: center;
     border:none;
-}
-
-button:hover{
-    background: linear-gradient(rgba(59, 59, 59, 0.726),rgba(0, 0, 0, 0.726));
 }

@@ -1,34 +1,35 @@
-<P>
-  <button (click)="goBack()"> Go back </button>
-</P>
-<P>
-  Track name:
-  <input #trackName type="text" [value]="currentTrack.name" (keyup.enter)="saveTrackName(trackName.value)" (blur)="saveTrackName(trackName.value)">
-</P>
-<P>
-  Description:
-  <input #trackDescription type="text" [value]="currentTrack.description" (keyup.enter)="saveTrackDescription(trackDescription.value)"
-    (blur)="saveTrackDescription(trackDescription.value)">
-</P>
-<P>
-  Times played: {{currentTrack.timesPlayed}}
-</P>
-<P>
-  Track Types :
-  <button (click)="chooseTrackType()"> {{currentTrack.type}} </button>
-</P>
+<div id="back">
+  <P>
+    <button (click)="goBack()"> Go back </button>
+  </P>
+  <P>
+    Track name:
+    <input #trackName type="text" [value]="currentTrack.name" (keyup.enter)="saveTrackName(trackName.value)" (blur)="saveTrackName(trackName.value)">
+  </P>
+  <P>
+    Description:
+    <input #trackDescription type="text" [value]="currentTrack.description" (keyup.enter)="saveTrackDescription(trackDescription.value)"
+      (blur)="saveTrackDescription(trackDescription.value)">
+  </P>
+  <P>
+    Times played: {{currentTrack.timesPlayed}}
+  </P>
+  <P>
+    Track Types :
+    <button (click)="chooseTrackType()"> {{currentTrack.type}} </button>
+  </P>
 
-<P>
-  Best times:
-  <li *ngFor="let time of currentTrack.bestTimes;">
-    {{getFormatedTime(time.time)}}
-  </li>
-</P>
-<P>
-  <span *ngIf="_editorScene!==undefined">
-    <button *ngIf="!_editorScene.checkConstraints()" id="saveButton" disabled> Save and go back </button>
-    <button *ngIf="_editorScene.checkConstraints()" id="saveButton" (click)="saveTrack()"> Save and go back </button>
-  </span>
-</P>
-<div #containerEditor>
+  <P>
+    Best times:
+    <li *ngFor="let time of currentTrack.bestTimes;">
+      {{getFormatedTime(time.time)}}
+    </li>
+  </P>
+  <P>
+    <span *ngIf="_editorScene!==undefined">
+      <button *ngIf="!_editorScene.checkConstraints()" id="saveButton" disabled> Save and go back </button>
+      <button *ngIf="_editorScene.checkConstraints()" id="saveButton" (click)="saveTrack()"> Save and go back </button>
+    </span>
+  </P>
 </div>
+<div id="editor" #containerEditor></div>
