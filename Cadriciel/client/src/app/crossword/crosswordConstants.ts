@@ -5,7 +5,6 @@ export const NOT_COLORED_DEFINITION: string = "transparent";
 export const BLACK: string = "black";
 export const WHITE: string = "white";
 export const FIRST_PLAYER_COLOR: string = "steelblue";
-export const SERVER_URL: string = "http://localhost:3000";
 
 export enum State {
     Free = 0,

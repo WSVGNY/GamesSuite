@@ -5,11 +5,12 @@ import { catchError } from "rxjs/operators";
 import { of } from "rxjs/observable/of";
 import { CommonGrid } from "../../../../common/crossword/commonGrid";
 import { Difficulty } from "../../../../common/crossword/difficulty";
+import { SERVER_URL } from "../../../../common/constants";
 
 @Injectable()
 export class GridService {
 
-    private readonly BASE_URL: string = "http://localhost:3000/grid/gridGet/";
+    private readonly BASE_URL: string = SERVER_URL + "/grid/gridGet/";
     public constructor(private http: HttpClient) { }
 
     public gridGet(difficulty: Difficulty): Observable<CommonGrid> {

@@ -8,7 +8,7 @@ import { MultiplayerCrosswordGame } from "../../../../common/crossword/multiplay
 import { CommonGrid } from "../../../../common/crossword/commonGrid";
 import { Player } from "../../../../common/crossword/player";
 import { InvalidArgumentError } from "../racing/invalidArgumentError";
-import { SERVER_URL } from "./crosswordConstants";
+import { SERVER_URL } from "../../../../common/constants";
 
 @Injectable()
 export class MultiplayerCommunicationService {
