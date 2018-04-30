@@ -1,12 +1,12 @@
 <div>
   <a href="/">
-    <img id="logo" src="http://localhost:4200/assets/team-logo.png" alt="logo">
+    <img id="logo" src="{{clientUrl}}/assets/team-logo.png" alt="logo">
   </a>
   <nav>
     <a href="/crossword" (click)="hide()">Crossword</a>
     <a href="/race" (click)="hide()">Racing</a>
   </nav>
-  <img id="image1" *ngIf="imageIsShown" src="http://localhost:4200/assets/crossword.jpg" alt="crossword">
-  <img id="image2" *ngIf="imageIsShown" src="http://localhost:4200/assets/camero.jpg" alt="yellow camaro">
+  <img id="image1" *ngIf="imageIsShown" src="{{clientUrl}}/assets/crossword.jpg" alt="crossword">
+  <img id="image2" *ngIf="imageIsShown" src="{{clientUrl}}/assets/camero.jpg" alt="yellow camaro">
   <router-outlet></router-outlet>
 </div>
