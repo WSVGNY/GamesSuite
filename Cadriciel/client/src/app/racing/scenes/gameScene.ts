@@ -41,17 +41,17 @@ export class GameScene extends AbstractScene {
         this.setCenterLine();
     }
 
-    public async loadCars(cars: AbstractCar[], camera: Camera, trackType: TrackType): Promise<void> {
-        this.shuffle(cars);
-        for (let i: number = 0; i < cars.length; ++i) {
-            await this.placeCarOnStartingGrid(cars[i], i);
+    public async loadCars(cars: AbstractCar[], camera: Camera, trackType: TrackType): Promise<void> {    
+	this.shuffle(cars);
+	for (let i: number = 0; i < cars.length; ++i) {
+	    await this.placeCarOnStartingGrid(cars[i], i);
             if (cars[i] instanceof HumanCar) {
                 cars[i].attachCamera(camera);
             } else {
                 this._debugElements.add((cars[i] as AICar).aiDebug.debugGroup);
             }
             this.add(cars[i]);
-        }
+	}
         this.setTimeOfDay(cars, trackType);
     }
 

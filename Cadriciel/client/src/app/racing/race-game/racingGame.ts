@@ -61,9 +61,9 @@ export class RacingGame {
         this._players.push(new Player(index, COMPUTER_PLAYER + (index + 1)));
     }
 
-    public async initializeGameFromTrack(track: Track, thirdPersonCamera: Camera): Promise<void> {
-        this._track = track;
-        this._gameScene.loadTrack(track);
+    public async initializeGameFromTrack(track: Track, thirdPersonCamera: Camera): Promise<void> {    
+	this._track = track;
+	this._gameScene.loadTrack(track);
         await this._gameScene.loadCars(this._cars, thirdPersonCamera, track.type);
     }
 

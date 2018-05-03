@@ -51,11 +51,11 @@ export class RacingComponent implements AfterViewInit, OnInit {
 
     public getTrack(): void {
         this._trackService.getTrackFromId(this._route.snapshot.paramMap.get("id"))
-            .subscribe((trackFromServer: Track) => {
+	    .subscribe((trackFromServer: Track) => {
                 this._racingGame.initializeGameFromTrack(
                     Track.createFromJSON(JSON.stringify(trackFromServer)),
                     this._cameraManager.thirdPersonCamera
-                ).then(() => {
+		).then(() => {
                     this.startGameLoop().then().catch();
                 }).catch((err) => console.error(err));
             });
